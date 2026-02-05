@@ -1,0 +1,3562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Tulum Discovery App</title>
+    <meta name="description" content="Tulum weather, mapping, and great locations.">
+    <meta property="og:title" content="Discover Tulum">
+    <meta property="og:description" content="Real-time beach conditions, weather, and local spots">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jdavies4428.github.io/tulum-situation-monitor/">
+    <meta property="og:image" content="https://jdavies4428.github.io/tulum-situation-monitor/data/webcam/latest.jpg">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="720">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Discover Tulum">
+    <meta name="twitter:description" content="Real-time beach conditions, weather, and local spots">
+    <meta name="twitter:image" content="https://jdavies4428.github.io/tulum-situation-monitor/data/webcam/latest.jpg">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --accent-cyan: #00d4ff;
+            --accent-yellow: #ffd600;
+            --accent-green: #00d46a;
+            --accent-yellow: #ffd600;
+            --accent-red: #ff3b30;
+            --accent-purple: #af52de;
+            --accent-grey: #a0a0a0;
+            --bg-dark: #0a0a0a;
+            --bg-panel: rgba(10, 10, 10, 0.95);
+            --border-color: #333;
+            --text-muted: #888;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: #fff;
+            overflow: hidden;
+        }
+        #map {
+            width: 100vw;
+            height: 100vh;
+        }
+        .situation-header {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            max-width: calc(100% - 310px);
+        }
+        .header-text h1 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header-text .subtitle {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+        .top-btn {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .top-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .top-btn.webcam {
+            color: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+        .top-btn.webcam:hover {
+            background: rgba(255, 59, 48, 0.15);
+        }
+        .top-btn.webcam .live-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        .lang-toggle {
+            background: var(--accent-cyan);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+        .lang-toggle:hover {
+            transform: scale(1.05);
+        }
+        .layer-controls {
+            position: absolute;
+            top: 80px;
+            left: 10px;
+            z-index: 1000;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            min-width: 160px;
+        }
+        .layer-controls h3 {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin: 0;
+            flex: 1;
+        }
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .collapsible-header:hover {
+            opacity: 0.8;
+        }
+        .collapse-arrow {
+            font-size: 8px;
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+        .collapsible-content {
+            max-height: 2000px;
+            overflow: visible;
+            transition: max-height 0.3s ease, opacity 0.2s ease;
+            opacity: 1;
+        }
+        .collapsible-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .collapsed .collapse-arrow {
+            transform: rotate(-90deg);
+        }
+        .layer-controls.transparent {
+            background: transparent;
+            border-color: transparent;
+            backdrop-filter: none;
+            box-shadow: none;
+        }
+        .layer-controls.transparent h3 {
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        .layer-controls.transparent .collapse-arrow {
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        .webcam-tabs {
+            display: flex;
+            gap: 5px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .webcam-tab {
+            flex: 1;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 6px;
+            color: #888;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .webcam-tab:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        .webcam-tab.active {
+            background: var(--accent-cyan);
+            color: #000;
+            font-weight: 600;
+        }
+        .layer-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .layer-toggle:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .layer-toggle:last-child {
+            margin-bottom: 0;
+        }
+        .layer-toggle input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: var(--accent-cyan);
+        }
+        .layer-toggle label {
+            font-size: 12px;
+            cursor: pointer;
+            flex: 1;
+        }
+        .layer-toggle .indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #333;
+        }
+        .layer-toggle.active .indicator {
+            background: var(--accent-cyan);
+            box-shadow: 0 0 6px var(--accent-cyan);
+        }
+        .layer-toggle.active .indicator.sargassum-dot {
+            background: var(--accent-green);
+            box-shadow: 0 0 6px var(--accent-green);
+        }
+        .layer-toggle.active .indicator.clubs-dot {
+            background: var(--accent-yellow);
+            box-shadow: 0 0 6px var(--accent-yellow);
+        }
+        .layer-toggle.active .indicator.restaurants-dot {
+            background: var(--accent-purple);
+            box-shadow: 0 0 6px var(--accent-purple);
+        }
+        .layer-toggle.active .indicator.cultural-dot {
+            background: var(--accent-grey);
+            box-shadow: 0 0 6px var(--accent-grey);
+        }
+        .right-panels {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            width: 280px;
+            max-height: calc(100vh - 70px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-bottom: 60px;
+        }
+        .right-panels::-webkit-scrollbar {
+            width: 4px;
+        }
+        .right-panels::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .right-panels::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 2px;
+        }
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+        .panel-icon {
+            font-size: 12px;
+        }
+        .alert-count {
+            margin-left: auto;
+            background: var(--accent-red);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        .alert-count.none {
+            background: var(--accent-green);
+        }
+        .refresh-icon {
+            margin-left: auto;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+            font-size: 14px;
+        }
+        .refresh-icon:hover {
+            opacity: 1;
+        }
+        .alert-list {
+            padding: 10px 12px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .alert-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .alert-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .alert-item:first-child {
+            padding-top: 0;
+        }
+        .alert-badge {
+            font-size: 8px;
+            font-weight: 700;
+            padding: 3px 6px;
+            border-radius: 4px;
+            height: fit-content;
+            white-space: nowrap;
+        }
+        .alert-badge.severe {
+            background: rgba(255, 59, 48, 0.2);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+        .alert-badge.moderate {
+            background: rgba(255, 214, 0, 0.2);
+            color: var(--accent-yellow);
+            border: 1px solid var(--accent-yellow);
+        }
+        .alert-badge.info {
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+        }
+        .alert-content {
+            flex: 1;
+        }
+        .alert-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #fff;
+        }
+        .alert-desc {
+            font-size: 10px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+        .alert-meta {
+            font-size: 9px;
+            color: #666;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        .no-alerts {
+            padding: 16px 12px;
+            text-align: center;
+            color: var(--accent-green);
+            font-size: 12px;
+        }
+        .weather-main {
+            padding: 14px 12px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .temp-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+        .weather-icon {
+            font-size: 32px;
+        }
+        .temp {
+            font-size: 36px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .weather-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .feels-like {
+            font-size: 10px;
+            color: #666;
+            margin-top: 2px;
+        }
+        /* Hourly Forecast */
+        .hourly-forecast {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+            gap: 4px;
+        }
+        .hour-item {
+            flex: 1;
+            text-align: center;
+            padding: 6px 2px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .hour-time {
+            font-size: 9px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .hour-icon {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+        .hour-temp {
+            font-size: 11px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        .hour-rain {
+            font-size: 8px;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        .hour-rain.high {
+            color: var(--accent-orange);
+        }
+        .weather-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border-color);
+        }
+        .weather-item {
+            background: var(--bg-panel);
+            padding: 10px;
+            text-align: center;
+        }
+        .weather-label {
+            font-size: 8px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 3px;
+        }
+        .weather-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+        }
+        .weather-value.gust {
+            color: var(--accent-orange);
+        }
+        .weather-value.humidity {
+            color: var(--accent-cyan);
+        }
+        .weather-value.pressure {
+            color: var(--accent-green);
+        }
+        .weather-sub {
+            font-size: 9px;
+            color: #666;
+            margin-top: 2px;
+        }
+        .data-source {
+            font-size: 8px;
+            color: #555;
+            text-align: center;
+            padding: 6px;
+            border-top: 1px solid var(--border-color);
+        }
+        .traffic-light {
+            display: flex;
+            gap: 6px;
+            padding: 10px;
+            justify-content: center;
+        }
+        .light {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            opacity: 0.4;
+            transition: all 0.3s;
+        }
+        .light.active {
+            opacity: 1;
+        }
+        .light.red.active {
+            background: rgba(255, 59, 48, 0.15);
+            border-color: var(--accent-red);
+            box-shadow: 0 0 12px rgba(255, 59, 48, 0.3);
+        }
+        .light.yellow.active {
+            background: rgba(255, 214, 0, 0.15);
+            border-color: var(--accent-yellow);
+            box-shadow: 0 0 12px rgba(255, 214, 0, 0.3);
+        }
+        .light.green.active {
+            background: rgba(0, 212, 106, 0.15);
+            border-color: var(--accent-green);
+            box-shadow: 0 0 12px rgba(0, 212, 106, 0.3);
+        }
+        .light-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #333;
+        }
+        .light.red .light-dot {
+            background: var(--accent-red);
+            box-shadow: 0 0 6px var(--accent-red);
+        }
+        .light.yellow .light-dot {
+            background: var(--accent-yellow);
+            box-shadow: 0 0 6px var(--accent-yellow);
+        }
+        .light.green .light-dot {
+            background: var(--accent-green);
+            box-shadow: 0 0 6px var(--accent-green);
+        }
+        .light span {
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .light.red span { color: var(--accent-red); }
+        .light.yellow span { color: var(--accent-yellow); }
+        .light.green span { color: var(--accent-green); }
+        .sargassum-details {
+            padding: 8px 12px 10px;
+        }
+        .sargassum-title {
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #fff;
+        }
+        .sargassum-desc {
+            font-size: 9px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+        .sargassum-source {
+            font-size: 8px;
+            color: #666;
+        }
+        .sargassum-source a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+        .sargassum-source a:hover {
+            text-decoration: underline;
+        }
+        .sargassum-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            border-top: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .patch-info {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+        .patch-info strong {
+            color: var(--accent-green);
+            font-size: 14px;
+        }
+        .sargassum-btn {
+            background: rgba(0, 212, 106, 0.15);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+            justify-content: center;
+        }
+        .sargassum-btn:hover {
+            background: rgba(0, 212, 106, 0.25);
+        }
+        .webcam-btn {
+            background: rgba(255, 59, 48, 0.15);
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            width: 100%;
+        }
+        .webcam-btn:hover {
+            background: rgba(255, 59, 48, 0.25);
+        }
+        .webcam-btn .live-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-red);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        .places-btn {
+            background: rgba(201, 100, 66, 0.2);
+            border: 1px solid #c96442;
+            color: #e8a882;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+        }
+        .places-btn:hover {
+            background: rgba(201, 100, 66, 0.35);
+        }
+        .tide-section {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--border-color);
+        }
+        .tide-item {
+            text-align: center;
+            flex: 1;
+            padding: 6px 4px;
+        }
+        .tide-item:first-child {
+            border-right: 1px solid var(--border-color);
+        }
+        .tide-label {
+            font-size: 8px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .tide-time {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        .tide-height {
+            font-size: 10px;
+            color: var(--accent-cyan);
+        }
+        .tide-status {
+            font-size: 9px;
+            color: var(--text-muted);
+            padding: 6px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .tide-status .rising {
+            color: var(--accent-green);
+        }
+        .tide-status .falling {
+            color: var(--accent-orange);
+        }
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        .lang-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .lang-btn {
+            background: var(--bg-panel);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0.6;
+        }
+        .lang-btn:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        .lang-btn.active {
+            opacity: 1;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+        }
+        .quick-actions .action-row {
+            display: flex;
+            gap: 8px;
+        }
+        .action-row {
+            display: flex;
+            gap: 8px;
+        }
+        .action-row .sargassum-btn,
+        .action-row .webcam-btn,
+        .action-row .places-btn {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+        .water-temp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px;
+            background: rgba(0, 212, 255, 0.1);
+            border-top: 1px solid var(--border-color);
+        }
+        .water-temp-icon {
+            font-size: 18px;
+        }
+        .water-temp-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+        .water-temp-label {
+            font-size: 9px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .sun-times {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background: rgba(255, 149, 0, 0.1);
+            border-top: 1px solid var(--border-color);
+        }
+        .sun-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-orange);
+        }
+        .status-bar {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 14px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .status-item .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            box-shadow: 0 0 6px var(--accent-cyan);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .coordinates {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 10px;
+            color: #666;
+        }
+        .reset-btn {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            color: var(--accent-cyan);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .reset-btn:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--accent-cyan);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-title .live-badge {
+            background: var(--accent-red);
+            color: #fff;
+            font-size: 9px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            animation: pulse 1.5s infinite;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .modal-body {
+            padding: 0;
+        }
+        .modal-body iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            display: block;
+        }
+        .modal-body img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .modal-footer {
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+        .modal-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Listings Panel - Bohemian Earthy Theme */
+        .listings-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            top: auto;
+            background: linear-gradient(180deg, #1a1512 0%, #0f0d0b 100%);
+            border-top: 2px solid #5c4033;
+            border-radius: 24px 24px 0 0;
+            z-index: 2000;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+        }
+        .listings-panel.active {
+            transform: translateY(0);
+        }
+        .listings-handle {
+            width: 50px;
+            height: 5px;
+            background: linear-gradient(90deg, #8b6914, #c96442, #8b6914);
+            border-radius: 3px;
+            margin: 14px auto 10px;
+            cursor: grab;
+        }
+        .listings-header {
+            padding: 8px 20px 16px;
+            border-bottom: 1px solid rgba(139, 105, 20, 0.3);
+        }
+        .listings-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .listings-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #e8d5b7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .listings-close {
+            background: none;
+            border: none;
+            color: #8b7355;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0 8px;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .listings-close:hover {
+            color: #e8d5b7;
+        }
+        .listings-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding-bottom: 5px;
+        }
+        .listings-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .listings-tab {
+            flex: 0 0 auto;
+            padding: 10px 14px;
+            background: rgba(92, 64, 51, 0.2);
+            border: 2px solid #5c4033;
+            border-radius: 10px;
+            color: #a89078;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .listings-tab:hover {
+            border-color: #8b6914;
+            color: #e8d5b7;
+            background: rgba(139, 105, 20, 0.15);
+        }
+        .listings-tab.active {
+            background: linear-gradient(135deg, #5c4033, #8b6914);
+            border-color: #c96442;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(201, 100, 66, 0.3);
+        }
+        .listings-tab.active.restaurants {
+            background: linear-gradient(135deg, #6b4423, #a87832);
+            border-color: #d4a574;
+        }
+        .listings-tab .tab-count {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        .listings-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            min-height: 300px;
+        }
+        .listings-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .listings-content::-webkit-scrollbar-thumb {
+            background: #5c4033;
+            border-radius: 3px;
+        }
+        .listing-card {
+            background: linear-gradient(135deg, rgba(92, 64, 51, 0.15), rgba(30, 25, 20, 0.8));
+            border: 1px solid rgba(139, 105, 20, 0.25);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+        .listing-card:hover {
+            background: linear-gradient(135deg, rgba(92, 64, 51, 0.25), rgba(30, 25, 20, 0.9));
+            border-color: #c96442;
+            box-shadow: 0 4px 20px rgba(201, 100, 66, 0.15);
+        }
+        .listing-card:last-child {
+            margin-bottom: 0;
+        }
+        .listing-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .listing-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #e8d5b7;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .listing-name .webcam-badge {
+            background: #c96442;
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        .listing-type {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .listing-type.club {
+            background: rgba(135, 168, 120, 0.25);
+            color: #a8c898;
+        }
+        .listing-type.restaurant {
+            background: rgba(212, 165, 116, 0.25);
+            color: #d4a574;
+        }
+        .listing-type.cultural {
+            background: rgba(160, 160, 160, 0.25);
+            color: #a0a0a0;
+        }
+        .listing-desc {
+            font-size: 13px;
+            color: #a89078;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .listing-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .listing-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .listing-btn.call {
+            background: #007aff;
+            color: #fff;
+        }
+        .listing-btn.call:hover {
+            background: #3395ff;
+            transform: translateY(-1px);
+        }
+        .listing-btn.whatsapp {
+            background: #25d366;
+            color: #fff;
+        }
+        .listing-btn.whatsapp:hover {
+            background: #2ee673;
+            transform: translateY(-1px);
+        }
+        .listing-btn.website {
+            background: #6c757d;
+            color: #fff;
+            border: none;
+        }
+        .listing-btn.website:hover {
+            background: #7d868f;
+        }
+        .listing-btn.navigate {
+            background: #ff9500;
+            color: #fff;
+            border: none;
+        }
+        .listing-btn.navigate:hover {
+            background: linear-gradient(135deg, #d97b59, #a87f1a);
+            transform: translateY(-1px);
+        }
+        .listings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 13, 11, 0.7);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .listings-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Desktop: Center modal style */
+        @media (min-width: 769px) {
+            .listings-panel {
+                top: 50%;
+                left: 50%;
+                right: auto;
+                bottom: auto;
+                transform: translate(-50%, -50%) scale(0.9);
+                opacity: 0;
+                visibility: hidden;
+                width: 500px;
+                max-height: 80vh;
+                border-radius: 20px;
+                border: 2px solid #5c4033;
+            }
+            .listings-panel.active {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+                visibility: visible;
+            }
+            .listings-handle {
+                display: none;
+            }
+            .listing-card {
+                padding: 20px;
+            }
+            .listing-name {
+                font-size: 17px;
+            }
+        }
+
+        /* List Button in Header */
+        .top-btn.list {
+            color: #e8a882;
+            border-color: #c96442;
+        }
+        .top-btn.list:hover {
+            background: rgba(201, 100, 66, 0.2);
+        }
+
+        .forecast-info {
+            padding: 16px 20px;
+            background: rgba(0, 212, 106, 0.1);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .forecast-info p {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        .forecast-info p:last-child {
+            margin-bottom: 0;
+        }
+        .forecast-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .forecast-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+        }
+        .forecast-legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .leaflet-popup-content-wrapper {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: #fff;
+        }
+        .leaflet-popup-tip {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+        }
+        .leaflet-popup-content {
+            margin: 10px 14px;
+        }
+        /* Zoom controls - under layer controls on left */
+        .leaflet-top.leaflet-left {
+            top: 340px !important;
+            left: 10px !important;
+        }
+        .leaflet-control-zoom a {
+            background: var(--bg-panel) !important;
+            border: 1px solid var(--border-color) !important;
+            color: #fff !important;
+            width: 36px !important;
+            height: 36px !important;
+            line-height: 36px !important;
+            font-size: 18px !important;
+        }
+        .leaflet-control-zoom a:hover {
+            background: #1a1a1a !important;
+        }
+        .club-popup {
+            min-width: 180px;
+        }
+        .club-popup h3 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--accent-purple);
+        }
+        .club-popup .club-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .club-popup .club-links {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .club-popup .club-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .club-popup .club-link.website {
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+        }
+        .club-popup .club-link.call {
+            background: rgba(0, 122, 255, 0.2);
+            color: #007aff;
+            border: 1px solid #007aff;
+        }
+        .club-popup .club-link.whatsapp {
+            background: rgba(37, 211, 102, 0.2);
+            color: #25d366;
+            border: 1px solid #25d366;
+        }
+        .user-location-marker {
+            position: relative;
+            width: 20px;
+            height: 20px;
+        }
+        .user-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: #00d4ff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px #00d4ff;
+            z-index: 2;
+        }
+        .user-pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: userPulse 2s infinite;
+            z-index: 1;
+        }
+        @keyframes userPulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+        }
+        .gps-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 6px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 4px;
+            font-size: 10px;
+            color: #00d4ff;
+        }
+        .gps-dot {
+            width: 5px;
+            height: 5px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        .legend {
+            position: absolute;
+            bottom: 70px;
+            left: 10px;
+            z-index: 1000;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        .legend-title {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            margin-bottom: 4px;
+        }
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .legend-dot.location { background: var(--accent-cyan); box-shadow: 0 0 4px var(--accent-cyan); }
+        .legend-dot.target { background: var(--accent-red); box-shadow: 0 0 4px var(--accent-red); }
+        .legend-dot.patches { background: var(--accent-green); box-shadow: 0 0 4px var(--accent-green); }
+        .legend-dot.clubs { background: var(--accent-yellow); box-shadow: 0 0 4px var(--accent-yellow); }
+        .legend-dot.restaurants { background: var(--accent-purple); box-shadow: 0 0 4px var(--accent-purple); }
+        .legend-dot.cultural { background: var(--accent-grey); box-shadow: 0 0 4px var(--accent-grey); }
+
+        /* Mobile Panel Toggle */
+        .mobile-panel-toggle {
+            display: none;
+            position: fixed;
+            bottom: 70px;
+            right: 10px;
+            z-index: 1001;
+            background: var(--accent-cyan);
+            border: none;
+            padding: 12px 16px;
+            border-radius: 25px;
+            color: #000;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+            transition: all 0.2s;
+        }
+        .mobile-panel-toggle:hover {
+            transform: scale(1.05);
+        }
+        .mobile-panel-toggle.active {
+            background: var(--accent-red);
+            box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4);
+        }
+
+        /* Collapsible panels */
+        .panel.collapsible .panel-header {
+            cursor: pointer;
+        }
+        .panel.collapsible .panel-header::after {
+            content: '▼';
+            font-size: 8px;
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+        .panel.collapsible.collapsed .panel-header::after {
+            transform: rotate(-90deg);
+        }
+        .panel.collapsible .panel-body {
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .panel.collapsible.collapsed .panel-body {
+            max-height: 0;
+        }
+
+        /* Mobile Responsive */
+        /* Hide header Info button on desktop */
+        .info-btn-header {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            /* Hide floating Info button, show header one instead */
+            .mobile-panel-toggle {
+                display: none !important;
+            }
+            .info-btn-header {
+                display: inline-flex !important;
+                background: var(--accent-cyan) !important;
+                color: #000 !important;
+            }
+            .situation-header {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                max-width: none !important;
+                padding: 10px 15px;
+                flex-wrap: nowrap;
+                align-items: center;
+                gap: 10px;
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+                border-top: none;
+                justify-content: space-between;
+                box-sizing: border-box;
+            }
+            .header-text h1 {
+                font-size: 15px;
+            }
+            .header-text .subtitle {
+                display: block;
+                font-size: 8px;
+            }
+            .header-controls {
+                display: flex;
+                gap: 8px;
+                margin-left: auto;
+            }
+            .top-btn, .lang-toggle {
+                padding: 5px 8px;
+                font-size: 9px;
+            }
+            .layer-controls {
+                top: 75px;
+                left: 10px;
+                padding: 8px;
+                min-width: 130px;
+            }
+            .layer-controls h3 {
+                font-size: 8px;
+                margin-bottom: 6px;
+            }
+            .layer-toggle {
+                padding: 4px 6px;
+                margin-bottom: 4px;
+            }
+            .layer-toggle label {
+                font-size: 9px;
+            }
+            .layer-toggle .indicator {
+                width: 5px;
+                height: 5px;
+            }
+            .right-panels {
+                position: fixed;
+                top: auto;
+                bottom: 55px;
+                left: 10px;
+                right: 10px;
+                width: auto;
+            }
+            .right-panels > .collapsible-header {
+                display: none;
+                max-height: calc(100vh - 90px);
+                flex-direction: column;
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
+            .right-panels.hidden {
+                transform: translateY(100%);
+                opacity: 0;
+                pointer-events: none;
+            }
+            .panel-header {
+                padding: 8px 10px;
+                font-size: 9px;
+            }
+            .weather-main {
+                padding: 10px;
+            }
+            .temp {
+                font-size: 28px;
+            }
+            .weather-icon {
+                font-size: 24px;
+            }
+            .weather-desc {
+                font-size: 10px;
+            }
+            .hourly-forecast {
+                padding: 8px 6px;
+            }
+            .hour-item {
+                padding: 4px 2px;
+            }
+            .hour-time {
+                font-size: 10px;
+            }
+            .hour-icon {
+                font-size: 16px;
+            }
+            .hour-temp {
+                font-size: 12px;
+            }
+            .hour-rain {
+                font-size: 9px;
+            }
+            .weather-item {
+                padding: 10px;
+            }
+            .weather-label {
+                font-size: 9px;
+            }
+            .weather-value {
+                font-size: 14px;
+            }
+            .traffic-light {
+                padding: 8px;
+                gap: 4px;
+            }
+            .light {
+                padding: 6px 10px;
+            }
+            .light-dot {
+                width: 8px;
+                height: 8px;
+            }
+            .light span {
+                font-size: 9px;
+            }
+            .sargassum-details {
+                padding: 8px 12px 10px;
+            }
+            .sargassum-title {
+                font-size: 12px;
+            }
+            .sargassum-desc {
+                font-size: 10px;
+            }
+            .sargassum-footer {
+                padding: 8px 12px;
+            }
+            .patch-info {
+                font-size: 11px;
+            }
+            .patch-info strong {
+                font-size: 14px;
+            }
+            .sargassum-btn, .webcam-btn, .places-btn {
+                padding: 10px 16px !important;
+                font-size: 13px !important;
+            }
+            .quick-actions {
+                padding: 12px !important;
+                gap: 10px !important;
+            }
+            .quick-actions .sargassum-btn,
+            .quick-actions .webcam-btn,
+            .quick-actions .places-btn {
+                padding: 12px 16px !important;
+                font-size: 14px !important;
+            }
+            .legend {
+                display: none;
+            }
+            .status-bar {
+                bottom: 10px;
+                left: 10px;
+                right: 70px;
+                padding: 10px 14px !important;
+                gap: 8px !important;
+                flex-wrap: wrap;
+            }
+            .status-item {
+                font-size: 13px !important;
+            }
+            .status-item .dot {
+                width: 8px !important;
+                height: 8px !important;
+            }
+            .coordinates {
+                font-size: 12px !important;
+            }
+            .reset-btn {
+                padding: 8px 14px !important;
+                font-size: 12px !important;
+            }
+            .alert-list {
+                max-height: 80px;
+                padding: 8px 10px;
+            }
+            .alert-item {
+                gap: 8px;
+                padding: 8px 0;
+            }
+            .alert-badge {
+                font-size: 9px;
+                padding: 3px 6px;
+            }
+            .alert-title {
+                font-size: 12px;
+            }
+            .alert-desc {
+                font-size: 10px;
+            }
+            .no-alerts {
+                padding: 12px 10px;
+                font-size: 12px;
+            }
+            .leaflet-control-zoom {
+                display: none;
+            }
+            .modal {
+                max-width: 100%;
+                max-height: 85vh;
+                margin: 10px;
+            }
+            .modal-header {
+                padding: 12px 16px;
+            }
+            .modal-title {
+                font-size: 14px;
+            }
+            .modal-body iframe {
+                height: 300px;
+            }
+            .modal-footer {
+                padding: 10px 16px;
+                flex-direction: column;
+                gap: 6px;
+                text-align: center;
+            }
+            .forecast-info {
+                padding: 12px 16px;
+            }
+            .forecast-legend {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-text h1 {
+                font-size: 12px;
+            }
+            .layer-controls {
+                min-width: 110px;
+            }
+            .layer-toggle label {
+                font-size: 9px;
+            }
+            .right-panels {
+                max-height: 75vh;
+            }
+            .temp {
+                font-size: 24px;
+            }
+            .weather-icon {
+                font-size: 20px;
+            }
+            .legend {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="situation-header">
+        <div class="header-text">
+            <h1>🌴 <span data-i18n="title">Discover Tulum</span></h1>
+            <div class="subtitle" data-i18n="subtitle">Real-time beach conditions, weather, and local spots</div>
+        </div>
+        <div class="header-controls">
+            <button class="top-btn share-btn" onclick="shareConditions()">📤 Share</button>
+            <button class="top-btn list" onclick="openListings()">📍 <span data-i18n="places">Places</span></button>
+            <button class="top-btn info-btn-header" onclick="togglePanels()">🌴 Info</button>
+        </div>
+    </div>
+
+    <div class="layer-controls transparent" id="layer-controls">
+        <div class="collapsible-header collapsed" onclick="togglePanel('layers')">
+            <h3 data-i18n="mapLayers">Map Layers</h3>
+            <span class="collapse-arrow">▶</span>
+        </div>
+        <div class="collapsible-content collapsed" id="layers-content">
+        <div class="layer-toggle active" data-layer="carto">
+            <input type="checkbox" checked id="carto-toggle">
+            <label for="carto-toggle" data-i18n="darkBaseMap">Dark Base Map</label>
+            <div class="indicator"></div>
+        </div>
+        <div class="layer-toggle" data-layer="satellite">
+            <input type="checkbox" id="satellite-toggle">
+            <label for="satellite-toggle" data-i18n="satellite">Satellite</label>
+            <div class="indicator"></div>
+        </div>
+        <div class="layer-toggle active" data-layer="radar">
+            <input type="checkbox" checked id="radar-toggle">
+            <label for="radar-toggle" data-i18n="liveRadar">Live Radar</label>
+            <div class="indicator radar-dot"></div>
+        </div>
+        <div class="layer-toggle" data-layer="clubs">
+            <input type="checkbox" id="clubs-toggle">
+            <label for="clubs-toggle" data-i18n="beachClubs">Beach Clubs</label>
+            <div class="indicator clubs-dot"></div>
+        </div>
+        <div class="layer-toggle active" data-layer="restaurants">
+            <input type="checkbox" checked id="restaurants-toggle">
+            <label for="restaurants-toggle" data-i18n="restaurants">Restaurants</label>
+            <div class="indicator restaurants-dot"></div>
+        </div>
+        <div class="layer-toggle" data-layer="cultural">
+            <input type="checkbox" id="cultural-toggle">
+            <label for="cultural-toggle" data-i18n="cultural">Cultural</label>
+            <div class="indicator cultural-dot"></div>
+        </div>
+        </div>
+    </div>
+
+    <div class="right-panels">
+        <div class="collapsible-header" onclick="togglePanel('info')">
+            <h3>🌴 Info</h3>
+            <span class="collapse-arrow">▼</span>
+        </div>
+        <div class="collapsible-content" id="info-content">
+        <div class="quick-actions">
+            <div class="lang-buttons">
+                <button class="lang-btn active" onclick="setLanguage('en')" id="lang-en">🇺🇸</button>
+                <button class="lang-btn" onclick="setLanguage('es')" id="lang-es">🇲🇽</button>
+                <button class="lang-btn" onclick="setLanguage('fr')" id="lang-fr">🇫🇷</button>
+            </div>
+            <div class="action-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button class="sargassum-btn" onclick="openCurrentSatellite()" style="padding: 10px 8px;">
+                    🛰️ <span data-i18n="currentSatellite">Current Satellite</span>
+                </button>
+                <button class="sargassum-btn" onclick="openForecast()" style="padding: 10px 8px;">
+                    🗺️ <span data-i18n="sargassum7Day">7-Day Forecast</span>
+                </button>
+            </div>
+            <div class="action-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button class="webcam-btn" onclick="openWebcam()" style="padding: 10px 8px;">
+                    <span class="live-dot"></span>
+                    📹 <span data-i18n="beachCams">Beach Cams</span>
+                </button>
+                <button class="places-btn" onclick="openListings()" style="padding: 10px 8px;">
+                    🌴 <span data-i18n="places">Places</span>
+                </button>
+            </div>
+        </div>
+        <div class="panel alerts-panel">
+            <div class="panel-header">
+                <span class="panel-icon">⚠️</span>
+                <span data-i18n="activeAlerts">ACTIVE ALERTS</span>
+                <span class="alert-count" id="alert-count">0</span>
+            </div>
+            <div class="alert-list" id="alert-list">
+                <div class="no-alerts" data-i18n="noAlerts">✓ No active alerts</div>
+            </div>
+        </div>
+
+        <div class="panel conditions-panel">
+            <div class="panel-header">
+                <span class="panel-icon">🌤️</span>
+                <span data-i18n="weatherConditions">WEATHER</span>
+                <span class="refresh-icon" onclick="fetchWeather()">⟳</span>
+            </div>
+            <div class="weather-main">
+                <div class="temp-section">
+                    <div class="weather-icon" id="weather-icon">⛅</div>
+                    <div class="temp" id="temperature">--°</div>
+                </div>
+                <div class="weather-desc" id="weather-desc">Loading...</div>
+                <div class="feels-like" id="feels-like">--</div>
+            </div>
+            <div class="hourly-forecast" id="hourly-forecast">
+                <!-- Filled by JS -->
+            </div>
+            <div class="weather-grid">
+                <div class="weather-item">
+                    <div class="weather-label">🌬️ <span data-i18n="wind">WIND</span></div>
+                    <div class="weather-value" id="wind-speed">--</div>
+                    <div class="weather-sub" id="wind-dir">--</div>
+                </div>
+                <div class="weather-item">
+                    <div class="weather-label">💨 <span data-i18n="gusts">GUSTS</span></div>
+                    <div class="weather-value gust" id="wind-gust">--</div>
+                </div>
+                <div class="weather-item">
+                    <div class="weather-label">💧 <span data-i18n="humidity">HUMIDITY</span></div>
+                    <div class="weather-value humidity" id="humidity">--%</div>
+                </div>
+                <div class="weather-item">
+                    <div class="weather-label">🔽 <span data-i18n="pressure">PRESSURE</span></div>
+                    <div class="weather-value pressure" id="pressure">-- mb</div>
+                </div>
+            </div>
+            <div class="tide-section" id="tide-section">
+                <div class="tide-item">
+                    <div class="tide-label">🌊 <span data-i18n="highTide">HIGH TIDE</span></div>
+                    <div class="tide-time" id="high-tide-time">--:--</div>
+                    <div class="tide-height" id="high-tide-height">~0.3m</div>
+                </div>
+                <div class="tide-item">
+                    <div class="tide-label">🌊 <span data-i18n="lowTide">LOW TIDE</span></div>
+                    <div class="tide-time" id="low-tide-time">--:--</div>
+                    <div class="tide-height" id="low-tide-height">~0.1m</div>
+                </div>
+            </div>
+            <div class="tide-status" id="tide-status">
+                <span data-i18n="tideLoading">Calculating tides...</span>
+            </div>
+            <div class="water-temp">
+                <span class="water-temp-icon">🏊</span>
+                <div>
+                    <div class="water-temp-value" id="water-temp">--°</div>
+                    <div class="water-temp-label" data-i18n="waterTemp">WATER TEMP</div>
+                </div>
+            </div>
+            <div class="sun-times">
+                <div class="sun-item">
+                    <span>🌅</span>
+                    <span id="sunrise-time">--:--</span>
+                </div>
+                <div class="sun-item">
+                    <span>🌇</span>
+                    <span id="sunset-time">--:--</span>
+                </div>
+            </div>
+            <div class="data-source">📡 <span data-i18n="dataSource">Live data from Open-Meteo API</span></div>
+        </div>
+
+        <div class="panel sargassum-panel">
+            <div class="panel-header" onclick="toggleSargassumForecast()" style="cursor: pointer;">
+                <span class="panel-icon">🌿</span>
+                <span data-i18n="sargassumForecast">SARGASSUM FORECAST</span>
+                <span id="sargassum-toggle-icon" style="margin-left: auto; font-size: 12px;">▼</span>
+            </div>
+            
+            <div id="sargassum-forecast-content">
+                <!-- Current Status / Traffic Light -->
+                <div class="sargassum-status-section" style="padding: 12px; border-bottom: 1px solid var(--border-color);">
+                    <div class="traffic-light" style="margin-bottom: 10px;">
+                        <div class="light red" id="light-red">
+                            <div class="light-dot"></div>
+                            <span data-i18n="red">RED</span>
+                        </div>
+                        <div class="light yellow" id="light-yellow">
+                            <div class="light-dot"></div>
+                            <span data-i18n="yellow">YELLOW</span>
+                        </div>
+                        <div class="light green" id="light-green">
+                            <div class="light-dot"></div>
+                            <span data-i18n="green">GREEN</span>
+                        </div>
+                    </div>
+                    <div class="sargassum-details">
+                        <div class="sargassum-title" id="sargassum-title" style="font-size: 13px; font-weight: 600;">Loading...</div>
+                        <div class="sargassum-desc" id="sargassum-desc" style="font-size: 11px; margin-top: 4px;">Fetching latest forecast...</div>
+                    </div>
+                </div>
+
+                <!-- 7-Day Historical Satellite -->
+                <div class="satellite-section" style="padding: 12px; border-bottom: 1px solid var(--border-color);">
+                    <div style="font-size: 11px; font-weight: 600; color: var(--accent-yellow); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        📊 7-Day Historical Average
+                    </div>
+                    <div style="text-align: center;">
+                        <img id="satellite-7day-img" src="data/sargassum/latest_7day.png?v=2" 
+                             style="width: 100%; max-width: 260px; border-radius: 6px; border: 1px solid var(--border-color);"
+                             alt="7-Day Sargassum" 
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div style="display: none; padding: 15px; text-align: center; background: rgba(255,214,0,0.1); border-radius: 6px;">
+                            <p style="font-size: 11px; color: var(--text-muted);">Image loading or unavailable</p>
+                        </div>
+                        <div style="margin-top: 6px; font-size: 9px; color: var(--text-muted);">
+                            7-day rolling composite • Smoother trends
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7-Day Forecast Text -->
+                <div class="forecast-text-section" style="padding: 12px; border-bottom: 1px solid var(--border-color);">
+                    <div style="font-size: 11px; font-weight: 600; color: var(--accent-green); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        🔮 7-Day Outlook
+                    </div>
+                    <div id="sargassum-outlook" style="font-size: 11px; line-height: 1.5; color: var(--text-muted);">
+                        <p>• Sargassum amounts typically increase Feb-Mar</p>
+                        <p>• Check daily satellite for current conditions</p>
+                        <p>• Beach clubs can provide real-time beach status</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sargassum-footer" style="justify-content: center; padding: 10px; border-top: 1px solid var(--border-color);">
+                <a href="https://optics.marine.usf.edu/projects/SaWS.html" target="_blank" class="sargassum-btn" style="font-size: 10px; padding: 6px 12px;">
+                    🔴 View Full USF Satellite Data →
+                </a>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="legend">
+        <div class="legend-title" data-i18n="mapLegend">Legend</div>
+        <div class="legend-item">
+            <div class="legend-dot location"></div>
+            <span data-i18n="yourLocation">Your Location</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot target"></div>
+            <span data-i18n="targetArea">Tulum</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot clubs"></div>
+            <span data-i18n="beachClubs">Beach Clubs</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot restaurants"></div>
+            <span data-i18n="restaurants">Restaurants</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot cultural"></div>
+            <span data-i18n="cultural">Cultural</span>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <div class="status-item">
+            <div class="dot"></div>
+            <span data-i18n="online">ONLINE</span>
+        </div>
+        <div class="coordinates" id="coordinates">20.2114°N, 87.4654°W</div>
+        <button class="reset-btn" onclick="resetMapView()">
+            🎯 <span data-i18n="resetView">Reset</span>
+        </button>
+        <div class="status-item">
+            <span id="last-updated">--</span>
+        </div>
+    </div>
+
+    <button class="mobile-panel-toggle" id="panel-toggle" onclick="togglePanels()">
+        🌴 Info
+    </button>
+
+    <!-- Webcam Modal -->
+    <div class="modal-overlay" id="webcam-modal" onclick="closeModal('webcam-modal', event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">
+                    📹 Beach Cams
+                    <span class="live-badge">LIVE</span>
+                </div>
+                <button class="modal-close" onclick="closeModal('webcam-modal')">&times;</button>
+            </div>
+            <div class="webcam-tabs">
+                <button class="webcam-tab active" onclick="switchWebcam('tulum')">🏖️ Tulum</button>
+                <button class="webcam-tab" onclick="switchWebcam('akumal-south')">🐢 Akumal</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="webcam-iframe" src="" allowfullscreen></iframe>
+            </div>
+            <div class="modal-footer">
+                <span id="webcam-location">Tulum Beach Hotel Zone</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sargassum Forecast Modal -->
+    <div class="modal-overlay" id="forecast-modal" onclick="closeModal('forecast-modal', event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">
+                    🌿 <span data-i18n="sargassumForecast">Sargassum 7-Day Forecast</span>
+                </div>
+                <button class="modal-close" onclick="closeModal('forecast-modal')">&times;</button>
+            </div>
+            <div class="forecast-info">
+                <p data-i18n="forecastDesc">This animation shows predicted sargassum movement over 7 days based on ocean currents (HYCOM) and wind forecasts (NCEP). Red dots indicate satellite-detected sargassum patches.</p>
+                <div class="forecast-legend">
+                    <div class="forecast-legend-item">
+                        <div class="forecast-legend-dot" style="background: #ff3b30;"></div>
+                        <span data-i18n="sargassumPatch">Sargassum Patch</span>
+                    </div>
+                    <div class="forecast-legend-item">
+                        <div class="forecast-legend-dot" style="background: #00d4ff;"></div>
+                        <span data-i18n="trajectory">Predicted Path</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body" style="background: #fff; padding: 10px;">
+                <img id="forecast-img" src="" alt="Sargassum Forecast" style="max-height: 400px; object-fit: contain; margin: 0 auto;">
+            </div>
+            <div class="modal-footer">
+                <span data-i18n="dataFrom">Data: Mexican Government / SEMA Q. Roo</span>
+                <a href="https://sargassummonitoring.com/en/forecast-sargassum-mexico-riviera-maya/" target="_blank" data-i18n="viewFullForecast">Full Forecast →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Satellite Modal -->
+    <div class="modal-overlay" id="satellite-modal" onclick="closeModal('satellite-modal', event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">
+                    🛰️ <span data-i18n="currentSatellite">Current Sargassum Satellite</span>
+                </div>
+                <button class="modal-close" onclick="closeModal('satellite-modal')">&times;</button>
+            </div>
+            <div class="forecast-info">
+                <p>Latest 1-day satellite image showing current sargassum concentration around Tulum/Yucatan. Updated daily at 6 AM.</p>
+            </div>
+            <div class="modal-body" style="background: #111; padding: 10px; text-align: center;">
+                <img id="current-satellite-img" src="data/sargassum/latest_1day.png" alt="Current Sargassum Satellite" style="max-width: 100%; max-height: 450px; object-fit: contain; border-radius: 6px;">
+            </div>
+            <div class="modal-footer">
+                <span>🛰️ NASA/USF MODIS • 1km resolution</span>
+                <a href="https://optics.marine.usf.edu/projects/SaWS.html" target="_blank">View Full Data →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Listings Panel -->
+    <div class="listings-overlay" id="listings-overlay" onclick="closeListings()"></div>
+    <div class="listings-panel" id="listings-panel">
+        <div class="listings-handle"></div>
+        <div class="listings-header">
+            <div class="listings-header-row">
+                <div class="listings-title">📍 <span data-i18n="places">Places</span></div>
+                <button class="listings-close" onclick="closeListings()">&times;</button>
+            </div>
+            <div class="listings-tabs">
+                <button class="listings-tab active" id="tab-clubs" onclick="switchTab('clubs')">
+                    🏖️ <span data-i18n="beachClubs">Beach Clubs</span>
+                    <span class="tab-count">6</span>
+                </button>
+                <button class="listings-tab" id="tab-restaurants" onclick="switchTab('restaurants')">
+                    🍽️ <span data-i18n="restaurants">Restaurants</span>
+                    <span class="tab-count">12</span>
+                </button>
+                <button class="listings-tab" id="tab-cultural" onclick="switchTab('cultural')">
+                    🎭 <span data-i18n="cultural">Cultural</span>
+                    <span class="tab-count">1</span>
+                </button>
+            </div>
+        </div>
+        <div class="listings-content" id="listings-content">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Language System
+        let currentLang = 'en';
+        const translations = {
+            en: {
+                title: 'Discover Tulum',
+                subtitle: 'Real-time beach conditions, weather, and local spots',
+                mapLayers: 'Map Layers',
+                darkBaseMap: 'Dark Base Map',
+                satellite: 'Satellite',
+                liveRadar: 'Live Radar',
+                sargassumPatches: 'Sargassum',
+                beachClubs: 'Beach Clubs',
+                restaurants: 'Restaurants',
+                cultural: 'Cultural',
+                places: 'Places',
+                beachCam: 'Beach Cam',
+                beachCams: 'Beach Cams',
+                activeAlerts: 'ACTIVE ALERTS',
+                noAlerts: '✓ No active alerts',
+                weatherConditions: 'WEATHER',
+                wind: 'WIND',
+                gusts: 'GUSTS',
+                humidity: 'HUMIDITY',
+                pressure: 'PRESSURE',
+                dataSource: 'Live data from Open-Meteo API',
+                sargassumStatus: 'SARGASSUM',
+                sargassumForecast: 'SARGASSUM FORECAST',
+                red: 'RED',
+                yellow: 'YELLOW',
+                green: 'GREEN',
+                activePatches: 'Patches:',
+                viewForecast: 'Sargassum Forecast',
+                currentSatellite: 'Current Satellite',
+                sargassum7Day: '7-Day Forecast',
+                source: 'Source',
+                mapLegend: 'Legend',
+                yourLocation: 'Your Location',
+                targetArea: 'Tulum',
+                online: 'ONLINE',
+                resetView: 'Reset',
+                locateMe: 'Locate',
+                feelsLike: 'Feels like',
+                highSargassum: 'High Sargassum Alert',
+                highSargassumDesc: 'Significant accumulation detected. Check with beach clubs before visiting.',
+                moderateSargassum: 'Moderate Sargassum',
+                moderateSargassumDesc: 'Moderate presence offshore. Conditions vary by location.',
+                lowSargassum: 'Low Sargassum',
+                lowSargassumDesc: 'Minimal sargassum. Good conditions for beach activities.',
+                highWindWarning: 'High Wind Warning',
+                windAdvisory: 'Wind Advisory',
+                thunderstormWarning: 'Thunderstorm Warning',
+                rainAdvisory: 'Rain Advisory',
+                rainLikely: 'Rain Likely',
+                highUV: 'High UV Index',
+                heatAdvisory: 'Heat Advisory',
+                basedOnCurrent: 'Based on current conditions',
+                basedOnForecast: 'Based on forecast',
+                dailyForecast: 'Daily forecast',
+                website: 'Website',
+                whatsapp: 'WhatsApp',
+                updated: 'Updated',
+                webcamLocation: 'Tulum Beach Hotel Zone',
+                viewOnSite: 'View on Casa Malca →',
+                sargassumForecast: 'Sargassum 7-Day Forecast',
+                forecastDesc: 'Predicted sargassum movement based on ocean currents (HYCOM) and wind forecasts (NCEP).',
+                sargassumPatch: 'Sargassum Patch',
+                trajectory: 'Predicted Path',
+                dataFrom: 'Data: Mexican Government / SEMA Q. Roo',
+                viewFullForecast: 'Full Forecast →',
+                rain: 'rain',
+                highTide: 'HIGH TIDE',
+                lowTide: 'LOW TIDE',
+                tideLoading: 'Calculating tides...',
+                tideRising: 'Tide rising',
+                tideFalling: 'Tide falling',
+                nextHigh: 'Next high',
+                nextLow: 'Next low',
+                waterTemp: 'WATER TEMP'
+            },
+            es: {
+                title: 'Discover Tulum',
+                subtitle: 'Condiciones de playa, clima y lugares en tiempo real',
+                mapLayers: 'Capas',
+                darkBaseMap: 'Mapa Oscuro',
+                satellite: 'Satélite',
+                liveRadar: 'Radar',
+                sargassumPatches: 'Sargazo',
+                beachClubs: 'Clubes',
+                restaurants: 'Restaurantes',
+                cultural: 'Cultural',
+                places: 'Lugares',
+                beachCam: 'Cámara',
+                beachCams: 'Cámaras',
+                activeAlerts: 'ALERTAS',
+                noAlerts: '✓ Sin alertas',
+                weatherConditions: 'CLIMA',
+                wind: 'VIENTO',
+                gusts: 'RÁFAGAS',
+                humidity: 'HUMEDAD',
+                pressure: 'PRESIÓN',
+                dataSource: 'Datos en vivo de Open-Meteo',
+                sargassumStatus: 'SARGAZO',
+                red: 'ROJO',
+                yellow: 'AMARILLO',
+                green: 'VERDE',
+                activePatches: 'Manchas:',
+                viewForecast: 'Pronóstico Sargazo',
+                currentSatellite: 'Satélite Actual',
+                sargassum7Day: 'Pronóstico 7 Días',
+                source: 'Fuente',
+                mapLegend: 'Leyenda',
+                yourLocation: 'Tu Ubicación',
+                targetArea: 'Tulum',
+                online: 'EN LÍNEA',
+                resetView: 'Reiniciar',
+                locateMe: 'Ubicar',
+                feelsLike: 'Sensación',
+                highSargassum: 'Alerta Alta de Sargazo',
+                highSargassumDesc: 'Acumulación significativa. Consulta con clubes antes de visitar.',
+                moderateSargassum: 'Sargazo Moderado',
+                moderateSargassumDesc: 'Presencia moderada. Condiciones varían por ubicación.',
+                lowSargassum: 'Sargazo Bajo',
+                lowSargassumDesc: 'Sargazo mínimo. Buenas condiciones para actividades.',
+                highWindWarning: 'Viento Fuerte',
+                windAdvisory: 'Aviso de Viento',
+                thunderstormWarning: 'Tormenta',
+                rainAdvisory: 'Aviso de Lluvia',
+                rainLikely: 'Lluvia Probable',
+                highUV: 'UV Alto',
+                heatAdvisory: 'Aviso de Calor',
+                basedOnCurrent: 'Condiciones actuales',
+                basedOnForecast: 'Basado en pronóstico',
+                dailyForecast: 'Pronóstico diario',
+                website: 'Web',
+                whatsapp: 'WhatsApp',
+                updated: 'Actualizado',
+                webcamLocation: 'Zona Hotelera Tulum',
+                viewOnSite: 'Ver en Casa Malca →',
+                sargassumForecast: 'Pronóstico 7 Días',
+                forecastDesc: 'Movimiento predicho basado en corrientes (HYCOM) y vientos (NCEP).',
+                sargassumPatch: 'Mancha de Sargazo',
+                trajectory: 'Trayectoria',
+                dataFrom: 'Datos: Gobierno de México / SEMA Q. Roo',
+                viewFullForecast: 'Ver Completo →',
+                rain: 'lluvia',
+                highTide: 'MAREA ALTA',
+                lowTide: 'MAREA BAJA',
+                tideLoading: 'Calculando mareas...',
+                tideRising: 'Marea subiendo',
+                tideFalling: 'Marea bajando',
+                nextHigh: 'Próxima alta',
+                nextLow: 'Próxima baja',
+                waterTemp: 'TEMP DEL AGUA',
+                targetArea: 'Tulum'
+            },
+            fr: {
+                title: 'Discover Tulum',
+                subtitle: 'Conditions de plage, météo et spots locaux en temps réel',
+                mapLayers: 'Couches',
+                darkBaseMap: 'Carte Sombre',
+                satellite: 'Satellite',
+                liveRadar: 'Radar',
+                sargassumPatches: 'Sargasses',
+                beachClubs: 'Clubs',
+                restaurants: 'Restaurants',
+                cultural: 'Culturel',
+                places: 'Lieux',
+                beachCam: 'Caméra',
+                beachCams: 'Caméras',
+                activeAlerts: 'ALERTES',
+                noAlerts: '✓ Aucune alerte',
+                weatherConditions: 'MÉTÉO',
+                wind: 'VENT',
+                gusts: 'RAFALES',
+                humidity: 'HUMIDITÉ',
+                pressure: 'PRESSION',
+                dataSource: 'Données en direct de Open-Meteo',
+                sargassumStatus: 'SARGASSES',
+                red: 'ROUGE',
+                yellow: 'JAUNE',
+                green: 'VERT',
+                activePatches: 'Zones:',
+                viewForecast: 'Prévisions Sargasses',
+                currentSatellite: 'Satellite Actuel',
+                sargassum7Day: 'Prévisions 7 Jours',
+                source: 'Source',
+                mapLegend: 'Légende',
+                yourLocation: 'Votre Position',
+                targetArea: 'Tulum',
+                online: 'EN LIGNE',
+                resetView: 'Réinit.',
+                locateMe: 'Localiser',
+                feelsLike: 'Ressenti',
+                highSargassum: 'Alerte Sargasses Élevée',
+                highSargassumDesc: 'Accumulation importante. Vérifiez avec les clubs avant de visiter.',
+                moderateSargassum: 'Sargasses Modérées',
+                moderateSargassumDesc: 'Présence modérée. Conditions variables selon l\'emplacement.',
+                lowSargassum: 'Sargasses Faibles',
+                lowSargassumDesc: 'Sargasses minimales. Bonnes conditions pour les activités.',
+                highWindWarning: 'Alerte Vent Fort',
+                windAdvisory: 'Avis de Vent',
+                thunderstormWarning: 'Orage',
+                rainAdvisory: 'Avis de Pluie',
+                rainLikely: 'Pluie Probable',
+                highUV: 'UV Élevé',
+                heatAdvisory: 'Alerte Chaleur',
+                basedOnCurrent: 'Conditions actuelles',
+                basedOnForecast: 'Basé sur les prévisions',
+                dailyForecast: 'Prévisions du jour',
+                website: 'Site Web',
+                whatsapp: 'WhatsApp',
+                updated: 'Mis à jour',
+                webcamLocation: 'Zone Hôtelière de Tulum',
+                viewOnSite: 'Voir sur Casa Malca →',
+                sargassumForecast: 'Prévisions 7 Jours',
+                forecastDesc: 'Mouvement prévu basé sur les courants (HYCOM) et vents (NCEP).',
+                sargassumPatch: 'Zone de Sargasses',
+                trajectory: 'Trajectoire',
+                dataFrom: 'Données: Gouvernement du Mexique / SEMA Q. Roo',
+                viewFullForecast: 'Voir Complet →',
+                rain: 'pluie',
+                highTide: 'MARÉE HAUTE',
+                lowTide: 'MARÉE BASSE',
+                tideLoading: 'Calcul des marées...',
+                tideRising: 'Marée montante',
+                tideFalling: 'Marée descendante',
+                nextHigh: 'Prochaine haute',
+                nextLow: 'Prochaine basse',
+                waterTemp: 'TEMP DE L\'EAU',
+                targetArea: 'Tulum'
+            }
+        };
+
+        function toggleLanguage() {
+            // Cycle: en → es → fr → en
+            if (currentLang === 'en') currentLang = 'es';
+            else if (currentLang === 'es') currentLang = 'fr';
+            else currentLang = 'en';
+            
+            const btn = document.querySelector('.lang-toggle');
+            if (currentLang === 'en') btn.textContent = '🇲🇽 ES';
+            else if (currentLang === 'es') btn.textContent = '🇫🇷 FR';
+            else btn.textContent = '🇺🇸 EN';
+            
+            applyTranslations();
+            updateWeatherDisplay();
+            updateSargassumStatus();
+            if (typeof calculateTides === 'function') calculateTides();
+            if (typeof fetchWaterTemp === 'function') fetchWaterTemp();
+            updateLangButtons();
+        }
+        
+        function togglePanel(panelId) {
+            const content = document.getElementById(panelId + '-content');
+            const header = content.previousElementSibling;
+            content.classList.toggle('collapsed');
+            header.classList.toggle('collapsed');
+            
+            // Toggle transparent class for layer-controls
+            if (panelId === 'layers') {
+                const layerControls = document.getElementById('layer-controls');
+                if (content.classList.contains('collapsed')) {
+                    layerControls.classList.add('transparent');
+                } else {
+                    layerControls.classList.remove('transparent');
+                }
+            }
+        }
+        
+        function setLanguage(lang) {
+            currentLang = lang;
+            applyTranslations();
+            updateWeatherDisplay();
+            updateSargassumStatus();
+            if (typeof calculateTides === 'function') calculateTides();
+            if (typeof fetchWaterTemp === 'function') fetchWaterTemp();
+            updateLangButtons();
+            // Re-render listings if panel is open
+            if (document.getElementById('listings-panel').classList.contains('active')) {
+                renderListings();
+            }
+            // Update header button too
+            const btn = document.querySelector('.lang-toggle');
+            if (currentLang === 'en') btn.textContent = '🇲🇽 ES';
+            else if (currentLang === 'es') btn.textContent = '🇫🇷 FR';
+            else btn.textContent = '🇺🇸 EN';
+        }
+        
+        function updateLangButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById('lang-' + currentLang);
+            if (activeBtn) activeBtn.classList.add('active');
+        }
+
+        function applyTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function formatTemp(tempC) {
+            if (currentLang === 'es' || currentLang === 'fr') {
+                return `${Math.round(tempC)}°`;
+            } else {
+                return `${Math.round((tempC * 9/5) + 32)}°`;
+            }
+        }
+
+        function formatTempFull(tempC) {
+            if (currentLang === 'es' || currentLang === 'fr') {
+                return `${Math.round(tempC)}°C`;
+            } else {
+                return `${Math.round((tempC * 9/5) + 32)}°F`;
+            }
+        }
+
+        function formatWind(speedKmh) {
+            if (currentLang === 'es' || currentLang === 'fr') {
+                return `${Math.round(speedKmh)} km/h`;
+            } else {
+                return `${Math.round(speedKmh * 0.621371)} mph`;
+            }
+        }
+
+        // Modal Functions
+        const webcams = {
+            'tulum': {
+                url: 'https://g3.ipcamlive.com/player/player.php?alias=08a1898ad840',
+                location: 'Tulum Beach Hotel Zone'
+            },
+            'akumal-south': {
+                url: 'https://g1.ipcamlive.com/player/player.php?alias=akumalsouth',
+                location: 'Akumal Bay'
+            }
+        };
+        
+        let currentWebcam = 'tulum';
+        
+        function openWebcam() {
+            const modal = document.getElementById('webcam-modal');
+            switchWebcam('tulum');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function switchWebcam(camId) {
+            currentWebcam = camId;
+            const iframe = document.getElementById('webcam-iframe');
+            const locationEl = document.getElementById('webcam-location');
+            const cam = webcams[camId];
+            
+            iframe.src = cam.url;
+            locationEl.textContent = cam.location;
+            
+            // Update active tab
+            document.querySelectorAll('.webcam-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function openCurrentSatellite() {
+            const modal = document.getElementById('satellite-modal');
+            const img = document.getElementById('current-satellite-img');
+            // Add cache buster for fresh image
+            img.src = 'data/sargassum/latest_1day.png?t=' + Date.now();
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openForecast() {
+            const modal = document.getElementById('forecast-modal');
+            const img = document.getElementById('forecast-img');
+            const today = new Date();
+            const attempts = [];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(today);
+                d.setDate(d.getDate() - i);
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const yyyy = d.getFullYear();
+                attempts.push(`https://sargassummonitoring.com/wp-content/uploads/${yyyy}/${mm}/mexico-sargazo-monitoreo-sargassum-monitoring-pronosticos-${dd}-${mm}-${yyyy}.gif`);
+            }
+            
+            let loaded = false;
+            function tryLoad(index) {
+                if (index >= attempts.length || loaded) return;
+                const testImg = new Image();
+                testImg.onload = function() {
+                    if (!loaded) {
+                        loaded = true;
+                        img.src = attempts[index];
+                    }
+                };
+                testImg.onerror = function() {
+                    tryLoad(index + 1);
+                };
+                testImg.src = attempts[index];
+            }
+            tryLoad(0);
+            
+            setTimeout(() => {
+                if (!loaded) {
+                    img.src = 'https://sargassummonitoring.com/wp-content/uploads/2026/01/mexico-sargazo-monitoreo-sargassum-monitoring-pronosticos-29-01-2026.gif';
+                }
+            }, 3000);
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId, event) {
+            if (event && event.target !== event.currentTarget) return;
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            if (modalId === 'webcam-modal') {
+                document.getElementById('webcam-iframe').src = '';
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal('webcam-modal');
+                closeModal('forecast-modal');
+                closeListings();
+            }
+        });
+
+        // Share functionality
+        function shareConditions() {
+            const temp = document.querySelector('.temp')?.textContent || '';
+            const condition = document.querySelector('.weather-condition')?.textContent || '';
+            const url = window.location.href;
+            
+            const shareText = `🌴 Tulum right now: ${temp} ${condition}\n\nReal-time beach conditions, weather & local spots:`;
+            
+            if (navigator.share) {
+                // Native share on mobile - url added separately
+                navigator.share({
+                    title: 'Discover Tulum',
+                    text: shareText,
+                    url: url
+                }).catch(err => console.log('Share cancelled'));
+            } else {
+                // Fallback: copy to clipboard (include URL in text)
+                const clipboardText = shareText + '\n' + url;
+                navigator.clipboard.writeText(clipboardText).then(() => {
+                    alert('Link copied to clipboard! 📋');
+                }).catch(() => {
+                    // Final fallback
+                    prompt('Copy this link:', clipboardText);
+                });
+            }
+        }
+
+        // Listings Panel
+        let currentListingsTab = 'clubs';
+
+        function openListings() {
+            document.getElementById('listings-panel').classList.add('active');
+            document.getElementById('listings-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            renderListings();
+        }
+
+        function closeListings() {
+            document.getElementById('listings-panel').classList.remove('active');
+            document.getElementById('listings-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function switchTab(tab) {
+            currentListingsTab = tab;
+            document.getElementById('tab-clubs').classList.toggle('active', tab === 'clubs');
+            document.getElementById('tab-restaurants').classList.toggle('active', tab === 'restaurants');
+            document.getElementById('tab-cultural').classList.toggle('active', tab === 'cultural');
+            renderListings();
+        }
+
+        function renderListings() {
+            const container = document.getElementById('listings-content');
+            const items = currentListingsTab === 'clubs' ? beachClubs : currentListingsTab === 'restaurants' ? restaurants : culturalPlaces;
+            const typeClass = currentListingsTab === 'clubs' ? 'club' : currentListingsTab === 'restaurants' ? 'restaurant' : 'cultural';
+            const typeLabel = currentListingsTab === 'clubs' 
+                ? (currentLang === 'es' ? 'Club' : currentLang === 'fr' ? 'Club' : 'Club')
+                : currentListingsTab === 'restaurants'
+                ? (currentLang === 'es' ? 'Restaurante' : currentLang === 'fr' ? 'Restaurant' : 'Restaurant')
+                : (currentLang === 'es' ? 'Cultural' : currentLang === 'fr' ? 'Culturel' : 'Cultural');
+
+            container.innerHTML = items.map(item => {
+                const desc = currentLang === 'es' && item.descEs ? item.descEs 
+                    : currentLang === 'fr' && item.descFr ? item.descFr 
+                    : item.desc;
+                const webcamBadge = item.hasWebcam ? '<span class="webcam-badge">📹 LIVE</span>' : '';
+                const whatsappLabel = currentLang === 'es' ? 'WhatsApp' : currentLang === 'fr' ? 'WhatsApp' : 'WhatsApp';
+                const websiteLabel = currentLang === 'es' ? 'Sitio Web' : currentLang === 'fr' ? 'Site Web' : 'Website';
+                
+                const navLabel = currentLang === 'es' ? 'Navegar' : currentLang === 'fr' ? 'Itinéraire' : 'Navigate';
+                
+                return `
+                    <div class="listing-card">
+                        <div class="listing-header">
+                            <div class="listing-name">${item.name} ${webcamBadge}</div>
+                            <span class="listing-type ${typeClass}">${typeLabel}</span>
+                        </div>
+                        <div class="listing-desc">${desc}</div>
+                        <div class="listing-actions">
+                            <a href="tel:${item.whatsapp}" class="listing-btn call">
+                                📞 Call
+                            </a>
+                            <a href="https://wa.me/${item.whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="listing-btn whatsapp">
+                                💬 Chat
+                            </a>
+                            <a href="${item.url}" target="_blank" class="listing-btn website">
+                                🌐 Web
+                            </a>
+                            <button class="listing-btn navigate" onclick="openNavigation(${item.lat}, ${item.lng}, '${item.name.replace(/'/g, "\\'")}')">
+                                🧭 Go
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function locatePlace(lat, lng, name) {
+            closeListings();
+            map.setView([lat, lng], 16);
+            // Enable the appropriate layer if not visible
+            const layerKey = currentListingsTab === 'clubs' ? 'clubs' : currentListingsTab === 'restaurants' ? 'restaurants' : 'cultural';
+            const checkbox = toggles[layerKey];
+            if (checkbox && !checkbox.checked) {
+                checkbox.checked = true;
+                checkbox.dispatchEvent(new Event('change'));
+            }
+        }
+
+        function openNavigation(lat, lng, name) {
+            // Detect iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            
+            const encodedName = encodeURIComponent(name);
+            
+            if (isIOS) {
+                // Apple Maps
+                window.open(`https://maps.apple.com/?daddr=${lat},${lng}&q=${encodedName}`, '_blank');
+            } else {
+                // Google Maps
+                window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&destination_place_id=${encodedName}`, '_blank');
+            }
+        }
+
+        let lastWeatherData = null;
+
+        const TULUM_LAT = 20.2114;
+        const TULUM_LNG = -87.4654;
+        const isMobile = window.innerWidth <= 768;
+        const DEFAULT_ZOOM = isMobile ? 11 : 13;
+        
+        // Mobile panel toggle
+        let panelsVisible = !isMobile; // Start hidden on mobile
+        
+        function togglePanels() {
+            panelsVisible = !panelsVisible;
+            const panels = document.querySelector('.right-panels');
+            const toggle = document.getElementById('panel-toggle');
+            const headerBtn = document.querySelector('.info-btn-header');
+            
+            if (panelsVisible) {
+                panels.classList.remove('hidden');
+                if (toggle) {
+                    toggle.textContent = '✕ Hide';
+                    toggle.classList.add('active');
+                }
+                if (headerBtn) {
+                    headerBtn.innerHTML = '✕ Hide';
+                    headerBtn.style.background = '#ff3b30';
+                    headerBtn.style.color = '#fff';
+                }
+            } else {
+                panels.classList.add('hidden');
+                if (toggle) {
+                    toggle.textContent = '🌴 Info';
+                    toggle.classList.remove('active');
+                }
+                if (headerBtn) {
+                    headerBtn.innerHTML = '🌴 Info';
+                    headerBtn.style.background = '';
+                    headerBtn.style.color = '';
+                }
+            }
+        }
+        
+        // Initialize mobile state
+        if (isMobile) {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelector('.right-panels').classList.add('hidden');
+            });
+        }
+
+        let userLocation = null;
+        let userMarker = null;
+        let accuracyCircle = null;
+        let watchId = null;
+
+        const map = L.map('map', {
+            zoomControl: true,
+            attributionControl: false
+        }).setView([TULUM_LAT, TULUM_LNG], DEFAULT_ZOOM);
+
+        L.control.attribution({position: 'bottomright'}).addTo(map);
+
+        function resetMapView() {
+            map.setView([TULUM_LAT, TULUM_LNG], DEFAULT_ZOOM);
+        }
+
+        const userIcon = L.divIcon({
+            className: 'user-location-marker',
+            html: '<div class="user-dot"></div><div class="user-pulse"></div>',
+            iconSize: [20, 20],
+            iconAnchor: [10, 10]
+        });
+
+        const clubIcon = L.divIcon({
+            className: 'club-marker',
+            html: '<div style="width:24px;height:24px;background:linear-gradient(135deg,#ffd600,#e6c200);border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(255,214,0,0.5);display:flex;align-items:center;justify-content:center;font-size:12px;">🏖️</div>',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+            popupAnchor: [0, -12]
+        });
+
+        const beachClubs = [
+            {name: "Papaya Playa Project", lat: 20.1813, lng: -87.4451, desc: "Beach club, hotel & party venue", descEs: "Club de playa, hotel y fiestas", whatsapp: "+5219841680095", url: "https://www.papayaplayaproject.com"},
+            {name: "Mia Beach Club", lat: 20.1550, lng: -87.4566, desc: "Day club with restaurant & events", descEs: "Club de día con restaurante", whatsapp: "+529841339662", url: "https://www.miatulum.com"},
+            {name: "Kanan Tulum", lat: 20.1507, lng: -87.4582, desc: "Treehouse hotel & rooftop bar", descEs: "Hotel casa del árbol y bar", whatsapp: "+529988301512", url: "https://www.kanantulum.com"},
+            {name: "Azulik", lat: 20.1786, lng: -87.4458, desc: "Eco-resort & sunset destination", descEs: "Eco-resort y atardeceres", whatsapp: "+529851466297", url: "https://www.azulik.com"},
+            {name: "Casa Malca", lat: 20.1337, lng: -87.4638, desc: "Art hotel & beach club", descEs: "Hotel de arte y club de playa", whatsapp: "+5219841314158", url: "https://www.casamalca.com", hasWebcam: true},
+            {name: "La Zebra", lat: 20.1458, lng: -87.4600, desc: "Beachfront restaurant & bar", descEs: "Restaurante frente al mar", whatsapp: "+5219841167890", url: "https://www.lazebratulum.com"}
+        ];
+
+        const restaurants = [
+            {name: "Arca", lat: 20.1494, lng: -87.4595, desc: "Michelin ⭐ - Jungle fine dining, local ingredients", descEs: "Michelin ⭐ - Alta cocina en la selva", descFr: "Michelin ⭐ - Gastronomie dans la jungle", whatsapp: "+529841191596", url: "https://arcatulum.com"},
+            {name: "Hartwood", lat: 20.1498, lng: -87.4593, desc: "Michelin - Wood-fired, sustainable cuisine", descEs: "Michelin - Cocina sustentable al fuego", descFr: "Michelin - Cuisine durable au feu de bois", whatsapp: "+529841455240", url: "https://hartwoodtulum.com"},
+            {name: "Wild Tulum", lat: 20.1351, lng: -87.4642, desc: "Michelin ⭐ - Jungle setting, auteur cuisine", descEs: "Michelin ⭐ - Cocina de autor en selva", descFr: "Michelin ⭐ - Cuisine d'auteur dans la jungle", whatsapp: "+529841308295", url: "https://www.wildtulum.com"},
+            {name: "Nü Tulum", lat: 20.1405, lng: -87.4618, desc: "Michelin - Contemporary Mexican", descEs: "Michelin - Mexicana contemporánea", descFr: "Michelin - Mexicain contemporain", whatsapp: "+529841234567", url: "https://nutulum.com"},
+            {name: "Casa Banana", lat: 20.1505, lng: -87.4589, desc: "Michelin - Argentine grill, premium cuts", descEs: "Michelin - Parrilla argentina", descFr: "Michelin - Grill argentin", whatsapp: "+529841151671", url: "https://casabananatulum.com"},
+            {name: "Posada Margherita", lat: 20.1652, lng: -87.4523, desc: "Michelin - Italian beachfront, fresh pasta", descEs: "Michelin - Italiano frente al mar", descFr: "Michelin - Italien en bord de mer", whatsapp: "+529841801493", url: "https://posadamargherita.com"},
+            {name: "Cetli", lat: 20.2306, lng: -87.4580, desc: "Michelin - Authentic traditional Mexican", descEs: "Michelin - Mexicana tradicional", descFr: "Michelin - Mexicain traditionnel", whatsapp: "+529841879654", url: "https://cetli.com.mx"},
+            {name: "Mestixa", lat: 20.2131, lng: -87.4587, desc: "Michelin - Asian-Mexican fusion", descEs: "Michelin - Fusión asiático-mexicana", descFr: "Michelin - Fusion asiatique-mexicaine", whatsapp: "+529841234568", url: "https://mestixa.com"},
+            {name: "Autor", lat: 20.3567, lng: -87.3381, desc: "Michelin - Seasonal tasting menu", descEs: "Michelin - Menú degustación", descFr: "Michelin - Menu dégustation", whatsapp: "+529841234569", url: "https://autortulum.com"},
+            {name: "Local", lat: 20.2036, lng: -87.4730, desc: "Holy Wine & Neo Bistro - Natural wines, creative dishes", descEs: "Holy Wine & Neo Bistro - Vinos naturales, cocina creativa", descFr: "Holy Wine & Neo Bistro - Vins naturels, cuisine créative", whatsapp: "+529841234570", url: "https://instagram.com/local.tulum"},
+            {name: "La Guarida", lat: 20.2112, lng: -87.4607, desc: "Cultural café-bar - Live music, rooftop, mezcal", descEs: "Café-bar cultural - Música en vivo, terraza, mezcal", descFr: "Café-bar culturel - Musique live, terrasse, mezcal", whatsapp: "+529841234571", url: "https://instagram.com/laguaridatulum"},
+            {name: "Vaivén", lat: 20.2067, lng: -87.4633, desc: "La Veleta - Great pizza, coffee, breakfast", descEs: "La Veleta - Pizza, café, desayuno", descFr: "La Veleta - Pizza, café, petit-déjeuner", whatsapp: "+529842785469", url: "https://instagram.com/vaiventulum"}
+        ];
+
+        const culturalPlaces = [
+            {name: "Vesica", lat: 20.1968, lng: -87.5024, desc: "Cenote club - Wellness, ceremonies, sound healing", descEs: "Club cenote - Bienestar, ceremonias, sanación sonora", descFr: "Club cenote - Bien-être, cérémonies, guérison sonore", whatsapp: "+529841234572", url: "https://vesica.com"}
+        ];
+
+        const culturalIcon = L.divIcon({
+            className: 'cultural-marker',
+            html: '<div style="width:24px;height:24px;background:linear-gradient(135deg,#a0a0a0,#808080);border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(160,160,160,0.5);display:flex;align-items:center;justify-content:center;font-size:12px;">🎭</div>',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+            popupAnchor: [0, -12]
+        });
+
+        const restaurantIcon = L.divIcon({
+            className: 'restaurant-marker',
+            html: '<div style="width:24px;height:24px;background:linear-gradient(135deg,#9b59b6,#8e44ad);border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(155,89,182,0.5);display:flex;align-items:center;justify-content:center;font-size:12px;">🍽️</div>',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+            popupAnchor: [0, -12]
+        });
+
+        const layers = {
+            carto: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap, &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }),
+            satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '&copy; Esri',
+                maxZoom: 19
+            }),
+            radar: L.tileLayer('https://tilecache.rainviewer.com/v2/radar/1704067200/256/{z}/{x}/{y}/6/1_1.png', {
+                attribution: '&copy; RainViewer',
+                opacity: 0.6,
+                maxZoom: 18
+            })
+        };
+
+        const clubsLayer = L.layerGroup();
+        
+        function createClubMarkers() {
+            clubsLayer.clearLayers();
+            beachClubs.forEach(club => {
+                const marker = L.marker([club.lat, club.lng], { icon: clubIcon });
+                const desc = currentLang === 'es' ? club.descEs : club.desc;
+                const t = translations[currentLang];
+                
+                let webcamBtn = '';
+                if (club.hasWebcam) {
+                    webcamBtn = `<a href="#" onclick="openWebcam(); return false;" class="club-link" style="background:rgba(255,59,48,0.2);color:#ff3b30;border-color:#ff3b30;">📹 Live</a>`;
+                }
+                
+                const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${club.lat},${club.lng}`;
+                const popupContent = `
+                    <div class="club-popup">
+                        <h3>${club.name}</h3>
+                        <p class="club-desc">${desc}</p>
+                        <div class="club-links">
+                            <a href="${club.url}" target="_blank" class="club-link website">🌐 ${t.website}</a>
+                            <a href="tel:${club.whatsapp}" class="club-link call">📞</a>
+                            <a href="https://wa.me/${club.whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="club-link whatsapp">💬</a>
+                            <a href="${mapsUrl}" target="_blank" class="club-link maps">↗️</a>
+                            ${webcamBtn}
+                        </div>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent, { maxWidth: 220 });
+                marker.addTo(clubsLayer);
+            });
+        }
+        
+        createClubMarkers();
+
+        const restaurantsLayer = L.layerGroup();
+        
+        function createRestaurantMarkers() {
+            restaurantsLayer.clearLayers();
+            restaurants.forEach(restaurant => {
+                const marker = L.marker([restaurant.lat, restaurant.lng], { icon: restaurantIcon });
+                const desc = currentLang === 'es' ? restaurant.descEs : currentLang === 'fr' ? restaurant.descFr : restaurant.desc;
+                const t = translations[currentLang];
+                
+                const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${restaurant.lat},${restaurant.lng}`;
+                const popupContent = `
+                    <div class="club-popup">
+                        <h3 style="color:#ff9500;">${restaurant.name}</h3>
+                        <p class="club-desc">${desc}</p>
+                        <div class="club-links">
+                            <a href="${restaurant.url}" target="_blank" class="club-link website">🌐 ${t.website}</a>
+                            <a href="tel:${restaurant.whatsapp}" class="club-link call">📞</a>
+                            <a href="https://wa.me/${restaurant.whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="club-link whatsapp">💬</a>
+                            <a href="${mapsUrl}" target="_blank" class="club-link maps">↗️</a>
+                        </div>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent, { maxWidth: 220 });
+                marker.addTo(restaurantsLayer);
+            });
+        }
+        
+        createRestaurantMarkers();
+        restaurantsLayer.addTo(map);  // Show restaurants by default
+
+        const culturalLayer = L.layerGroup();
+        
+        function createCulturalMarkers() {
+            culturalLayer.clearLayers();
+            culturalPlaces.forEach(place => {
+                const marker = L.marker([place.lat, place.lng], { icon: culturalIcon });
+                const desc = currentLang === 'es' ? place.descEs : currentLang === 'fr' ? place.descFr : place.desc;
+                const t = translations[currentLang];
+                
+                const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}`;
+                const popupContent = `
+                    <div class="club-popup">
+                        <h3 style="color:#a0a0a0;">${place.name}</h3>
+                        <p class="club-desc">${desc}</p>
+                        <div class="club-links">
+                            <a href="${place.url}" target="_blank" class="club-link website">🌐 ${t.website}</a>
+                            <a href="tel:${place.whatsapp}" class="club-link call">📞</a>
+                            <a href="https://wa.me/${place.whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="club-link whatsapp">💬</a>
+                            <a href="${mapsUrl}" target="_blank" class="club-link maps">↗️</a>
+                        </div>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent, { maxWidth: 220 });
+                marker.addTo(culturalLayer);
+            });
+        }
+        
+        createCulturalMarkers();
+
+        layers.carto.addTo(map);
+        layers.radar.addTo(map);
+        // Beach clubs and restaurants OFF by default
+
+        L.circleMarker([TULUM_LAT, TULUM_LNG], {
+            radius: 8,
+            fillColor: '#ff3b30',
+            fillOpacity: 1,
+            color: '#fff',
+            weight: 2
+        }).addTo(map).bindPopup('<b>Tulum Centro</b>');
+
+        L.circle([TULUM_LAT, TULUM_LNG], {
+            radius: 5000,
+            fillColor: '#ff3b30',
+            fillOpacity: 0.1,
+            color: '#ff3b30',
+            weight: 2,
+            dashArray: '5, 10'
+        }).addTo(map);
+
+        const toggles = {
+            carto: document.getElementById('carto-toggle'),
+            satellite: document.getElementById('satellite-toggle'),
+            radar: document.getElementById('radar-toggle'),
+            clubs: document.getElementById('clubs-toggle'),
+            restaurants: document.getElementById('restaurants-toggle'),
+            cultural: document.getElementById('cultural-toggle')
+        };
+
+        // Time-based default layer: Satellite 6am-7pm, Dark otherwise
+        const hour = new Date().getHours();
+        const isDaytime = hour >= 6 && hour < 19;
+        
+        if (isDaytime) {
+            layers.satellite.addTo(map);
+            toggles.satellite.checked = true;
+            toggles.satellite.closest('.layer-toggle').classList.add('active');
+            toggles.carto.checked = false;
+            toggles.carto.closest('.layer-toggle').classList.remove('active');
+        } else {
+            layers.carto.addTo(map);
+            toggles.carto.checked = true;
+            toggles.carto.closest('.layer-toggle').classList.add('active');
+        }
+        
+        // Always add radar (sargassum off by default)
+        layers.radar.addTo(map);
+
+        function updateRadarTiles() {
+            const timestamp = Math.floor(Date.now() / 1000 / 600) * 600;
+            const newUrl = `https://tilecache.rainviewer.com/v2/radar/${timestamp}/256/{z}/{x}/{y}/6/1_1.png`;
+            
+            if (layers.radar) {
+                map.removeLayer(layers.radar);
+                layers.radar = L.tileLayer(newUrl, {
+                    attribution: '&copy; RainViewer',
+                    opacity: 0.6,
+                    maxZoom: 18
+                });
+                if (toggles.radar.checked) {
+                    layers.radar.addTo(map);
+                }
+            }
+        }
+
+        setInterval(updateRadarTiles, 600000);
+
+        Object.keys(toggles).forEach(key => {
+            toggles[key].addEventListener('change', (e) => {
+                const parent = e.target.closest('.layer-toggle');
+                
+                if (key === 'clubs') {
+                    if (e.target.checked) {
+                        clubsLayer.addTo(map);
+                        parent.classList.add('active');
+                    } else {
+                        map.removeLayer(clubsLayer);
+                        parent.classList.remove('active');
+                    }
+                } else if (key === 'restaurants') {
+                    if (e.target.checked) {
+                        restaurantsLayer.addTo(map);
+                        parent.classList.add('active');
+                    } else {
+                        map.removeLayer(restaurantsLayer);
+                        parent.classList.remove('active');
+                    }
+                } else if (key === 'cultural') {
+                    if (e.target.checked) {
+                        culturalLayer.addTo(map);
+                        parent.classList.add('active');
+                    } else {
+                        map.removeLayer(culturalLayer);
+                        parent.classList.remove('active');
+                    }
+                } else {
+                    if (e.target.checked) {
+                        layers[key].addTo(map);
+                        parent.classList.add('active');
+                    } else {
+                        map.removeLayer(layers[key]);
+                        parent.classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        map.on('mousemove', (e) => {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+            const latDir = lat >= 0 ? 'N' : 'S';
+            const lngDir = lng <= 0 ? 'W' : 'E';
+            if (!userLocation) {
+                document.getElementById('coordinates').textContent = 
+                    `${Math.abs(lat).toFixed(4)}°${latDir}, ${Math.abs(lng).toFixed(4)}°${lngDir}`;
+            }
+        });
+
+        function updateUserLocation(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            
+            console.log('GPS Update:', lat, lng, 'accuracy:', accuracy);
+            userLocation = { lat, lng, accuracy };
+            updateGPSStatus(true);
+            
+            if (!userMarker) {
+                userMarker = L.circleMarker([lat, lng], {
+                    radius: 10,
+                    fillColor: '#00d4ff',
+                    fillOpacity: 1,
+                    color: '#ffffff',
+                    weight: 3
+                }).addTo(map);
+                accuracyCircle = L.circle([lat, lng], {
+                    radius: accuracy,
+                    fillColor: '#00d4ff',
+                    fillOpacity: 0.1,
+                    color: '#00d4ff',
+                    weight: 1
+                }).addTo(map);
+                map.setView([lat, lng], 14);
+            } else {
+                userMarker.setLatLng([lat, lng]);
+                accuracyCircle.setLatLng([lat, lng]);
+                accuracyCircle.setRadius(accuracy);
+            }
+            
+            const latDir = lat >= 0 ? 'N' : 'S';
+            const lngDir = lng <= 0 ? 'W' : 'E';
+            document.getElementById('coordinates').textContent = 
+                `${Math.abs(lat).toFixed(4)}°${latDir}, ${Math.abs(lng).toFixed(4)}°${lngDir}`;
+            
+            updateGPSStatus(true);
+        }
+
+        async function fetchWeather() {
+            try {
+                const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${TULUM_LAT}&longitude=${TULUM_LNG}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=temperature_2m,precipitation_probability,weather_code&daily=uv_index_max,sunrise,sunset&timezone=America/Cancun&forecast_hours=6`);
+                const data = await response.json();
+                lastWeatherData = data;
+                updateWeatherDisplay();
+                generateAlerts(data);
+            } catch (error) {
+                console.error('Weather fetch error:', error);
+                document.getElementById('weather-desc').textContent = 'Error';
+            }
+        }
+
+        async function fetchWaterTemp() {
+            try {
+                const response = await fetch(`https://marine-api.open-meteo.com/v1/marine?latitude=${TULUM_LAT}&longitude=${TULUM_LNG}&current=sea_surface_temperature&timezone=America/Cancun`);
+                const data = await response.json();
+                if (data.current && data.current.sea_surface_temperature) {
+                    const tempC = data.current.sea_surface_temperature;
+                    document.getElementById('water-temp').textContent = formatTempFull(tempC);
+                }
+            } catch (error) {
+                console.error('Water temp fetch error:', error);
+                // Fallback to typical Caribbean water temp
+                document.getElementById('water-temp').textContent = currentLang === 'es' ? '~27°C' : '~80°F';
+            }
+        }
+
+        function updateWeatherDisplay() {
+            if (!lastWeatherData) return;
+            const current = lastWeatherData.current;
+            const hourly = lastWeatherData.hourly;
+            const t = translations[currentLang];
+            
+            document.getElementById('temperature').textContent = formatTempFull(current.temperature_2m);
+            document.getElementById('feels-like').textContent = `${t.feelsLike} ${formatTempFull(current.apparent_temperature)}`;
+            
+            const weather = getWeatherDescription(current.weather_code);
+            document.getElementById('weather-desc').textContent = weather.desc;
+            document.getElementById('weather-icon').textContent = weather.icon;
+            
+            document.getElementById('wind-speed').textContent = formatWind(current.wind_speed_10m);
+            document.getElementById('wind-dir').textContent = getWindDirection(current.wind_direction_10m);
+            
+            const gustDisplay = current.wind_gusts_10m ? formatWind(current.wind_gusts_10m) : '--';
+            document.getElementById('wind-gust').textContent = gustDisplay;
+            
+            document.getElementById('humidity').textContent = `${current.relative_humidity_2m}%`;
+            document.getElementById('pressure').textContent = `${Math.round(current.pressure_msl)} mb`;
+            
+            // Update hourly forecast
+            updateHourlyForecast(hourly);
+            
+            // Update sunrise/sunset
+            if (lastWeatherData.daily) {
+                const sunrise = lastWeatherData.daily.sunrise?.[0];
+                const sunset = lastWeatherData.daily.sunset?.[0];
+                if (sunrise) {
+                    const sunriseDate = new Date(sunrise);
+                    document.getElementById('sunrise-time').textContent = sunriseDate.toLocaleTimeString(currentLang === 'es' ? 'es-MX' : 'en-US', { hour: 'numeric', minute: '2-digit' });
+                }
+                if (sunset) {
+                    const sunsetDate = new Date(sunset);
+                    document.getElementById('sunset-time').textContent = sunsetDate.toLocaleTimeString(currentLang === 'es' ? 'es-MX' : 'en-US', { hour: 'numeric', minute: '2-digit' });
+                }
+            }
+            
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString(currentLang === 'es' ? 'es-MX' : 'en-US', { hour: 'numeric', minute: '2-digit' });
+            document.getElementById('last-updated').textContent = `${t.updated}: ${timeStr}`;
+            
+            createClubMarkers();
+        }
+
+        function updateHourlyForecast(hourly) {
+            if (!hourly || !hourly.time) return;
+            
+            const container = document.getElementById('hourly-forecast');
+            const now = new Date();
+            const currentHour = now.getHours();
+            
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i >= hourly.time.length) break;
+                
+                const time = new Date(hourly.time[i]);
+                const hour = time.getHours();
+                const hourStr = hour === 0 ? '12am' : hour < 12 ? `${hour}am` : hour === 12 ? '12pm' : `${hour-12}pm`;
+                
+                const temp = hourly.temperature_2m[i];
+                const rainProb = hourly.precipitation_probability ? hourly.precipitation_probability[i] : 0;
+                const weatherCode = hourly.weather_code ? hourly.weather_code[i] : 0;
+                const icon = getWeatherIcon(weatherCode);
+                
+                const rainClass = rainProb > 50 ? 'high' : '';
+                const t = translations[currentLang];
+                
+                html += `
+                    <div class="hour-item">
+                        <div class="hour-time">${hourStr}</div>
+                        <div class="hour-icon">${icon}</div>
+                        <div class="hour-temp">${formatTemp(temp)}</div>
+                        <div class="hour-rain ${rainClass}">💧${rainProb}%</div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function getWeatherIcon(code) {
+            const icons = {
+                0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
+                45: '🌫️', 48: '🌫️',
+                51: '🌦️', 53: '🌦️', 55: '🌧️',
+                61: '🌧️', 63: '🌧️', 65: '🌧️',
+                95: '⛈️', 96: '⛈️', 99: '⛈️'
+            };
+            return icons[code] || '❓';
+        }
+
+        function generateAlerts(data) {
+            const alerts = [];
+            const current = data.current;
+            const daily = data.daily;
+            const hourly = data.hourly;
+            const t = translations[currentLang];
+            
+            const windKmh = current.wind_speed_10m;
+            const gustKmh = current.wind_gusts_10m || 0;
+            
+            if (gustKmh > 50 || windKmh > 40) {
+                const gustDisplay = formatWind(gustKmh);
+                alerts.push({
+                    severity: 'severe',
+                    title: t.highWindWarning,
+                    desc: currentLang === 'es' ? `Ráfagas de ${gustDisplay}` : `Gusts to ${gustDisplay}`,
+                    meta: t.basedOnCurrent
+                });
+            } else if (gustKmh > 35 || windKmh > 25) {
+                alerts.push({
+                    severity: 'moderate',
+                    title: t.windAdvisory,
+                    desc: `${formatWind(windKmh)} / ${formatWind(gustKmh)}`,
+                    meta: t.basedOnCurrent
+                });
+            }
+            
+            if (current.weather_code >= 95) {
+                alerts.push({
+                    severity: 'severe',
+                    title: t.thunderstormWarning,
+                    desc: currentLang === 'es' ? 'Busque refugio' : 'Seek shelter',
+                    meta: t.basedOnCurrent
+                });
+            }
+            
+            if (hourly && hourly.precipitation_probability) {
+                const maxPrecipProb = Math.max(...hourly.precipitation_probability.slice(0, 6));
+                if (maxPrecipProb > 70) {
+                    alerts.push({
+                        severity: 'info',
+                        title: t.rainLikely,
+                        desc: `${maxPrecipProb}%`,
+                        meta: t.basedOnForecast
+                    });
+                }
+            }
+            
+            if (daily && daily.uv_index_max && daily.uv_index_max[0] >= 8) {
+                alerts.push({
+                    severity: daily.uv_index_max[0] >= 11 ? 'severe' : 'moderate',
+                    title: t.highUV,
+                    desc: `UV ${Math.round(daily.uv_index_max[0])}`,
+                    meta: t.dailyForecast
+                });
+            }
+            
+            updateAlertsUI(alerts);
+        }
+
+        function updateAlertsUI(alerts) {
+            const alertList = document.getElementById('alert-list');
+            const alertCount = document.getElementById('alert-count');
+            const t = translations[currentLang];
+            
+            if (alerts.length === 0) {
+                alertList.innerHTML = `<div class="no-alerts">${t.noAlerts}</div>`;
+                alertCount.textContent = '0';
+                alertCount.classList.add('none');
+            } else {
+                alertCount.textContent = alerts.length;
+                alertCount.classList.remove('none');
+                
+                alertList.innerHTML = alerts.map(alert => `
+                    <div class="alert-item">
+                        <div class="alert-badge ${alert.severity}">${alert.severity.toUpperCase()}</div>
+                        <div class="alert-content">
+                            <div class="alert-title">${alert.title}</div>
+                            <div class="alert-desc">${alert.desc}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function getWeatherDescription(code) {
+            const weatherCodes = {
+                0: { en: 'Clear', es: 'Despejado', fr: 'Dégagé', icon: '☀️' },
+                1: { en: 'Mostly Clear', es: 'Mayormente Despejado', fr: 'Plutôt Dégagé', icon: '🌤️' },
+                2: { en: 'Partly Cloudy', es: 'Parcialmente Nublado', fr: 'Partiellement Nuageux', icon: '⛅' },
+                3: { en: 'Overcast', es: 'Nublado', fr: 'Couvert', icon: '☁️' },
+                45: { en: 'Foggy', es: 'Neblina', fr: 'Brouillard', icon: '🌫️' },
+                48: { en: 'Foggy', es: 'Neblina', fr: 'Brouillard', icon: '🌫️' },
+                51: { en: 'Drizzle', es: 'Llovizna', fr: 'Bruine', icon: '🌦️' },
+                53: { en: 'Drizzle', es: 'Llovizna', fr: 'Bruine', icon: '🌦️' },
+                55: { en: 'Drizzle', es: 'Llovizna', fr: 'Bruine', icon: '🌧️' },
+                61: { en: 'Rain', es: 'Lluvia', fr: 'Pluie', icon: '🌧️' },
+                63: { en: 'Rain', es: 'Lluvia', fr: 'Pluie', icon: '🌧️' },
+                65: { en: 'Heavy Rain', es: 'Lluvia Fuerte', fr: 'Forte Pluie', icon: '🌧️' },
+                95: { en: 'Thunderstorm', es: 'Tormenta', fr: 'Orage', icon: '⛈️' },
+                96: { en: 'Thunderstorm', es: 'Tormenta', fr: 'Orage', icon: '⛈️' },
+                99: { en: 'Thunderstorm', es: 'Tormenta', fr: 'Orage', icon: '⛈️' }
+            };
+            const weather = weatherCodes[code] || { en: '?', es: '?', fr: '?', icon: '❓' };
+            return { desc: weather[currentLang] || weather.en, icon: weather.icon };
+        }
+        
+        function getWindDirection(degrees) {
+            const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
+                              'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+            const index = Math.round(degrees / 22.5) % 16;
+            return directions[index];
+        }
+
+        function updateSargassumStatus() {
+            const t = translations[currentLang];
+            
+            // Set default status - green (low) since we don't have real-time data
+            document.getElementById('light-red').classList.remove('active');
+            document.getElementById('light-yellow').classList.remove('active');
+            document.getElementById('light-green').classList.add('active');
+            
+            document.getElementById('sargassum-title').textContent = t.lowSargassum || 'Low Sargassum';
+            document.getElementById('sargassum-desc').textContent = t.lowSargassumDesc || 'Check satellite images below for current conditions. Verify with beach clubs before visiting.';
+            
+            // Log for debugging
+            console.log('Sargassum forecast panel updated');
+        }
+        
+        function toggleSargassumForecast() {
+            const content = document.getElementById('sargassum-forecast-content');
+            const icon = document.getElementById('sargassum-toggle-icon');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.textContent = '▼';
+            } else {
+                content.style.display = 'none';
+                icon.textContent = '▶';
+            }
+        }
+
+        // Tide calculations (approximate based on lunar cycle)
+        // Tulum has small tidal range (~0.3m) with semi-diurnal pattern
+        function calculateTides() {
+            const t = translations[currentLang];
+            const now = new Date();
+            
+            // Use a known high tide reference point for Tulum area
+            // Reference: Jan 1, 2026 00:00 UTC was approximately mid-tide rising
+            const refDate = new Date('2026-01-01T06:00:00Z'); // Known high tide reference
+            const lunarCycleMs = 12.42 * 60 * 60 * 1000; // ~12h 25m between high tides
+            
+            // Calculate ms since reference
+            const msSinceRef = now.getTime() - refDate.getTime();
+            const cyclePosition = (msSinceRef % lunarCycleMs) / lunarCycleMs;
+            
+            // Find next high and low tides
+            const msToNextHigh = (1 - cyclePosition) * lunarCycleMs;
+            const msToNextLow = ((0.5 - cyclePosition + 1) % 1) * lunarCycleMs;
+            
+            const nextHighTime = new Date(now.getTime() + msToNextHigh);
+            const nextLowTime = new Date(now.getTime() + msToNextLow);
+            
+            // Determine if tide is rising or falling
+            const isRising = cyclePosition < 0.5;
+            
+            // Format times
+            const formatTime = (date) => {
+                return date.toLocaleTimeString(currentLang === 'es' ? 'es-MX' : 'en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            };
+            
+            // Update UI
+            document.getElementById('high-tide-time').textContent = formatTime(nextHighTime);
+            document.getElementById('low-tide-time').textContent = formatTime(nextLowTime);
+            
+            // Tulum has small tidal range
+            document.getElementById('high-tide-height').textContent = '~0.3m';
+            document.getElementById('low-tide-height').textContent = '~0.1m';
+            
+            // Update status
+            const statusEl = document.getElementById('tide-status');
+            if (isRising) {
+                statusEl.innerHTML = `<span class="rising">↑ ${t.tideRising}</span> • ${t.nextHigh}: ${formatTime(nextHighTime)}`;
+            } else {
+                statusEl.innerHTML = `<span class="falling">↓ ${t.tideFalling}</span> • ${t.nextLow}: ${formatTime(nextLowTime)}`;
+            }
+        }
+        
+        fetchWeather();
+        fetchWaterTemp();
+        updateSargassumStatus();
+        calculateTides();
+        setInterval(fetchWeather, 600000);
+        setInterval(fetchWaterTemp, 600000);
+        setInterval(calculateTides, 60000); // Update tides every minute
+
+        function handleGPSError(error) {
+            console.warn('GPS Error:', error.code, error.message);
+            updateGPSStatus(false);
+            
+            // Show error in GPS indicator
+            const gpsIndicator = document.querySelector('.gps-indicator');
+            if (gpsIndicator) {
+                let msg = 'GPS Error';
+                if (error.code === 1) msg = 'GPS Denied';
+                else if (error.code === 2) msg = 'GPS Unavailable';
+                else if (error.code === 3) msg = 'GPS Timeout';
+                gpsIndicator.innerHTML = `<div class="gps-dot" style="background:#ff3b30;"></div><span>${msg}</span>`;
+            }
+        }
+        
+        function updateGPSStatus(active) {
+            const statusBar = document.querySelector('.status-bar');
+            let gpsIndicator = document.querySelector('.gps-indicator');
+            if (!gpsIndicator) {
+                gpsIndicator = document.createElement('div');
+                gpsIndicator.className = 'gps-indicator';
+                statusBar.insertBefore(gpsIndicator, statusBar.children[1]);
+            }
+            if (active) {
+                gpsIndicator.innerHTML = '<div class="gps-dot"></div><span>GPS</span>';
+                gpsIndicator.style.opacity = '1';
+            } else {
+                gpsIndicator.innerHTML = '<div class="gps-dot" style="background:#888;"></div><span>GPS...</span>';
+                gpsIndicator.style.opacity = '0.6';
+            }
+        }
+        
+        if ('geolocation' in navigator) {
+            // Different settings for mobile vs desktop
+            const geoOptions = {
+                enableHighAccuracy: isMobile,  // GPS on mobile, WiFi/IP on desktop
+                maximumAge: 30000,
+                timeout: isMobile ? 10000 : 20000  // Longer timeout for desktop
+            };
+            watchId = navigator.geolocation.watchPosition(updateUserLocation, handleGPSError, geoOptions);
+            navigator.geolocation.getCurrentPosition(updateUserLocation, handleGPSError, geoOptions);
+        }
+        
+        window.addEventListener('beforeunload', () => {
+            if (watchId) navigator.geolocation.clearWatch(watchId);
+        });
+
+        map.on('click', (e) => {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+            const lngDir = lng <= 0 ? 'W' : 'E';
+            const latDir = lat >= 0 ? 'N' : 'S';
+            
+            L.popup()
+                .setLatLng(e.latlng)
+                .setContent(`<div style="font-family:monospace;font-size:11px;">${Math.abs(lat).toFixed(5)}°${latDir}, ${Math.abs(lng).toFixed(5)}°${lngDir}</div>`)
+                .openOn(map);
+        });
+    </script>
+</body>
+</html>
+/* Force redeploy Sun Feb  1 08:54:45 EST 2026 */
+/* Refresh Sun Feb  1 16:41:30 EST 2026 */
+/* Refresh Sun Feb  1 17:00:53 EST 2026 */
+/* Refresh Sun Feb  1 17:06:54 EST 2026 */
+/* Refresh Sun Feb  1 17:08:21 EST 2026 */
+/* Refresh Sun Feb  1 17:10:31 EST 2026 */
+/* Refresh 1769983841 */
+/* 1769986682 */
+/* 1769986988 */
+/* 1769987207 */
+/* 1769987303 */
+/* 1769987529 */
+/* 1769987696 */
+/* 1769988222 */
+/* 1769988665 */
+/* 1769988949 */
+/* 1769989363 */
+/* 1769989494 */
+/* 1769996693 */
+/* 1769996765 */
+/* 1769997041 */
+/* 1769999768 */

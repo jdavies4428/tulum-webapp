@@ -1,0 +1,1 @@
+   :1 cd /Users/jeffdai/.openclaw/workspace/projects/tulum-situation-monitor && git add -A && git commit -m "Add Spanish/English toggle, beach clubs with WhatsApp popups, Celsius/Fahrenheit switching" && git push origin main

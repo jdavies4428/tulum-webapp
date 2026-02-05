@@ -1,0 +1,227 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent-cyan: #00d4ff;
+  --accent-yellow: #ffd600;
+  --accent-green: #00d46a;
+  --accent-red: #ff3b30;
+  --accent-purple: #af52de;
+  --accent-grey: #a0a0a0;
+  --bg-dark: #0a0a0a;
+  --bg-panel: rgba(10, 10, 10, 0.95);
+  --border-color: #333;
+  --text-muted: #888;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-dark);
+  color: #fff;
+  overflow: hidden;
+}
+
+/* Leaflet overrides */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: #fff;
+}
+.leaflet-popup-tip {
+  background: var(--bg-panel);
+}
+.leaflet-popup-content {
+  margin: 12px 14px;
+  min-width: 180px;
+}
+.leaflet-top.leaflet-left {
+  top: 70px;
+}
+.leaflet-bottom.leaflet-left {
+  bottom: 52px;
+  z-index: 1100;
+}
+.leaflet-control-zoom a {
+  background: var(--bg-panel) !important;
+  color: #fff !important;
+  border-color: var(--border-color) !important;
+}
+.leaflet-control-zoom a:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Sargassum panel – match original repo */
+.traffic-light {
+  display: flex;
+  gap: 6px;
+  padding: 10px;
+  justify-content: center;
+}
+.light {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  opacity: 0.4;
+  transition: all 0.3s;
+}
+.light.active {
+  opacity: 1;
+}
+.light.red.active {
+  background: rgba(255, 59, 48, 0.15);
+  border-color: var(--accent-red);
+  box-shadow: 0 0 12px rgba(255, 59, 48, 0.3);
+}
+.light.yellow.active {
+  background: rgba(255, 214, 0, 0.15);
+  border-color: var(--accent-yellow);
+  box-shadow: 0 0 12px rgba(255, 214, 0, 0.3);
+}
+.light.green.active {
+  background: rgba(0, 212, 106, 0.15);
+  border-color: var(--accent-green);
+  box-shadow: 0 0 12px rgba(0, 212, 106, 0.3);
+}
+.light-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #333;
+}
+.light.red .light-dot {
+  background: var(--accent-red);
+  box-shadow: 0 0 6px var(--accent-red);
+}
+.light.yellow .light-dot {
+  background: var(--accent-yellow);
+  box-shadow: 0 0 6px var(--accent-yellow);
+}
+.light.green .light-dot {
+  background: var(--accent-green);
+  box-shadow: 0 0 6px var(--accent-green);
+}
+.light span {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.light.red span {
+  color: var(--accent-red);
+}
+.light.yellow span {
+  color: var(--accent-yellow);
+}
+.light.green span {
+  color: var(--accent-green);
+}
+.sargassum-details {
+  padding: 8px 12px 10px;
+}
+.sargassum-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #fff;
+}
+.sargassum-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 4px;
+}
+.sargassum-footer {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  border-top: 1px solid var(--border-color);
+}
+.sargassum-btn {
+  background: rgba(0, 212, 106, 0.15);
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.sargassum-btn:hover {
+  background: rgba(0, 212, 106, 0.25);
+}
+
+/* Map legend – match original repo */
+.legend {
+  position: absolute;
+  bottom: 52px;
+  left: 10px;
+  z-index: 1100;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+.legend-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+.legend-item:last-child {
+  margin-bottom: 0;
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.legend-dot.location {
+  background: var(--accent-cyan);
+  box-shadow: 0 0 4px var(--accent-cyan);
+}
+.legend-dot.target {
+  background: var(--accent-red);
+  box-shadow: 0 0 4px var(--accent-red);
+}
+.legend-dot.clubs {
+  background: var(--accent-yellow);
+  box-shadow: 0 0 4px var(--accent-yellow);
+}
+.legend-dot.restaurants {
+  background: var(--accent-purple);
+  box-shadow: 0 0 4px var(--accent-purple);
+}
+.legend-dot.cultural {
+  background: var(--accent-grey);
+  box-shadow: 0 0 4px var(--accent-grey);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
