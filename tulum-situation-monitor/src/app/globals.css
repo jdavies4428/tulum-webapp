@@ -144,9 +144,12 @@ body {
 }
 .sargassum-footer {
   display: flex;
-  justify-content: center;
-  padding: 10px;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
   border-top: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.02);
 }
 .sargassum-btn {
   background: rgba(0, 212, 106, 0.15);

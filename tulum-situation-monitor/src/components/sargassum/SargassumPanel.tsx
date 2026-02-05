@@ -9,7 +9,7 @@ interface SargassumPanelProps {
 }
 
 export function SargassumPanel({ lang }: SargassumPanelProps) {
-  const [contentVisible, setContentVisible] = useState(true);
+  const [imgError, setImgError] = useState(false);
   const t = translations[lang] as Record<string, string>;
   const red = t.red ?? "RED";
   const yellow = t.yellow ?? "YELLOW";
@@ -21,17 +21,11 @@ export function SargassumPanel({ lang }: SargassumPanelProps) {
 
   return (
     <div className="sargassum-panel rounded-lg border border-[var(--border-color)] overflow-hidden bg-[var(--bg-panel)] shadow-lg backdrop-blur-md">
-      <button
-        type="button"
-        className="panel-header flex w-full cursor-pointer items-center gap-1.5 border-b border-[var(--border-color)] bg-white/5 px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]"
-        onClick={() => setContentVisible(!contentVisible)}
-      >
+      <div className="panel-header flex w-full items-center gap-1.5 border-b border-[var(--border-color)] bg-white/5 px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
         <span className="panel-icon">🌿</span>
         <span>{t.sargassumForecast ?? "SARGASSUM FORECAST"}</span>
-        <span className="ml-auto text-xs">{contentVisible ? "▼" : "▶"}</span>
-      </button>
-      {contentVisible && (
-        <>
+      </div>
+      <>
           <div
             className="sargassum-status-section border-b border-[var(--border-color)] p-3"
             style={{ padding: "12px", borderBottom: "1px solid var(--border-color)" }}
@@ -65,7 +59,7 @@ export function SargassumPanel({ lang }: SargassumPanelProps) {
             style={{ padding: "12px", borderBottom: "1px solid var(--border-color)" }}
           >
             <div
-              className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--accent-yellow)]"
+              className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--accent-yellow)]"
               style={{
                 fontSize: "11px",
                 fontWeight: 600,
@@ -74,20 +68,27 @@ export function SargassumPanel({ lang }: SargassumPanelProps) {
                 letterSpacing: "0.5px",
               }}
             >
-              📊 7-Day Historical Average
+              🇲🇽 7-Day Historical Average
             </div>
-            <div className="text-center">
-              <img
-                src="/data/sargassum/latest_7day.png?v=2"
-                alt="7-Day Sargassum"
-                className="mx-auto w-full max-w-[260px] rounded border border-[var(--border-color)]"
-                style={{
-                  width: "100%",
-                  maxWidth: "260px",
-                  borderRadius: "6px",
-                  border: "1px solid var(--border-color)",
-                }}
-              />
+            <div className="min-h-[140px] text-center">
+              {imgError ? (
+                <div className="flex min-h-[140px] items-center justify-center rounded border border-[var(--border-color)] bg-black/20 text-[10px] text-[var(--text-muted)]">
+                  Map unavailable
+                </div>
+              ) : (
+                <img
+                  src="/data/sargassum/latest_7day.png?v=2"
+                  alt="7-Day Sargassum"
+                  className="mx-auto w-full max-w-[260px] rounded border border-[var(--border-color)]"
+                  style={{
+                    width: "100%",
+                    maxWidth: "260px",
+                    borderRadius: "6px",
+                    border: "1px solid var(--border-color)",
+                  }}
+                  onError={() => setImgError(true)}
+                />
+              )}
               <div
                 className="mt-1.5 text-[9px] text-[var(--text-muted)]"
                 style={{ marginTop: "6px", fontSize: "9px" }}
@@ -129,14 +130,14 @@ export function SargassumPanel({ lang }: SargassumPanelProps) {
               href="https://optics.marine.usf.edu/projects/SaWS.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="sargassum-btn"
-              style={{ fontSize: "10px", padding: "6px 12px" }}
+              className="sargassum-footer-btn inline-flex items-center gap-2 rounded-md border border-accent-green bg-accent-green/25 px-3 py-2 text-[10px] font-semibold text-white no-underline transition-colors hover:bg-accent-green/35"
             >
-              🔴 View Full USF Satellite Data →
+              <span className="h-2 w-2 shrink-0 rounded-full bg-accent-red" />
+              View Full USF Satellite Data
+              <span>→</span>
             </a>
           </div>
-        </>
-      )}
+      </>
     </div>
   );
 }

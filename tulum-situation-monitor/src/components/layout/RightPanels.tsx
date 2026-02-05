@@ -64,7 +64,7 @@ export function RightPanels({
   const beachCamsLabel = tAny.beachCams ?? "Beach Cams";
 
   return (
-    <aside className="absolute right-2.5 top-2.5 z-[1000] flex w-[280px] max-h-[calc(100vh-70px)] flex-col gap-2.5 overflow-y-auto pb-14">
+    <aside className="absolute right-2.5 top-2.5 z-[1000] flex w-[280px] max-h-[calc(100vh-70px)] flex-col gap-2.5 overflow-y-auto pb-20">
       <div className="flex items-center justify-between gap-2">
         <button
           type="button"
@@ -118,35 +118,33 @@ export function RightPanels({
                 🇫🇷
               </button>
             </div>
-            <div className="mb-2 flex gap-2">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setSargassumCurrentOpen(true)}
-                className="sargassum-btn flex-1 rounded-md px-2 py-2.5 text-left text-[11px] font-medium"
+                className="sargassum-btn flex min-h-[44px] items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-center text-[11px] font-medium"
               >
                 🛰️ {currentSatelliteLabel}
               </button>
               <button
                 type="button"
                 onClick={() => setSargassumForecastOpen(true)}
-                className="sargassum-btn flex-1 rounded-md px-2 py-2.5 text-left text-[11px] font-medium"
+                className="sargassum-btn flex min-h-[44px] items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-center text-[11px] font-medium"
               >
                 🗺️ {forecast7Label}
               </button>
-            </div>
-            <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => setWebcamOpen(true)}
-                className="webcam-btn flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-left text-[11px] font-medium"
+                className="webcam-btn flex min-h-[44px] items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-center text-[11px] font-medium"
               >
-                <span className="live-dot h-1.5 w-1.5 animate-pulse rounded-full bg-accent-red" />
+                <span className="live-dot h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-accent-red" />
                 📹 {beachCamsLabel}
               </button>
               <button
                 type="button"
                 onClick={onOpenPlaces}
-                className="places-btn flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-[11px] font-semibold"
+                className="places-btn flex min-h-[44px] items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-center text-[11px] font-semibold"
               >
                 🌴 {t.places}
               </button>
