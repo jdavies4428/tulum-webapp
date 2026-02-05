@@ -220,6 +220,44 @@ body {
   box-shadow: 0 0 4px var(--accent-grey);
 }
 
+/* Listings panel - desktop centered modal (match original) */
+.listings-panel {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, visibility 0.3s;
+}
+.listings-panel:not(.listings-panel-open) {
+  pointer-events: none;
+}
+@media (min-width: 769px) {
+  .listings-panel {
+    bottom: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    top: 50% !important;
+    width: 500px !important;
+    max-height: 80vh !important;
+    border-radius: 20px !important;
+    border-top: 2px solid #5c4033 !important;
+    transform: translate(-50%, -50%) scale(0.9) !important;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .listings-panel.listings-panel-open {
+    transform: translate(-50%, -50%) scale(1) !important;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+@media (max-width: 768px) {
+  .listings-panel.listings-panel-open {
+    transform: translateY(0) !important;
+    pointer-events: auto;
+  }
+  .listings-panel:not(.listings-panel-open) {
+    transform: translateY(100%) !important;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
