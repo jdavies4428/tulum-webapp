@@ -72,7 +72,13 @@ export function DashboardClient() {
         onUserLocationChange={setUserLocation}
         onMapReady={setMapApi}
       />
-      <SituationHeader lang={lang} sharePayload={sharePayload} onOpenPlaces={() => setPlacesOpen(true)} />
+      <SituationHeader
+        lang={lang}
+        sharePayload={sharePayload}
+        onOpenPlaces={() => setPlacesOpen(true)}
+        onTogglePanels={handleTogglePanels}
+        panelsVisible={panelsVisible}
+      />
       <MapLegend lang={lang} />
       <StatusBar
         lang={lang}
@@ -85,15 +91,6 @@ export function DashboardClient() {
         }
       />
       <LayerControls lang={lang} layers={layers} onLayersChange={setLayers} />
-      {!panelsVisible && (
-        <button
-          type="button"
-          onClick={handleTogglePanels}
-          className="absolute right-3 top-3 z-[1001] rounded-md border border-border bg-bg-panel px-3 py-2 text-[11px] font-semibold text-white shadow-lg backdrop-blur-md hover:bg-white/10"
-        >
-          🌴 Info
-        </button>
-      )}
       <div
         className={`absolute right-0 top-0 z-[1000] transition-opacity ${
           panelsVisible ? "opacity-100" : "opacity-0 pointer-events-none"

@@ -40,7 +40,7 @@ export function RightPanels({
   tide,
   onWeatherRefresh,
 }: RightPanelsProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [infoCollapsed, setInfoCollapsed] = useState(false);
   const [sargassumCurrentOpen, setSargassumCurrentOpen] = useState(false);
   const [sargassumForecastOpen, setSargassumForecastOpen] = useState(false);
   const [webcamOpen, setWebcamOpen] = useState(false);
@@ -64,89 +64,75 @@ export function RightPanels({
   const beachCamsLabel = tAny.beachCams ?? "Beach Cams";
 
   return (
-    <aside className="absolute right-2.5 top-2.5 z-[1000] flex w-[280px] max-h-[calc(100vh-70px)] flex-col gap-2.5 overflow-y-auto pb-20">
-      <div className="flex items-center justify-between gap-2">
-        <button
-          type="button"
-          className="flex flex-1 items-center gap-1.5 rounded-lg border border-border bg-bg-panel px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-wider text-text-muted shadow-lg backdrop-blur-md"
-          onClick={() => setCollapsed(!collapsed)}
+    <>
+    <aside className="right-panels">
+        <div
+          className={`collapsible-header ${infoCollapsed ? "collapsed" : ""}`}
+          onClick={() => setInfoCollapsed(!infoCollapsed)}
         >
-          <span>🌴 Info</span>
-          <span className={`ml-auto transition-transform ${collapsed ? "-rotate-90" : ""}`}>
-            ▼
-          </span>
-        </button>
-        {onTogglePanels && (
-          <button
-            type="button"
-            onClick={onTogglePanels}
-            className="rounded-md border border-accent-red bg-accent-red/15 px-3 py-2 text-[11px] font-semibold text-white hover:bg-accent-red/25"
-          >
-            ✕ Hide
-          </button>
-        )}
-      </div>
-      {!collapsed && (
-        <>
-          <div className="quick-actions rounded-lg border border-border bg-bg-panel p-2.5 shadow-lg backdrop-blur-md">
-            <div className="mb-2 flex gap-2">
+          <h3 className="m-0 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+            🌴 Info
+          </h3>
+          <span className="collapse-arrow ml-auto">▼</span>
+        </div>
+        <div
+          className={`collapsible-content ${infoCollapsed ? "collapsed" : ""}`}
+        >
+          <div className="quick-actions">
+            <div className="lang-buttons">
               <button
                 type="button"
+                className={`lang-btn ${lang === "en" ? "active" : ""}`}
                 onClick={() => onLanguageChange?.("en")}
-                className={`flex-1 rounded-md border py-2 text-xs transition-colors ${
-                  lang === "en" ? "border-accent-cyan bg-accent-cyan/20 text-white shadow-[0_0_8px_rgba(0,212,255,0.3)]" : "border-border bg-white/5 text-white hover:bg-white/10"
-                }`}
               >
                 🇺🇸
               </button>
               <button
                 type="button"
+                className={`lang-btn ${lang === "es" ? "active" : ""}`}
                 onClick={() => onLanguageChange?.("es")}
-                className={`flex-1 rounded-md border py-2 text-xs transition-colors ${
-                  lang === "es" ? "border-accent-cyan bg-accent-cyan/20 text-white shadow-[0_0_8px_rgba(0,212,255,0.3)]" : "border-border bg-white/5 text-white hover:bg-white/10"
-                }`}
               >
                 🇲🇽
               </button>
               <button
                 type="button"
+                className={`lang-btn ${lang === "fr" ? "active" : ""}`}
                 onClick={() => onLanguageChange?.("fr")}
-                className={`flex-1 rounded-md border py-2 text-xs transition-colors ${
-                  lang === "fr" ? "border-accent-cyan bg-accent-cyan/20 text-white shadow-[0_0_8px_rgba(0,212,255,0.3)]" : "border-border bg-white/5 text-white hover:bg-white/10"
-                }`}
               >
                 🇫🇷
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="action-row">
               <button
                 type="button"
+                className="sargassum-btn"
                 onClick={() => setSargassumCurrentOpen(true)}
-                className="sargassum-btn flex min-h-[44px] items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-center text-[11px] font-medium"
               >
-                🛰️ {currentSatelliteLabel}
+                🛰️ <span>{currentSatelliteLabel}</span>
               </button>
               <button
                 type="button"
+                className="sargassum-btn"
                 onClick={() => setSargassumForecastOpen(true)}
-                className="sargassum-btn flex min-h-[44px] items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-center text-[11px] font-medium"
               >
-                🗺️ {forecast7Label}
+                🗺️ <span>{forecast7Label}</span>
               </button>
+            </div>
+            <div className="action-row">
               <button
                 type="button"
+                className="webcam-btn"
                 onClick={() => setWebcamOpen(true)}
-                className="webcam-btn flex min-h-[44px] items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-center text-[11px] font-medium"
               >
-                <span className="live-dot h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-accent-red" />
-                📹 {beachCamsLabel}
+                <span className="live-dot" />
+                📹 <span>{beachCamsLabel}</span>
               </button>
               <button
                 type="button"
+                className="places-btn"
                 onClick={onOpenPlaces}
-                className="places-btn flex min-h-[44px] items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-center text-[11px] font-semibold"
               >
-                🌴 {t.places}
+                🌴 <span>{t.places}</span>
               </button>
             </div>
           </div>
@@ -161,8 +147,8 @@ export function RightPanels({
             onRefresh={onWeatherRefresh}
           />
           <SargassumPanel lang={lang} />
-        </>
-      )}
+        </div>
+      </aside>
       <SargassumCurrentModal
         lang={lang}
         isOpen={sargassumCurrentOpen}
@@ -174,6 +160,6 @@ export function RightPanels({
         onClose={() => setSargassumForecastOpen(false)}
       />
       <WebcamModal lang={lang} isOpen={webcamOpen} onClose={() => setWebcamOpen(false)} />
-    </aside>
+    </>
   );
 }

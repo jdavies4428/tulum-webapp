@@ -13,19 +13,17 @@ export function AlertsPanel({ lang, alerts }: AlertsPanelProps) {
   const t = translations[lang];
 
   return (
-    <div className="rounded-lg border border-border bg-bg-panel overflow-hidden shadow-lg backdrop-blur-md">
-      <div className="flex items-center gap-1.5 border-b border-border bg-white/5 px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        <span>⚠️</span>
+    <div className="panel alerts-panel">
+      <div className="panel-header">
+        <span className="panel-icon">⚠️</span>
         <span>{t.activeAlerts}</span>
         <span
-          className={`ml-auto rounded-full px-1.5 py-0.5 text-[9px] font-bold ${
-            alerts.length === 0 ? "bg-accent-green text-white" : "bg-accent-red text-white"
-          }`}
+          className={`alert-count ${alerts.length === 0 ? "none" : ""}`}
         >
           {alerts.length}
         </span>
       </div>
-      <div className="max-h-[120px] overflow-y-auto p-3">
+      <div className="alert-list">
         {alerts.length === 0 ? (
           <p className="text-center text-sm text-accent-green">{t.noAlerts}</p>
         ) : (

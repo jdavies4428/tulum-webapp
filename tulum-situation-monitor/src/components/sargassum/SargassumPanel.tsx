@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 
@@ -9,7 +9,9 @@ interface SargassumPanelProps {
 }
 
 export function SargassumPanel({ lang }: SargassumPanelProps) {
-  const [imgError, setImgError] = useState(false);
+  const [contentVisible, setContentVisible] = useState(true);
+  const fallbackRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const t = translations[lang] as Record<string, string>;
   const red = t.red ?? "RED";
   const yellow = t.yellow ?? "YELLOW";
@@ -19,15 +21,32 @@ export function SargassumPanel({ lang }: SargassumPanelProps) {
     t.lowSargassumDesc ??
     "Minimal sargassum. Check satellite images for current conditions. Verify with beach clubs before visiting.";
 
+  const handleImgError = () => {
+    if (imgRef.current) imgRef.current.style.display = "none";
+    if (fallbackRef.current) fallbackRef.current.style.display = "block";
+  };
+
   return (
-    <div className="sargassum-panel rounded-lg border border-[var(--border-color)] overflow-hidden bg-[var(--bg-panel)] shadow-lg backdrop-blur-md">
-      <div className="panel-header flex w-full items-center gap-1.5 border-b border-[var(--border-color)] bg-white/5 px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+    <div className="panel sargassum-panel">
+      <div
+        className="panel-header"
+        style={{ cursor: "pointer" }}
+        onClick={() => setContentVisible(!contentVisible)}
+        onKeyDown={(e) => e.key === "Enter" && setContentVisible(!contentVisible)}
+        role="button"
+        tabIndex={0}
+      >
         <span className="panel-icon">🌿</span>
         <span>{t.sargassumForecast ?? "SARGASSUM FORECAST"}</span>
+        <span style={{ marginLeft: "auto", fontSize: "12px" }}>
+          {contentVisible ? "▼" : "▶"}
+        </span>
       </div>
-      <>
+
+      {contentVisible && (
+        <div id="sargassum-forecast-content">
           <div
-            className="sargassum-status-section border-b border-[var(--border-color)] p-3"
+            className="sargassum-status-section"
             style={{ padding: "12px", borderBottom: "1px solid var(--border-color)" }}
           >
             <div className="traffic-light" style={{ marginBottom: "10px" }}>
@@ -55,89 +74,93 @@ export function SargassumPanel({ lang }: SargassumPanelProps) {
           </div>
 
           <div
-            className="satellite-section border-b border-[var(--border-color)] p-3"
+            className="satellite-section"
             style={{ padding: "12px", borderBottom: "1px solid var(--border-color)" }}
           >
             <div
-              className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--accent-yellow)]"
               style={{
                 fontSize: "11px",
                 fontWeight: 600,
                 color: "var(--accent-yellow)",
                 marginBottom: "8px",
+                textTransform: "uppercase",
                 letterSpacing: "0.5px",
               }}
             >
-              🇲🇽 7-Day Historical Average
+              📊 7-Day Historical Average
             </div>
-            <div className="min-h-[140px] text-center">
-              {imgError ? (
-                <div className="flex min-h-[140px] items-center justify-center rounded border border-[var(--border-color)] bg-black/20 text-[10px] text-[var(--text-muted)]">
-                  Map unavailable
-                </div>
-              ) : (
-                <img
-                  src="/data/sargassum/latest_7day.png?v=2"
-                  alt="7-Day Sargassum"
-                  className="mx-auto w-full max-w-[260px] rounded border border-[var(--border-color)]"
-                  style={{
-                    width: "100%",
-                    maxWidth: "260px",
-                    borderRadius: "6px",
-                    border: "1px solid var(--border-color)",
-                  }}
-                  onError={() => setImgError(true)}
-                />
-              )}
+            <div style={{ textAlign: "center" }}>
+              <img
+                ref={imgRef}
+                src="/data/sargassum/latest_7day.png?v=2"
+                alt="7-Day Sargassum"
+                style={{
+                  width: "100%",
+                  maxWidth: "260px",
+                  borderRadius: "6px",
+                  border: "1px solid var(--border-color)",
+                }}
+                onError={handleImgError}
+              />
               <div
-                className="mt-1.5 text-[9px] text-[var(--text-muted)]"
-                style={{ marginTop: "6px", fontSize: "9px" }}
+                ref={fallbackRef}
+                style={{
+                  display: "none",
+                  padding: "15px",
+                  textAlign: "center",
+                  background: "rgba(255,214,0,0.1)",
+                  borderRadius: "6px",
+                }}
               >
+                <p style={{ fontSize: "11px", color: "var(--text-muted)" }}>
+                  Image loading or unavailable
+                </p>
+              </div>
+              <div style={{ marginTop: "6px", fontSize: "9px", color: "var(--text-muted)" }}>
                 7-day rolling composite • Smoother trends
               </div>
             </div>
           </div>
 
           <div
-            className="forecast-text-section border-b border-[var(--border-color)] p-3"
+            className="forecast-text-section"
             style={{ padding: "12px", borderBottom: "1px solid var(--border-color)" }}
           >
             <div
-              className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--accent-green)]"
               style={{
                 fontSize: "11px",
                 fontWeight: 600,
                 color: "var(--accent-green)",
                 marginBottom: "8px",
+                textTransform: "uppercase",
                 letterSpacing: "0.5px",
               }}
             >
               🔮 7-Day Outlook
             </div>
-            <div
-              id="sargassum-outlook"
-              className="text-[11px] leading-relaxed text-[var(--text-muted)]"
-              style={{ fontSize: "11px", lineHeight: 1.5 }}
-            >
+            <div id="sargassum-outlook" style={{ fontSize: "11px", lineHeight: 1.5, color: "var(--text-muted)" }}>
               <p>• Sargassum amounts typically increase Feb-Mar</p>
               <p>• Check daily satellite for current conditions</p>
               <p>• Beach clubs can provide real-time beach status</p>
             </div>
           </div>
+        </div>
+      )}
 
-          <div className="sargassum-footer">
-            <a
-              href="https://optics.marine.usf.edu/projects/SaWS.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="sargassum-footer-btn inline-flex items-center gap-2 rounded-md border border-accent-green bg-accent-green/25 px-3 py-2 text-[10px] font-semibold text-white no-underline transition-colors hover:bg-accent-green/35"
-            >
-              <span className="h-2 w-2 shrink-0 rounded-full bg-accent-red" />
-              View Full USF Satellite Data
-              <span>→</span>
-            </a>
-          </div>
-      </>
+      <div
+        className="sargassum-footer"
+        style={{ justifyContent: "center", padding: "10px", borderTop: "1px solid var(--border-color)" }}
+      >
+        <a
+          href="https://optics.marine.usf.edu/projects/SaWS.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="sargassum-btn"
+          style={{ fontSize: "10px", padding: "6px 12px" }}
+        >
+          🔴 View Full USF Satellite Data →
+        </a>
+      </div>
     </div>
   );
 }

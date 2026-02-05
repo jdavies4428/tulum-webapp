@@ -31,7 +31,7 @@ export function WeatherPanel({ lang, data, loading, error, tide, waterTemp, onRe
 
   if (!data) {
     return (
-      <div className="rounded-lg border border-border bg-bg-panel overflow-hidden shadow-lg backdrop-blur-md">
+      <div className="panel conditions-panel">
         <div className="flex items-center gap-1.5 border-b border-border bg-white/5 px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
           <span>🌤️</span>
           <span>{t.weatherConditions}</span>
@@ -59,13 +59,13 @@ export function WeatherPanel({ lang, data, loading, error, tide, waterTemp, onRe
   const locale = lang === "es" ? "es-MX" : "en-US";
 
   return (
-    <div className="rounded-lg border border-border bg-bg-panel overflow-hidden shadow-lg backdrop-blur-md">
-      <div className="flex items-center gap-1.5 border-b border-border bg-white/5 px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-        <span>🌤️</span>
+    <div className="panel conditions-panel">
+      <div className="panel-header">
+        <span className="panel-icon">🌤️</span>
         <span>{t.weatherConditions}</span>
-        <button type="button" onClick={onRefresh} className="ml-auto opacity-60 hover:opacity-100">
+        <span className="refresh-icon" role="button" tabIndex={0} onClick={onRefresh} onKeyDown={(e) => e.key === "Enter" && onRefresh()}>
           ⟳
-        </button>
+        </span>
       </div>
       <div className="border-b border-border p-3 text-center">
         <div className="mb-1 flex items-center justify-center gap-2">

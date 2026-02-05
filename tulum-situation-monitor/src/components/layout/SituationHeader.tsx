@@ -13,6 +13,8 @@ interface SituationHeaderProps {
   onShare?: (payload: SharePayload) => void;
   sharePayload?: SharePayload | null;
   onOpenPlaces?: () => void;
+  onTogglePanels?: () => void;
+  panelsVisible?: boolean;
 }
 
 export function SituationHeader({
@@ -20,6 +22,8 @@ export function SituationHeader({
   onShare,
   sharePayload,
   onOpenPlaces,
+  onTogglePanels,
+  panelsVisible = true,
 }: SituationHeaderProps) {
   const t = translations[lang];
 
@@ -62,6 +66,19 @@ export function SituationHeader({
         >
           📍 {t.places}
         </button>
+        {onTogglePanels && (
+          <button
+            type="button"
+            onClick={onTogglePanels}
+            className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-[11px] font-semibold transition-colors ${
+              panelsVisible
+                ? "border border-accent-red bg-accent-red/15 text-white hover:bg-accent-red/25"
+                : "border border-accent-cyan bg-accent-cyan text-black hover:opacity-90"
+            }`}
+          >
+            {panelsVisible ? "✕ Hide" : "🌴 Info"}
+          </button>
+        )}
       </div>
     </header>
   );
