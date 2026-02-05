@@ -1,0 +1,9 @@
+{
+  "name": "tulum-web",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix tulum-situation-monitor",
+    "build": "npm run build --prefix tulum-situation-monitor",
+    "start": "npm run start --prefix tulum-situation-monitor"
+  }
+}
