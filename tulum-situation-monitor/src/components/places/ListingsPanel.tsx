@@ -30,7 +30,7 @@ type Tab = "clubs" | "restaurants" | "cultural";
 
 export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
   const [tab, setTab] = useState<Tab>("clubs");
-  const { clubs, restaurants, cultural, isLoading, error } = useVenues();
+  const { clubs, restaurants, cultural, isLoading, error, source } = useVenues();
   const t = translations[lang] as Record<string, string>;
   const navigateLabel = t.navigate ?? "Go";
 
@@ -85,6 +85,15 @@ export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
                 style={{ color: "#e8d5b7", textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
               >
                 📍 {t.places ?? "Places"}
+                {source === "supabase" && (
+                  <span
+                    className="rounded px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider"
+                    style={{ background: "rgba(34, 197, 94, 0.2)", color: "#4ade80" }}
+                    title="Loaded from Supabase"
+                  >
+                    DB
+                  </span>
+                )}
               </h2>
               <button
                 type="button"

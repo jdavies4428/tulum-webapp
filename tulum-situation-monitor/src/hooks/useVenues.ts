@@ -44,6 +44,7 @@ export function useVenues() {
   const [cultural, setCultural] = useState<CulturalPlace[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [source, setSource] = useState<"supabase" | null>(null);
 
   useEffect(() => {
     async function fetchVenues() {
@@ -57,8 +58,11 @@ export function useVenues() {
         setClubs(rows.filter((r) => r.category === "club").map(venueToPlace) as BeachClub[]);
         setRestaurants(rows.filter((r) => r.category === "restaurant").map(venueToPlace) as Restaurant[]);
         setCultural(rows.filter((r) => r.category === "cultural").map(venueToPlace) as CulturalPlace[]);
+        setSource("supabase");
+        setError(null);
       } catch (e) {
         setError(e instanceof Error ? e.message : "Failed to load venues");
+        setSource(null);
       } finally {
         setIsLoading(false);
       }
@@ -67,5 +71,5 @@ export function useVenues() {
     fetchVenues();
   }, []);
 
-  return { clubs, restaurants, cultural, isLoading, error };
+  return { clubs, restaurants, cultural, isLoading, error, source };
 }
