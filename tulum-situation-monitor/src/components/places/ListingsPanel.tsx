@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { beachClubs, restaurants, culturalPlaces } from "@/data/places";
+import { useVenues } from "@/hooks/useVenues";
 import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
@@ -30,15 +30,16 @@ type Tab = "clubs" | "restaurants" | "cultural";
 
 export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
   const [tab, setTab] = useState<Tab>("clubs");
+  const { clubs, restaurants, cultural, isLoading, error } = useVenues();
   const t = translations[lang] as Record<string, string>;
   const navigateLabel = t.navigate ?? "Go";
 
   const items =
     tab === "clubs"
-      ? beachClubs
+      ? clubs
       : tab === "restaurants"
         ? restaurants
-        : culturalPlaces;
+        : cultural;
   const desc = (item: BeachClub | Restaurant | CulturalPlace) =>
     lang === "es" ? item.descEs ?? item.desc : lang === "fr" ? ("descFr" in item ? (item as { descFr?: string }).descFr : item.desc) : item.desc;
   const typeLabel =
@@ -107,7 +108,7 @@ export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
               >
                 🏖️ {t.beachClubs ?? "Beach Clubs"}
                 <span className="rounded-xl px-2.5 py-0.5 text-[11px]" style={{ background: "rgba(255,255,255,0.15)" }}>
-                  {beachClubs.length}
+                  {clubs.length}
                 </span>
               </button>
               <button
@@ -137,12 +138,22 @@ export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
               >
                 🎭 {t.cultural ?? "Cultural"}
                 <span className="rounded-xl px-2.5 py-0.5 text-[11px]" style={{ background: "rgba(255,255,255,0.15)" }}>
-                  {culturalPlaces.length}
+                  {cultural.length}
                 </span>
               </button>
             </div>
           </div>
           <div className="min-h-[300px] flex-1 overflow-y-auto p-4">
+            {error && (
+              <p className="mb-3 rounded-lg border border-red-500/50 bg-red-500/10 p-3 text-sm text-red-200" role="alert">
+                {error}
+              </p>
+            )}
+            {isLoading ? (
+              <div className="flex min-h-[200px] items-center justify-center text-[#a89078]">
+                <span>Loading…</span>
+              </div>
+            ) : (
             <div className="space-y-3">
               {items.map((item) => (
                 <div
@@ -179,31 +190,37 @@ export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
                     {desc(item)}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    <a
-                      href={`tel:${item.whatsapp.replace(/\D/g, "")}`}
-                      className="flex min-w-[80px] flex-1 items-center justify-center gap-1.5 rounded-[10px] px-3 py-2.5 text-[11px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-[#3395ff]"
-                      style={{ background: "#007aff" }}
-                    >
-                      📞 Call
-                    </a>
-                    <a
-                      href={`https://wa.me/${item.whatsapp.replace(/\D/g, "")}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex min-w-[80px] flex-1 items-center justify-center gap-1.5 rounded-[10px] px-3 py-2.5 text-[11px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-[#2ee673]"
-                      style={{ background: "#25d366" }}
-                    >
-                      💬 Chat
-                    </a>
-                    <a
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex min-w-[80px] flex-1 items-center justify-center gap-1.5 rounded-[10px] px-3 py-2.5 text-[11px] font-semibold text-white transition-all hover:bg-[#7d868f]"
-                      style={{ background: "#6c757d" }}
-                    >
-                      🌐 Web
-                    </a>
+                    {item.whatsapp ? (
+                      <>
+                        <a
+                          href={`tel:${item.whatsapp.replace(/\D/g, "")}`}
+                          className="flex min-w-[80px] flex-1 items-center justify-center gap-1.5 rounded-[10px] px-3 py-2.5 text-[11px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-[#3395ff]"
+                          style={{ background: "#007aff" }}
+                        >
+                          📞 Call
+                        </a>
+                        <a
+                          href={`https://wa.me/${item.whatsapp.replace(/\D/g, "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex min-w-[80px] flex-1 items-center justify-center gap-1.5 rounded-[10px] px-3 py-2.5 text-[11px] font-semibold text-white transition-all hover:-translate-y-px hover:bg-[#2ee673]"
+                          style={{ background: "#25d366" }}
+                        >
+                          💬 Chat
+                        </a>
+                      </>
+                    ) : null}
+                    {item.url ? (
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex min-w-[80px] flex-1 items-center justify-center gap-1.5 rounded-[10px] px-3 py-2.5 text-[11px] font-semibold text-white transition-all hover:bg-[#7d868f]"
+                        style={{ background: "#6c757d" }}
+                      >
+                        🌐 Web
+                      </a>
+                    ) : null}
                     <button
                       type="button"
                       onClick={() => openNavigation(item.lat, item.lng, item.name)}
@@ -216,6 +233,7 @@ export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
                 </div>
               ))}
             </div>
+            )}
           </div>
         </div>
       </div>
