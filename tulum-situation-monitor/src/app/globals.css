@@ -162,6 +162,35 @@ body {
 .sargassum-btn:hover {
   background: rgba(0, 212, 106, 0.25);
 }
+.webcam-btn {
+  background: rgba(255, 59, 48, 0.15);
+  border: 1px solid var(--accent-red);
+  color: var(--accent-red);
+  transition: all 0.2s;
+}
+.webcam-btn:hover {
+  background: rgba(255, 59, 48, 0.25);
+}
+.webcam-btn .live-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent-red);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+.places-btn {
+  background: rgba(201, 100, 66, 0.2);
+  border: 1px solid #c96442;
+  color: #e8a882;
+  transition: all 0.2s;
+}
+.places-btn:hover {
+  background: rgba(201, 100, 66, 0.35);
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
 
 /* Map legend – match original repo */
 .legend {

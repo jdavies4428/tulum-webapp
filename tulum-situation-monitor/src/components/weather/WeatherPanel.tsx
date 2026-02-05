@@ -10,6 +10,7 @@ import {
 } from "@/lib/weather";
 import type { Lang } from "@/lib/weather";
 import type { OpenMeteoResponse } from "@/types/weather";
+import type { TideState } from "@/hooks/useTides";
 import { translations } from "@/lib/i18n";
 
 interface WeatherPanelProps {
@@ -17,10 +18,12 @@ interface WeatherPanelProps {
   data: OpenMeteoResponse | null;
   loading: boolean;
   error?: string | null;
+  tide?: TideState;
+  waterTemp?: number | null;
   onRefresh: () => void;
 }
 
-export function WeatherPanel({ lang, data, loading, error, onRefresh }: WeatherPanelProps) {
+export function WeatherPanel({ lang, data, loading, error, tide, waterTemp, onRefresh }: WeatherPanelProps) {
   const t = translations[lang];
   const current = data?.current;
   const hourly = data?.hourly;
@@ -85,7 +88,7 @@ export function WeatherPanel({ lang, data, loading, error, onRefresh }: WeatherP
           <p className="text-sm font-medium">
             {formatWind(current!.wind_speed_10m, lang)}
           </p>
-          <p className="text-[10px] text-text-muted">
+          <p className="text-[10px] text-[#666]">
             {getWindDirection(current!.wind_direction_10m)}
           </p>
         </div>
@@ -106,18 +109,55 @@ export function WeatherPanel({ lang, data, loading, error, onRefresh }: WeatherP
           <p className="text-sm font-medium">{Math.round(current!.pressure_msl)} mb</p>
         </div>
       </div>
+      {tide && (
+        <>
+          <div className="flex justify-around border-b border-border bg-black/30 px-2 py-2.5">
+            <div className="flex-1 border-r border-border py-1.5 text-center">
+              <p className="mb-1 text-[8px] uppercase tracking-wider text-text-muted">🌊 {t.highTide}</p>
+              <p className="mb-0.5 text-sm font-semibold text-white">
+                {tide.nextHighTime.toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit", hour12: true })}
+              </p>
+              <p className="text-[10px] text-accent-cyan">{tide.highHeight}</p>
+            </div>
+            <div className="flex-1 py-1.5 text-center">
+              <p className="mb-1 text-[8px] uppercase tracking-wider text-text-muted">🌊 {t.lowTide}</p>
+              <p className="mb-0.5 text-sm font-semibold text-white">
+                {tide.nextLowTime.toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit", hour12: true })}
+              </p>
+              <p className="text-[10px] text-accent-cyan">{tide.lowHeight}</p>
+            </div>
+          </div>
+          <p className="border-b border-border bg-black/20 py-1.5 text-center text-[9px] text-text-muted">
+            {tide.isRising ? (
+              <span className="text-accent-green">↑ {t.tideRising}</span>
+            ) : (
+              <span className="text-amber-500">↓ {t.tideFalling}</span>
+            )}{" "}
+            • {tide.isRising ? t.nextHigh : t.nextLow}:{" "}
+            {(tide.isRising ? tide.nextHighTime : tide.nextLowTime).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit", hour12: true })}
+          </p>
+        </>
+      )}
+      <div className="flex items-center justify-center gap-2 border-b border-border bg-accent-cyan/10 py-2">
+        <span className="text-lg">🏊</span>
+        <div>
+          <p className="text-base font-bold text-accent-cyan">
+            {waterTemp != null ? formatTempFull(waterTemp, lang) : "~27°C"}
+          </p>
+          <p className="text-[9px] uppercase text-text-muted">{t.waterTemp}</p>
+        </div>
+      </div>
       {daily?.sunrise?.[0] && daily?.sunset?.[0] && (
-        <div className="flex justify-center gap-4 border-b border-border py-2 text-xs">
-          <span>🌅 {new Date(daily.sunrise[0]).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })}</span>
-          <span>🌇 {new Date(daily.sunset[0]).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })}</span>
+        <div className="flex justify-around border-b border-border bg-amber-500/10 py-2.5 text-sm font-semibold text-amber-500">
+          <span className="flex items-center gap-1.5">
+            🌅 {new Date(daily.sunrise[0]).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })}
+          </span>
+          <span className="flex items-center gap-1.5">
+            🌇 {new Date(daily.sunset[0]).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })}
+          </span>
         </div>
       )}
-      {current!.time && (
-        <p className="border-t border-border px-3 py-2 text-[10px] text-text-muted">
-          {t.updated} {new Date(current!.time).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
-        </p>
-      )}
-      <p className="px-3 py-2 text-[10px] text-text-muted">📡 {t.dataSource}</p>
+      <p className="border-t border-border px-3 py-1.5 text-center text-[8px] text-[#555]">📡 {t.dataSource}</p>
     </div>
   );
 }

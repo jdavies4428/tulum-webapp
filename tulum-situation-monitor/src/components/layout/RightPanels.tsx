@@ -5,8 +5,6 @@ import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 import { WeatherPanel } from "@/components/weather/WeatherPanel";
 import { AlertsPanel } from "@/components/weather/AlertsPanel";
-import { TideSection } from "@/components/weather/TideSection";
-import { WaterTemp } from "@/components/weather/WaterTemp";
 import { SargassumPanel } from "@/components/sargassum/SargassumPanel";
 import { SargassumCurrentModal } from "@/components/sargassum/SargassumCurrentModal";
 import { SargassumForecastModal } from "@/components/sargassum/SargassumForecastModal";
@@ -90,65 +88,69 @@ export function RightPanels({
       </div>
       {!collapsed && (
         <>
-          <div className="grid grid-cols-3 gap-1.5">
-            <button
-              type="button"
-              onClick={() => onLanguageChange?.("en")}
-              className={`rounded-md border py-2 text-xs transition-colors ${
-                lang === "en" ? "border-accent-cyan bg-accent-cyan/20 text-white shadow-[0_0_8px_rgba(0,212,255,0.3)]" : "border-border bg-white/5 text-white hover:bg-white/10"
-              }`}
-            >
-              🇺🇸
-            </button>
-            <button
-              type="button"
-              onClick={() => onLanguageChange?.("es")}
-              className={`rounded-md border py-2 text-xs transition-colors ${
-                lang === "es" ? "border-accent-cyan bg-accent-cyan/20 text-white shadow-[0_0_8px_rgba(0,212,255,0.3)]" : "border-border bg-white/5 text-white hover:bg-white/10"
-              }`}
-            >
-              🇲🇽
-            </button>
-            <button
-              type="button"
-              onClick={() => onLanguageChange?.("fr")}
-              className={`rounded-md border py-2 text-xs transition-colors ${
-                lang === "fr" ? "border-accent-cyan bg-accent-cyan/20 text-white shadow-[0_0_8px_rgba(0,212,255,0.3)]" : "border-border bg-white/5 text-white hover:bg-white/10"
-              }`}
-            >
-              🇫🇷
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => setSargassumCurrentOpen(true)}
-              className="rounded-md border border-accent-green bg-accent-green/10 px-2 py-2.5 text-left text-[11px] font-medium text-accent-green hover:bg-accent-green/20"
-            >
-              🛰️ {currentSatelliteLabel}
-            </button>
-            <button
-              type="button"
-              onClick={() => setSargassumForecastOpen(true)}
-              className="rounded-md border border-accent-green bg-accent-green/10 px-2 py-2.5 text-left text-[11px] font-medium text-accent-green hover:bg-accent-green/20"
-            >
-              🗺️ {forecast7Label}
-            </button>
-            <button
-              type="button"
-              onClick={() => setWebcamOpen(true)}
-              className="flex items-center gap-1.5 rounded-md border border-accent-red/50 bg-accent-red/10 px-2 py-2.5 text-left text-[11px] font-medium text-accent-red hover:bg-accent-red/20"
-            >
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent-red" />
-              {beachCamsLabel}
-            </button>
-            <button
-              type="button"
-              onClick={onOpenPlaces}
-              className="flex items-center gap-1.5 rounded-md border border-border bg-bg-panel px-2 py-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-white/10"
-            >
-              📍 {t.places}
-            </button>
+          <div className="quick-actions rounded-lg border border-border bg-bg-panel p-2.5 shadow-lg backdrop-blur-md">
+            <div className="mb-2 flex gap-2">
+              <button
+                type="button"
+                onClick={() => onLanguageChange?.("en")}
+                className={`flex-1 rounded-md border py-2 text-xs transition-colors ${
+                  lang === "en" ? "border-accent-cyan bg-accent-cyan/20 text-white shadow-[0_0_8px_rgba(0,212,255,0.3)]" : "border-border bg-white/5 text-white hover:bg-white/10"
+                }`}
+              >
+                🇺🇸
+              </button>
+              <button
+                type="button"
+                onClick={() => onLanguageChange?.("es")}
+                className={`flex-1 rounded-md border py-2 text-xs transition-colors ${
+                  lang === "es" ? "border-accent-cyan bg-accent-cyan/20 text-white shadow-[0_0_8px_rgba(0,212,255,0.3)]" : "border-border bg-white/5 text-white hover:bg-white/10"
+                }`}
+              >
+                🇲🇽
+              </button>
+              <button
+                type="button"
+                onClick={() => onLanguageChange?.("fr")}
+                className={`flex-1 rounded-md border py-2 text-xs transition-colors ${
+                  lang === "fr" ? "border-accent-cyan bg-accent-cyan/20 text-white shadow-[0_0_8px_rgba(0,212,255,0.3)]" : "border-border bg-white/5 text-white hover:bg-white/10"
+                }`}
+              >
+                🇫🇷
+              </button>
+            </div>
+            <div className="mb-2 flex gap-2">
+              <button
+                type="button"
+                onClick={() => setSargassumCurrentOpen(true)}
+                className="sargassum-btn flex-1 rounded-md px-2 py-2.5 text-left text-[11px] font-medium"
+              >
+                🛰️ {currentSatelliteLabel}
+              </button>
+              <button
+                type="button"
+                onClick={() => setSargassumForecastOpen(true)}
+                className="sargassum-btn flex-1 rounded-md px-2 py-2.5 text-left text-[11px] font-medium"
+              >
+                🗺️ {forecast7Label}
+              </button>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setWebcamOpen(true)}
+                className="webcam-btn flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-left text-[11px] font-medium"
+              >
+                <span className="live-dot h-1.5 w-1.5 animate-pulse rounded-full bg-accent-red" />
+                📹 {beachCamsLabel}
+              </button>
+              <button
+                type="button"
+                onClick={onOpenPlaces}
+                className="places-btn flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-2.5 text-[11px] font-semibold"
+              >
+                🌴 {t.places}
+              </button>
+            </div>
           </div>
           <AlertsPanel lang={lang} alerts={alerts} />
           <WeatherPanel
@@ -156,10 +158,10 @@ export function RightPanels({
             data={weatherData}
             loading={weatherLoading}
             error={weatherError}
+            tide={tide}
+            waterTemp={waterTemp}
             onRefresh={onWeatherRefresh}
           />
-          <TideSection lang={lang} tide={tide} />
-          <WaterTemp lang={lang} tempC={waterTemp} />
           <SargassumPanel lang={lang} />
         </>
       )}
