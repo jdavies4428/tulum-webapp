@@ -87,8 +87,8 @@ export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
                 📍 {t.places ?? "Places"}
                 {source === "supabase" && (
                   <span
-                    className="rounded px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider"
-                    style={{ background: "rgba(34, 197, 94, 0.2)", color: "#4ade80" }}
+                    className="ml-1 rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider"
+                    style={{ background: "#22c55e", color: "#fff", boxShadow: "0 0 8px rgba(34,197,94,0.4)" }}
                     title="Loaded from Supabase"
                   >
                     DB

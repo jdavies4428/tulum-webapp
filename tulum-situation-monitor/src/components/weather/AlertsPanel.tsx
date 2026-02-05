@@ -31,25 +31,26 @@ export function AlertsPanel({ lang, alerts }: AlertsPanelProps) {
             {alerts.map((alert, i) => (
               <li
                 key={i}
-                className="flex gap-2 border-b border-border py-2.5 last:border-0 first:pt-0"
+                className="flex flex-col gap-1.5 border-b border-border px-3 py-3 last:border-0 first:pt-0"
               >
-                <span
-                  className={`h-fit shrink-0 whitespace-nowrap rounded border px-1.5 py-0.5 text-[8px] font-bold ${
-                    alert.severity === "severe"
-                      ? "border-accent-red bg-accent-red/20 text-accent-red"
-                      : alert.severity === "moderate"
-                        ? "border-accent-yellow bg-accent-yellow/20 text-accent-yellow"
-                        : "border-accent-cyan bg-accent-cyan/20 text-accent-cyan"
-                  }`}
-                >
-                  {alert.severity.toUpperCase()}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold text-white">{alert.title}</p>
-                  <p className="text-[10px] text-text-muted leading-snug">{alert.desc}</p>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`shrink-0 whitespace-nowrap rounded border px-2 py-0.5 text-[9px] font-bold ${
+                      alert.severity === "severe"
+                        ? "border-accent-red bg-accent-red/20 text-accent-red"
+                        : alert.severity === "moderate"
+                          ? "border-accent-yellow bg-accent-yellow/20 text-accent-yellow"
+                          : "border-accent-cyan bg-accent-cyan/20 text-accent-cyan"
+                    }`}
+                  >
+                    {alert.severity.toUpperCase()}
+                  </span>
+                  <p className="min-w-0 flex-1 text-sm font-semibold text-white">{alert.title}</p>
                 </div>
+                <p className="text-xs text-text-muted leading-snug">{alert.desc}</p>
               </li>
             ))}
+          </ul>
           </ul>
         )}
       </div>
