@@ -2,29 +2,30 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { Database } from "@/types/database";
 import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
 
-type VenueRow = Database["public"]["Tables"]["venues"]["Row"];
+type VenueRow = {
+  id: string;
+  place_id: string;
+  name: string;
+  category: "club" | "restaurant" | "cultural";
+  lat: number;
+  lng: number;
+  description: string | null;
+  description_es: string | null;
+  description_fr: string | null;
+  phone: string | null;
+  website: string | null;
+  has_webcam: boolean;
+};
 
 type VenuePlace = BeachClub | Restaurant | CulturalPlace;
 
-function parseLocation(location: unknown): { lat: number; lng: number } {
-  if (!location || typeof location !== "object") return { lat: 0, lng: 0 };
-  const geo = location as { type?: string; coordinates?: [number, number] };
-  if (geo.type === "Point" && Array.isArray(geo.coordinates) && geo.coordinates.length >= 2) {
-    const [lng, lat] = geo.coordinates;
-    return { lat, lng };
-  }
-  return { lat: 0, lng: 0 };
-}
-
 function venueToPlace(venue: VenueRow): VenuePlace {
-  const { lat, lng } = parseLocation(venue.location);
   const base = {
     name: venue.name,
-    lat,
-    lng,
+    lat: venue.lat ?? 0,
+    lng: venue.lng ?? 0,
     desc: venue.description ?? "",
     descEs: venue.description_es ?? undefined,
     descFr: venue.description_fr ?? undefined,
@@ -45,14 +46,10 @@ export function useVenues() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const supabase = createClient();
-
     async function fetchVenues() {
       try {
-        const { data, error: fetchError } = await supabase
-          .from("venues")
-          .select("*")
-          .order("name");
+        const supabase = createClient();
+        const { data, error: fetchError } = await supabase.rpc("get_venues");
 
         if (fetchError) throw fetchError;
 
