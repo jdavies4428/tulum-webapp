@@ -92,7 +92,9 @@ export default function DiscoverPage() {
                 ? `/discover/food-delivery?lang=${lang}`
                 : id === "itinerary"
                   ? `/itinerary?lang=${lang}`
-                  : undefined;
+                  : id === "translation"
+                    ? `/discover/translation?lang=${lang}`
+                    : undefined;
           const cardStyle = {
             background: CARD_GRADIENTS[id] ?? "var(--card-bg)",
             border: "none",
