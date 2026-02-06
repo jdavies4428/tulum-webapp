@@ -24,9 +24,9 @@ function getDefaultLayers(): MapLayersState {
     satellite: isDaytime,
     radar: true,
     clubs: false,
-    restaurants: false,
+    restaurants: true,
     cafes: false,
-    cultural: true,
+    cultural: false,
     favorites: true,
   };
 }

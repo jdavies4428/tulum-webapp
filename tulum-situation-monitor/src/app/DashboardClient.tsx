@@ -27,9 +27,9 @@ function getDefaultLayers(): MapLayersState {
     satellite: isDaytime,
     radar: true,
     clubs: false,
-    restaurants: false,
+    restaurants: true,
     cafes: false,
-    cultural: true,
+    cultural: false,
     favorites: true,
   };
 }
@@ -60,10 +60,10 @@ export function DashboardClient() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Ensure Favorites and Cultural are visible on mobile (match default venue layers)
+  // Ensure Favorites and Restaurants are visible on mobile (match default venue layers)
   useEffect(() => {
     if (isMobile) {
-      setLayers((prev) => (prev.favorites && prev.cultural ? prev : { ...prev, favorites: true, cultural: true }));
+      setLayers((prev) => (prev.favorites && prev.restaurants ? prev : { ...prev, favorites: true, restaurants: true }));
     }
   }, [isMobile]);
 

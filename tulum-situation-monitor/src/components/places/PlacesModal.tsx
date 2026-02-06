@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useVenues } from "@/hooks/useVenues";
+import { useFavorites } from "@/hooks/useFavorites";
 import { TULUM_LAT, TULUM_LNG } from "@/data/constants";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
@@ -97,10 +98,11 @@ interface PlaceCardProps {
   place: PlaceForCard;
   navigateLabel: string;
   onSelect?: (place: BeachClub | Restaurant | CulturalPlace | CafePlace) => void;
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
 }
 
-function PlaceCard({ place, navigateLabel, onSelect }: PlaceCardProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
+function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggleFavorite }: PlaceCardProps) {
   const photoSrc = place.photo_url ?? (place.photo_reference ? `/api/places/photo?photo_reference=${encodeURIComponent(place.photo_reference)}&maxwidth=400` : null);
 
   return (
@@ -188,7 +190,7 @@ function PlaceCard({ place, navigateLabel, onSelect }: PlaceCardProps) {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              setIsFavorite(!isFavorite);
+              onToggleFavorite?.();
             }}
             style={{
               position: "absolute",
@@ -450,6 +452,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const { clubs, restaurants, cafes, cultural, isLoading, error, source } = useVenues();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -816,14 +819,19 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                 gap: "16px",
               }}
             >
-              {items.map((place) => (
-                <PlaceCard
-                  key={place.id ?? place.name}
-                  place={place}
-                  navigateLabel={navigateLabel}
-                  onSelect={onPlaceSelect}
-                />
-              ))}
+              {items.map((place) => {
+                const placeId = place.id ?? place.sourcePlace?.id ?? place.sourcePlace?.place_id;
+                return (
+                  <PlaceCard
+                    key={place.id ?? place.name}
+                    place={place}
+                    navigateLabel={navigateLabel}
+                    onSelect={onPlaceSelect}
+                    isFavorite={isFavorite(placeId)}
+                    onToggleFavorite={() => toggleFavorite(placeId)}
+                  />
+                );
+              })}
             </div>
           )}
         </div>

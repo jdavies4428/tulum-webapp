@@ -145,6 +145,9 @@ export async function getPlaceDetails(
   return data.result ?? null;
 }
 
+/** Known beach clubs that Google often types as lodging/cultural; force to club. */
+const KNOWN_BEACH_CLUB_NAMES = ["casa malca", "mia beach club and resort"];
+
 /** Infer category from Google place types (maps to our 4: club | restaurant | cafe | cultural) */
 export function inferCategory(types: string[] = []): VenueCategory {
   const t = types.map((s) => s.toLowerCase());
@@ -205,7 +208,12 @@ export function placeToVenueRow(place: GooglePlaceResult): {
   google_data: unknown;
 } {
   const loc = place.geometry?.location ?? { lat: 0, lng: 0 };
-  const category = inferCategory(place.types);
+  let category = inferCategory(place.types);
+  const nameLower = (place.name ?? "").toLowerCase();
+  // Google often types beach clubs as lodging/restaurant/cultural; override when name indicates beach club
+  if (category !== "club" && (nameLower.includes("beach club") || KNOWN_BEACH_CLUB_NAMES.some((n) => nameLower.includes(n)))) {
+    category = "club";
+  }
 
   return {
     place_id: place.place_id,

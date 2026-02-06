@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { TULUM_LAT, TULUM_LNG, DEFAULT_ZOOM } from "@/data/constants";
 import { useVenues } from "@/hooks/useVenues";
+import { useFavorites } from "@/hooks/useFavorites";
 import { getEnhancedMarkerHtml } from "@/lib/marker-config";
 import type { Lang } from "@/lib/weather";
 import { translations } from "@/lib/i18n";
@@ -26,9 +27,9 @@ const DEFAULT_LAYERS: MapLayersState = {
   satellite: false,
   radar: true,
   clubs: false,
-  restaurants: false,
+  restaurants: true,
   cafes: false,
-  cultural: true,
+  cultural: false,
   favorites: true,
 };
 
@@ -62,6 +63,7 @@ export function MapContainer({
   className = "",
 }: MapContainerProps) {
   const { clubs, restaurants, cafes, cultural } = useVenues();
+  const { favoriteIds } = useFavorites();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<unknown>(null);
   const layersRef = useRef<Record<string, unknown>>({});
@@ -337,7 +339,7 @@ export function MapContainer({
     };
 
     const createVenueIcon = (
-      type: "beachClub" | "restaurant" | "cafe" | "cultural",
+      type: "beachClub" | "restaurant" | "cafe" | "cultural" | "favorites",
       place: { id?: string; name: string; lat: number; lng: number; rating?: number | null }
     ) =>
       L.divIcon({
@@ -387,7 +389,19 @@ export function MapContainer({
         addToGroup(m);
       });
     }
-  }, [lang, layers.clubs, layers.restaurants, layers.cafes, layers.cultural, clubs, restaurants, cafes, cultural, userLocation, onPlaceSelect]);
+    if (layers.favorites && favoriteIds.size > 0) {
+      const allVenues: PlaceForSelect[] = [...clubs, ...restaurants, ...cafes, ...cultural];
+      allVenues.forEach((place) => {
+        const id = place.id ?? place.place_id;
+        if (!id || !favoriteIds.has(id)) return;
+        const icon = createVenueIcon("favorites", place);
+        const m = L.marker([place.lat, place.lng], { icon });
+        m.bindPopup(popup(place.name, desc(place), place.url ?? "", place.whatsapp ?? "", place.lat, place.lng), { maxWidth: 260 });
+        m.on("click", () => onPlaceSelect?.(place));
+        addToGroup(m);
+      });
+    }
+  }, [lang, layers.clubs, layers.restaurants, layers.cafes, layers.cultural, layers.favorites, favoriteIds, clubs, restaurants, cafes, cultural, userLocation, onPlaceSelect]);
 
   return <div ref={containerRef} className={`h-full w-full ${className}`} id="map" />;
 }
