@@ -6,7 +6,7 @@
 const BASE_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
 const DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json";
 
-export type VenueCategory = "club" | "restaurant" | "cultural";
+export type VenueCategory = "club" | "restaurant" | "cultural" | "cafe";
 
 export interface GooglePlaceResult {
   place_id: string;
@@ -89,6 +89,7 @@ export async function getPlaceDetails(params: PlaceDetailsParams): Promise<Googl
 export function inferCategory(types: string[] = []): VenueCategory {
   const t = types.map((s) => s.toLowerCase());
   if (t.some((x) => ["bar", "night_club", "casino"].includes(x))) return "club";
+  if (t.some((x) => ["cafe"].includes(x))) return "cafe";
   if (t.some((x) => ["restaurant", "food", "meal_takeaway", "meal_delivery"].includes(x))) return "restaurant";
   if (
     t.some((x) =>

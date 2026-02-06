@@ -1,4 +1,4 @@
-export type MarkerType = "beachClub" | "restaurant" | "cultural" | "userLocation";
+export type MarkerType = "beachClub" | "restaurant" | "cafe" | "cultural" | "userLocation";
 
 export interface MarkerConfigItem {
   color: string;
@@ -19,6 +19,12 @@ export const markerConfig: Record<MarkerType, MarkerConfigItem> = {
     color: "#50C878",
     icon: "🍽️",
     glowColor: "rgba(80, 200, 120, 0.5)",
+    size: 22,
+  },
+  cafe: {
+    color: "#8B4513",
+    icon: "☕",
+    glowColor: "rgba(139, 69, 19, 0.5)",
     size: 22,
   },
   cultural: {

@@ -12,14 +12,16 @@ import { resolve } from "path";
 config({ path: resolve(process.cwd(), ".env.local") });
 config({ path: resolve(process.cwd(), "tulum-situation-monitor/.env.local") });
 
-const TULUM_GRID = [
-  { lat: 20.21, lng: -87.43, keyword: "beach club" },
-  { lat: 20.18, lng: -87.45, keyword: "beach club" },
-  { lat: 20.15, lng: -87.46, keyword: "beach club" },
-  { lat: 20.18, lng: -87.46, keyword: "restaurant" },
-  { lat: 20.15, lng: -87.46, keyword: "restaurant" },
-  { lat: 20.21, lng: -87.5, keyword: "cenote" },
-  { lat: 20.14, lng: -87.46, keyword: "hotel" },
+/** From google-places-api-integration.md: single center + 10km radius. */
+const TULUM_CENTER = { lat: 20.2114, lng: -87.4654 };
+const TULUM_RADIUS = 10000; // 10km
+const TULUM_SEARCHES: { keyword?: string; type?: string }[] = [
+  { keyword: "beach club" },
+  { type: "restaurant" },
+  { type: "cafe" },
+  { keyword: "cenote" },
+  { type: "tourist_attraction" },
+  { type: "lodging" },
 ];
 
 async function nearbySearch(params: {
@@ -27,6 +29,7 @@ async function nearbySearch(params: {
   lng: number;
   radius: number;
   keyword?: string;
+  type?: string;
 }) {
   const key = process.env.GOOGLE_MAPS_API_KEY;
   if (!key) throw new Error("GOOGLE_MAPS_API_KEY missing in .env.local");
@@ -35,6 +38,7 @@ async function nearbySearch(params: {
   url.searchParams.set("radius", String(params.radius));
   url.searchParams.set("key", key);
   if (params.keyword) url.searchParams.set("keyword", params.keyword);
+  if (params.type) url.searchParams.set("type", params.type);
   const res = await fetch(url.toString());
   const data = (await res.json()) as { status: string; results?: unknown[]; error_message?: string };
   if (data.status !== "OK" && data.status !== "ZERO_RESULTS") {
@@ -43,9 +47,10 @@ async function nearbySearch(params: {
   return { results: data.results ?? [] };
 }
 
-function inferCategory(types: string[] = []): "club" | "restaurant" | "cultural" {
+function inferCategory(types: string[] = []): "club" | "restaurant" | "cultural" | "cafe" {
   const t = types.map((s) => s.toLowerCase());
   if (t.some((x) => ["bar", "night_club", "casino"].includes(x))) return "club";
+  if (t.some((x) => ["cafe"].includes(x))) return "cafe";
   if (t.some((x) => ["restaurant", "food", "meal_takeaway", "meal_delivery"].includes(x)))
     return "restaurant";
   if (
@@ -90,10 +95,11 @@ async function main() {
   const seen = new Set<string>();
   let total = 0;
 
-  for (let i = 0; i < TULUM_GRID.length; i++) {
-    const point = TULUM_GRID[i];
-    console.log(`[${i + 1}/${TULUM_GRID.length}] Searching ${point.keyword} @ ${point.lat},${point.lng}...`);
-    const { results } = await nearbySearch({ ...point, radius: 4000 });
+  for (let i = 0; i < TULUM_SEARCHES.length; i++) {
+    const search = TULUM_SEARCHES[i];
+    const label = search.keyword ?? search.type ?? "places";
+    console.log(`[${i + 1}/${TULUM_SEARCHES.length}] Searching ${label} @ ${TULUM_CENTER.lat},${TULUM_CENTER.lng} (${TULUM_RADIUS}m)...`);
+    const { results } = await nearbySearch({ ...TULUM_CENTER, radius: TULUM_RADIUS, ...search });
     console.log(`  Found ${results.length} places`);
 
     for (const place of results as Record<string, unknown>[]) {
@@ -120,7 +126,7 @@ async function main() {
       );
       total++;
     }
-    if (i < TULUM_GRID.length - 1) {
+    if (i < TULUM_SEARCHES.length - 1) {
       await new Promise((r) => setTimeout(r, 1200));
     }
   }

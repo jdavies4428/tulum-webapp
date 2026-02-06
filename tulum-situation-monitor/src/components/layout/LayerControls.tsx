@@ -84,6 +84,16 @@ export function LayerControls({ lang, layers, onLayersChange }: LayerControlsPro
             }}
           />
           <LayerRow
+            id="cafes"
+            label={t.coffeeShops}
+            checked={layers.cafes}
+            onToggle={() => toggle("cafes")}
+            dotStyle={{
+              background: "var(--marker-cafe)",
+              boxShadow: "0 0 6px var(--marker-cafe)",
+            }}
+          />
+          <LayerRow
             id="cultural"
             label={t.cultural}
             checked={layers.cultural}

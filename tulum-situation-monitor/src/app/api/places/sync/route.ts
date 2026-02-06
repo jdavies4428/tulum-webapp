@@ -5,15 +5,16 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-/** Tulum area: beach-club searches on coast only; no generic "bar" to avoid town bars. */
-const TULUM_GRID = [
-  { lat: 20.21, lng: -87.43, keyword: "beach club" },
-  { lat: 20.18, lng: -87.45, keyword: "beach club" },
-  { lat: 20.15, lng: -87.46, keyword: "beach club" },
-  { lat: 20.18, lng: -87.46, keyword: "restaurant" },
-  { lat: 20.15, lng: -87.46, keyword: "restaurant" },
-  { lat: 20.21, lng: -87.50, keyword: "cenote" },
-  { lat: 20.14, lng: -87.46, keyword: "hotel" },
+/** From google-places-api-integration.md: single center + 10km radius. */
+const TULUM_CENTER = { lat: 20.2114, lng: -87.4654 };
+const TULUM_RADIUS = 10000; // 10km
+const TULUM_SEARCHES: { keyword?: string; type?: string }[] = [
+  { keyword: "beach club" },
+  { type: "restaurant" },
+  { type: "cafe" },
+  { keyword: "cenote" },
+  { type: "tourist_attraction" },
+  { type: "lodging" },
 ];
 
 /**
@@ -27,12 +28,12 @@ export async function POST(request: NextRequest) {
     const seen = new Set<string>();
     let totalUpserted = 0;
 
-    for (const point of TULUM_GRID) {
+    for (const search of TULUM_SEARCHES) {
       const { results } = await nearbySearch({
-        lat: point.lat,
-        lng: point.lng,
-        radius: 4000,
-        keyword: point.keyword,
+        ...TULUM_CENTER,
+        radius: TULUM_RADIUS,
+        keyword: search.keyword,
+        type: search.type,
       });
 
       for (const place of results) {

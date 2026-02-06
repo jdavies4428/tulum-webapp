@@ -5,9 +5,9 @@ import { useVenues } from "@/hooks/useVenues";
 import { TULUM_LAT, TULUM_LNG } from "@/data/constants";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
-import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
+import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 
-type TabId = "beachClubs" | "restaurants" | "cultural";
+type TabId = "beachClubs" | "restaurants" | "coffeeShops" | "cultural";
 type SortBy = "distance" | "rating" | "popular";
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -54,13 +54,20 @@ interface PlaceForCard {
 }
 
 function placeToCard(
-  p: BeachClub | Restaurant | CulturalPlace,
+  p: BeachClub | Restaurant | CulturalPlace | CafePlace,
   lang: Lang,
   categoryLabel: string
 ): PlaceForCard {
   const desc = lang === "es" ? p.descEs ?? p.desc : "descFr" in p ? (p as { descFr?: string }).descFr ?? p.desc : p.desc;
   const dist = haversineKm(TULUM_LAT, TULUM_LNG, p.lat, p.lng);
-  const tags = categoryLabel === "Club" ? ["Beachfront", "Sunset Views"] : categoryLabel === "Restaurant" ? ["Dining"] : ["Cultural"];
+  const tags =
+    categoryLabel === "Club"
+      ? ["Beachfront", "Sunset Views"]
+      : categoryLabel === "Restaurant"
+        ? ["Dining"]
+        : categoryLabel === "Coffee"
+          ? ["Coffee", "Café"]
+          : ["Cultural"];
   return {
     id: p.id,
     name: p.name,
@@ -363,17 +370,18 @@ interface PlacesModalProps {
   onClose: () => void;
 }
 
-const TABS = [
-  { id: "beachClubs" as TabId, label: "Beach Clubs", icon: "🏖️" },
-  { id: "restaurants" as TabId, label: "Restaurants", icon: "🍽️" },
-  { id: "cultural" as TabId, label: "Cultural", icon: "🎭" },
+const TABS: { id: TabId; labelKey: keyof typeof import("@/lib/i18n").translations.en; icon: string }[] = [
+  { id: "beachClubs", labelKey: "beachClubs", icon: "🏖️" },
+  { id: "restaurants", labelKey: "restaurants", icon: "🍽️" },
+  { id: "coffeeShops", labelKey: "coffeeShops", icon: "☕" },
+  { id: "cultural", labelKey: "cultural", icon: "🎭" },
 ];
 
 export function PlacesModal({ lang, isOpen, onClose }: PlacesModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>("beachClubs");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortBy>("distance");
-  const { clubs, restaurants, cultural, isLoading, error, source } = useVenues();
+  const { clubs, restaurants, cafes, cultural, isLoading, error, source } = useVenues();
   const t = translations[lang] as Record<string, string>;
   const navigateLabel = t.navigate ?? "Go";
 
@@ -382,14 +390,18 @@ export function PlacesModal({ lang, isOpen, onClose }: PlacesModalProps) {
       ? t.beachClubs ?? "Beach Clubs"
       : activeTab === "restaurants"
         ? t.restaurants ?? "Restaurants"
-        : t.cultural ?? "Cultural";
+        : activeTab === "coffeeShops"
+          ? t.coffeeShops ?? "Coffee Shops"
+          : t.cultural ?? "Cultural";
 
   const rawItems =
     activeTab === "beachClubs"
       ? clubs.map((p) => placeToCard(p, lang, "Club"))
       : activeTab === "restaurants"
         ? restaurants.map((p) => placeToCard(p, lang, "Restaurant"))
-        : cultural.map((p) => placeToCard(p, lang, "Cultural"));
+        : activeTab === "coffeeShops"
+          ? cafes.map((p) => placeToCard(p, lang, "Coffee"))
+          : cultural.map((p) => placeToCard(p, lang, "Cultural"));
 
   const items = useMemo(() => {
     let list = [...rawItems];
@@ -414,6 +426,7 @@ export function PlacesModal({ lang, isOpen, onClose }: PlacesModalProps) {
   const tabCounts = {
     beachClubs: clubs.length,
     restaurants: restaurants.length,
+    coffeeShops: cafes.length,
     cultural: cultural.length,
   };
 
@@ -619,7 +632,7 @@ export function PlacesModal({ lang, isOpen, onClose }: PlacesModalProps) {
               }}
             >
               <span style={{ fontSize: "18px" }}>{tab.icon}</span>
-              {tab.label}
+              {t[tab.labelKey] ?? tab.labelKey}
               <span
                 style={{
                   padding: "2px 8px",

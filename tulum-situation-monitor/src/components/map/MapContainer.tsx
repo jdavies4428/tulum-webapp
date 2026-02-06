@@ -6,9 +6,9 @@ import { useVenues } from "@/hooks/useVenues";
 import { getEnhancedMarkerHtml } from "@/lib/marker-config";
 import type { Lang } from "@/lib/weather";
 import { translations } from "@/lib/i18n";
-import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
+import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 
-export type MapLayerId = "carto" | "satellite" | "radar" | "clubs" | "restaurants" | "cultural";
+export type MapLayerId = "carto" | "satellite" | "radar" | "clubs" | "restaurants" | "cafes" | "cultural";
 
 export interface MapLayersState {
   carto: boolean;
@@ -16,6 +16,7 @@ export interface MapLayersState {
   radar: boolean;
   clubs: boolean;
   restaurants: boolean;
+  cafes: boolean;
   cultural: boolean;
 }
 
@@ -25,6 +26,7 @@ const DEFAULT_LAYERS: MapLayersState = {
   radar: true,
   clubs: false,
   restaurants: true,
+  cafes: false,
   cultural: false,
 };
 
@@ -34,7 +36,7 @@ export interface UserLocation {
   accuracy: number;
 }
 
-type PlaceForSelect = BeachClub | Restaurant | CulturalPlace;
+type PlaceForSelect = BeachClub | Restaurant | CulturalPlace | CafePlace;
 
 interface MapContainerProps {
   lang: Lang;
@@ -57,7 +59,7 @@ export function MapContainer({
   onPlaceSelect,
   className = "",
 }: MapContainerProps) {
-  const { clubs, restaurants, cultural } = useVenues();
+  const { clubs, restaurants, cafes, cultural } = useVenues();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<unknown>(null);
   const layersRef = useRef<Record<string, unknown>>({});
@@ -322,7 +324,7 @@ export function MapContainer({
     };
 
     const createVenueIcon = (
-      type: "beachClub" | "restaurant" | "cultural",
+      type: "beachClub" | "restaurant" | "cafe" | "cultural",
       place: { id?: string; name: string; lat: number; lng: number; rating?: number | null }
     ) =>
       L.divIcon({
@@ -354,6 +356,15 @@ export function MapContainer({
         addToGroup(m);
       });
     }
+    if (layers.cafes) {
+      cafes.forEach((c) => {
+        const icon = createVenueIcon("cafe", c);
+        const m = L.marker([c.lat, c.lng], { icon });
+        m.bindPopup(popup(c.name, desc(c), c.url ?? "", c.whatsapp ?? "", c.lat, c.lng), { maxWidth: 260 });
+        m.on("click", () => onPlaceSelect?.(c));
+        addToGroup(m);
+      });
+    }
     if (layers.cultural) {
       cultural.forEach((c) => {
         const icon = createVenueIcon("cultural", c);
@@ -363,7 +374,7 @@ export function MapContainer({
         addToGroup(m);
       });
     }
-  }, [lang, layers.clubs, layers.restaurants, layers.cultural, clubs, restaurants, cultural, userLocation, onPlaceSelect]);
+  }, [lang, layers.clubs, layers.restaurants, layers.cafes, layers.cultural, clubs, restaurants, cafes, cultural, userLocation, onPlaceSelect]);
 
   return <div ref={containerRef} className={`h-full w-full ${className}`} id="map" />;
 }

@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { isInBeachZone } from "@/data/constants";
-import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
+import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 
 type VenueRow = {
   id: string;
   place_id: string;
   name: string;
-  category: "club" | "restaurant" | "cultural";
+  category: "club" | "restaurant" | "cultural" | "cafe";
   lat: number;
   lng: number;
   description: string | null;
@@ -21,11 +21,12 @@ type VenueRow = {
   rating?: number | null;
 };
 
-type VenuePlace = BeachClub | Restaurant | CulturalPlace;
+type VenuePlace = BeachClub | Restaurant | CulturalPlace | CafePlace;
 
 function venueToPlace(venue: VenueRow): VenuePlace {
   const base = {
     id: venue.id,
+    place_id: venue.place_id,
     name: venue.name,
     lat: venue.lat ?? 0,
     lng: venue.lng ?? 0,
@@ -39,12 +40,16 @@ function venueToPlace(venue: VenueRow): VenuePlace {
   if (venue.category === "club") {
     return { ...base, hasWebcam: venue.has_webcam } as BeachClub;
   }
+  if (venue.category === "cafe") {
+    return base as CafePlace;
+  }
   return base as Restaurant | CulturalPlace;
 }
 
 export function useVenues() {
   const [clubs, setClubs] = useState<BeachClub[]>([]);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [cafes, setCafes] = useState<CafePlace[]>([]);
   const [cultural, setCultural] = useState<CulturalPlace[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +70,7 @@ export function useVenues() {
             .map(venueToPlace) as BeachClub[]
         );
         setRestaurants(rows.filter((r) => r.category === "restaurant").map(venueToPlace) as Restaurant[]);
+        setCafes(rows.filter((r) => r.category === "cafe").map(venueToPlace) as CafePlace[]);
         setCultural(rows.filter((r) => r.category === "cultural").map(venueToPlace) as CulturalPlace[]);
         setSource("supabase");
         setError(null);
@@ -79,5 +85,5 @@ export function useVenues() {
     fetchVenues();
   }, []);
 
-  return { clubs, restaurants, cultural, isLoading, error, source };
+  return { clubs, restaurants, cafes, cultural, isLoading, error, source };
 }

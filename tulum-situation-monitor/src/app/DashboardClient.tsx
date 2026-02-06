@@ -9,7 +9,7 @@ import { LayerControls } from "@/components/layout/LayerControls";
 import { MapLegend } from "@/components/layout/MapLegend";
 import { PlacesModal } from "@/components/places/PlacesModal";
 import { PlacePopup } from "@/components/places/PlacePopup";
-import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
+import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 import { useWeather } from "@/hooks/useWeather";
 import { useTides } from "@/hooks/useTides";
 import type { Lang } from "@/lib/weather";
@@ -26,6 +26,7 @@ function getDefaultLayers(): MapLayersState {
     radar: true,
     clubs: false,
     restaurants: true,
+    cafes: false,
     cultural: false,
   };
 }
@@ -40,7 +41,7 @@ export function DashboardClient() {
   const [layers, setLayers] = useState<MapLayersState>(getDefaultLayers);
   const [placesOpen, setPlacesOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [selectedPlace, setSelectedPlace] = useState<(BeachClub | Restaurant | CulturalPlace) | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<(BeachClub | Restaurant | CulturalPlace | CafePlace) | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; accuracy: number } | null>(null);
   const [mapApi, setMapApi] = useState<MapApi | null>(null);
   const [isMobile, setIsMobile] = useState(false);

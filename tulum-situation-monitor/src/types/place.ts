@@ -1,5 +1,6 @@
 export interface PlaceBase {
   id?: string;
+  place_id?: string;
   name: string;
   lat: number;
   lng: number;
@@ -17,3 +18,4 @@ export interface BeachClub extends PlaceBase {
 
 export type Restaurant = PlaceBase;
 export type CulturalPlace = PlaceBase;
+export type CafePlace = PlaceBase;

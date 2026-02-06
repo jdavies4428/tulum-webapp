@@ -62,6 +62,7 @@
   /* Map marker colors (match marker-config.ts for legend & layer dots) */
   --marker-beach-club: #FF9500;
   --marker-restaurant: #50C878;
+  --marker-cafe: #8B4513;
   --marker-cultural: #9B59B6;
   --bg-dark: var(--bg-primary);
   --bg-panel: var(--bg-elevated);
@@ -748,6 +749,10 @@ body {
 .legend-dot.restaurants {
   background: var(--marker-restaurant);
   box-shadow: 0 0 4px var(--marker-restaurant);
+}
+.legend-dot.cafes {
+  background: var(--marker-cafe);
+  box-shadow: 0 0 4px var(--marker-cafe);
 }
 .legend-dot.cultural {
   background: var(--marker-cultural);
