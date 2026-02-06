@@ -17,11 +17,10 @@ import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 
 function getDefaultLayers(): MapLayersState {
-  const hour = new Date().getHours();
-  const isDaytime = hour >= 6 && hour < 19;
   return {
-    carto: !isDaytime,
-    satellite: isDaytime,
+    osm: true,
+    carto: false,
+    satellite: false,
     radar: true,
     clubs: false,
     restaurants: true,
@@ -44,18 +43,25 @@ export default function MapPage() {
 
   const { data: weatherData } = useWeather();
 
-  // Request GPS as soon as map page loads (mobile often needs this before map is ready)
+  // Request GPS on map page load; 5s timeout fallback to Tulum (handled by MapContainer)
   useEffect(() => {
     if (typeof navigator === "undefined" || !navigator.geolocation) return;
-    const opts = { enableHighAccuracy: true, maximumAge: 30000, timeout: 15000 };
-    const onPos = (position: GeolocationPosition) => {
-      setUserLocation({
+    const opts = { enableHighAccuracy: true, maximumAge: 30000, timeout: 10000 };
+    let resolved = false;
+    const resolveOnce = (loc: { lat: number; lng: number; accuracy: number } | null) => {
+      if (resolved) return;
+      resolved = true;
+      clearTimeout(timeoutId);
+      if (loc) setUserLocation(loc);
+    };
+    const timeoutId = setTimeout(() => resolveOnce(null), 5000);
+    const onPos = (position: GeolocationPosition) =>
+      resolveOnce({
         lat: position.coords.latitude,
         lng: position.coords.longitude,
         accuracy: position.coords.accuracy,
       });
-    };
-    navigator.geolocation.getCurrentPosition(onPos, () => {}, opts);
+    navigator.geolocation.getCurrentPosition(onPos, () => resolveOnce(null), opts);
   }, []);
 
   useEffect(() => {

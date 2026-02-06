@@ -12,6 +12,7 @@ import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/pl
 export type MapLayerId = "carto" | "satellite" | "radar" | "clubs" | "restaurants" | "cafes" | "cultural" | "favorites";
 
 export interface MapLayersState {
+  osm: boolean;
   carto: boolean;
   satellite: boolean;
   radar: boolean;
@@ -23,7 +24,8 @@ export interface MapLayersState {
 }
 
 const DEFAULT_LAYERS: MapLayersState = {
-  carto: true,
+  osm: true,
+  carto: false,
   satellite: false,
   radar: true,
   clubs: false,
@@ -91,6 +93,10 @@ export function MapContainer({
     L.control.attribution({ position: "bottomright" }).addTo(map);
     L.control.zoom({ position: "bottomleft" }).addTo(map);
 
+    const osm = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      { attribution: "© OpenStreetMap", subdomains: "abc", maxZoom: 19 }
+    );
     const carto = L.tileLayer(
       "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
       { attribution: "© OpenStreetMap, © CARTO", subdomains: "abcd", maxZoom: 20 }
@@ -104,6 +110,7 @@ export function MapContainer({
       { attribution: "© RainViewer", opacity: 0.6, maxZoom: 18 }
     );
 
+    layersRef.current.osm = osm;
     layersRef.current.carto = carto;
     layersRef.current.satellite = satellite;
     layersRef.current.radar = radar;
@@ -131,7 +138,7 @@ export function MapContainer({
     tulumDot.bindPopup("<b>Tulum Centro</b>");
     tulumMarkersRef.current = [tulumDot];
 
-    carto.addTo(map);
+    osm.addTo(map);
     return () => {
       (tulumMarkersRef.current as { remove: () => void }[]).forEach((layer) => layer.remove());
       tulumMarkersRef.current = [];
@@ -162,15 +169,32 @@ export function MapContainer({
     if (!map?.setView || !onMapReady) return;
     const locateUser = () => {
       if (typeof navigator === "undefined" || !navigator.geolocation) return;
-      const geoOptions = { enableHighAccuracy: true, maximumAge: 30000, timeout: 15000 };
+      const geoOptions = { enableHighAccuracy: true, maximumAge: 30000, timeout: 10000 };
+      let resolved = false;
+      const resolveOnce = (loc: UserLocation | null) => {
+        if (resolved) return;
+        resolved = true;
+        clearTimeout(timeoutId);
+        onUserLocationChange?.(loc);
+      };
       const onPos = (position: GeolocationPosition) => {
-        onUserLocationChange?.({
+        resolveOnce({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
           accuracy: position.coords.accuracy,
         });
       };
-      const onErr = () => onUserLocationChange?.(null);
+      const onErr = () => resolveOnce(null);
+      const timeoutId = setTimeout(() => {
+        if (!resolved) {
+          resolved = true;
+          onUserLocationChange?.(null);
+          if (watchIdRef.current != null && navigator.geolocation?.clearWatch) {
+            navigator.geolocation.clearWatch(watchIdRef.current);
+            watchIdRef.current = null;
+          }
+        }
+      }, 5000);
       navigator.geolocation.getCurrentPosition(onPos, onErr, geoOptions);
       watchIdRef.current = navigator.geolocation.watchPosition(onPos, onErr, geoOptions);
     };
@@ -243,24 +267,24 @@ export function MapContainer({
     return removeUserLayers;
   }, [effectiveUserLocation]);
 
-  // Base layer toggles (only one of carto/satellite; radar is overlay)
+  // Base layer toggles (only one of osm/carto/satellite; radar is overlay)
   useEffect(() => {
     (layersRef.current as Record<string, unknown>).radarVisible = layers.radar;
     const map = mapRef.current;
-    if (!map || !layersRef.current.carto) return;
+    if (!map || !layersRef.current.osm) return;
+    const osm = layersRef.current.osm as { addTo: (m: unknown) => unknown; remove: () => void };
     const carto = layersRef.current.carto as { addTo: (m: unknown) => unknown; remove: () => void };
     const satellite = layersRef.current.satellite as { addTo: (m: unknown) => unknown; remove: () => void };
     const radar = layersRef.current.radar as { addTo: (m: unknown) => unknown; remove: () => void };
-    if (layers.carto) {
-      carto.addTo(map as unknown);
-      satellite.remove();
-    } else {
-      satellite.addTo(map as unknown);
-      carto.remove();
-    }
+    osm.remove();
+    carto.remove();
+    satellite.remove();
+    if (layers.osm) osm.addTo(map as unknown);
+    else if (layers.carto) carto.addTo(map as unknown);
+    else satellite.addTo(map as unknown);
     if (layers.radar) radar.addTo(map as unknown);
     else radar.remove();
-  }, [layers.carto, layers.satellite, layers.radar]);
+  }, [layers.osm, layers.carto, layers.satellite, layers.radar]);
 
   // Radar tile URL refresh every 10 min (match original updateRadarTiles)
   useEffect(() => {

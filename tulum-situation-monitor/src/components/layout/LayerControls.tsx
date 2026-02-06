@@ -17,7 +17,8 @@ export function LayerControls({ lang, layers, onLayersChange }: LayerControlsPro
 
   const toggle = (key: keyof MapLayersState, value?: boolean) => {
     const next = { ...layers };
-    if (key === "carto" || key === "satellite") {
+    if (key === "osm" || key === "carto" || key === "satellite") {
+      next.osm = key === "osm";
       next.carto = key === "carto";
       next.satellite = key === "satellite";
     } else {
@@ -44,6 +45,12 @@ export function LayerControls({ lang, layers, onLayersChange }: LayerControlsPro
       </button>
       {!collapsed && (
         <div className="flex flex-col gap-2">
+          <LayerRow
+            id="osm"
+            label="OpenStreetMap"
+            checked={layers.osm}
+            onToggle={() => toggle("osm", true)}
+          />
           <LayerRow
             id="carto"
             label={t.darkBaseMap}

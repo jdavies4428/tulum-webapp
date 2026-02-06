@@ -21,11 +21,10 @@ import { usePersistedLang } from "@/hooks/usePersistedLang";
 const MOBILE_BREAKPOINT = 768;
 
 function getDefaultLayers(): MapLayersState {
-  const hour = new Date().getHours();
-  const isDaytime = hour >= 6 && hour < 19; // 6am–7pm: satellite; otherwise dark (match original)
   return {
-    carto: !isDaytime,
-    satellite: isDaytime,
+    osm: true,
+    carto: false,
+    satellite: false,
     radar: true,
     clubs: false,
     restaurants: true,

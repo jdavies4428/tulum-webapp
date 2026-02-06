@@ -16,6 +16,8 @@ const INTEREST_OPTIONS: { id: string; labelEn: string; icon: string }[] = [
   { id: "wellness", labelEn: "Yoga & Wellness", icon: "🧘" },
   { id: "adventure", labelEn: "Adventure Sports", icon: "🤿" },
   { id: "nature", labelEn: "Nature & Wildlife", icon: "🌿" },
+  { id: "excursions", labelEn: "Excursions & Fishing", icon: "🎣" },
+  { id: "rooftops", labelEn: "Rooftops", icon: "🌆" },
 ];
 
 type ItineraryDay = {
