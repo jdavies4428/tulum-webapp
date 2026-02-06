@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
+import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 
-type PlaceForPopup = BeachClub | Restaurant | CulturalPlace;
+type PlaceForPopup = BeachClub | Restaurant | CulturalPlace | CafePlace;
 
 interface PlacePopupProps {
   place: PlaceForPopup;

@@ -51,6 +51,7 @@ interface PlaceForCard {
   priceLevel: string;
   categoryLabel: string;
   hasWebcam?: boolean;
+  sourcePlace?: BeachClub | Restaurant | CulturalPlace | CafePlace;
 }
 
 function placeToCard(
@@ -70,6 +71,7 @@ function placeToCard(
           : ["Cultural"];
   return {
     id: p.id,
+    sourcePlace: p,
     name: p.name,
     address: desc || "Tulum",
     rating: p.rating ?? 4.5,
@@ -90,14 +92,19 @@ function placeToCard(
 interface PlaceCardProps {
   place: PlaceForCard;
   navigateLabel: string;
+  onSelect?: (place: BeachClub | Restaurant | CulturalPlace | CafePlace) => void;
 }
 
-function PlaceCard({ place, navigateLabel }: PlaceCardProps) {
+function PlaceCard({ place, navigateLabel, onSelect }: PlaceCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   return (
     <div
       className="place-card"
+      role="button"
+      tabIndex={0}
+      onClick={() => place.sourcePlace && onSelect?.(place.sourcePlace)}
+      onKeyDown={(e) => e.key === "Enter" && place.sourcePlace && onSelect?.(place.sourcePlace)}
       style={{
         background: "var(--card-bg)",
         borderRadius: "16px",
@@ -292,6 +299,7 @@ function PlaceCard({ place, navigateLabel }: PlaceCardProps) {
           {place.phone ? (
             <a
               href={`tel:${place.phone.replace(/\D/g, "")}`}
+              onClick={(e) => e.stopPropagation()}
               style={{
                 padding: "12px",
                 borderRadius: "10px",
@@ -317,6 +325,7 @@ function PlaceCard({ place, navigateLabel }: PlaceCardProps) {
               href={`https://wa.me/${place.phone.replace(/\D/g, "")}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
               style={{
                 padding: "12px",
                 borderRadius: "10px",
@@ -339,7 +348,10 @@ function PlaceCard({ place, navigateLabel }: PlaceCardProps) {
           ) : null}
           <button
             type="button"
-            onClick={() => openNavigation(place.lat, place.lng, place.name)}
+            onClick={(e) => {
+              e.stopPropagation();
+              openNavigation(place.lat, place.lng, place.name);
+            }}
             style={{
               padding: "12px",
               borderRadius: "10px",
@@ -368,6 +380,7 @@ interface PlacesModalProps {
   lang: Lang;
   isOpen: boolean;
   onClose: () => void;
+  onPlaceSelect?: (place: BeachClub | Restaurant | CulturalPlace | CafePlace) => void;
 }
 
 const TABS: { id: TabId; labelKey: keyof typeof import("@/lib/i18n").translations.en; icon: string }[] = [
@@ -377,7 +390,7 @@ const TABS: { id: TabId; labelKey: keyof typeof import("@/lib/i18n").translation
   { id: "cultural", labelKey: "cultural", icon: "🎭" },
 ];
 
-export function PlacesModal({ lang, isOpen, onClose }: PlacesModalProps) {
+export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>("beachClubs");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortBy>("distance");
@@ -713,6 +726,7 @@ export function PlacesModal({ lang, isOpen, onClose }: PlacesModalProps) {
                   key={place.id ?? place.name}
                   place={place}
                   navigateLabel={navigateLabel}
+                  onSelect={onPlaceSelect}
                 />
               ))}
             </div>

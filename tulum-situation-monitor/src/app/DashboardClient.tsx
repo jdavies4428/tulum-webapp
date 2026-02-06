@@ -9,6 +9,7 @@ import { LayerControls } from "@/components/layout/LayerControls";
 import { MapLegend } from "@/components/layout/MapLegend";
 import { PlacesModal } from "@/components/places/PlacesModal";
 import { PlacePopup } from "@/components/places/PlacePopup";
+import { PlaceDetailsModal } from "@/components/places/PlaceDetailsModal";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 import { useWeather } from "@/hooks/useWeather";
 import { useTides } from "@/hooks/useTides";
@@ -166,10 +167,25 @@ export function DashboardClient() {
           }
         />
       </div>
-      <PlacesModal lang={lang} isOpen={placesOpen} onClose={() => setPlacesOpen(false)} />
-      {selectedPlace && (
+      <PlacesModal
+        lang={lang}
+        isOpen={placesOpen}
+        onClose={() => setPlacesOpen(false)}
+        onPlaceSelect={(p) => {
+          setSelectedPlace(p);
+          setPlacesOpen(false);
+        }}
+      />
+      {selectedPlace && selectedPlace.place_id ? (
+        <PlaceDetailsModal
+          placeId={selectedPlace.place_id}
+          placeName={selectedPlace.name}
+          lang={lang}
+          onClose={() => setSelectedPlace(null)}
+        />
+      ) : selectedPlace ? (
         <PlacePopup place={selectedPlace} lang={lang} onClose={() => setSelectedPlace(null)} />
-      )}
+      ) : null}
     </div>
   );
 }

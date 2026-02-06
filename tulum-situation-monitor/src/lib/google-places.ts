@@ -36,6 +36,33 @@ export interface PlaceDetailsParams {
   fields?: string;
 }
 
+/** Fields for rich Place Details (photos, reviews, opening_hours) */
+export const PLACE_DETAILS_FIELDS =
+  "name,formatted_address,geometry,photos,reviews,rating,user_ratings_total,opening_hours,website,formatted_phone_number,price_level,types";
+
+export interface PlaceDetailsResult {
+  name?: string;
+  formatted_address?: string;
+  geometry?: { location?: { lat: number; lng: number } };
+  photos?: { photo_reference: string; width: number; height: number }[];
+  reviews?: {
+    author_name: string;
+    profile_photo_url?: string;
+    rating: number;
+    relative_time_description: string;
+    text: string;
+    time?: number;
+  }[];
+  rating?: number;
+  user_ratings_total?: number;
+  opening_hours?: { open_now?: boolean; weekday_text?: string[] };
+  website?: string;
+  formatted_phone_number?: string;
+  price_level?: number;
+  types?: string[];
+  [key: string]: unknown;
+}
+
 function getApiKey(): string {
   const key = process.env.GOOGLE_MAPS_API_KEY;
   if (!key) {
@@ -68,12 +95,14 @@ export async function nearbySearch(
   };
 }
 
-export async function getPlaceDetails(params: PlaceDetailsParams): Promise<GooglePlaceResult | null> {
+export async function getPlaceDetails(
+  params: PlaceDetailsParams
+): Promise<GooglePlaceResult | PlaceDetailsResult | null> {
   const key = getApiKey();
   const url = new URL(DETAILS_URL);
   url.searchParams.set("place_id", params.place_id);
   url.searchParams.set("key", key);
-  if (params.fields) url.searchParams.set("fields", params.fields);
+  url.searchParams.set("fields", params.fields ?? PLACE_DETAILS_FIELDS);
 
   const res = await fetch(url.toString());
   const data = await res.json();
