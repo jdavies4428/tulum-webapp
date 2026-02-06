@@ -12,7 +12,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: "No Google API key configured (GOOGLE_TRANSLATE_API_KEY or GOOGLE_MAPS_API_KEY)",
+        error:
+          "GOOGLE_TRANSLATE_API_KEY not configured. Add it to .env.local and Vercel env vars.",
       },
       { status: 500 }
     );
