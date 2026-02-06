@@ -239,18 +239,43 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
             {place.categoryLabel}
             {place.hasWebcam ? " 📹" : ""}
           </span>
-          <span
-            style={{
-              padding: "6px 12px",
-              borderRadius: "20px",
-              background: place.isOpen ? "var(--status-open, #10B981)" : "var(--status-closed, #EF4444)",
-              fontSize: "11px",
-              fontWeight: "700",
-              color: "white",
-            }}
-          >
-            {place.isOpen ? "• OPEN" : "CLOSED"}
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleFavorite?.();
+              }}
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                background: "rgba(0, 0, 0, 0.5)",
+                border: "none",
+                fontSize: "18px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            >
+              {isFavorite ? "❤️" : "🤍"}
+            </button>
+            <span
+              style={{
+                padding: "6px 12px",
+                borderRadius: "20px",
+                background: place.isOpen ? "var(--status-open, #10B981)" : "var(--status-closed, #EF4444)",
+                fontSize: "11px",
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              {place.isOpen ? "• OPEN" : "CLOSED"}
+            </span>
+          </div>
         </div>
       )}
 
@@ -351,6 +376,31 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
             flexWrap: "wrap",
           }}
         >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite?.();
+            }}
+            style={{
+              padding: "12px",
+              borderRadius: "10px",
+              background: "rgba(255, 255, 255, 0.1)",
+              border: "1px solid var(--border-subtle)",
+              color: "var(--text-primary)",
+              fontSize: "13px",
+              fontWeight: "700",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "6px",
+              transition: "transform 0.2s",
+            }}
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+          >
+            {isFavorite ? "❤️" : "🤍"} {isFavorite ? "Saved" : "Save"}
+          </button>
           {place.phone ? (
             <a
               href={`tel:${place.phone.replace(/\D/g, "")}`}
