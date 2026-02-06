@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { translations } from "@/lib/i18n";
@@ -56,6 +56,8 @@ export default function ItineraryPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [itinerary, setItinerary] = useState<ItineraryData | null>(null);
+  const generatingRef = useRef(false);
+  const mainRef = useRef<HTMLElement>(null);
   const [formData, setFormData] = useState({
     days: 3,
     interests: [] as string[],
@@ -73,28 +75,40 @@ export default function ItineraryPage() {
   };
 
   const generate = async () => {
+    if (generatingRef.current) return;
     if (formData.interests.length === 0) {
       setError(t.selectOneInterest ?? "Select at least one interest");
       return;
     }
     setError(null);
     setLoading(true);
+    generatingRef.current = true;
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 90_000);
       const res = await fetch("/api/itinerary/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
       const data = await res.json();
       if (data.success && data.itinerary) {
         setItinerary(data.itinerary as ItineraryData);
+        mainRef.current?.scrollTo({ top: 0 });
       } else {
         setError(data.error ?? "Failed to generate");
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Request failed");
+      const msg =
+        e instanceof Error
+          ? (e.name === "AbortError" ? (t.requestTimeout ?? "Request timed out. Please try again.") : e.message)
+          : "Request failed";
+      setError(msg);
     } finally {
       setLoading(false);
+      generatingRef.current = false;
     }
   };
 
@@ -147,6 +161,7 @@ export default function ItineraryPage() {
       </header>
 
       <main
+        ref={mainRef}
         style={{
           flex: 1,
           minHeight: 0,
@@ -397,7 +412,10 @@ export default function ItineraryPage() {
         <ItineraryDisplay
           itinerary={itinerary}
           lang={lang}
-          onReset={() => setItinerary(null)}
+          onReset={() => {
+            setItinerary(null);
+            mainRef.current?.scrollTo({ top: 0 });
+          }}
           t={t}
         />
       )}

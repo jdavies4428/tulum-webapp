@@ -90,13 +90,21 @@ function parseItinerary(text: string): Record<string, unknown> {
   }
 }
 
+const VALID_BUDGETS = new Set(["low", "medium", "high"]);
+const VALID_GROUP_TYPES = new Set(["solo", "couple", "family", "friends"]);
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const days = Number(body.days) || 3;
-    const interests = Array.isArray(body.interests) ? body.interests : [];
-    const budget = typeof body.budget === "string" ? body.budget : "medium";
-    const groupType = typeof body.groupType === "string" ? body.groupType : "couple";
+    const days = Math.min(14, Math.max(1, Number(body.days) || 3));
+    const rawInterests = Array.isArray(body.interests) ? body.interests : [];
+    const interests = rawInterests
+      .filter((i): i is string => typeof i === "string")
+      .map((s) => String(s).trim())
+      .filter(Boolean)
+      .slice(0, 12);
+    const budget = VALID_BUDGETS.has(body.budget) ? body.budget : "medium";
+    const groupType = VALID_GROUP_TYPES.has(body.groupType) ? body.groupType : "couple";
 
     if (interests.length === 0) {
       return NextResponse.json(
@@ -108,25 +116,45 @@ export async function POST(request: NextRequest) {
     const genAI = new GoogleGenerativeAI(getApiKey());
     const model = genAI.getGenerativeModel({ model: getModel() });
     const prompt = buildPrompt({ days, interests, budget, groupType });
-    const result = await model.generateContent(prompt);
-    const response = result.response;
-    const text = response.text();
 
-    if (!text) {
-      return NextResponse.json(
-        { success: false, error: "No response from AI" },
-        { status: 500 }
-      );
+    // Use 1 retry with longer delay to avoid burst limits (429 can occur even when RPM/TPM are under quota)
+    const maxRetries = 1;
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        const result = await model.generateContent(prompt);
+        const response = result.response;
+        const text = response.text();
+
+        if (!text) {
+          return NextResponse.json(
+            { success: false, error: "No response from AI" },
+            { status: 500 }
+          );
+        }
+
+        const itinerary = parseItinerary(text);
+        return NextResponse.json({ success: true, itinerary });
+      } catch (err) {
+        lastError = err;
+        const is429 =
+          err instanceof Error &&
+          (err.message.includes("429") || err.message.includes("Too Many Requests") || err.message.includes("Resource exhausted"));
+        if (is429 && attempt < maxRetries) {
+          const delayMs = 15000 + Math.random() * 5000; // 15–20s to avoid burst limits
+          await new Promise((r) => setTimeout(r, delayMs));
+          continue;
+        }
+        throw err;
+      }
     }
-
-    const itinerary = parseItinerary(text);
-    return NextResponse.json({
-      success: true,
-      itinerary,
-      rawText: text,
-    });
+    throw lastError;
   } catch (e) {
-    const msg = e instanceof Error ? e.message : "Failed to generate itinerary";
-    return NextResponse.json({ success: false, error: msg }, { status: 500 });
+    const raw = e instanceof Error ? e.message : String(e);
+    const isRateLimit = raw.includes("429") || raw.includes("Too Many Requests") || raw.includes("Resource exhausted");
+    const msg = isRateLimit
+      ? "Rate limit reached (this can happen after one request if the API was used recently). Please wait a minute and try again."
+      : raw;
+    return NextResponse.json({ success: false, error: msg }, { status: isRateLimit ? 429 : 500 });
   }
 }

@@ -144,7 +144,7 @@ export const translations: Record<
     estimatedCost: "Estimated cost",
     proTips: "Pro Tips",
     dayLabel: "Day",
-    lowBudget: "Budget",
+    lowBudget: "Economy",
     mediumBudget: "Moderate",
     highBudget: "Luxury",
     solo: "Solo",
@@ -152,6 +152,7 @@ export const translations: Record<
     family: "Family",
     friends: "Friends",
     selectOneInterest: "Select at least one interest",
+    requestTimeout: "Request timed out. Please try again.",
   },
   es: {
     title: "Discover Tulum",
@@ -274,6 +275,7 @@ export const translations: Record<
     family: "Familia",
     friends: "Amigos",
     selectOneInterest: "Elige al menos un interés",
+    requestTimeout: "La solicitud tardó demasiado. Intenta de nuevo.",
   },
   fr: {
     title: "Discover Tulum",
@@ -396,5 +398,6 @@ export const translations: Record<
     family: "Famille",
     friends: "Amis",
     selectOneInterest: "Choisissez au moins un centre d'intérêt",
+    requestTimeout: "Délai dépassé. Veuillez réessayer.",
   },
 };
