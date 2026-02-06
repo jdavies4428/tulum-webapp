@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     const rawInterests = Array.isArray(body.interests) ? body.interests : [];
     const interests = rawInterests
       .filter((i: unknown): i is string => typeof i === "string")
-      .map((s) => String(s).trim())
+      .map((s: string) => s.trim())
       .filter(Boolean)
       .slice(0, 12);
     const budget = VALID_BUDGETS.has(body.budget) ? body.budget : "medium";
