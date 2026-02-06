@@ -2,11 +2,16 @@ export const TULUM_LAT = 20.2114;
 export const TULUM_LNG = -87.4654;
 export const DEFAULT_ZOOM = 13;
 
-/** Coastal strip for "Beach Clubs" – excludes venues in town (Google has no beach_club type) */
+/**
+ * Coastal strip for "Beach Clubs" – only venues on the beach, not in town.
+ * Data comes from Google Places (cached in DB); Google has no beach_club type so we
+ * sync by keyword "beach club" / type night_club and filter by this zone.
+ * Town is ~ -87.465; coast is east (less negative). lngMin -87.45 excludes downtown.
+ */
 export const BEACH_ZONE = {
   latMin: 20.1,
   latMax: 20.23,
-  lngMin: -87.48, // east of this = coastal strip
+  lngMin: -87.45, // west edge of beach strip (excludes town at ~-87.465)
   lngMax: -87.42,
 };
 
