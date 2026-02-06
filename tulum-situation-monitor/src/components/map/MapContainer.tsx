@@ -376,6 +376,15 @@ export function MapContainer({
         addToGroup(m);
       });
     }
+
+    // On mobile, map may have had 0 size when first painted; invalidate so markers position correctly
+    const mapInstance = map as { invalidateSize?: () => void };
+    if (typeof mapInstance.invalidateSize === "function") {
+      requestAnimationFrame(() => mapInstance.invalidateSize?.());
+      // Delayed second invalidate so layout has settled (helps mobile when container size was 0 at first paint)
+      const t = window.setTimeout(() => mapInstance.invalidateSize?.(), 400);
+      return () => window.clearTimeout(t);
+    }
   }, [lang, layers.clubs, layers.restaurants, layers.cafes, layers.cultural, clubs, restaurants, cafes, cultural, userLocation, onPlaceSelect]);
 
   return <div ref={containerRef} className={`h-full w-full ${className}`} id="map" />;

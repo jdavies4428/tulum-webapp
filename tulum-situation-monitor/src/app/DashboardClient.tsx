@@ -47,14 +47,22 @@ export function DashboardClient() {
   const [showDetailsForPlaceId, setShowDetailsForPlaceId] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; accuracy: number } | null>(null);
   const [mapApi, setMapApi] = useState<MapApi | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT
+  );
 
   useEffect(() => {
     const check = () => setIsMobile(typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT);
-    check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
+
+  // Ensure Coffee Shops and Cultural are visible on mobile (in case of stale or wrong initial state)
+  useEffect(() => {
+    if (isMobile) {
+      setLayers((prev) => (prev.cafes && prev.cultural ? prev : { ...prev, cafes: true, cultural: true }));
+    }
+  }, [isMobile]);
 
   const { data: weatherData, waterTemp, loading: weatherLoading, error: weatherError, refetch: refetchWeather } = useWeather();
   const tide = useTides();

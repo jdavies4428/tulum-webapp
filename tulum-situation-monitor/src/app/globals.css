@@ -800,6 +800,13 @@ body {
   .listings-panel:not(.listings-panel-open) {
     transform: translateY(100%) !important;
   }
+  /* Ensure venue markers are visible on mobile (above overlay, not clipped) */
+  .leaflet-marker-pane {
+    z-index: 650 !important;
+  }
+  .map-container {
+    min-height: 100vh;
+  }
 }
 
 @layer utilities {
