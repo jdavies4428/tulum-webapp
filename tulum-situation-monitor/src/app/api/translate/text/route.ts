@@ -6,10 +6,14 @@ export const runtime = "nodejs";
 const TRANSLATE_URL = "https://translation.googleapis.com/language/translate/v2";
 
 export async function POST(request: NextRequest) {
-  const key = process.env.GOOGLE_TRANSLATE_API_KEY;
+  const key =
+    process.env.GOOGLE_TRANSLATE_API_KEY || process.env.GOOGLE_MAPS_API_KEY;
   if (!key) {
     return NextResponse.json(
-      { success: false, error: "GOOGLE_TRANSLATE_API_KEY not configured" },
+      {
+        success: false,
+        error: "No Google API key configured (GOOGLE_TRANSLATE_API_KEY or GOOGLE_MAPS_API_KEY)",
+      },
       { status: 500 }
     );
   }

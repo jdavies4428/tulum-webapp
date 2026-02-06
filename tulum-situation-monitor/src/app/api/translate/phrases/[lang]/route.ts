@@ -27,10 +27,14 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ lang: string }> }
 ) {
-  const key = process.env.GOOGLE_TRANSLATE_API_KEY;
+  const key =
+    process.env.GOOGLE_TRANSLATE_API_KEY || process.env.GOOGLE_MAPS_API_KEY;
   if (!key) {
     return NextResponse.json(
-      { success: false, error: "GOOGLE_TRANSLATE_API_KEY not configured" },
+      {
+        success: false,
+        error: "No Google API key configured (GOOGLE_TRANSLATE_API_KEY or GOOGLE_MAPS_API_KEY)",
+      },
       { status: 500 }
     );
   }
