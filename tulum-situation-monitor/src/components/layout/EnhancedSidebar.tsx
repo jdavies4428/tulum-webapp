@@ -307,10 +307,10 @@ export function EnhancedSidebar({
             style={{
               width: "100%",
               padding: "14px 12px",
-              background: "linear-gradient(135deg, #FFE4CC 0%, #FFD4B8 100%)",
+              background: "linear-gradient(135deg, #50C878 0%, #3CB371 100%)",
               border: "none",
               borderRadius: "20px",
-              color: "#333",
+              color: "#FFF",
               fontWeight: "700",
               fontSize: "14px",
               cursor: "pointer",
@@ -321,7 +321,7 @@ export function EnhancedSidebar({
               marginBottom: "12px",
               transition: "all 0.3s",
               textDecoration: "none",
-              boxShadow: "0 6px 20px rgba(255, 153, 102, 0.2)",
+              boxShadow: "0 6px 20px rgba(80, 200, 120, 0.35)",
             }}
           >
             📅 {tAny.localEvents ?? "Local Events"}
@@ -421,7 +421,7 @@ export function EnhancedSidebar({
           <div
             style={{
               fontSize: "11px",
-              fontWeight: "600",
+              fontWeight: "700",
               color: "var(--text-secondary)",
               marginBottom: "8px",
               letterSpacing: "0.3px",
