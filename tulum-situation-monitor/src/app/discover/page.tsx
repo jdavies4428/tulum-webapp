@@ -6,7 +6,6 @@ import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 
 const DISCOVER_ITEMS: { id: keyof typeof translations.en; icon: string; labelKey?: keyof typeof translations.en }[] = [
-  { id: "event", icon: "📅", labelKey: "localEvents" },
   { id: "transportation", icon: "🚗" },
   { id: "foodDelivery", icon: "🛵" },
   { id: "itinerary", icon: "📋", labelKey: "aiItinerary" },
@@ -20,7 +19,6 @@ export default function DiscoverPage() {
   const tAny = t as Record<string, string>;
 
   const CARD_GRADIENTS: Record<string, string> = {
-    event: "linear-gradient(135deg, #FFE4CC 0%, #FFD4B8 100%)",
     transportation: "linear-gradient(135deg, #B8E6F0 0%, #A0D8E8 100%)",
     foodDelivery: "linear-gradient(135deg, #FFD4E5 0%, #FFC0D9 100%)",
     itinerary: "linear-gradient(135deg, #D4E4BC 0%, #C2D8A8 100%)",

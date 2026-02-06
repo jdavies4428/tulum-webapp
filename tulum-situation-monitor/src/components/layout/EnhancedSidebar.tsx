@@ -294,6 +294,40 @@ export function EnhancedSidebar({
           </p>
         </div>
 
+        {/* Local Events – full-width button above Discover/Places/Map */}
+        <div
+          style={{
+            padding: "12px 24px 0",
+            borderBottom: "1px solid var(--border-subtle)",
+            background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
+          }}
+        >
+          <Link
+            href={`/discover/events?lang=${lang}`}
+            style={{
+              width: "100%",
+              padding: "14px 12px",
+              background: "linear-gradient(135deg, #FFE4CC 0%, #FFD4B8 100%)",
+              border: "none",
+              borderRadius: "20px",
+              color: "#333",
+              fontWeight: "700",
+              fontSize: "14px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              marginBottom: "12px",
+              transition: "all 0.3s",
+              textDecoration: "none",
+              boxShadow: "0 6px 20px rgba(255, 153, 102, 0.2)",
+            }}
+          >
+            📅 {tAny.localEvents ?? "Local Events"}
+          </Link>
+        </div>
+
         {/* Action buttons - Beachy gradients */}
         <div
           style={{
@@ -377,16 +411,31 @@ export function EnhancedSidebar({
           )}
         </div>
 
-        {/* Quick links: Satellite, Forecast, Beach Cams – single row */}
+        {/* Sargassum Monitoring – label + quick links */}
         <div
           style={{
             padding: "12px 24px",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: "8px",
             borderBottom: "1px solid var(--border-subtle)",
           }}
         >
+          <div
+            style={{
+              fontSize: "11px",
+              fontWeight: "600",
+              color: "var(--text-secondary)",
+              marginBottom: "8px",
+              letterSpacing: "0.3px",
+            }}
+          >
+            {tAny.sargassumMonitoring ?? "Sargassum Monitoring"}
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gap: "8px",
+            }}
+          >
           <button
             type="button"
             onClick={() => setSargassumCurrentOpen(true)}
@@ -456,6 +505,7 @@ export function EnhancedSidebar({
             <span style={{ flexShrink: 0 }}>📹</span>
             <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tAny.beachCams ?? "Beach Cams"}</span>
           </button>
+          </div>
         </div>
 
         {/* Content sections */}
