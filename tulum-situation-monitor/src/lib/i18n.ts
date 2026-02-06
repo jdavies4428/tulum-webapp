@@ -153,6 +153,8 @@ export const translations: Record<
     friends: "Friends",
     selectOneInterest: "Select at least one interest",
     requestTimeout: "Request timed out. Please try again.",
+    currenciesPanel: "Currencies",
+    currenciesError: "Rates unavailable",
   },
   es: {
     title: "Discover Tulum",
@@ -276,6 +278,8 @@ export const translations: Record<
     friends: "Amigos",
     selectOneInterest: "Elige al menos un interés",
     requestTimeout: "La solicitud tardó demasiado. Intenta de nuevo.",
+    currenciesPanel: "Divisas",
+    currenciesError: "Tasas no disponibles",
   },
   fr: {
     title: "Discover Tulum",
@@ -399,5 +403,7 @@ export const translations: Record<
     friends: "Amis",
     selectOneInterest: "Choisissez au moins un centre d'intérêt",
     requestTimeout: "Délai dépassé. Veuillez réessayer.",
+    currenciesPanel: "Devises",
+    currenciesError: "Taux indisponibles",
   },
 };

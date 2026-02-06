@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import { WeatherSection } from "@/components/weather/WeatherSection";
+import { CurrenciesPanel } from "@/components/currencies/CurrenciesPanel";
 import { AlertsPanel } from "@/components/weather/AlertsPanel";
 import { Sargassum7DayImage } from "@/components/sargassum/Sargassum7DayImage";
 import { SargassumCurrentModal } from "@/components/sargassum/SargassumCurrentModal";
@@ -460,6 +461,7 @@ export function EnhancedSidebar({
             waterTemp={waterTemp}
             onRefresh={onWeatherRefresh}
           />
+          <CurrenciesPanel lang={lang} />
           <Sargassum7DayImage lang={lang} />
           <AlertsPanel lang={lang} alerts={alerts} />
         </div>
