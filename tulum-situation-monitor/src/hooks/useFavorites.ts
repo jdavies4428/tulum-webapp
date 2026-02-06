@@ -19,7 +19,7 @@ function loadFavorites(): Set<string> {
 function saveFavorites(set: Set<string>) {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(set)));
   } catch {
     // ignore
   }
