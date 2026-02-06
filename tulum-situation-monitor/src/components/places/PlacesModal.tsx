@@ -555,7 +555,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
       >
         <div
           style={{
-            padding: "24px",
+            padding: "16px 24px",
             borderBottom: "1px solid var(--border-subtle)",
             display: "flex",
             alignItems: "center",
@@ -623,13 +623,13 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           </button>
         </div>
 
-        <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
-          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+        <div style={{ padding: "12px 24px 16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "nowrap", alignItems: "stretch" }}>
             <select
               value={activeTab}
               onChange={(e) => setActiveTab(e.target.value as TabId)}
               style={{
-                padding: "14px 16px",
+                padding: "12px 14px",
                 background: "var(--card-bg)",
                 border: "1px solid var(--border-subtle)",
                 borderRadius: "12px",
@@ -638,11 +638,12 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                 fontWeight: "600",
                 cursor: "pointer",
                 outline: "none",
-                minWidth: "180px",
+                minWidth: "72px",
+                flex: "0 0 auto",
               }}
               aria-label="Category"
             >
-              <option value="all">{t.allCategories ?? "All categories"} ({totalCount})</option>
+              <option value="all">All</option>
               {TABS.map((tab) => (
                 <option key={tab.id} value={tab.id}>
                   {tab.icon} {t[tab.labelKey] ?? tab.labelKey} ({tabCounts[tab.id]})
@@ -651,20 +652,23 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             </select>
             <div
               style={{
-                padding: "14px 16px",
+                padding: "12px 14px",
                 background: "var(--card-bg)",
                 border: "1px solid var(--border-subtle)",
                 borderRadius: "12px",
                 color: "var(--text-primary)",
                 fontSize: "14px",
                 fontWeight: "600",
-                minWidth: "180px",
+                minWidth: "0",
+                flex: "1 1 auto",
+                display: "flex",
+                alignItems: "center",
               }}
             >
               Local Picks
             </div>
           </div>
-          <div style={{ display: "flex", gap: "12px" }}>
+          <div style={{ display: "flex", gap: "8px" }}>
             <div style={{ flex: 1, position: "relative" }}>
               <input
                 type="text"
@@ -673,7 +677,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
                   width: "100%",
-                  padding: "14px 44px 14px 44px",
+                  padding: "12px 44px 12px 44px",
                   background: "var(--card-bg)",
                   border: "1px solid var(--border-subtle)",
                   borderRadius: "12px",
@@ -728,7 +732,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortBy)}
               style={{
-                padding: "14px 16px",
+                padding: "12px 14px",
                 background: "var(--card-bg)",
                 border: "1px solid var(--border-subtle)",
                 borderRadius: "12px",
@@ -750,7 +754,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "24px",
+            padding: "16px 24px",
           }}
         >
           {error && (
