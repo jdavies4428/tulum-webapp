@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useVenues } from "@/hooks/useVenues";
 import { TULUM_LAT, TULUM_LNG } from "@/data/constants";
 import { translations } from "@/lib/i18n";
@@ -447,7 +447,14 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   const [activeTab, setActiveTab] = useState<TabId>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortBy>("distance");
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const { clubs, restaurants, cafes, cultural, isLoading, error, source } = useVenues();
+
+  useEffect(() => {
+    if (isOpen) {
+      closeButtonRef.current?.focus();
+    }
+  }, [isOpen]);
   const t = translations[lang] as Record<string, string>;
   const navigateLabel = t.navigate ?? "Go";
 
@@ -594,6 +601,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           </div>
 
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
             style={{
@@ -641,6 +649,20 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                 </option>
               ))}
             </select>
+            <div
+              style={{
+                padding: "14px 16px",
+                background: "var(--card-bg)",
+                border: "1px solid var(--border-subtle)",
+                borderRadius: "12px",
+                color: "var(--text-primary)",
+                fontSize: "14px",
+                fontWeight: "600",
+                minWidth: "180px",
+              }}
+            >
+              Local Picks
+            </div>
           </div>
           <div style={{ display: "flex", gap: "12px" }}>
             <div style={{ flex: 1, position: "relative" }}>
@@ -651,7 +673,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
                   width: "100%",
-                  padding: "14px 16px 14px 44px",
+                  padding: "14px 44px 14px 44px",
                   background: "var(--card-bg)",
                   border: "1px solid var(--border-subtle)",
                   borderRadius: "12px",
@@ -668,10 +690,39 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                   top: "50%",
                   transform: "translateY(-50%)",
                   fontSize: "18px",
+                  pointerEvents: "none",
                 }}
               >
                 🔍
               </span>
+              {searchQuery.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Clear search"
+                  style={{
+                    position: "absolute",
+                    right: "8px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    width: "28px",
+                    height: "28px",
+                    borderRadius: "50%",
+                    background: "var(--text-tertiary)",
+                    border: "none",
+                    color: "var(--sidebar-bg)",
+                    fontSize: "16px",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    lineHeight: 1,
+                  }}
+                >
+                  ×
+                </button>
+              )}
             </div>
             <select
               value={sortBy}
