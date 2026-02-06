@@ -628,7 +628,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           bottom: 0,
           background: "rgba(0, 0, 0, 0.7)",
           zIndex: 9998,
-          animation: "fadeIn 0.2s ease-out",
+          animation: "fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards",
         }}
       />
 
@@ -659,7 +659,9 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
-          animation: "slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          animation: isMobile
+            ? "slideUpMobile 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards"
+            : "slideUp 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards",
           outline: "none",
         }}
         onClick={(e) => e.stopPropagation()}
