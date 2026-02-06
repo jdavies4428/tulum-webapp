@@ -393,7 +393,8 @@ export function MapContainer({
       const allVenues: PlaceForSelect[] = [...clubs, ...restaurants, ...cafes, ...cultural];
       allVenues.forEach((place) => {
         const id = place.id ?? place.place_id;
-        if (!id || !favoriteIds.has(id)) return;
+        const isFav = (id && favoriteIds.has(id)) || (place.place_id && favoriteIds.has(place.place_id));
+        if (!isFav) return;
         const icon = createVenueIcon("favorites", place);
         const m = L.marker([place.lat, place.lng], { icon });
         m.bindPopup(popup(place.name, desc(place), place.url ?? "", place.whatsapp ?? "", place.lat, place.lng), { maxWidth: 260 });

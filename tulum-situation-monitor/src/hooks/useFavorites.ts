@@ -26,7 +26,12 @@ function saveFavorites(set: Set<string>) {
 }
 
 export function useFavorites() {
-  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(loadFavorites);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(() => new Set());
+
+  // Hydrate from localStorage after mount (SSR-safe; initial state is empty)
+  useEffect(() => {
+    setFavoriteIds(loadFavorites());
+  }, []);
 
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
