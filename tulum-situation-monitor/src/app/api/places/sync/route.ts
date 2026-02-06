@@ -16,7 +16,7 @@ export const runtime = "nodejs";
 export async function POST(request: NextRequest) {
   try {
     const supabase = createAdminClient();
-    await ensureBucket(supabase as Parameters<typeof ensureBucket>[0]);
+    await ensureBucket(supabase as unknown as Parameters<typeof ensureBucket>[0]);
     const seen = new Set<string>();
     let totalUpserted = 0;
 
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
         const photoRef = place.photos?.[0]?.photo_reference;
         if (photoRef) {
           try {
-            await cacheVenuePhotoIfNeeded(supabase as Parameters<typeof cacheVenuePhotoIfNeeded>[0], place.place_id, photoRef);
+            await cacheVenuePhotoIfNeeded(supabase as unknown as Parameters<typeof cacheVenuePhotoIfNeeded>[0], place.place_id, photoRef);
           } catch {
             // non-fatal: venue is saved, thumbnail may use proxy until next sync
           }

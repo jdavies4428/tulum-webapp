@@ -495,13 +495,14 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
     return list;
   }, [allItems, activeTab, searchQuery, sortBy]);
 
-  const tabCounts = {
+  const totalCount = clubs.length + restaurants.length + cafes.length + cultural.length;
+  const tabCounts: Record<TabId, number> = {
+    all: totalCount,
     beachClubs: clubs.length,
     restaurants: restaurants.length,
     coffeeShops: cafes.length,
     cultural: cultural.length,
   };
-  const totalCount = clubs.length + restaurants.length + cafes.length + cultural.length;
 
   if (!isOpen) return null;
 
