@@ -379,13 +379,11 @@ export function EnhancedSidebar({
 
         {/* Quick links: Satellite, Forecast, Beach Cams – single row */}
         <div
-          className="sidebar-scrollable"
           style={{
             padding: "12px 24px",
-            display: "flex",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
             gap: "8px",
-            flexWrap: "nowrap",
-            overflowX: "auto",
             borderBottom: "1px solid var(--border-subtle)",
           }}
         >
@@ -393,7 +391,7 @@ export function EnhancedSidebar({
             type="button"
             onClick={() => setSargassumCurrentOpen(true)}
             style={{
-              padding: "10px 14px",
+              padding: "10px 8px",
               background: "rgba(255, 255, 255, 0.9)",
               border: "2px solid rgba(0, 206, 209, 0.2)",
               borderRadius: "12px",
@@ -403,18 +401,20 @@ export function EnhancedSidebar({
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: "6px",
-              flexShrink: 0,
+              minWidth: 0,
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
-            🛰️ {tAny.currentSatellite ?? "Satellite"}
+            <span style={{ flexShrink: 0 }}>🛰️</span>
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tAny.currentSatellite ?? "Satellite"}</span>
           </button>
           <button
             type="button"
             onClick={() => setSargassumForecastOpen(true)}
             style={{
-              padding: "10px 14px",
+              padding: "10px 8px",
               background: "rgba(255, 255, 255, 0.9)",
               border: "2px solid rgba(0, 206, 209, 0.2)",
               borderRadius: "12px",
@@ -424,18 +424,20 @@ export function EnhancedSidebar({
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: "6px",
-              flexShrink: 0,
+              minWidth: 0,
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
-            🗺️ {tAny.sargassum7Day ?? "7-Day Forecast"}
+            <span style={{ flexShrink: 0 }}>🗺️</span>
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tAny.sargassum7Day ?? "7-Day Forecast"}</span>
           </button>
           <button
             type="button"
             onClick={() => setWebcamOpen(true)}
             style={{
-              padding: "10px 14px",
+              padding: "10px 8px",
               background: "rgba(255, 255, 255, 0.9)",
               border: "2px solid rgba(0, 206, 209, 0.2)",
               borderRadius: "12px",
@@ -445,12 +447,14 @@ export function EnhancedSidebar({
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: "6px",
-              flexShrink: 0,
+              minWidth: 0,
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
-            📹 {tAny.beachCams ?? "Beach Cams"}
+            <span style={{ flexShrink: 0 }}>📹</span>
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tAny.beachCams ?? "Beach Cams"}</span>
           </button>
         </div>
 
