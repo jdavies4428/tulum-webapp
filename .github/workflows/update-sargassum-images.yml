@@ -1,0 +1,45 @@
+# Updates sargassum satellite images (1-day and 7-day) from USF daily at 6am Mexico time.
+# The 7-day forecast image loads directly from sargassummonitoring.com (no local update needed).
+name: Update Sargassum Images
+
+on:
+  schedule:
+    # 6am Mexico Eastern Time (Cancun/Tulum) = 11:00 UTC
+    - cron: "0 11 * * *"
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: tulum-situation-monitor
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: tulum-situation-monitor/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run update:sargassum
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/sargassum/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update sargassum satellite images [automated]"
+            git push
+          fi

@@ -1,8 +1,11 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { translations } from "@/lib/i18n";
+import { getUsf7DayUrl } from "@/lib/sargassum-usf";
 import type { Lang } from "@/lib/weather";
+
+const FALLBACK_7DAY = "/data/sargassum/latest_7day.png";
 
 interface SargassumPanelProps {
   lang: Lang;
@@ -10,6 +13,7 @@ interface SargassumPanelProps {
 
 export function SargassumPanel({ lang }: SargassumPanelProps) {
   const [contentVisible, setContentVisible] = useState(true);
+  const [imgSrc, setImgSrc] = useState(FALLBACK_7DAY);
   const fallbackRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const t = translations[lang] as Record<string, string>;
@@ -20,6 +24,34 @@ export function SargassumPanel({ lang }: SargassumPanelProps) {
   const lowDesc =
     t.lowSargassumDesc ??
     "Minimal sargassum. Check satellite images for current conditions. Verify with beach clubs before visiting.";
+
+  useEffect(() => {
+    const today = new Date();
+    const urls: string[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      urls.push(getUsf7DayUrl(d));
+    }
+    let loaded = false;
+    function tryLoad(index: number) {
+      if (index >= urls.length || loaded) return;
+      const img = new Image();
+      img.onload = () => {
+        if (!loaded) {
+          loaded = true;
+          setImgSrc(urls[index]);
+        }
+      };
+      img.onerror = () => tryLoad(index + 1);
+      img.src = urls[index];
+    }
+    tryLoad(0);
+    const timeoutId = setTimeout(() => {
+      if (!loaded) setImgSrc(FALLBACK_7DAY);
+    }, 3000);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   const handleImgError = () => {
     if (imgRef.current) imgRef.current.style.display = "none";
@@ -92,7 +124,7 @@ export function SargassumPanel({ lang }: SargassumPanelProps) {
             <div style={{ textAlign: "center" }}>
               <img
                 ref={imgRef}
-                src="/data/sargassum/latest_7day.png?v=2"
+                src={imgSrc}
                 alt="7-Day Sargassum"
                 style={{
                   width: "100%",

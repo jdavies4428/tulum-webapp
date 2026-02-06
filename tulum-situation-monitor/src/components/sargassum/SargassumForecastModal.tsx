@@ -6,7 +6,8 @@ import type { Lang } from "@/lib/weather";
 
 const FORECAST_BASE =
   "https://sargassummonitoring.com/wp-content/uploads";
-const FALLBACK_FORECAST = `${FORECAST_BASE}/2026/01/mexico-sargazo-monitoreo-sargassum-monitoring-pronosticos-29-01-2026.gif`;
+const FALLBACK_FORECAST =
+  "https://sargassummonitoring.com/wp-content/uploads/2026/02/mexico-sargazo-monitoreo-sargassum-monitoring-pronosticos-04-02-2026.gif";
 
 interface SargassumForecastModalProps {
   lang: Lang;
