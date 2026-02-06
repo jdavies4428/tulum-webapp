@@ -18,6 +18,7 @@ function FilterButton({
   onClick,
   gradient,
   wide,
+  compact,
 }: {
   icon: string;
   label: string;
@@ -25,6 +26,7 @@ function FilterButton({
   onClick: () => void;
   gradient: string;
   wide?: boolean;
+  compact?: boolean;
 }) {
   return (
     <button
@@ -32,15 +34,15 @@ function FilterButton({
       onClick={onClick}
       style={{
         gridColumn: wide ? "1 / -1" : "auto",
-        padding: "12px 16px",
+        padding: compact ? "10px 12px" : "12px 16px",
         background: active ? gradient : "rgba(255, 255, 255, 0.8)",
         border: active ? "2px solid transparent" : "2px solid rgba(0, 206, 209, 0.2)",
-        borderRadius: "16px",
+        borderRadius: compact ? "12px" : "16px",
         cursor: "pointer",
         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         display: "flex",
         alignItems: "center",
-        gap: "10px",
+        gap: compact ? "8px" : "10px",
         boxShadow: active ? "0 8px 24px rgba(0, 206, 209, 0.2)" : "0 2px 8px rgba(0, 0, 0, 0.05)",
         position: "relative",
         overflow: "hidden",
@@ -57,12 +59,12 @@ function FilterButton({
           }}
         />
       )}
-      <span style={{ fontSize: "20px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))", position: "relative", zIndex: 1 }}>
+      <span style={{ fontSize: compact ? "18px" : "20px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))", position: "relative", zIndex: 1 }}>
         {icon}
       </span>
       <span
         style={{
-          fontSize: "15px",
+          fontSize: compact ? "13px" : "15px",
           fontWeight: "700",
           color: active ? "#333" : "#666",
           letterSpacing: "0.2px",
@@ -539,11 +541,20 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   const [activeTab, setActiveTab] = useState<TabId>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortBy>("popular");
+  const [isMobile, setIsMobile] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { clubs, restaurants, cafes, cultural, isLoading, error, source } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const handler = () => setIsMobile(mq.matches);
+    handler();
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -629,12 +640,16 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         aria-label={t.places ?? "Places"}
         style={{
           position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "90%",
-          maxWidth: "800px",
-          height: "85vh",
+          ...(isMobile
+            ? { inset: "12px 8px 8px" }
+            : {
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "90%",
+                maxWidth: "800px",
+                height: "92vh",
+              }),
           background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
           borderRadius: "24px",
           border: "1px solid var(--border-emphasis)",
@@ -653,7 +668,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         <div
           style={{
             background: "linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%)",
-            padding: "12px 16px 14px",
+            padding: isMobile ? "8px 12px 10px" : "10px 16px 12px",
             position: "relative",
             overflow: "hidden",
             flexShrink: 0,
@@ -665,7 +680,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
               bottom: 0,
               left: 0,
               width: "100%",
-              height: "24px",
+              height: isMobile ? "16px" : "20px",
               opacity: 0.2,
             }}
             viewBox="0 0 1200 120"
@@ -680,10 +695,10 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             onClick={onClose}
             style={{
               position: "absolute",
-              top: "12px",
-              right: "12px",
-              width: "36px",
-              height: "36px",
+              top: isMobile ? "8px" : "10px",
+              right: isMobile ? "8px" : "12px",
+              width: isMobile ? "32px" : "36px",
+              height: isMobile ? "32px" : "36px",
               borderRadius: "50%",
               background: "rgba(255, 255, 255, 0.95)",
               border: "2px solid rgba(0, 206, 209, 0.2)",
@@ -699,12 +714,12 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             ✕
           </button>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-            <div style={{ fontSize: "24px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))" }}>📍</div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "8px" : "10px", flexWrap: "wrap" }}>
+            <div style={{ fontSize: isMobile ? "20px" : "24px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))" }}>📍</div>
+            <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "6px" : "8px", flexWrap: "wrap" }}>
               <h2
                 style={{
-                  fontSize: "22px",
+                  fontSize: isMobile ? "18px" : "22px",
                   fontWeight: "800",
                   margin: 0,
                   background: "linear-gradient(135deg, #0099CC 0%, #00CED1 100%)",
@@ -733,7 +748,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
               )}
               <span
                 style={{
-                  fontSize: "13px",
+                  fontSize: isMobile ? "11px" : "13px",
                   color: "#00ACC1",
                   fontWeight: "600",
                   position: "relative",
@@ -749,10 +764,10 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         {/* Filter Buttons */}
         <div
           style={{
-            padding: "14px 20px 10px",
+            padding: isMobile ? "10px 16px 8px" : "14px 20px 10px",
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
-            gap: "12px",
+            gap: isMobile ? "8px" : "12px",
           }}
         >
           <FilterButton
@@ -764,6 +779,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
               setSortBy("distance");
             }}
             gradient="linear-gradient(135deg, #FFE4CC 0%, #FFD4B8 100%)"
+            compact={isMobile}
           />
           <FilterButton
             icon="🌟"
@@ -771,6 +787,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             active={activeTab === "local"}
             onClick={() => setActiveTab("local")}
             gradient="linear-gradient(135deg, #FFD4E5 0%, #FFC0D9 100%)"
+            compact={isMobile}
           />
           <FilterButton
             icon="🔍"
@@ -779,6 +796,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             onClick={() => searchInputRef.current?.focus()}
             gradient="linear-gradient(135deg, #E8E8E8 0%, #D8D8D8 100%)"
             wide
+            compact={isMobile}
           />
           <FilterButton
             icon="🔥"
@@ -789,11 +807,12 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
               setSortBy("popular");
             }}
             gradient="linear-gradient(135deg, #FFB088 0%, #FF9966 100%)"
+            compact={isMobile}
           />
         </div>
 
         {/* Search input */}
-        <div style={{ padding: "0 20px 12px", position: "relative" }}>
+        <div style={{ padding: isMobile ? "0 16px 10px" : "0 20px 12px", position: "relative" }}>
           <input
             ref={searchInputRef}
             type="text"
@@ -858,7 +877,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "12px 20px 20px",
+            padding: isMobile ? "10px 16px 16px" : "12px 20px 20px",
             WebkitOverflowScrolling: "touch",
           }}
         >
