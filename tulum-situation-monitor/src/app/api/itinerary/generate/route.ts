@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
     const days = Math.min(14, Math.max(1, Number(body.days) || 3));
     const rawInterests = Array.isArray(body.interests) ? body.interests : [];
     const interests = rawInterests
-      .filter((i): i is string => typeof i === "string")
+      .filter((i: unknown): i is string => typeof i === "string")
       .map((s) => String(s).trim())
       .filter(Boolean)
       .slice(0, 12);
