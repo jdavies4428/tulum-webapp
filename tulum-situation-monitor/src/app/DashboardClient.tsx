@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-
 import type { MapLayersState } from "@/components/map/MapContainer";
 import { MapView } from "@/components/map/MapView";
 import { EnhancedSidebar } from "@/components/layout/EnhancedSidebar";
@@ -15,6 +14,8 @@ import { useWeather } from "@/hooks/useWeather";
 import { useTides } from "@/hooks/useTides";
 import type { Lang } from "@/lib/weather";
 import { formatTempFull, getWeatherDescription } from "@/lib/weather";
+
+const MOBILE_BREAKPOINT = 768;
 
 function getDefaultLayers(): MapLayersState {
   const hour = new Date().getHours();
@@ -42,6 +43,14 @@ export function DashboardClient() {
   const [selectedPlace, setSelectedPlace] = useState<(BeachClub | Restaurant | CulturalPlace) | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; accuracy: number } | null>(null);
   const [mapApi, setMapApi] = useState<MapApi | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const { data: weatherData, waterTemp, loading: weatherLoading, error: weatherError, refetch: refetchWeather } = useWeather();
   const tide = useTides();
@@ -105,24 +114,33 @@ export function DashboardClient() {
       <div
         className="map-container transition-all duration-300 ease-out overflow-hidden"
         style={
-          sidebarOpen
+          isMobile
             ? {
-                position: "absolute",
-                top: 0,
-                left: 400,
-                right: 0,
-                bottom: 0,
-                background: "#000000",
-                zIndex: 0,
-              }
-            : {
                 position: "fixed",
                 inset: 0,
                 width: "100vw",
                 height: "100vh",
                 background: "#000000",
-                zIndex: 50,
+                zIndex: 0,
               }
+            : sidebarOpen
+              ? {
+                  position: "absolute",
+                  top: 0,
+                  left: 400,
+                  right: 0,
+                  bottom: 0,
+                  background: "#000000",
+                  zIndex: 0,
+                }
+              : {
+                  position: "fixed",
+                  inset: 0,
+                  width: "100vw",
+                  height: "100vh",
+                  background: "#000000",
+                  zIndex: 50,
+                }
         }
       >
         <MapView
