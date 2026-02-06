@@ -85,11 +85,24 @@ export function DashboardClient() {
         onWeatherRefresh={refetchWeather}
       />
       <div
-        className="relative flex-1 min-w-0 transition-all duration-300 ease-out"
-        style={{
-          marginLeft: sidebarOpen ? "400px" : 0,
-          width: sidebarOpen ? "calc(100% - 400px)" : "100%",
-        }}
+        className="relative flex-1 min-w-0 transition-all duration-300 ease-out overflow-hidden"
+        style={
+          sidebarOpen
+            ? {
+                marginLeft: "400px",
+                width: "calc(100% - 400px)",
+              }
+            : {
+                position: "fixed",
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                marginLeft: 0,
+                width: "100%",
+                zIndex: 50,
+              }
+        }
       >
         <MapView
           lang={lang}

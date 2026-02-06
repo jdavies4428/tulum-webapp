@@ -92,7 +92,14 @@ export function MapContainer({
     markersRef.current = L.layerGroup().addTo(map) as unknown;
     mapRef.current = map as unknown;
 
+    // Custom pane so Tulum marker stays on top of tile overlays (radar, etc.) and other markers
+    if (!map.getPane("tulumPane")) {
+      map.createPane("tulumPane");
+      map.getPane("tulumPane")!.style.zIndex = "999";
+    }
+
     const tulumDot = L.circleMarker([TULUM_LAT, TULUM_LNG], {
+      pane: "tulumPane",
       radius: 8,
       fillColor: "#ff3b30",
       fillOpacity: 1,
@@ -101,6 +108,7 @@ export function MapContainer({
     }).addTo(map);
     tulumDot.bindPopup("<b>Tulum Centro</b>");
     const tulumRing = L.circle([TULUM_LAT, TULUM_LNG], {
+      pane: "tulumPane",
       radius: 5000,
       fillColor: "#ff3b30",
       fillOpacity: 0.1,
@@ -267,17 +275,27 @@ export function MapContainer({
         : lang === "fr"
           ? ("descFr" in item ? (item as { descFr?: string }).descFr : item.desc) ?? ""
           : item.desc ?? "";
+    const escapeHtml = (s: string) =>
+      String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
     const navigateLabel = t.navigate ?? "Go";
     const popup = (name: string, d: string, url: string, whatsapp: string, lat: number, lng: number) => {
+      const displayName = (name ?? "").trim() || "Venue";
+      const safeName = escapeHtml(displayName);
+      const safeDesc = escapeHtml(d ?? "");
       const isIOS =
         typeof navigator !== "undefined" &&
         (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
           (navigator.platform === "MacIntel" && (navigator.maxTouchPoints ?? 0) > 1));
-      const encodedName = encodeURIComponent(name);
+      const encodedName = encodeURIComponent(displayName);
       const mapsUrl = isIOS
         ? `https://maps.apple.com/?daddr=${lat},${lng}&q=${encodedName}`
         : `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-      const webLink = url ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="club-link website">🌐 ${t.website}</a>` : "";
+      const webLink = url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="club-link website">🌐 ${escapeHtml(t.website ?? "Website")}</a>` : "";
       const callLink = whatsapp
         ? `<a href="tel:${whatsapp.replace(/\D/g, "")}" class="club-link call">📞</a>`
         : "";
@@ -286,8 +304,8 @@ export function MapContainer({
         : "";
       return `
         <div class="club-popup">
-          <h3>${name}</h3>
-          <p class="club-desc">${d}</p>
+          <h3>${safeName}</h3>
+          <p class="club-desc">${safeDesc}</p>
           <div class="club-links">
             ${webLink}
             ${callLink}
@@ -321,7 +339,7 @@ export function MapContainer({
       clubs.forEach((club) => {
         const icon = createVenueIcon("beachClub", club);
         const m = L.marker([club.lat, club.lng], { icon });
-        m.bindPopup(popup(club.name, desc(club), club.url ?? "", club.whatsapp ?? "", club.lat, club.lng));
+        m.bindPopup(popup(club.name, desc(club), club.url ?? "", club.whatsapp ?? "", club.lat, club.lng), { maxWidth: 260 });
         addToGroup(m);
       });
     }
@@ -329,7 +347,7 @@ export function MapContainer({
       restaurants.forEach((r) => {
         const icon = createVenueIcon("restaurant", r);
         const m = L.marker([r.lat, r.lng], { icon });
-        m.bindPopup(popup(r.name, desc(r), r.url ?? "", r.whatsapp ?? "", r.lat, r.lng));
+        m.bindPopup(popup(r.name, desc(r), r.url ?? "", r.whatsapp ?? "", r.lat, r.lng), { maxWidth: 260 });
         addToGroup(m);
       });
     }
@@ -337,7 +355,7 @@ export function MapContainer({
       cultural.forEach((c) => {
         const icon = createVenueIcon("cultural", c);
         const m = L.marker([c.lat, c.lng], { icon });
-        m.bindPopup(popup(c.name, desc(c), c.url ?? "", c.whatsapp ?? "", c.lat, c.lng));
+        m.bindPopup(popup(c.name, desc(c), c.url ?? "", c.whatsapp ?? "", c.lat, c.lng), { maxWidth: 260 });
         addToGroup(m);
       });
     }

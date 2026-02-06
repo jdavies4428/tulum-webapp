@@ -84,15 +84,15 @@ body {
   min-width: 100%;
 }
 
-/* Leaflet overrides */
+/* Leaflet overrides – ensure dark theme for venue popups */
 .leaflet-popup-content-wrapper {
-  background: var(--bg-panel);
+  background: var(--bg-panel) !important;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  color: #fff;
+  color: #fff !important;
 }
 .leaflet-popup-tip {
-  background: var(--bg-panel);
+  background: var(--bg-panel) !important;
 }
 .leaflet-popup-content {
   margin: 12px 14px;
@@ -315,12 +315,13 @@ body {
 /* Map venue popup */
 .club-popup {
   min-width: 200px;
+  color: #fff;
 }
 .club-popup h3 {
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 4px;
-  color: #fff;
+  color: #fff !important;
 }
 .club-popup .club-desc {
   font-size: 11px;

@@ -1,7 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { translations } from "@/lib/i18n";
+import { getUsf1DayUrl } from "@/lib/sargassum-usf";
 import type { Lang } from "@/lib/weather";
+
+const FALLBACK_SRC = "/data/sargassum/latest_1day.png";
 
 interface SargassumCurrentModalProps {
   lang: Lang;
@@ -12,6 +16,37 @@ interface SargassumCurrentModalProps {
 export function SargassumCurrentModal({ lang, isOpen, onClose }: SargassumCurrentModalProps) {
   const t = translations[lang] as Record<string, string>;
   const title = t.currentSatellite ?? "Current Sargassum Satellite";
+  const [imgSrc, setImgSrc] = useState(FALLBACK_SRC);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const today = new Date();
+    const urls: string[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      urls.push(getUsf1DayUrl(d));
+    }
+    let loaded = false;
+    function tryLoad(index: number) {
+      if (index >= urls.length || loaded) return;
+      const img = new Image();
+      img.onload = () => {
+        if (!loaded) {
+          loaded = true;
+          setImgSrc(urls[index]);
+        }
+      };
+      img.onerror = () => tryLoad(index + 1);
+      img.src = urls[index];
+    }
+    tryLoad(0);
+    const timeoutId = setTimeout(() => {
+      if (!loaded) setImgSrc(FALLBACK_SRC);
+    }, 3000);
+    return () => clearTimeout(timeoutId);
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -40,7 +75,7 @@ export function SargassumCurrentModal({ lang, isOpen, onClose }: SargassumCurren
         </p>
         <div className="flex-1 overflow-auto bg-[#111] p-3 text-center">
           <img
-            src={`/data/sargassum/latest_1day.png?t=${Date.now()}`}
+            src={imgSrc}
             alt="Current Sargassum Satellite"
             className="mx-auto max-h-[450px] w-full max-w-full rounded object-contain"
           />
@@ -48,7 +83,7 @@ export function SargassumCurrentModal({ lang, isOpen, onClose }: SargassumCurren
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border px-4 py-2 text-[10px] text-text-muted">
           <span>🛰️ NASA/USF MODIS • 1km resolution</span>
           <a
-            href="https://optics.marine.usf.edu/projects/SaWS.html"
+            href="https://optics.marine.usf.edu/cgi-bin/optics_data?roi=YUCATAN&comp=1"
             target="_blank"
             rel="noopener noreferrer"
             className="text-accent-cyan hover:underline"
