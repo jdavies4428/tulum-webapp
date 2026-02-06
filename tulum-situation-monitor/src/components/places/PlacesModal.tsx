@@ -182,9 +182,7 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
       onClick={() => place.sourcePlace && onSelect?.(place.sourcePlace)}
       onKeyDown={(e) => e.key === "Enter" && place.sourcePlace && onSelect?.(place.sourcePlace)}
       style={{
-        background: "rgba(255, 255, 255, 0.9)",
-        WebkitBackdropFilter: "blur(20px)",
-        backdropFilter: "blur(20px)",
+        background: "var(--card-bg)",
         borderRadius: "24px",
         padding: "20px",
         boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
@@ -613,10 +611,11 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         onClick={onClose}
         style={{
           position: "fixed",
-          inset: 0,
-          background: "rgba(0, 0, 0, 0.3)",
-          WebkitBackdropFilter: "blur(8px)",
-          backdropFilter: "blur(8px)",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0, 0, 0, 0.7)",
           zIndex: 9998,
           animation: "fadeIn 0.2s ease-out",
         }}
@@ -629,13 +628,19 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         aria-modal="true"
         aria-label={t.places ?? "Places"}
         style={{
-        position: "fixed",
-        inset: "24px 16px 16px",
-        background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
-        borderRadius: "32px",
-        boxShadow: "0 20px 60px rgba(0, 206, 209, 0.25)",
-        zIndex: 9999,
-        WebkitOverflowScrolling: "touch",
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "90%",
+          maxWidth: "800px",
+          height: "85vh",
+          background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
+          borderRadius: "24px",
+          border: "1px solid var(--border-emphasis)",
+          boxShadow: "0 24px 64px rgba(0, 0, 0, 0.8)",
+          zIndex: 9999,
+          WebkitOverflowScrolling: "touch",
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
@@ -680,9 +685,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
               width: "36px",
               height: "36px",
               borderRadius: "50%",
-              background: "rgba(255, 255, 255, 0.9)",
-              WebkitBackdropFilter: "blur(10px)",
-              backdropFilter: "blur(10px)",
+              background: "rgba(255, 255, 255, 0.95)",
               border: "2px solid rgba(0, 206, 209, 0.2)",
               fontSize: "20px",
               cursor: "pointer",
