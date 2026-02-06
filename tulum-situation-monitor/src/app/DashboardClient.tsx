@@ -2,10 +2,6 @@
 
 import { useState, useMemo, useEffect } from "react";
 
-function isMobileViewport(): boolean {
-  if (typeof window === "undefined") return false;
-  return window.innerWidth < 768;
-}
 import type { MapLayersState } from "@/components/map/MapContainer";
 import { MapView } from "@/components/map/MapView";
 import { EnhancedSidebar } from "@/components/layout/EnhancedSidebar";
@@ -64,11 +60,6 @@ export function DashboardClient() {
       mapApi.locateUser();
     }
   }, [mapApi]);
-
-  // On mobile, start with sidebar collapsed so map gets full width and no white strip
-  useEffect(() => {
-    if (isMobileViewport()) setSidebarOpen(false);
-  }, []);
 
   // Fix white background and body styles
   useEffect(() => {

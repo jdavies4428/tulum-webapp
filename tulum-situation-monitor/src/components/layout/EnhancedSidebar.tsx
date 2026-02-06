@@ -58,7 +58,17 @@ export function EnhancedSidebar({
   const [sargassumCurrentOpen, setSargassumCurrentOpen] = useState(false);
   const [sargassumForecastOpen, setSargassumForecastOpen] = useState(false);
   const [webcamOpen, setWebcamOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const t = translations[lang];
+
+  useEffect(() => {
+    const check = () => setIsMobile(typeof window !== "undefined" && window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const sidebarWidth = isMobile && !isCollapsed ? "100vw" : isCollapsed ? 0 : "400px";
 
   // Hide sidebar scrollbar
   useEffect(() => {
@@ -101,7 +111,9 @@ export function EnhancedSidebar({
         aria-label={isCollapsed ? "Show sidebar" : "Hide sidebar"}
         style={{
           position: "fixed",
-          left: isCollapsed ? "16px" : "384px",
+          ...(isMobile && !isCollapsed
+            ? { right: "16px", left: "auto" }
+            : { left: isCollapsed ? "16px" : "384px" }),
           top: "16px",
           zIndex: 10001,
           width: "44px",
@@ -140,7 +152,7 @@ export function EnhancedSidebar({
           position: "fixed",
           left: 0,
           top: 0,
-          width: isCollapsed ? 0 : "400px",
+          width: sidebarWidth,
           height: "100vh",
           background: isCollapsed ? "transparent" : "rgba(10, 4, 4, 0.98)",
           backdropFilter: isCollapsed ? "none" : "blur(20px)",
