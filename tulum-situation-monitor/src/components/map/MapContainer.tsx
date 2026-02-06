@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import { TULUM_LAT, TULUM_LNG, DEFAULT_ZOOM } from "@/data/constants";
-import { beachClubs, restaurants, culturalPlaces } from "@/data/places";
+import { useVenues } from "@/hooks/useVenues";
 import type { Lang } from "@/lib/weather";
 import { translations } from "@/lib/i18n";
 
@@ -51,6 +51,7 @@ export function MapContainer({
   onMapReady,
   className = "",
 }: MapContainerProps) {
+  const { clubs, restaurants, cultural } = useVenues();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<unknown>(null);
   const layersRef = useRef<Record<string, unknown>>({});
@@ -279,17 +280,25 @@ export function MapContainer({
       popupAnchor: [0, -12],
     });
 
-    const desc = (item: { desc?: string; descEs?: string }) =>
-      (lang === "es" ? item.descEs ?? item.desc : item.desc) ?? "";
-    const popup = (name: string, d: string, url: string, whatsapp: string) => {
-      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${TULUM_LAT},${TULUM_LNG}`;
+    const desc = (item: { desc?: string; descEs?: string; descFr?: string }) =>
+      lang === "es"
+        ? item.descEs ?? item.desc ?? ""
+        : lang === "fr"
+          ? ("descFr" in item ? (item as { descFr?: string }).descFr : item.desc) ?? ""
+          : item.desc ?? "";
+    const popup = (name: string, d: string, url: string, whatsapp: string, lat: number, lng: number) => {
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+      const webLink = url ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="club-link website">🌐 ${t.website}</a>` : "";
+      const waLink = whatsapp
+        ? `<a href="https://wa.me/${whatsapp.replace(/\D/g, "")}" target="_blank" rel="noopener noreferrer" class="club-link whatsapp">💬</a>`
+        : "";
       return `
         <div class="club-popup">
           <h3>${name}</h3>
           <p class="club-desc">${d}</p>
           <div class="club-links">
-            <a href="${url}" target="_blank" rel="noopener noreferrer" class="club-link website">🌐 ${t.website}</a>
-            <a href="https://wa.me/${whatsapp.replace(/\D/g, "")}" target="_blank" rel="noopener noreferrer" class="club-link whatsapp">💬</a>
+            ${webLink}
+            ${waLink}
             <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="club-link maps">↗️</a>
           </div>
         </div>
@@ -300,27 +309,27 @@ export function MapContainer({
       (marker as { addTo: (t: unknown) => unknown }).addTo(group);
     };
     if (layers.clubs) {
-      beachClubs.forEach((club) => {
+      clubs.forEach((club) => {
         const m = L.marker([club.lat, club.lng], { icon: clubIcon });
-        m.bindPopup(popup(club.name, desc(club), club.url, club.whatsapp));
+        m.bindPopup(popup(club.name, desc(club), club.url ?? "", club.whatsapp ?? "", club.lat, club.lng));
         addToGroup(m);
       });
     }
     if (layers.restaurants) {
       restaurants.forEach((r) => {
         const m = L.marker([r.lat, r.lng], { icon: restaurantIcon });
-        m.bindPopup(popup(r.name, desc(r), r.url, r.whatsapp));
+        m.bindPopup(popup(r.name, desc(r), r.url ?? "", r.whatsapp ?? "", r.lat, r.lng));
         addToGroup(m);
       });
     }
     if (layers.cultural) {
-      culturalPlaces.forEach((c) => {
+      cultural.forEach((c) => {
         const m = L.marker([c.lat, c.lng], { icon: culturalIcon });
-        m.bindPopup(popup(c.name, desc(c), c.url, c.whatsapp));
+        m.bindPopup(popup(c.name, desc(c), c.url ?? "", c.whatsapp ?? "", c.lat, c.lng));
         addToGroup(m);
       });
     }
-  }, [lang, layers.clubs, layers.restaurants, layers.cultural]);
+  }, [lang, layers.clubs, layers.restaurants, layers.cultural, clubs, restaurants, cultural]);
 
   return <div ref={containerRef} className={`h-full w-full ${className}`} id="map" />;
 }

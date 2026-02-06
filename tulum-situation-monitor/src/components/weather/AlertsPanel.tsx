@@ -51,7 +51,6 @@ export function AlertsPanel({ lang, alerts }: AlertsPanelProps) {
               </li>
             ))}
           </ul>
-          </ul>
         )}
       </div>
     </div>
