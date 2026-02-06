@@ -83,48 +83,19 @@ export function DashboardClient() {
     }
   }, [mapApi]);
 
-  // On mobile, when sidebar closes the map becomes visible — force Leaflet to recalc size so tiles render correctly
-  useEffect(() => {
-    if (isMobile && !sidebarOpen && mapApi?.invalidateSize) {
-      mapApi.invalidateSize();
-    }
-  }, [isMobile, sidebarOpen, mapApi]);
-
-  // Mobile viewport height fix (doc Solution 6): --vh avoids browser chrome breaking layout
-  useEffect(() => {
-    const setVH = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-    };
-    setVH();
-    window.addEventListener("resize", setVH);
-    window.addEventListener("orientationchange", setVH);
-    return () => {
-      window.removeEventListener("resize", setVH);
-      window.removeEventListener("orientationchange", setVH);
-    };
-  }, []);
-
-  // Fix white background and body styles (doc Solution 1: position fixed prevents mobile scroll issues)
+  // Fix white background and body styles
   useEffect(() => {
     document.body.style.backgroundColor = "#000000";
     document.documentElement.style.backgroundColor = "#000000";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
     document.body.style.overflow = "hidden";
-    document.body.style.position = "fixed";
-    document.body.style.width = "100%";
-    document.body.style.height = "100%";
-    document.body.style.height = "calc(var(--vh, 1vh) * 100)";
     return () => {
       document.body.style.backgroundColor = "";
       document.documentElement.style.backgroundColor = "";
       document.body.style.margin = "";
       document.body.style.padding = "";
       document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
-      document.body.style.height = "";
     };
   }, []);
 
@@ -133,17 +104,26 @@ export function DashboardClient() {
       style={{
         width: "100vw",
         height: "100vh",
-        height: "calc(var(--vh, 1vh) * 100)",
         overflow: "hidden",
-        background: "transparent",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        background: "#000000",
+        position: "relative",
       }}
     >
-      {/* Map layer first, lowest z-index (doc fix-black-overlay: no black box covering map) */}
+      <EnhancedSidebar
+        isCollapsed={!sidebarOpen}
+        onToggle={() => setSidebarOpen((v) => !v)}
+        lang={lang}
+        onLanguageChange={setLang}
+        onOpenPlaces={() => setPlacesOpen(true)}
+        onLocateUser={() => mapApi?.locateUser()}
+        sharePayload={sharePayload}
+        weatherData={weatherData}
+        weatherLoading={weatherLoading}
+        weatherError={weatherError}
+        waterTemp={waterTemp}
+        tide={tide}
+        onWeatherRefresh={refetchWeather}
+      />
       <div
         className="map-container transition-all duration-300 ease-out overflow-hidden"
         style={
@@ -153,9 +133,8 @@ export function DashboardClient() {
                 inset: 0,
                 width: "100vw",
                 height: "100vh",
-                height: "calc(var(--vh, 1vh) * 100)",
-                background: "transparent",
-                zIndex: 1,
+                background: "#000000",
+                zIndex: 0,
               }
             : sidebarOpen
               ? {
@@ -164,16 +143,16 @@ export function DashboardClient() {
                   left: 400,
                   right: 0,
                   bottom: 0,
-                  background: "transparent",
-                  zIndex: 1,
+                  background: "#000000",
+                  zIndex: 0,
                 }
               : {
                   position: "fixed",
                   inset: 0,
                   width: "100vw",
                   height: "100vh",
-                  background: "transparent",
-                  zIndex: 1,
+                  background: "#000000",
+                  zIndex: 50,
                 }
         }
       >
@@ -199,21 +178,6 @@ export function DashboardClient() {
           }
         />
       </div>
-      <EnhancedSidebar
-        isCollapsed={!sidebarOpen}
-        onToggle={() => setSidebarOpen((v) => !v)}
-        lang={lang}
-        onLanguageChange={setLang}
-        onOpenPlaces={() => setPlacesOpen(true)}
-        onLocateUser={() => mapApi?.locateUser()}
-        sharePayload={sharePayload}
-        weatherData={weatherData}
-        weatherLoading={weatherLoading}
-        weatherError={weatherError}
-        waterTemp={waterTemp}
-        tide={tide}
-        onWeatherRefresh={refetchWeather}
-      />
       <PlacesModal
         lang={lang}
         isOpen={placesOpen}
