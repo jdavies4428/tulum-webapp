@@ -4,12 +4,12 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { translations } from "@/lib/i18n";
-import type { Lang } from "@/lib/weather";
+import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { TranslationModal } from "@/components/translation/TranslationModal";
 
 export default function TranslationPage() {
   const searchParams = useSearchParams();
-  const lang = (searchParams.get("lang") as Lang) || "en";
+  const [lang] = usePersistedLang(searchParams.get("lang"));
   const t = translations[lang] as Record<string, string>;
   const [modalOpen, setModalOpen] = useState(true);
 

@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
-import type { Lang } from "@/lib/weather";
+import { usePersistedLang } from "@/hooks/usePersistedLang";
 
 const ADO_URL = "https://www.ado.com.mx";
 
@@ -61,7 +61,7 @@ const buttonStyle = {
 
 export default function TransportationPage() {
   const searchParams = useSearchParams();
-  const lang = (searchParams.get("lang") as Lang) || "en";
+  const [lang] = usePersistedLang(searchParams.get("lang"));
   const t = translations[lang];
   const tAny = t as Record<string, string>;
 

@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
-import type { Lang } from "@/lib/weather";
+import { usePersistedLang } from "@/hooks/usePersistedLang";
 
 const FAKE_EVENTS = [
   {
@@ -54,7 +54,7 @@ const FAKE_EVENTS = [
 
 export default function EventsPage() {
   const searchParams = useSearchParams();
-  const lang = (searchParams.get("lang") as Lang) || "en";
+  const [lang] = usePersistedLang(searchParams.get("lang"));
   const t = translations[lang] as Record<string, string>;
 
   return (
@@ -81,7 +81,7 @@ export default function EventsPage() {
         }}
       >
         <Link
-          href={`/discover?lang=${lang}`}
+          href="/"
           style={{
             display: "flex",
             alignItems: "center",

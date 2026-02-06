@@ -13,8 +13,8 @@ import { PlacePopup } from "@/components/places/PlacePopup";
 import { PlaceDetailsModal } from "@/components/places/PlaceDetailsModal";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 import { useWeather } from "@/hooks/useWeather";
-import type { Lang } from "@/lib/weather";
 import { translations } from "@/lib/i18n";
+import { usePersistedLang } from "@/hooks/usePersistedLang";
 
 function getDefaultLayers(): MapLayersState {
   const hour = new Date().getHours();
@@ -31,14 +31,10 @@ function getDefaultLayers(): MapLayersState {
   };
 }
 
-const LANGS: Lang[] = ["en", "es", "fr"];
-
 export default function MapPage() {
   const searchParams = useSearchParams();
   const langParam = searchParams.get("lang");
-  const [lang, setLang] = useState<Lang>(
-    LANGS.includes(langParam as Lang) ? (langParam as Lang) : "en"
-  );
+  const [lang] = usePersistedLang(langParam);
   const [layers, setLayers] = useState<MapLayersState>(getDefaultLayers);
   const [placesOpen, setPlacesOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<(BeachClub | Restaurant | CulturalPlace | CafePlace) | null>(null);

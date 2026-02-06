@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
-import type { Lang } from "@/lib/weather";
+import { usePersistedLang } from "@/hooks/usePersistedLang";
 
 const DISCOVER_ITEMS: { id: keyof typeof translations.en; icon: string; labelKey?: keyof typeof translations.en }[] = [
   { id: "transportation", icon: "🚗" },
@@ -14,7 +14,7 @@ const DISCOVER_ITEMS: { id: keyof typeof translations.en; icon: string; labelKey
 
 export default function DiscoverPage() {
   const searchParams = useSearchParams();
-  const lang = (searchParams.get("lang") as Lang) || "en";
+  const [lang] = usePersistedLang(searchParams.get("lang"));
   const t = translations[lang];
   const tAny = t as Record<string, string>;
 

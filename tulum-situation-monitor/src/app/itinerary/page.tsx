@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { translations } from "@/lib/i18n";
+import { usePersistedLang } from "@/hooks/usePersistedLang";
 import type { Lang } from "@/lib/weather";
 
 const INTEREST_OPTIONS: { id: string; labelEn: string; icon: string }[] = [
@@ -50,7 +51,7 @@ const cardStyle = {
 
 export default function ItineraryPage() {
   const searchParams = useSearchParams();
-  const lang = (searchParams.get("lang") as Lang) || "en";
+  const [lang] = usePersistedLang(searchParams.get("lang"));
   const t = translations[lang] as Record<string, string>;
 
   const [loading, setLoading] = useState(false);

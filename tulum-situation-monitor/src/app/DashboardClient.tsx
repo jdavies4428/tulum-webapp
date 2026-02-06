@@ -16,6 +16,7 @@ import { useWeather } from "@/hooks/useWeather";
 import { useTides } from "@/hooks/useTides";
 import type { Lang } from "@/lib/weather";
 import { formatTempFull, getWeatherDescription } from "@/lib/weather";
+import { usePersistedLang } from "@/hooks/usePersistedLang";
 
 const MOBILE_BREAKPOINT = 768;
 
@@ -42,7 +43,7 @@ export interface MapApi {
 
 export function DashboardClient() {
   const router = useRouter();
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] = usePersistedLang(null);
   const [layers, setLayers] = useState<MapLayersState>(getDefaultLayers);
   const [placesOpen, setPlacesOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
