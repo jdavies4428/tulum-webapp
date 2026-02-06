@@ -113,15 +113,26 @@ export function DashboardClient() {
       />
       <div
         className="map-container transition-all duration-300 ease-out overflow-hidden"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: sidebarOpen ? 400 : 0,
-          right: 0,
-          bottom: 0,
-          background: "#000000",
-          zIndex: sidebarOpen ? 0 : 50,
-        }}
+        style={
+          sidebarOpen
+            ? {
+                position: "absolute",
+                top: 0,
+                left: 400,
+                right: 0,
+                bottom: 0,
+                background: "#000000",
+                zIndex: 0,
+              }
+            : {
+                position: "fixed",
+                inset: 0,
+                width: "100vw",
+                height: "100vh",
+                background: "#000000",
+                zIndex: 50,
+              }
+        }
       >
         <MapView
           lang={lang}

@@ -74,7 +74,9 @@ export function EnhancedSidebar({
       }
     `;
     document.head.appendChild(style);
-    return () => document.head.removeChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
   }, []);
   const tAny = t as Record<string, string>;
   const alerts = weatherData

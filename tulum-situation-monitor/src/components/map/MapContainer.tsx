@@ -97,6 +97,10 @@ export function MapContainer({
     markersRef.current = L.layerGroup().addTo(map) as unknown;
     mapRef.current = map as unknown;
 
+    // Remove any leftover tulumRingPane from previous versions (large red circle)
+    const ringPane = map.getPane("tulumRingPane");
+    if (ringPane?.parentNode) ringPane.parentNode.removeChild(ringPane);
+
     // Dot pane: above markers, interactive (clickable for popup)
     if (!map.getPane("tulumDotPane")) {
       map.createPane("tulumDotPane");
@@ -191,8 +195,9 @@ export function MapContainer({
         color: "#ffffff",
         weight: 2,
       }).addTo(m);
+      const radiusM = Math.min(Math.max(userLocation.accuracy, 10), 500);
       const circle = L.circle([userLocation.lat, userLocation.lng], {
-        radius: userLocation.accuracy,
+        radius: radiusM,
         fillColor: "#00D4D4",
         fillOpacity: 0.1,
         color: "#00D4D4",
@@ -206,7 +211,7 @@ export function MapContainer({
       const acc = accuracyCircleRef.current as L.Circle | undefined;
       if (acc) {
         acc.setLatLng([userLocation.lat, userLocation.lng]);
-        acc.setRadius(userLocation.accuracy);
+        acc.setRadius(Math.min(Math.max(userLocation.accuracy, 10), 500));
       }
     }
     return removeUserLayers;

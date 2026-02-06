@@ -3009,15 +3009,6 @@
             weight: 2
         }).addTo(map).bindPopup('<b>Tulum Centro</b>');
 
-        L.circle([TULUM_LAT, TULUM_LNG], {
-            radius: 5000,
-            fillColor: '#ff3b30',
-            fillOpacity: 0.1,
-            color: '#ff3b30',
-            weight: 2,
-            dashArray: '5, 10'
-        }).addTo(map);
-
         const toggles = {
             carto: document.getElementById('carto-toggle'),
             satellite: document.getElementById('satellite-toggle'),

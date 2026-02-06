@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="w-full h-full overflow-x-hidden">
+    <html lang="en" className="w-full h-full overflow-hidden" style={{ background: "#000" }}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link
@@ -27,7 +27,7 @@ export default function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body className="w-full h-full overflow-x-hidden min-w-0">{children}</body>
+      <body className="w-full h-full overflow-hidden min-w-0" style={{ margin: 0, padding: 0, background: "#000" }}>{children}</body>
     </html>
   );
 }
