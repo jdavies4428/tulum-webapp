@@ -103,6 +103,16 @@ export function LayerControls({ lang, layers, onLayersChange }: LayerControlsPro
               boxShadow: "0 0 6px var(--marker-cultural)",
             }}
           />
+          <LayerRow
+            id="favorites"
+            label={t.favorites}
+            checked={layers.favorites}
+            onToggle={() => toggle("favorites")}
+            dotStyle={{
+              background: "var(--marker-favorites)",
+              boxShadow: "0 0 6px var(--marker-favorites)",
+            }}
+          />
         </div>
       )}
     </div>

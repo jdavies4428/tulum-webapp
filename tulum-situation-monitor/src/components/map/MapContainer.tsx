@@ -8,7 +8,7 @@ import type { Lang } from "@/lib/weather";
 import { translations } from "@/lib/i18n";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 
-export type MapLayerId = "carto" | "satellite" | "radar" | "clubs" | "restaurants" | "cafes" | "cultural";
+export type MapLayerId = "carto" | "satellite" | "radar" | "clubs" | "restaurants" | "cafes" | "cultural" | "favorites";
 
 export interface MapLayersState {
   carto: boolean;
@@ -18,6 +18,7 @@ export interface MapLayersState {
   restaurants: boolean;
   cafes: boolean;
   cultural: boolean;
+  favorites: boolean;
 }
 
 const DEFAULT_LAYERS: MapLayersState = {
@@ -26,8 +27,9 @@ const DEFAULT_LAYERS: MapLayersState = {
   radar: true,
   clubs: false,
   restaurants: true,
-  cafes: false,
-  cultural: false,
+  cafes: true,
+  cultural: true,
+  favorites: false,
 };
 
 export interface UserLocation {

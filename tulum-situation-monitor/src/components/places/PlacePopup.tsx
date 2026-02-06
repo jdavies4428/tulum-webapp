@@ -11,6 +11,7 @@ interface PlacePopupProps {
   place: PlaceForPopup;
   lang: Lang;
   onClose: () => void;
+  onMoreInfo?: () => void;
 }
 
 function ActionButton({
@@ -58,7 +59,7 @@ function ActionButton({
   );
 }
 
-export function PlacePopup({ place, lang, onClose }: PlacePopupProps) {
+export function PlacePopup({ place, lang, onClose, onMoreInfo }: PlacePopupProps) {
   const t = translations[lang] as Record<string, string>;
   const desc = lang === "es" ? place.descEs ?? place.desc : lang === "fr" ? place.descFr ?? place.desc : place.desc;
   const websiteLabel = t.website ?? "Website";
@@ -189,6 +190,29 @@ export function PlacePopup({ place, lang, onClose }: PlacePopupProps) {
             />
           )}
           <ActionButton href={mapsUrl} icon="🗺️" label={navigateLabel} color="#FF9500" />
+          {place.place_id && onMoreInfo && (
+            <button
+              type="button"
+              onClick={onMoreInfo}
+              style={{
+                padding: "12px",
+                borderRadius: "10px",
+                background: "var(--button-primary)",
+                border: "none",
+                color: "white",
+                fontSize: "13px",
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                gridColumn: "1 / -1",
+              }}
+            >
+              More Info
+            </button>
+          )}
         </div>
       </div>
     </>

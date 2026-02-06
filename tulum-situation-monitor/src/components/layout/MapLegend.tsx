@@ -56,6 +56,10 @@ export function MapLegend({ lang }: MapLegendProps) {
         <div className="legend-dot cultural" />
         <span>{t.cultural ?? "Cultural"}</span>
       </div>
+      <div className="legend-item">
+        <div className="legend-dot favorites" />
+        <span>{t.favorites ?? "Favorites"}</span>
+      </div>
     </div>
   );
 }

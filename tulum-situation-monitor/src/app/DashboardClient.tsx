@@ -27,8 +27,9 @@ function getDefaultLayers(): MapLayersState {
     radar: true,
     clubs: false,
     restaurants: true,
-    cafes: false,
-    cultural: false,
+    cafes: true,
+    cultural: true,
+    favorites: false,
   };
 }
 
@@ -43,6 +44,7 @@ export function DashboardClient() {
   const [placesOpen, setPlacesOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedPlace, setSelectedPlace] = useState<(BeachClub | Restaurant | CulturalPlace | CafePlace) | null>(null);
+  const [showDetailsForPlaceId, setShowDetailsForPlaceId] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; accuracy: number } | null>(null);
   const [mapApi, setMapApi] = useState<MapApi | null>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -176,15 +178,23 @@ export function DashboardClient() {
           setPlacesOpen(false);
         }}
       />
-      {selectedPlace && selectedPlace.place_id ? (
+      {showDetailsForPlaceId && selectedPlace && selectedPlace.place_id === showDetailsForPlaceId ? (
         <PlaceDetailsModal
-          placeId={selectedPlace.place_id}
+          placeId={showDetailsForPlaceId}
           placeName={selectedPlace.name}
           lang={lang}
-          onClose={() => setSelectedPlace(null)}
+          onClose={() => setShowDetailsForPlaceId(null)}
         />
       ) : selectedPlace ? (
-        <PlacePopup place={selectedPlace} lang={lang} onClose={() => setSelectedPlace(null)} />
+        <PlacePopup
+          place={selectedPlace}
+          lang={lang}
+          onClose={() => {
+            setSelectedPlace(null);
+            setShowDetailsForPlaceId(null);
+          }}
+          onMoreInfo={selectedPlace.place_id ? () => setShowDetailsForPlaceId(selectedPlace.place_id!) : undefined}
+        />
       ) : null}
     </div>
   );

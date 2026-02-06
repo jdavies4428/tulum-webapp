@@ -64,6 +64,7 @@
   --marker-restaurant: #50C878;
   --marker-cafe: #8B4513;
   --marker-cultural: #9B59B6;
+  --marker-favorites: #E91E63;
   --bg-dark: var(--bg-primary);
   --bg-panel: var(--bg-elevated);
   --border-color: var(--border-emphasis);
@@ -757,6 +758,10 @@ body {
 .legend-dot.cultural {
   background: var(--marker-cultural);
   box-shadow: 0 0 4px var(--marker-cultural);
+}
+.legend-dot.favorites {
+  background: var(--marker-favorites);
+  box-shadow: 0 0 4px var(--marker-favorites);
 }
 
 /* Listings panel - desktop centered modal (match original) */
