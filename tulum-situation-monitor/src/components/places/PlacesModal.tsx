@@ -446,7 +446,7 @@ const TABS: { id: TabId; labelKey: keyof typeof import("@/lib/i18n").translation
 export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<SortBy>("distance");
+  const [sortBy, setSortBy] = useState<SortBy>("popular");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const { clubs, restaurants, cafes, cultural, isLoading, error, source } = useVenues();
 
