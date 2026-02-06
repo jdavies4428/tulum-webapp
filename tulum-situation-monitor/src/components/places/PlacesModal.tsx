@@ -8,8 +8,73 @@ import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 
-type TabId = "all" | "beachClubs" | "restaurants" | "coffeeShops" | "cultural";
+type TabId = "all" | "local" | "beachClubs" | "restaurants" | "coffeeShops" | "cultural";
 type SortBy = "distance" | "rating" | "popular";
+
+function FilterButton({
+  icon,
+  label,
+  active,
+  onClick,
+  gradient,
+  wide,
+}: {
+  icon: string;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+  gradient: string;
+  wide?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        gridColumn: wide ? "1 / -1" : "auto",
+        padding: "16px 20px",
+        background: active ? gradient : "rgba(255, 255, 255, 0.8)",
+        border: active ? "2px solid transparent" : "2px solid rgba(0, 206, 209, 0.2)",
+        borderRadius: "16px",
+        cursor: "pointer",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        boxShadow: active ? "0 8px 24px rgba(0, 206, 209, 0.2)" : "0 2px 8px rgba(0, 0, 0, 0.05)",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {active && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.08\'%3E%3Ccircle cx=\'2\' cy=\'2\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E")',
+            opacity: 0.3,
+          }}
+        />
+      )}
+      <span style={{ fontSize: "20px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))", position: "relative", zIndex: 1 }}>
+        {icon}
+      </span>
+      <span
+        style={{
+          fontSize: "15px",
+          fontWeight: "700",
+          color: active ? "#333" : "#666",
+          letterSpacing: "0.2px",
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        {label}
+      </span>
+    </button>
+  );
+}
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371;
@@ -104,6 +169,10 @@ interface PlaceCardProps {
 
 function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggleFavorite }: PlaceCardProps) {
   const photoSrc = place.photo_url ?? (place.photo_reference ? `/api/places/photo?photo_reference=${encodeURIComponent(place.photo_reference)}&maxwidth=400` : null);
+  const distanceStr =
+    place.distance < 1
+      ? `${(place.distance * 1000).toFixed(0)}m`
+      : `${place.distance.toFixed(1)}km`;
 
   return (
     <div
@@ -113,21 +182,109 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
       onClick={() => place.sourcePlace && onSelect?.(place.sourcePlace)}
       onKeyDown={(e) => e.key === "Enter" && place.sourcePlace && onSelect?.(place.sourcePlace)}
       style={{
-        background: "var(--card-bg)",
-        borderRadius: "16px",
-        border: "1px solid var(--border-subtle)",
-        overflow: "hidden",
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        background: "rgba(255, 255, 255, 0.9)",
+        backdropFilter: "blur(20px)",
+        borderRadius: "24px",
+        padding: "20px",
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
+        border: "2px solid rgba(0, 206, 209, 0.15)",
         cursor: "pointer",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      {photoSrc ? (
+      {/* Gradient accent bar */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "4px",
+          background: "linear-gradient(90deg, #00CED1 0%, #0099CC 100%)",
+        }}
+      />
+
+      {/* Header Row */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          marginBottom: "12px",
+        }}
+      >
         <div
           style={{
-            position: "relative",
-            height: "180px",
+            padding: "6px 12px",
+            background: "#1A1A1A",
+            borderRadius: "10px",
+            fontSize: "12px",
+            fontWeight: "700",
+            color: "#FFF",
+            letterSpacing: "0.5px",
+          }}
+        >
+          {place.categoryLabel}
+          {place.hasWebcam ? " 📹" : ""}
+        </div>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite?.();
+            }}
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              background: isFavorite
+                ? "linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
+                : "rgba(255, 255, 255, 0.9)",
+              border: isFavorite ? "none" : "2px solid rgba(0, 0, 0, 0.1)",
+              fontSize: "20px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: isFavorite
+                ? "0 4px 16px rgba(255, 107, 107, 0.3)"
+                : "0 2px 8px rgba(0, 0, 0, 0.08)",
+              transition: "all 0.3s",
+            }}
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+          >
+            {isFavorite ? "❤️" : "🤍"}
+          </button>
+          <div
+            style={{
+              padding: "8px 16px",
+              background: place.isOpen
+                ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
+                : "rgba(0, 0, 0, 0.2)",
+              borderRadius: "12px",
+              fontSize: "13px",
+              fontWeight: "800",
+              color: "#FFF",
+              letterSpacing: "0.5px",
+              boxShadow: place.isOpen ? "0 4px 12px rgba(0, 206, 209, 0.3)" : "none",
+            }}
+          >
+            • {place.isOpen ? "OPEN" : "CLOSED"}
+          </div>
+        </div>
+      </div>
+
+      {/* Photo (optional) */}
+      {photoSrc && (
+        <div
+          style={{
+            margin: "0 -20px 16px",
+            height: "140px",
             overflow: "hidden",
-            background: "var(--card-bg)",
+            borderRadius: "12px",
           }}
         >
           <img
@@ -140,342 +297,226 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
               display: "block",
             }}
           />
-          <div
-            style={{
-              position: "absolute",
-              top: "12px",
-              right: "12px",
-              padding: "6px 12px",
-              borderRadius: "20px",
-              background: place.isOpen ? "var(--status-open, #10B981)" : "var(--status-closed, #EF4444)",
-              fontSize: "11px",
-              fontWeight: "700",
-              color: "white",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              zIndex: 2,
-            }}
-          >
-            <span
-              style={{
-                width: "6px",
-                height: "6px",
-                borderRadius: "50%",
-                background: "white",
-                animation: place.isOpen ? "blink 2s infinite" : "none",
-              }}
-            />
-            {place.isOpen ? "OPEN" : "CLOSED"}
-          </div>
-          <div
-            style={{
-              position: "absolute",
-              top: "12px",
-              left: "12px",
-              padding: "6px 12px",
-              borderRadius: "20px",
-              background: "rgba(0, 0, 0, 0.6)",
-              backdropFilter: "blur(10px)",
-              fontSize: "11px",
-              fontWeight: "700",
-              color: "white",
-              zIndex: 2,
-            }}
-          >
-            {place.categoryLabel}
-            {place.hasWebcam ? " 📹" : ""}
-          </div>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleFavorite?.();
-            }}
-            style={{
-              position: "absolute",
-              bottom: "12px",
-              right: "12px",
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              background: "rgba(0, 0, 0, 0.6)",
-              backdropFilter: "blur(10px)",
-              border: "none",
-              fontSize: "20px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "transform 0.2s",
-              zIndex: 2,
-            }}
-          >
-            {isFavorite ? "❤️" : "🤍"}
-          </button>
-        </div>
-      ) : (
-        <div
-          style={{
-            padding: "12px 16px",
-            borderBottom: "1px solid var(--border-subtle)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: "8px",
-          }}
-        >
-          <span
-            style={{
-              padding: "6px 12px",
-              borderRadius: "20px",
-              background: "rgba(0, 0, 0, 0.6)",
-              fontSize: "11px",
-              fontWeight: "700",
-              color: "white",
-            }}
-          >
-            {place.categoryLabel}
-            {place.hasWebcam ? " 📹" : ""}
-          </span>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleFavorite?.();
-              }}
-              style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "50%",
-                background: "rgba(0, 0, 0, 0.5)",
-                border: "none",
-                fontSize: "18px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-            >
-              {isFavorite ? "❤️" : "🤍"}
-            </button>
-            <span
-              style={{
-                padding: "6px 12px",
-                borderRadius: "20px",
-                background: place.isOpen ? "var(--status-open, #10B981)" : "var(--status-closed, #EF4444)",
-                fontSize: "11px",
-                fontWeight: "700",
-                color: "white",
-              }}
-            >
-              {place.isOpen ? "• OPEN" : "CLOSED"}
-            </span>
-          </div>
         </div>
       )}
 
-      <div style={{ padding: "16px" }}>
-        <h3
-          style={{
-            fontSize: "18px",
-            fontWeight: "700",
-            color: "var(--text-primary)",
-            margin: "0 0 8px 0",
-            lineHeight: 1.3,
-          }}
-        >
-          {place.name}
-        </h3>
+      {/* Place name */}
+      <h3
+        style={{
+          fontSize: "22px",
+          fontWeight: "800",
+          margin: "0 0 6px 0",
+          color: "#1A1A1A",
+          letterSpacing: "-0.5px",
+        }}
+      >
+        {place.name}
+      </h3>
 
-        <p
-          style={{
-            fontSize: "13px",
-            color: "var(--text-tertiary)",
-            margin: "0 0 12px 0",
-            lineHeight: 1.4,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          } as React.CSSProperties}
-        >
-          {place.address}
-        </p>
+      {/* Description */}
+      <p
+        style={{
+          fontSize: "15px",
+          color: "#666",
+          margin: "0 0 16px 0",
+          lineHeight: 1.5,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+        } as React.CSSProperties}
+      >
+        {place.address}
+      </p>
 
+      {/* Info row pills */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          marginBottom: "16px",
+          flexWrap: "wrap",
+        }}
+      >
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "12px",
-            marginBottom: "12px",
-            fontSize: "13px",
-            color: "var(--text-secondary)",
-            flexWrap: "wrap",
+            gap: "6px",
+            padding: "6px 12px",
+            background: "rgba(255, 215, 0, 0.15)",
+            borderRadius: "10px",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-            <span>⭐</span>
-            <span style={{ fontWeight: "600", color: "var(--text-primary)" }}>{place.rating.toFixed(1)}</span>
-            {place.reviews > 0 && (
-              <span style={{ color: "var(--text-tertiary)" }}>({place.reviews})</span>
-            )}
-          </div>
-          <span style={{ color: "var(--text-tertiary)" }}>•</span>
-          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-            <span>📍</span>
-            <span style={{ fontWeight: "600", color: "var(--tulum-turquoise)" }}>
-              {place.distance < 1
-                ? `${(place.distance * 1000).toFixed(0)}m`
-                : `${place.distance.toFixed(1)}km`}
-            </span>
-          </div>
-          {place.priceLevel && (
-            <>
-              <span style={{ color: "var(--text-tertiary)" }}>•</span>
-              <span>💰 {place.priceLevel}</span>
-            </>
-          )}
+          <span style={{ fontSize: "16px" }}>⭐</span>
+          <span style={{ fontSize: "15px", fontWeight: "700", color: "#D4AF37" }}>
+            {place.rating.toFixed(1)}
+          </span>
         </div>
-
-        {place.tags.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            padding: "6px 12px",
+            background: "rgba(0, 206, 209, 0.1)",
+            borderRadius: "10px",
+          }}
+        >
+          <span style={{ fontSize: "16px" }}>📍</span>
+          <span style={{ fontSize: "15px", fontWeight: "700", color: "#00CED1" }}>{distanceStr}</span>
+        </div>
+        {place.priceLevel && (
           <div
             style={{
               display: "flex",
+              alignItems: "center",
               gap: "6px",
-              flexWrap: "wrap",
-              marginBottom: "16px",
+              padding: "6px 12px",
+              background: "rgba(255, 153, 102, 0.1)",
+              borderRadius: "10px",
             }}
           >
-            {place.tags.map((tag) => (
-              <span
-                key={tag}
-                style={{
-                  padding: "5px 10px",
-                  borderRadius: "12px",
-                  background: "rgba(255, 255, 255, 0.06)",
-                  fontSize: "11px",
-                  color: "var(--text-secondary)",
-                  fontWeight: "600",
-                }}
-              >
-                {tag}
-              </span>
-            ))}
+            <span style={{ fontSize: "16px" }}>💰</span>
+            <span style={{ fontSize: "15px", fontWeight: "700", color: "#FF9966" }}>{place.priceLevel}</span>
           </div>
         )}
+      </div>
 
+      {/* Tags */}
+      {place.tags.length > 0 && (
         <div
           style={{
             display: "flex",
             gap: "8px",
+            marginBottom: "16px",
             flexWrap: "wrap",
           }}
         >
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleFavorite?.();
-            }}
-            style={{
-              padding: "12px",
-              borderRadius: "10px",
-              background: "rgba(255, 255, 255, 0.1)",
-              border: "1px solid var(--border-subtle)",
-              color: "var(--text-primary)",
-              fontSize: "13px",
-              fontWeight: "700",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px",
-              transition: "transform 0.2s",
-            }}
-            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-          >
-            {isFavorite ? "❤️" : "🤍"} {isFavorite ? "Saved" : "Save"}
-          </button>
-          {place.phone ? (
-            <a
-              href={`tel:${place.phone.replace(/\D/g, "")}`}
-              onClick={(e) => e.stopPropagation()}
+          {place.tags.map((tag) => (
+            <div
+              key={tag}
               style={{
-                padding: "12px",
-                borderRadius: "10px",
-                background: "#007aff",
-                border: "none",
-                color: "white",
+                padding: "6px 14px",
+                background: "rgba(0, 0, 0, 0.06)",
+                borderRadius: "20px",
                 fontSize: "13px",
-                fontWeight: "700",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                textDecoration: "none",
-                transition: "transform 0.2s",
+                fontWeight: "600",
+                color: "#333",
               }}
             >
-              📞
-            </a>
-          ) : null}
-          {place.phone ? (
-            <a
-              href={`https://wa.me/${place.phone.replace(/\D/g, "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              style={{
-                padding: "12px",
-                borderRadius: "10px",
-                background: "#25d366",
-                border: "none",
-                color: "white",
-                fontSize: "13px",
-                fontWeight: "700",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                textDecoration: "none",
-                transition: "transform 0.2s",
-              }}
-            >
-              💬
-            </a>
-          ) : null}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              openNavigation(place.lat, place.lng, place.name);
-            }}
-            style={{
-              padding: "12px",
-              borderRadius: "10px",
-              background: "#ff9500",
-              border: "none",
-              color: "white",
-              fontSize: "13px",
-              fontWeight: "700",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "6px",
-              transition: "transform 0.2s",
-            }}
-          >
-            🗺️
-          </button>
+              {tag}
+            </div>
+          ))}
         </div>
+      )}
+
+      {/* Action buttons */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "8px",
+        }}
+      >
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite?.();
+          }}
+          style={{
+            padding: "14px 20px",
+            background: isFavorite
+              ? "linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
+              : "rgba(0, 0, 0, 0.06)",
+            border: "none",
+            borderRadius: "14px",
+            fontSize: "15px",
+            fontWeight: "700",
+            color: isFavorite ? "#FFF" : "#333",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            transition: "all 0.2s",
+          }}
+        >
+          {isFavorite ? "❤️" : "🤍"} {isFavorite ? "Saved" : "Save"}
+        </button>
+        {place.phone ? (
+          <a
+            href={`tel:${place.phone.replace(/\D/g, "")}`}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "56px",
+              height: "56px",
+              borderRadius: "14px",
+              background: "#0099FF",
+              border: "none",
+              fontSize: "24px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 16px rgba(0, 153, 255, 0.4)",
+              transition: "all 0.2s",
+              textDecoration: "none",
+            }}
+          >
+            📞
+          </a>
+        ) : null}
+        {place.phone ? (
+          <a
+            href={`https://wa.me/${place.phone.replace(/\D/g, "")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "56px",
+              height: "56px",
+              borderRadius: "14px",
+              background: "#25D366",
+              border: "none",
+              fontSize: "24px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 16px rgba(37, 211, 102, 0.4)",
+              transition: "all 0.2s",
+              textDecoration: "none",
+            }}
+          >
+            💬
+          </a>
+        ) : null}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            openNavigation(place.lat, place.lng, place.name);
+          }}
+          style={{
+            width: "56px",
+            height: "56px",
+            borderRadius: "14px",
+            background: "#FF9500",
+            border: "none",
+            fontSize: "24px",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 4px 16px rgba(255, 149, 0, 0.4)",
+            transition: "all 0.2s",
+          }}
+        >
+          🗺️
+        </button>
       </div>
     </div>
   );
@@ -501,6 +542,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   const [sortBy, setSortBy] = useState<SortBy>("popular");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const { clubs, restaurants, cafes, cultural, isLoading, error, source } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
 
@@ -513,15 +555,6 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   }, [isOpen]);
   const t = translations[lang] as Record<string, string>;
   const navigateLabel = t.navigate ?? "Go";
-
-  const categoryLabel =
-    activeTab === "beachClubs"
-      ? t.beachClubs ?? "Beach Clubs"
-      : activeTab === "restaurants"
-        ? t.restaurants ?? "Restaurants"
-        : activeTab === "coffeeShops"
-          ? t.coffeeShops ?? "Coffee Shops"
-          : t.cultural ?? "Cultural";
 
   const allItems = useMemo(() => {
     const clubCards = clubs.map((p) => placeToCard(p, lang, "Club"));
@@ -547,6 +580,8 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
       else if (activeTab === "restaurants") list = allItems.filter((p) => p.categoryLabel === "Restaurant");
       else if (activeTab === "coffeeShops") list = allItems.filter((p) => p.categoryLabel === "Coffee");
       else if (activeTab === "cultural") list = allItems.filter((p) => p.categoryLabel === "Cultural");
+      else if (activeTab === "local")
+        list = allItems.filter((p) => p.categoryLabel === "Club" || p.categoryLabel === "Restaurant");
       else list = [...allItems];
     }
 
@@ -561,6 +596,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   const totalCount = clubs.length + restaurants.length + cafes.length + cultural.length;
   const tabCounts: Record<TabId, number> = {
     all: totalCount,
+    local: clubs.length + restaurants.length,
     beachClubs: clubs.length,
     restaurants: restaurants.length,
     coffeeShops: cafes.length,
@@ -576,13 +612,10 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         onClick={onClose}
         style={{
           position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(0, 0, 0, 0.7)",
-          backdropFilter: "blur(4px)",
-          zIndex: 999,
+          inset: 0,
+          background: "rgba(0, 0, 0, 0.3)",
+          backdropFilter: "blur(8px)",
+          zIndex: 9998,
           animation: "fadeIn 0.2s ease-out",
         }}
       />
@@ -595,18 +628,11 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         aria-label={t.places ?? "Places"}
         style={{
           position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "90%",
-          maxWidth: "800px",
-          height: "85vh",
-          background: "var(--sidebar-bg)",
-          backdropFilter: "blur(20px)",
-          borderRadius: "24px",
-          border: "1px solid var(--border-emphasis)",
-          boxShadow: "0 24px 64px rgba(0, 0, 0, 0.8)",
-          zIndex: 1000,
+          inset: "60px 16px 16px",
+          background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
+          borderRadius: "32px",
+          boxShadow: "0 20px 60px rgba(0, 206, 209, 0.25)",
+          zIndex: 9999,
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
@@ -615,208 +641,220 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Header - Beachy gradient with wave */}
         <div
           style={{
-            padding: "16px 24px",
-            borderBottom: "1px solid var(--border-subtle)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            background: "linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%)",
+            padding: "24px",
+            position: "relative",
+            overflow: "hidden",
+            flexShrink: 0,
           }}
         >
-          <div>
-            <h2
-              style={{
-                fontSize: "24px",
-                fontWeight: "700",
-                color: "var(--text-primary)",
-                margin: "0 0 4px 0",
-              }}
-            >
-              📍 {t.places ?? "Places"}
-              {source === "supabase" && (
-                <span
-                  style={{
-                    marginLeft: "8px",
-                    padding: "2px 8px",
-                    borderRadius: "6px",
-                    background: "#10B981",
-                    fontSize: "11px",
-                    fontWeight: "700",
-                    color: "white",
-                  }}
-                  title="Loaded from Supabase"
-                >
-                  DB
-                </span>
-              )}
-            </h2>
-            <p
-              style={{
-                fontSize: "14px",
-                color: "var(--text-secondary)",
-                margin: 0,
-              }}
-            >
-              Discover the best spots in Tulum
-            </p>
-          </div>
+          <svg
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              width: "100%",
+              height: "40px",
+              opacity: 0.2,
+            }}
+            viewBox="0 0 1200 120"
+            preserveAspectRatio="none"
+          >
+            <path d="M0,50 Q300,10 600,50 T1200,50 L1200,120 L0,120 Z" fill="#00CED1" />
+          </svg>
 
           <button
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
             style={{
+              position: "absolute",
+              top: "16px",
+              right: "16px",
               width: "40px",
               height: "40px",
-              borderRadius: "10px",
-              background: "var(--button-secondary)",
-              border: "none",
-              color: "var(--text-primary)",
+              borderRadius: "50%",
+              background: "rgba(255, 255, 255, 0.9)",
+              backdropFilter: "blur(10px)",
+              border: "2px solid rgba(0, 206, 209, 0.2)",
               fontSize: "20px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
               transition: "all 0.2s",
             }}
           >
             ✕
           </button>
-        </div>
 
-        <div style={{ padding: "12px 24px 16px", display: "flex", flexDirection: "column", gap: "8px" }}>
-          <div style={{ display: "flex", gap: "8px", flexWrap: "nowrap", alignItems: "stretch" }}>
-            <select
-              value={activeTab}
-              onChange={(e) => setActiveTab(e.target.value as TabId)}
-              style={{
-                padding: "12px 14px",
-                background: "var(--card-bg)",
-                border: "1px solid var(--border-subtle)",
-                borderRadius: "12px",
-                color: "var(--text-primary)",
-                fontSize: "14px",
-                fontWeight: "600",
-                cursor: "pointer",
-                outline: "none",
-                minWidth: "72px",
-                flex: "0 0 auto",
-              }}
-              aria-label="Category"
-            >
-              <option value="all">All</option>
-              {TABS.map((tab) => (
-                <option key={tab.id} value={tab.id}>
-                  {tab.icon} {t[tab.labelKey] ?? tab.labelKey} ({tabCounts[tab.id]})
-                </option>
-              ))}
-            </select>
-            <div
-              style={{
-                padding: "12px 14px",
-                background: "var(--card-bg)",
-                border: "1px solid var(--border-subtle)",
-                borderRadius: "12px",
-                color: "var(--text-primary)",
-                fontSize: "14px",
-                fontWeight: "600",
-                minWidth: "0",
-                flex: "1 1 auto",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              Local Picks
-            </div>
-          </div>
-          <div style={{ display: "flex", gap: "8px" }}>
-            <div style={{ flex: 1, position: "relative" }}>
-              <input
-                type="text"
-                placeholder={t.searchPlaces ?? "Search all places…"}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
+            <div style={{ fontSize: "32px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))" }}>📍</div>
+            <div>
+              <h2
                 style={{
-                  width: "100%",
-                  padding: "12px 44px 12px 44px",
-                  background: "var(--card-bg)",
-                  border: "1px solid var(--border-subtle)",
-                  borderRadius: "12px",
-                  color: "var(--text-primary)",
-                  fontSize: "15px",
-                  outline: "none",
-                  transition: "all 0.2s",
-                }}
-              />
-              <span
-                style={{
-                  position: "absolute",
-                  left: "16px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  fontSize: "18px",
-                  pointerEvents: "none",
+                  fontSize: "28px",
+                  fontWeight: "800",
+                  margin: 0,
+                  background: "linear-gradient(135deg, #0099CC 0%, #00CED1 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
                 }}
               >
-                🔍
-              </span>
-              {searchQuery.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  aria-label="Clear search"
+                {t.places ?? "Places"}
+              </h2>
+              {source === "supabase" && (
+                <div
                   style={{
-                    position: "absolute",
-                    right: "8px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "50%",
-                    background: "var(--text-tertiary)",
-                    border: "none",
-                    color: "var(--sidebar-bg)",
-                    fontSize: "16px",
+                    display: "inline-block",
+                    marginTop: "4px",
+                    padding: "4px 10px",
+                    background: "#00CED1",
+                    borderRadius: "8px",
+                    fontSize: "11px",
                     fontWeight: "700",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    lineHeight: 1,
+                    color: "#FFF",
+                    letterSpacing: "0.5px",
                   }}
                 >
-                  ×
-                </button>
+                  DB
+                </div>
               )}
             </div>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortBy)}
+          </div>
+          <p
+            style={{
+              fontSize: "15px",
+              color: "#00ACC1",
+              margin: 0,
+              fontWeight: "600",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            Discover the best spots in Tulum
+          </p>
+        </div>
+
+        {/* Filter Buttons */}
+        <div
+          style={{
+            padding: "20px 20px 12px",
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: "12px",
+          }}
+        >
+          <FilterButton
+            icon="📋"
+            label="All"
+            active={activeTab === "all" && sortBy !== "popular"}
+            onClick={() => {
+              setActiveTab("all");
+              setSortBy("distance");
+            }}
+            gradient="linear-gradient(135deg, #FFE4CC 0%, #FFD4B8 100%)"
+          />
+          <FilterButton
+            icon="🌟"
+            label="Local Picks"
+            active={activeTab === "local"}
+            onClick={() => setActiveTab("local")}
+            gradient="linear-gradient(135deg, #FFD4E5 0%, #FFC0D9 100%)"
+          />
+          <FilterButton
+            icon="🔍"
+            label={t.searchPlaces ?? "Search all places"}
+            active={!!searchQuery.trim()}
+            onClick={() => searchInputRef.current?.focus()}
+            gradient="linear-gradient(135deg, #E8E8E8 0%, #D8D8D8 100%)"
+            wide
+          />
+          <FilterButton
+            icon="🔥"
+            label="Popular"
+            active={sortBy === "popular"}
+            onClick={() => {
+              setActiveTab("all");
+              setSortBy("popular");
+            }}
+            gradient="linear-gradient(135deg, #FFB088 0%, #FF9966 100%)"
+          />
+        </div>
+
+        {/* Search input */}
+        <div style={{ padding: "0 20px 16px", position: "relative" }}>
+          <input
+            ref={searchInputRef}
+            type="text"
+            placeholder={t.searchPlaces ?? "Search all places…"}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "14px 44px 14px 44px",
+              background: "rgba(255, 255, 255, 0.9)",
+              border: "2px solid rgba(0, 206, 209, 0.2)",
+              borderRadius: "16px",
+              color: "#333",
+              fontSize: "15px",
+              outline: "none",
+              transition: "all 0.2s",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
+            }}
+          />
+          <span
+            style={{
+              position: "absolute",
+              left: "20px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              fontSize: "18px",
+              pointerEvents: "none",
+            }}
+          >
+            🔍
+          </span>
+          {searchQuery.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              aria-label="Clear search"
               style={{
-                padding: "12px 14px",
-                background: "var(--card-bg)",
-                border: "1px solid var(--border-subtle)",
-                borderRadius: "12px",
-                color: "var(--text-primary)",
-                fontSize: "14px",
-                fontWeight: "600",
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: "28px",
+                height: "28px",
+                borderRadius: "50%",
+                background: "rgba(0, 0, 0, 0.08)",
+                border: "none",
+                fontSize: "16px",
+                fontWeight: "700",
                 cursor: "pointer",
-                outline: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                lineHeight: 1,
               }}
             >
-              <option value="distance">📍 Distance</option>
-              <option value="rating">⭐ Rating</option>
-              <option value="popular">🔥 Popular</option>
-            </select>
-          </div>
+              ×
+            </button>
+          )}
         </div>
 
         <div
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "16px 24px",
+            padding: "16px 20px 20px",
+            WebkitOverflowScrolling: "touch",
           }}
         >
           {error && (

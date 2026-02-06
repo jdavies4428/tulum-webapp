@@ -19,11 +19,19 @@ export default function DiscoverPage() {
   const t = translations[lang];
   const tAny = t as Record<string, string>;
 
+  const CARD_GRADIENTS: Record<string, string> = {
+    event: "linear-gradient(135deg, #FFE4CC 0%, #FFD4B8 100%)",
+    transportation: "linear-gradient(135deg, #B8E6F0 0%, #A0D8E8 100%)",
+    foodDelivery: "linear-gradient(135deg, #FFD4E5 0%, #FFC0D9 100%)",
+    itinerary: "linear-gradient(135deg, #D4E4BC 0%, #C2D8A8 100%)",
+    translation: "linear-gradient(135deg, #E8D4F1 0%, #DCC5E8 100%)",
+  };
+
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "var(--bg-primary)",
+        background: "linear-gradient(180deg, #E0F7FA 0%, #FFF8E7 50%, #FFFFFF 100%)",
         color: "var(--text-primary)",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
@@ -35,7 +43,6 @@ export default function DiscoverPage() {
           alignItems: "center",
           gap: "12px",
           marginBottom: "24px",
-          borderBottom: "1px solid var(--border-subtle)",
           paddingBottom: "16px",
         }}
       >
@@ -48,9 +55,9 @@ export default function DiscoverPage() {
             width: "44px",
             height: "44px",
             borderRadius: "12px",
-            background: "var(--button-secondary)",
-            border: "1px solid var(--border-emphasis)",
-            color: "var(--text-primary)",
+            background: "rgba(0, 206, 209, 0.12)",
+            border: "2px solid rgba(0, 206, 209, 0.2)",
+            color: "var(--tulum-ocean)",
             fontSize: "20px",
             textDecoration: "none",
             flexShrink: 0,
@@ -60,9 +67,10 @@ export default function DiscoverPage() {
         </Link>
         <h1
           style={{
-            fontSize: "24px",
-            fontWeight: "700",
+            fontSize: "28px",
+            fontWeight: "800",
             margin: 0,
+            color: "var(--tulum-ocean)",
           }}
         >
           ✨ {tAny.discover ?? "Discover"}
@@ -86,9 +94,9 @@ export default function DiscoverPage() {
                   ? `/itinerary?lang=${lang}`
                   : undefined;
           const cardStyle = {
-            background: "var(--card-bg)",
-            border: "1px solid var(--border-subtle)",
-            borderRadius: "16px",
+            background: CARD_GRADIENTS[id] ?? "var(--card-bg)",
+            border: "none",
+            borderRadius: "24px",
             padding: "24px",
             display: "flex" as const,
             flexDirection: "column" as const,
@@ -96,21 +104,22 @@ export default function DiscoverPage() {
             justifyContent: "center" as const,
             gap: "12px",
             minHeight: "120px",
-            transition: "background 0.2s, border-color 0.2s",
+            transition: "all 0.3s",
             cursor: href ? "pointer" : undefined,
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
           };
           const onEnter = (e: React.MouseEvent<HTMLElement>) => {
-            e.currentTarget.style.background = "var(--card-hover)";
-            e.currentTarget.style.borderColor = "var(--border-emphasis)";
+            e.currentTarget.style.transform = "translateY(-4px)";
+            e.currentTarget.style.boxShadow = "0 12px 32px rgba(0, 206, 209, 0.15)";
           };
           const onLeave = (e: React.MouseEvent<HTMLElement>) => {
-            e.currentTarget.style.background = "var(--card-bg)";
-            e.currentTarget.style.borderColor = "var(--border-subtle)";
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.08)";
           };
           const content = (
             <>
-              <span style={{ fontSize: "40px" }}>{icon}</span>
-              <span style={{ fontSize: "16px", fontWeight: "600", color: "var(--text-primary)" }}>
+              <span style={{ fontSize: "48px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.08))" }}>{icon}</span>
+              <span style={{ fontSize: "16px", fontWeight: "800", color: "#333", letterSpacing: "0.3px" }}>
                 {tAny[labelKey ?? id] ?? id}
               </span>
             </>

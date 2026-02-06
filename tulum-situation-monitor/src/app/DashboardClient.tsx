@@ -85,16 +85,12 @@ export function DashboardClient() {
     }
   }, [mapApi]);
 
-  // Fix white background and body styles
+  // Body styles (margin, overflow)
   useEffect(() => {
-    document.body.style.backgroundColor = "#000000";
-    document.documentElement.style.backgroundColor = "#000000";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
     document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.backgroundColor = "";
-      document.documentElement.style.backgroundColor = "";
       document.body.style.margin = "";
       document.body.style.padding = "";
       document.body.style.overflow = "";

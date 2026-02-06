@@ -40,19 +40,20 @@ function WeatherMetric({
       <div
         style={{
           fontSize: "11px",
-          color: "var(--text-tertiary)",
+          color: "var(--tulum-ocean)",
           marginBottom: "6px",
           textTransform: "uppercase",
           letterSpacing: "0.5px",
+          fontWeight: "700",
         }}
       >
         {icon} {label}
       </div>
       <div
         style={{
-          fontSize: "16px",
-          color: valueColor ?? "var(--text-primary)",
-          fontWeight: "600",
+          fontSize: "18px",
+          color: valueColor ?? "var(--tulum-ocean)",
+          fontWeight: "700",
         }}
       >
         {value}
@@ -254,12 +255,7 @@ export function WeatherSection({
   }
 
   return (
-    <div
-      style={{
-        padding: "24px",
-        borderBottom: "1px solid var(--border-subtle)",
-      }}
-    >
+    <div style={{ padding: "0 0 8px 0" }}>
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
@@ -271,19 +267,19 @@ export function WeatherSection({
           background: "transparent",
           border: "none",
           cursor: "pointer",
-          marginBottom: isExpanded ? "20px" : "0",
-          padding: 0,
+          marginBottom: isExpanded ? "16px" : "0",
+          padding: "0 0 12px 0",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ fontSize: "18px" }}>🌤️</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <span style={{ fontSize: "22px" }}>🌤️</span>
           <h2
             style={{
-              fontSize: "16px",
-              fontWeight: "700",
-              color: "var(--text-primary)",
+              fontSize: "18px",
+              fontWeight: "800",
+              color: "var(--tulum-ocean)",
               textTransform: "uppercase",
-              letterSpacing: "0.5px",
+              letterSpacing: "1px",
               margin: 0,
             }}
           >
@@ -324,11 +320,12 @@ export function WeatherSection({
         <div style={{ animation: "slideDown 0.3s ease-out" }}>
           <div
             style={{
-              background: "var(--card-bg)",
-              borderRadius: "16px",
-              padding: "20px",
-              border: "1px solid var(--border-subtle)",
+              background: "linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%)",
+              borderRadius: "24px",
+              padding: "24px",
+              border: "2px solid rgba(255, 255, 255, 0.8)",
               marginBottom: "16px",
+              boxShadow: "0 12px 40px rgba(0, 206, 209, 0.2)",
             }}
           >
             <div
@@ -344,7 +341,7 @@ export function WeatherSection({
                   style={{
                     fontSize: "56px",
                     fontWeight: "300",
-                    color: "var(--text-primary)",
+                    color: "var(--tulum-ocean)",
                     lineHeight: 1,
                     marginBottom: "8px",
                   }}
@@ -353,8 +350,9 @@ export function WeatherSection({
                 </div>
                 <div
                   style={{
-                    color: "var(--text-secondary)",
+                    color: "var(--tulum-aqua)",
                     fontSize: "14px",
+                    fontWeight: "600",
                   }}
                 >
                   {t.feelsLike} {formatTempFull(current!.apparent_temperature, lang)}
@@ -379,10 +377,11 @@ export function WeatherSection({
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
-                gap: "12px",
-                padding: "16px",
-                background: "rgba(255, 255, 255, 0.03)",
-                borderRadius: "12px",
+                gap: "16px",
+                padding: "20px",
+                background: "rgba(255, 255, 255, 0.6)",
+                borderRadius: "20px",
+                backdropFilter: "blur(10px)",
               }}
             >
               <WeatherMetric icon="🌊" label={waveHeight} value="—" />

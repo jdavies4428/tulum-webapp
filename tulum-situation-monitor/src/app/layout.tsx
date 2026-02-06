@@ -25,13 +25,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="w-full h-full overflow-hidden" style={{ background: "#000" }}>
+    <html lang="en" className="w-full h-full overflow-hidden" style={{ background: "var(--bg-primary)" }}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#000000" />
+        <meta name="theme-color" content="#FFFEF9" />
         <link rel="manifest" href="/manifest.json" />
         <link
           rel="stylesheet"
@@ -40,7 +40,7 @@ export default function RootLayout({
           crossOrigin=""
         />
       </head>
-      <body className="w-full h-full overflow-hidden min-w-0" style={{ margin: 0, padding: 0, background: "#000" }}>{children}</body>
+      <body className="w-full h-full overflow-hidden min-w-0" style={{ margin: 0, padding: 0, background: "var(--bg-primary)" }}>{children}</body>
     </html>
   );
 }

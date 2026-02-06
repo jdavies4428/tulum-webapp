@@ -1,24 +1,38 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Primary Brand Colors */
-  --tulum-turquoise: #00D4D4;
+  /* Tulum Beach Palette - Primary */
+  --tulum-turquoise: #00CED1;
+  --tulum-aqua: #4DD0E1;
+  --tulum-ocean: #0099CC;
   --tulum-coral: #FF6B6B;
-  --tulum-sand: #F4E4C1;
+  --tulum-sand: #F5E6D3;
+  --tulum-sand-dark: #E8D4B8;
+  --tulum-cream: #FFF8E7;
+  --tulum-beige: #D4C4A8;
+  --tulum-sunset: #FF9966;
+  --tulum-pink: #FFB6C1;
+  --tulum-gold: #D4AF37;
   --tulum-jungle: #2D5016;
+  --tulum-palm: #3D6B35;
+  --tulum-sage: #8FBC8F;
 
-  /* Background Layers */
-  --bg-primary: #0a0404;
-  --bg-secondary: #1a0f0f;
-  --bg-elevated: rgba(26, 15, 15, 0.95);
-  --bg-glass: rgba(20, 10, 10, 0.8);
+  /* Backgrounds - Light & Beachy */
+  --bg-primary: #FFFEF9;
+  --bg-secondary: #FFF8E7;
+  --bg-elevated: rgba(255, 255, 255, 0.95);
+  --bg-glass: rgba(255, 255, 255, 0.8);
+  --bg-gradient-beach: linear-gradient(135deg, #E0F7FA 0%, #FFF3E0 100%);
+  --bg-gradient-sidebar: linear-gradient(180deg, #E0F7FA 0%, #FFF8E7 50%, #FFFFFF 100%);
 
   /* Sidebar & Panels */
-  --sidebar-bg: rgba(10, 4, 4, 0.98);
-  --card-bg: rgba(30, 18, 18, 0.9);
-  --card-hover: rgba(40, 24, 24, 0.95);
+  --sidebar-bg: linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%);
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-hover: rgba(255, 248, 231, 0.95);
 
   /* Sargassum Status Colors */
   --sargassum-low: #10B981;
@@ -29,44 +43,44 @@
   --status-open: #10B981;
   --status-closed: #EF4444;
 
-  /* Text Hierarchy */
-  --text-primary: #FFFFFF;
-  --text-secondary: rgba(255, 255, 255, 0.75);
-  --text-tertiary: rgba(255, 255, 255, 0.5);
-  --text-muted: rgba(255, 255, 255, 0.35);
+  /* Text Hierarchy - Dark on light */
+  --text-primary: #1a1a1a;
+  --text-secondary: #555;
+  --text-tertiary: #777;
+  --text-muted: #999;
 
   /* Interactive Elements */
-  --button-primary: #00D4D4;
-  --button-primary-hover: #00BABA;
-  --button-secondary: rgba(255, 255, 255, 0.1);
-  --button-secondary-hover: rgba(255, 255, 255, 0.15);
+  --button-primary: #00CED1;
+  --button-primary-hover: #00B5B8;
+  --button-secondary: rgba(0, 206, 209, 0.12);
+  --button-secondary-hover: rgba(0, 206, 209, 0.2);
 
   /* Borders & Dividers */
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-emphasis: rgba(255, 255, 255, 0.15);
-  --border-accent: rgba(0, 212, 212, 0.3);
+  --border-subtle: rgba(0, 206, 209, 0.15);
+  --border-emphasis: rgba(0, 206, 209, 0.3);
+  --border-accent: rgba(0, 206, 209, 0.4);
 
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(0, 212, 212, 0.3);
+  /* Shadows - Soft & Natural */
+  --shadow-sm: 0 4px 20px rgba(0, 206, 209, 0.12);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 48px rgba(0, 206, 209, 0.15);
+  --shadow-glow: 0 0 24px rgba(0, 206, 209, 0.2);
 
-  /* Legacy aliases (used by existing components) */
+  /* Legacy aliases */
   --accent-cyan: var(--tulum-turquoise);
-  --accent-yellow: #ffd600;
+  --accent-yellow: #F59E0B;
   --accent-green: var(--sargassum-low);
   --accent-red: var(--sargassum-high);
-  --accent-purple: #af52de;
-  --accent-grey: #a0a0a0;
-  /* Map marker colors (match marker-config.ts for legend & layer dots) */
+  --accent-purple: #9B59B6;
+  --accent-grey: #888;
+  /* Map marker colors */
   --marker-beach-club: #FF9500;
   --marker-restaurant: #50C878;
   --marker-cafe: #8B4513;
   --marker-cultural: #9B59B6;
   --marker-favorites: #E91E63;
-  --bg-dark: var(--bg-primary);
-  --bg-panel: var(--bg-elevated);
+  --bg-dark: #0a0404;
+  --bg-panel: rgba(255, 255, 255, 0.95);
   --border-color: var(--border-emphasis);
 }
 
@@ -83,7 +97,7 @@ html {
   width: 100% !important;
   height: 100% !important;
   overflow: hidden !important;
-  background: #000000 !important;
+  background: var(--bg-primary) !important;
 }
 
 body {
@@ -93,9 +107,10 @@ body {
   height: 100% !important;
   min-height: 100vh !important;
   overflow: hidden !important;
-  background: #000000 !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: #fff;
+  background: var(--bg-primary) !important;
+  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
 }
 
 #root,
@@ -107,7 +122,7 @@ body {
   height: 100% !important;
   min-height: 100vh !important;
   overflow: hidden !important;
-  background: #000000 !important;
+  background: var(--bg-primary) !important;
 }
 
 /* Map container when sidebar collapsed - fill viewport, no white strip */
@@ -127,12 +142,12 @@ body {
   background: var(--bg-dark) !important;
 }
 
-/* Leaflet overrides – ensure dark theme for venue popups */
+/* Leaflet overrides – venue popups */
 .leaflet-popup-content-wrapper {
   background: var(--bg-panel) !important;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: #fff !important;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  color: var(--text-primary) !important;
 }
 .leaflet-popup-tip {
   background: var(--bg-panel) !important;
@@ -150,11 +165,11 @@ body {
 }
 .leaflet-control-zoom a {
   background: var(--bg-panel) !important;
-  color: #fff !important;
+  color: var(--text-primary) !important;
   border-color: var(--border-color) !important;
 }
 .leaflet-control-zoom a:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(0, 206, 209, 0.2) !important;
 }
 
 /* PlacePopup animations */
@@ -378,13 +393,13 @@ body {
 /* Map venue popup */
 .club-popup {
   min-width: 200px;
-  color: #fff;
+  color: var(--text-primary);
 }
 .club-popup h3 {
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 4px;
-  color: #fff !important;
+  color: var(--text-primary) !important;
 }
 .club-popup .club-desc {
   font-size: 11px;
@@ -485,10 +500,10 @@ body {
 }
 .panel {
   background: var(--bg-panel);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -496,14 +511,14 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid var(--border-color);
-  font-size: 10px;
-  font-weight: 600;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.6);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: var(--text-muted);
+  color: var(--tulum-ocean);
 }
 .panel-icon {
   font-size: 12px;
@@ -638,7 +653,7 @@ body {
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 4px;
-  color: #fff;
+  color: var(--text-primary);
 }
 .sargassum-desc {
   font-size: 11px;
@@ -700,18 +715,23 @@ body {
   50% { opacity: 0.5; }
 }
 
-/* Map legend – match original repo */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Map legend */
 .legend {
   position: absolute;
   bottom: 52px;
   left: 10px;
   z-index: 1100;
   background: var(--bg-panel);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
   padding: 10px 12px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-md);
 }
 .legend-title {
   font-size: 10px;

@@ -122,27 +122,27 @@ export function EnhancedSidebar({
           width: "44px",
           height: "44px",
           borderRadius: "12px",
-          background: "rgba(10, 4, 4, 0.95)",
+          background: "rgba(255, 255, 255, 0.95)",
           backdropFilter: "blur(20px)",
-          border: "1px solid rgba(255, 255, 255, 0.15)",
-          color: "#FFFFFF",
+          border: "2px solid rgba(0, 206, 209, 0.3)",
+          color: "var(--tulum-ocean)",
           fontSize: "20px",
           cursor: "pointer",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-          boxShadow: "0 4px 16px rgba(0, 0, 0, 0.4)",
+          boxShadow: "0 4px 20px rgba(0, 206, 209, 0.2)",
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = "scale(1.05)";
-          e.currentTarget.style.background = "rgba(0, 212, 212, 0.15)";
-          e.currentTarget.style.borderColor = "rgba(0, 212, 212, 0.4)";
+          e.currentTarget.style.background = "rgba(0, 206, 209, 0.15)";
+          e.currentTarget.style.borderColor = "rgba(0, 206, 209, 0.5)";
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = "scale(1)";
-          e.currentTarget.style.background = "rgba(10, 4, 4, 0.95)";
-          e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+          e.currentTarget.style.background = "rgba(255, 255, 255, 0.95)";
+          e.currentTarget.style.borderColor = "rgba(0, 206, 209, 0.3)";
         }}
       >
         {isCollapsed ? "→" : "←"}
@@ -158,9 +158,10 @@ export function EnhancedSidebar({
           top: 0,
           width: sidebarWidth,
           height: "100vh",
-          background: isCollapsed ? "transparent" : "rgba(10, 4, 4, 0.98)",
+          background: isCollapsed ? "transparent" : "linear-gradient(180deg, #FFF8E7 0%, #E0F7FA 30%, #FFFFFF 100%)",
           backdropFilter: isCollapsed ? "none" : "blur(20px)",
-          borderRight: isCollapsed ? "none" : "1px solid rgba(255, 255, 255, 0.08)",
+          borderRight: isCollapsed ? "none" : "1px solid rgba(0, 206, 209, 0.2)",
+          boxShadow: isCollapsed ? "none" : "4px 0 24px rgba(0, 206, 209, 0.12)",
           transform: isCollapsed ? "translateX(-100%)" : "translateX(0)",
           transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease",
           zIndex: 100,
@@ -188,15 +189,17 @@ export function EnhancedSidebar({
               flexDirection: "column",
             }}
           >
-        {/* Header */}
+        {/* Header - Beachy gradient */}
         <div
           style={{
             padding: "24px",
             borderBottom: "1px solid var(--border-subtle)",
-            background: "rgba(10, 4, 4, 1)",
+            background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 50%, #FFE4CC 100%)",
             position: "sticky",
             top: 0,
             zIndex: 10,
+            borderRadius: "0 0 24px 24px",
+            boxShadow: "0 8px 32px rgba(0, 206, 209, 0.12)",
           }}
         >
           <div
@@ -210,31 +213,27 @@ export function EnhancedSidebar({
             <h1
               style={{
                 fontSize: "28px",
-                fontWeight: "700",
-                color: "var(--text-primary)",
+                fontWeight: "800",
                 display: "flex",
                 alignItems: "center",
                 gap: "12px",
                 margin: 0,
+                color: "var(--tulum-ocean)",
               }}
             >
               🌴 <span>{t.title}</span>
             </h1>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: "4px",
-                  background: "var(--button-secondary)",
-                  borderRadius: "8px",
+                  background: "rgba(255, 255, 255, 0.9)",
+                  borderRadius: "12px",
                   padding: "4px",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+                  border: "2px solid rgba(0, 206, 209, 0.2)",
                 }}
               >
                 {LANG_FLAGS.map(({ lang: l, flag }) => (
@@ -248,8 +247,8 @@ export function EnhancedSidebar({
                       fontSize: "20px",
                       cursor: "pointer",
                       padding: "6px 8px",
-                      borderRadius: "6px",
-                      transition: "background 0.2s",
+                      borderRadius: "8px",
+                      transition: "all 0.2s",
                     }}
                   >
                     {flag}
@@ -275,13 +274,14 @@ export function EnhancedSidebar({
                     }
                   }}
                   style={{
-                    background: "var(--button-secondary)",
-                    border: "none",
+                    background: "rgba(255, 255, 255, 0.9)",
+                    border: "2px solid rgba(0, 206, 209, 0.2)",
                     fontSize: "20px",
                     cursor: "pointer",
                     padding: "6px 8px",
-                    borderRadius: "6px",
-                    transition: "background 0.2s",
+                    borderRadius: "10px",
+                    transition: "all 0.2s",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
                   }}
                 >
                   📤
@@ -289,44 +289,40 @@ export function EnhancedSidebar({
               )}
             </div>
           </div>
-          <p
-            style={{
-              color: "var(--text-secondary)",
-              fontSize: "14px",
-              margin: 0,
-            }}
-          >
+          <p style={{ color: "var(--text-secondary)", fontSize: "14px", margin: 0, fontWeight: "500" }}>
             {t.subtitle}
           </p>
         </div>
 
-        {/* Action buttons */}
+        {/* Action buttons - Beachy gradients */}
         <div
           style={{
             padding: "16px 24px",
             display: "flex",
             gap: "12px",
             borderBottom: "1px solid var(--border-subtle)",
+            background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
           }}
         >
           <Link
             href={`/discover?lang=${lang}`}
             style={{
               flex: 1,
-              padding: "12px",
-              background: "var(--button-secondary)",
-              border: "1px solid var(--border-emphasis)",
-              borderRadius: "12px",
-              color: "var(--text-primary)",
-              fontWeight: "600",
+              padding: "14px 12px",
+              background: "linear-gradient(135deg, #FFE4CC 0%, #FFD4B8 100%)",
+              border: "none",
+              borderRadius: "20px",
+              color: "#333",
+              fontWeight: "700",
               fontSize: "14px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: "8px",
-              transition: "all 0.2s",
+              transition: "all 0.3s",
               textDecoration: "none",
+              boxShadow: "0 6px 20px rgba(255, 153, 102, 0.2)",
             }}
           >
             ✨ {tAny.discover ?? "Discover"}
@@ -336,19 +332,20 @@ export function EnhancedSidebar({
             onClick={onOpenPlaces}
             style={{
               flex: 1,
-              padding: "12px",
-              background: "var(--button-secondary)",
-              border: "1px solid var(--border-emphasis)",
-              borderRadius: "12px",
-              color: "var(--text-primary)",
-              fontWeight: "600",
+              padding: "14px 12px",
+              background: "linear-gradient(135deg, #FFB6C1 0%, #FF9AA2 100%)",
+              border: "none",
+              borderRadius: "20px",
+              color: "#333",
+              fontWeight: "700",
               fontSize: "14px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: "8px",
-              transition: "all 0.2s",
+              transition: "all 0.3s",
+              boxShadow: "0 6px 20px rgba(255, 107, 107, 0.2)",
             }}
           >
             📍 {t.places}
@@ -359,19 +356,20 @@ export function EnhancedSidebar({
               onClick={onOpenMap}
               style={{
                 flex: 1,
-                padding: "12px",
-                background: "var(--button-secondary)",
-                border: "1px solid var(--border-emphasis)",
-                borderRadius: "12px",
-                color: "var(--text-primary)",
-                fontWeight: "600",
+                padding: "14px 12px",
+                background: "linear-gradient(135deg, #B8E6F0 0%, #A0D8E8 100%)",
+                border: "none",
+                borderRadius: "20px",
+                color: "#333",
+                fontWeight: "700",
                 fontSize: "14px",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "8px",
-                transition: "all 0.2s",
+                transition: "all 0.3s",
+                boxShadow: "0 6px 20px rgba(77, 208, 225, 0.25)",
               }}
             >
               🗺️ {tAny.map ?? "Map"}
@@ -395,17 +393,19 @@ export function EnhancedSidebar({
             type="button"
             onClick={() => setSargassumCurrentOpen(true)}
             style={{
-              padding: "8px 10px",
-              background: "var(--button-secondary)",
-              border: "none",
-              borderRadius: "8px",
-              color: "var(--text-primary)",
+              padding: "10px 14px",
+              background: "rgba(255, 255, 255, 0.9)",
+              border: "2px solid rgba(0, 206, 209, 0.2)",
+              borderRadius: "12px",
+              color: "var(--tulum-ocean)",
               fontSize: "11px",
+              fontWeight: "600",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               gap: "6px",
               flexShrink: 0,
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
             🛰️ {tAny.currentSatellite ?? "Satellite"}
@@ -414,17 +414,19 @@ export function EnhancedSidebar({
             type="button"
             onClick={() => setSargassumForecastOpen(true)}
             style={{
-              padding: "8px 10px",
-              background: "var(--button-secondary)",
-              border: "none",
-              borderRadius: "8px",
-              color: "var(--text-primary)",
+              padding: "10px 14px",
+              background: "rgba(255, 255, 255, 0.9)",
+              border: "2px solid rgba(0, 206, 209, 0.2)",
+              borderRadius: "12px",
+              color: "var(--tulum-ocean)",
               fontSize: "11px",
+              fontWeight: "600",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               gap: "6px",
               flexShrink: 0,
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
             🗺️ {tAny.sargassum7Day ?? "7-Day Forecast"}
@@ -433,17 +435,19 @@ export function EnhancedSidebar({
             type="button"
             onClick={() => setWebcamOpen(true)}
             style={{
-              padding: "8px 10px",
-              background: "var(--button-secondary)",
-              border: "none",
-              borderRadius: "8px",
-              color: "var(--text-primary)",
+              padding: "10px 14px",
+              background: "rgba(255, 255, 255, 0.9)",
+              border: "2px solid rgba(0, 206, 209, 0.2)",
+              borderRadius: "12px",
+              color: "var(--tulum-ocean)",
               fontSize: "11px",
+              fontWeight: "600",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               gap: "6px",
               flexShrink: 0,
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
             📹 {tAny.beachCams ?? "Beach Cams"}
@@ -451,7 +455,7 @@ export function EnhancedSidebar({
         </div>
 
         {/* Content sections */}
-        <div style={{ flex: 1, padding: "16px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ flex: 1, padding: "16px 24px", display: "flex", flexDirection: "column", gap: "12px", background: "linear-gradient(180deg, #FFFFFF 0%, #FFF8E7 100%)" }}>
           <WeatherSection
             lang={lang}
             data={weatherData}

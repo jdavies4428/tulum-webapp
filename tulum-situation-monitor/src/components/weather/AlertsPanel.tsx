@@ -45,7 +45,7 @@ export function AlertsPanel({ lang, alerts }: AlertsPanelProps) {
                   >
                     {alert.severity.toUpperCase()}
                   </span>
-                  <p className="min-w-0 flex-1 text-sm font-semibold text-white">{alert.title}</p>
+                  <p className="min-w-0 flex-1 text-sm font-semibold text-[var(--text-primary)]">{alert.title}</p>
                 </div>
                 <p className="text-xs text-text-muted leading-snug">{alert.desc}</p>
               </li>
