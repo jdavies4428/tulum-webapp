@@ -59,6 +59,10 @@
   --accent-red: var(--sargassum-high);
   --accent-purple: #af52de;
   --accent-grey: #a0a0a0;
+  /* Map marker colors (match marker-config.ts for legend & layer dots) */
+  --marker-beach-club: #FF9500;
+  --marker-restaurant: #50C878;
+  --marker-cultural: #9B59B6;
   --bg-dark: var(--bg-primary);
   --bg-panel: var(--bg-elevated);
   --border-color: var(--border-emphasis);
@@ -738,16 +742,16 @@ body {
   box-shadow: 0 0 4px var(--accent-red);
 }
 .legend-dot.clubs {
-  background: var(--accent-yellow);
-  box-shadow: 0 0 4px var(--accent-yellow);
+  background: var(--marker-beach-club);
+  box-shadow: 0 0 4px var(--marker-beach-club);
 }
 .legend-dot.restaurants {
-  background: var(--accent-purple);
-  box-shadow: 0 0 4px var(--accent-purple);
+  background: var(--marker-restaurant);
+  box-shadow: 0 0 4px var(--marker-restaurant);
 }
 .legend-dot.cultural {
-  background: var(--accent-grey);
-  box-shadow: 0 0 4px var(--accent-grey);
+  background: var(--marker-cultural);
+  box-shadow: 0 0 4px var(--marker-cultural);
 }
 
 /* Listings panel - desktop centered modal (match original) */

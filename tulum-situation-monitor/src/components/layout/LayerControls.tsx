@@ -68,21 +68,30 @@ export function LayerControls({ lang, layers, onLayersChange }: LayerControlsPro
             label={t.beachClubs}
             checked={layers.clubs}
             onToggle={() => toggle("clubs")}
-            dotClass="bg-accent-yellow"
+            dotStyle={{
+              background: "var(--marker-beach-club)",
+              boxShadow: "0 0 6px var(--marker-beach-club)",
+            }}
           />
           <LayerRow
             id="restaurants"
             label={t.restaurants}
             checked={layers.restaurants}
             onToggle={() => toggle("restaurants")}
-            dotClass="bg-accent-purple"
+            dotStyle={{
+              background: "var(--marker-restaurant)",
+              boxShadow: "0 0 6px var(--marker-restaurant)",
+            }}
           />
           <LayerRow
             id="cultural"
             label={t.cultural}
             checked={layers.cultural}
             onToggle={() => toggle("cultural")}
-            dotClass="bg-accent-grey"
+            dotStyle={{
+              background: "var(--marker-cultural)",
+              boxShadow: "0 0 6px var(--marker-cultural)",
+            }}
           />
         </div>
       )}
@@ -96,12 +105,14 @@ function LayerRow({
   checked,
   onToggle,
   dotClass = "bg-accent-cyan",
+  dotStyle,
 }: {
   id: string;
   label: string;
   checked: boolean;
   onToggle: () => void;
   dotClass?: string;
+  dotStyle?: React.CSSProperties;
 }) {
   return (
     <label className="flex cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5 transition-colors hover:bg-white/5">
@@ -113,8 +124,12 @@ function LayerRow({
       />
       <span className="flex-1 text-xs">{label}</span>
       <div
-        className={`h-1.5 w-1.5 rounded-full ${checked ? dotClass : "bg-border"} ${checked ? "shadow-[0_0_6px_currentColor]" : ""}`}
-        style={checked ? { color: "var(--accent-cyan)" } : undefined}
+        className={`h-1.5 w-1.5 rounded-full ${checked && !dotStyle ? dotClass : ""} ${checked ? "shadow-[0_0_6px_currentColor]" : ""}`}
+        style={
+          checked
+            ? dotStyle ?? { color: "var(--accent-cyan)" }
+            : { background: "var(--border-color)" }
+        }
       />
     </label>
   );
