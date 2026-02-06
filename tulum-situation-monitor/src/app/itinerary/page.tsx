@@ -101,11 +101,14 @@ export default function ItineraryPage() {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        position: "fixed",
+        inset: 0,
         display: "flex",
         flexDirection: "column",
         background: "var(--bg-primary)",
         color: "var(--text-primary)",
+        overflow: "hidden",
+        zIndex: 0,
       }}
     >
       <header
@@ -146,6 +149,10 @@ export default function ItineraryPage() {
       <main
         style={{
           flex: 1,
+          minHeight: 0,
+          overflowY: "auto",
+          overflowX: "hidden",
+          WebkitOverflowScrolling: "touch",
           padding: "24px",
           paddingBottom: "max(24px, env(safe-area-inset-bottom))",
         }}

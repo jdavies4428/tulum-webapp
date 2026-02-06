@@ -4,7 +4,11 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-const MODEL = "gemini-pro";
+const DEFAULT_MODEL = "gemini-2.0-flash";
+
+function getModel(): string {
+  return process.env.GEMINI_MODEL ?? DEFAULT_MODEL;
+}
 
 function getApiKey(): string {
   const key = process.env.GEMINI_API_KEY;
@@ -102,7 +106,7 @@ export async function POST(request: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(getApiKey());
-    const model = genAI.getGenerativeModel({ model: MODEL });
+    const model = genAI.getGenerativeModel({ model: getModel() });
     const prompt = buildPrompt({ days, interests, budget, groupType });
     const result = await model.generateContent(prompt);
     const response = result.response;
