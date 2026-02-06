@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import { WeatherSection } from "@/components/weather/WeatherSection";
 import { AlertsPanel } from "@/components/weather/AlertsPanel";
@@ -265,6 +266,28 @@ export function EnhancedSidebar({
             borderBottom: "1px solid var(--border-subtle)",
           }}
         >
+          <Link
+            href={`/discover?lang=${lang}`}
+            style={{
+              padding: "12px",
+              background: "var(--button-secondary)",
+              border: "1px solid var(--border-emphasis)",
+              borderRadius: "12px",
+              color: "var(--text-primary)",
+              fontWeight: "600",
+              fontSize: "14px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              transition: "all 0.2s",
+              textDecoration: "none",
+              flexShrink: 0,
+            }}
+          >
+            ✨ {tAny.discover ?? "Discover"}
+          </Link>
           <button
             type="button"
             onClick={onOpenPlaces}
