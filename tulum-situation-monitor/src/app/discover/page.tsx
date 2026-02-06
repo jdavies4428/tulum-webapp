@@ -82,7 +82,9 @@ export default function DiscoverPage() {
               ? `/discover/transportation?lang=${lang}`
               : id === "foodDelivery"
                 ? `/discover/food-delivery?lang=${lang}`
-                : undefined;
+                : id === "itinerary"
+                  ? `/itinerary?lang=${lang}`
+                  : undefined;
           const cardStyle = {
             background: "var(--card-bg)",
             border: "1px solid var(--border-subtle)",
