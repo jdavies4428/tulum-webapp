@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 :root {
+  /* Mobile viewport height (set by JS; avoids browser chrome issues) */
+  --vh: 1vh;
+  --app-height: 100vh;
   /* Primary Brand Colors */
   --tulum-turquoise: #00D4D4;
   --tulum-coral: #FF6B6B;
@@ -92,6 +95,7 @@ body {
   width: 100% !important;
   height: 100% !important;
   min-height: 100vh !important;
+  min-height: calc(var(--vh, 1vh) * 100) !important;
   overflow: hidden !important;
   background: #000000 !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -106,13 +110,47 @@ body {
   width: 100% !important;
   height: 100% !important;
   min-height: 100vh !important;
+  min-height: calc(var(--vh, 1vh) * 100) !important;
   overflow: hidden !important;
   background: #000000 !important;
 }
 
-/* Map container when sidebar collapsed - fill viewport, no white strip */
+/* Map container - full viewport so Leaflet gets correct size (Solution 1) */
 .map-container {
   background: #000000 !important;
+}
+
+/* Mobile: map container and Leaflet must fill viewport (dvh = dynamic viewport height) */
+@media (max-width: 768px) {
+  .map-container {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    height: calc(var(--vh, 1vh) * 100) !important;
+    z-index: 0 !important;
+  }
+
+  /* Ensure Leaflet map and tiles fill container (Solution 1) */
+  .map-container .leaflet-container,
+  #map.leaflet-container {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+
+  .leaflet-container .leaflet-map-pane,
+  .leaflet-container .leaflet-tile-pane,
+  .leaflet-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
 }
 
 /* Sidebar should be above map */
@@ -124,6 +162,12 @@ body {
 #map,
 .leaflet-container {
   background: var(--bg-dark) !important;
+}
+
+/* Leaflet container fill (desktop and base) */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* Leaflet overrides – ensure dark theme for venue popups */

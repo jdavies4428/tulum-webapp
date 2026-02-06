@@ -90,19 +90,41 @@ export function DashboardClient() {
     }
   }, [isMobile, sidebarOpen, mapApi]);
 
-  // Fix white background and body styles
+  // Mobile viewport height fix (doc Solution 6): --vh avoids browser chrome breaking layout
+  useEffect(() => {
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+    setVH();
+    window.addEventListener("resize", setVH);
+    window.addEventListener("orientationchange", setVH);
+    return () => {
+      window.removeEventListener("resize", setVH);
+      window.removeEventListener("orientationchange", setVH);
+    };
+  }, []);
+
+  // Fix white background and body styles (doc Solution 1: position fixed prevents mobile scroll issues)
   useEffect(() => {
     document.body.style.backgroundColor = "#000000";
     document.documentElement.style.backgroundColor = "#000000";
     document.body.style.margin = "0";
     document.body.style.padding = "0";
     document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.width = "100%";
+    document.body.style.height = "100%";
+    document.body.style.height = "calc(var(--vh, 1vh) * 100)";
     return () => {
       document.body.style.backgroundColor = "";
       document.documentElement.style.backgroundColor = "";
       document.body.style.margin = "";
       document.body.style.padding = "";
       document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.height = "";
     };
   }, []);
 
@@ -111,9 +133,14 @@ export function DashboardClient() {
       style={{
         width: "100vw",
         height: "100vh",
+        height: "calc(var(--vh, 1vh) * 100)",
         overflow: "hidden",
         background: "#000000",
-        position: "relative",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
       }}
     >
       <EnhancedSidebar
@@ -140,6 +167,7 @@ export function DashboardClient() {
                 inset: 0,
                 width: "100vw",
                 height: "100vh",
+                height: "calc(var(--vh, 1vh) * 100)",
                 background: "#000000",
                 zIndex: sidebarOpen ? 0 : 10,
               }

@@ -71,6 +71,7 @@ export function MapContainer({
   const tulumMarkersRef = useRef<unknown[]>([]);
   const watchIdRef = useRef<number | null>(null);
   const userLocationRef = useRef<UserLocation | null>(null);
+  const resizeCleanupRef = useRef<(() => void) | null>(null);
   userLocationRef.current = userLocation;
 
   const initMap = useCallback(() => {
@@ -139,11 +140,22 @@ export function MapContainer({
     let cancelled = false;
     let resizeObserver: ResizeObserver | null = null;
     let timeoutIds: ReturnType<typeof setTimeout>[] = [];
+    const MAX_INIT_RETRIES = 25; // ~2.5s max wait for container size
 
-    function runInit() {
+    function runInit(retryCount: number) {
       if (cancelled) return;
-      initMap();
       const container = containerRef.current;
+      // Doc Solution 4: do not init until container has non-zero size (avoids black strip on mobile)
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) {
+          if (retryCount < MAX_INIT_RETRIES) {
+            timeoutIds.push(window.setTimeout(() => runInit(retryCount + 1), 100));
+            return;
+          }
+        }
+      }
+      initMap();
       const map = mapRef.current as { invalidateSize?: () => void; remove?: () => void } | null;
       if (!map?.invalidateSize) return;
 
@@ -155,17 +167,26 @@ export function MapContainer({
         resizeObserver.observe(container);
       }
 
-      // Delayed invalidates so map corrects after mobile layout (container can have 0 size at first paint)
+      // Doc Solution 4 & 5: resize + orientationchange so map redraws (e.g. rotation, keyboard)
+      const onResizeOrOrientation = () => invalidate();
+      window.addEventListener("resize", onResizeOrOrientation);
+      window.addEventListener("orientationchange", onResizeOrOrientation);
+      resizeCleanupRef.current = () => {
+        window.removeEventListener("resize", onResizeOrOrientation);
+        window.removeEventListener("orientationchange", onResizeOrOrientation);
+        resizeCleanupRef.current = null;
+      };
+
+      // Delayed invalidates so map corrects after mobile layout
       [100, 400, 800, 1500].forEach((ms) => {
-        const id = setTimeout(invalidate, ms);
-        timeoutIds.push(id);
+        timeoutIds.push(window.setTimeout(invalidate, ms));
       });
     }
 
-    // Wait for layout so container has real dimensions before init (avoids 0-width map on mobile)
+    // Doc Solution 4: wait for layout then init (only if container has size)
     const rafId1 = requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        if (!cancelled) runInit();
+        if (!cancelled) runInit(0);
       });
     });
 
@@ -174,6 +195,8 @@ export function MapContainer({
       cancelAnimationFrame(rafId1);
       timeoutIds.forEach((id) => clearTimeout(id));
       timeoutIds = [];
+      resizeCleanupRef.current?.();
+      resizeCleanupRef.current = null;
       resizeObserver?.disconnect();
       resizeObserver = null;
       if (watchIdRef.current != null && typeof navigator !== "undefined" && navigator.geolocation?.clearWatch) {
