@@ -269,11 +269,12 @@ export function EnhancedSidebar({
           <Link
             href={`/discover?lang=${lang}`}
             style={{
+              flex: 1,
               padding: "12px",
-              background: "var(--button-secondary)",
-              border: "1px solid var(--border-emphasis)",
+              background: "var(--button-primary)",
+              border: "none",
               borderRadius: "12px",
-              color: "var(--text-primary)",
+              color: "white",
               fontWeight: "600",
               fontSize: "14px",
               cursor: "pointer",
@@ -283,7 +284,6 @@ export function EnhancedSidebar({
               gap: "8px",
               transition: "all 0.2s",
               textDecoration: "none",
-              flexShrink: 0,
             }}
           >
             ✨ {tAny.discover ?? "Discover"}
