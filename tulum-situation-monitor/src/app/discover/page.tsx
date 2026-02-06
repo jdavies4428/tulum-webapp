@@ -5,12 +5,12 @@ import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 
-const DISCOVER_ITEMS: { id: keyof typeof translations.en; icon: string }[] = [
-  { id: "itinerary", icon: "📋" },
+const DISCOVER_ITEMS: { id: keyof typeof translations.en; icon: string; labelKey?: keyof typeof translations.en }[] = [
   { id: "event", icon: "📅" },
   { id: "transportation", icon: "🚗" },
-  { id: "translation", icon: "🌐" },
   { id: "foodDelivery", icon: "🛵" },
+  { id: "itinerary", icon: "📋", labelKey: "aiItinerary" },
+  { id: "translation", icon: "🌐" },
 ];
 
 export default function DiscoverPage() {
@@ -76,7 +76,7 @@ export default function DiscoverPage() {
           gap: "16px",
         }}
       >
-        {DISCOVER_ITEMS.map(({ id, icon }) => {
+        {DISCOVER_ITEMS.map(({ id, icon, labelKey }) => {
           const href =
             id === "transportation"
               ? `/discover/transportation?lang=${lang}`
@@ -109,7 +109,7 @@ export default function DiscoverPage() {
             <>
               <span style={{ fontSize: "40px" }}>{icon}</span>
               <span style={{ fontSize: "16px", fontWeight: "600", color: "var(--text-primary)" }}>
-                {tAny[id] ?? id}
+                {tAny[labelKey ?? id] ?? id}
               </span>
             </>
           );
