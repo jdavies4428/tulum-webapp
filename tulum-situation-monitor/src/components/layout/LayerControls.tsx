@@ -36,7 +36,7 @@ export function LayerControls({ lang, layers, onLayersChange }: LayerControlsPro
     >
       <button
         type="button"
-        className={`flex w-full items-center justify-between pb-2.5 text-[10px] font-medium uppercase tracking-wider ${collapsed ? "text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]" : "text-text-muted"}`}
+        className={`flex w-full items-center justify-between pb-2.5 text-[10px] font-medium uppercase tracking-wider ${collapsed ? "text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]" : "text-white"}`}
         onClick={() => setCollapsed(!collapsed)}
       >
         <span>{t.mapLayers}</span>
@@ -142,7 +142,7 @@ function LayerRow({
         onChange={onToggle}
         className="h-3.5 w-3.5 accent-accent-cyan"
       />
-      <span className="flex-1 text-xs">{label}</span>
+      <span className="flex-1 text-xs text-white">{label}</span>
       <div
         className={`h-1.5 w-1.5 rounded-full ${checked && !dotStyle ? dotClass : ""} ${checked ? "shadow-[0_0_6px_currentColor]" : ""}`}
         style={
