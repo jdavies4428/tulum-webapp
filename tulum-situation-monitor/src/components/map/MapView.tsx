@@ -22,7 +22,7 @@ interface MapViewProps {
   onLayersChange?: (layers: MapLayersState) => void;
   userLocation?: UserLocation | null;
   onUserLocationChange?: (loc: UserLocation | null) => void;
-  onMapReady?: (api: { resetView: () => void; locateUser: () => void }) => void;
+  onMapReady?: (api: { resetView: () => void; locateUser: () => void; invalidateSize: () => void }) => void;
   onPlaceSelect?: (place: PlaceForSelect) => void;
 }
 

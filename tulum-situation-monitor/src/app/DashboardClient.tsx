@@ -36,6 +36,7 @@ function getDefaultLayers(): MapLayersState {
 export interface MapApi {
   resetView: () => void;
   locateUser: () => void;
+  invalidateSize: () => void;
 }
 
 export function DashboardClient() {
@@ -81,6 +82,13 @@ export function DashboardClient() {
       mapApi.locateUser();
     }
   }, [mapApi]);
+
+  // On mobile, when sidebar closes the map becomes visible — force Leaflet to recalc size so tiles render correctly
+  useEffect(() => {
+    if (isMobile && !sidebarOpen && mapApi?.invalidateSize) {
+      mapApi.invalidateSize();
+    }
+  }, [isMobile, sidebarOpen, mapApi]);
 
   // Fix white background and body styles
   useEffect(() => {

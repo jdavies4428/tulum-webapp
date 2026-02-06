@@ -46,7 +46,7 @@ interface MapContainerProps {
   onLayersChange?: (layers: MapLayersState) => void;
   userLocation?: UserLocation | null;
   onUserLocationChange?: (loc: UserLocation | null) => void;
-  onMapReady?: (api: { resetView: () => void; locateUser: () => void }) => void;
+  onMapReady?: (api: { resetView: () => void; locateUser: () => void; invalidateSize: () => void }) => void;
   onPlaceSelect?: (place: PlaceForSelect) => void;
   className?: string;
 }
@@ -136,8 +136,46 @@ export function MapContainer({
   }, []);
 
   useEffect(() => {
-    initMap();
+    let cancelled = false;
+    let resizeObserver: ResizeObserver | null = null;
+    let timeoutIds: ReturnType<typeof setTimeout>[] = [];
+
+    function runInit() {
+      if (cancelled) return;
+      initMap();
+      const container = containerRef.current;
+      const map = mapRef.current as { invalidateSize?: () => void; remove?: () => void } | null;
+      if (!map?.invalidateSize) return;
+
+      const invalidate = () => map.invalidateSize?.();
+
+      // ResizeObserver: recalc map when container size changes (fixes mobile when layout settles)
+      if (container && typeof ResizeObserver !== "undefined") {
+        resizeObserver = new ResizeObserver(() => invalidate());
+        resizeObserver.observe(container);
+      }
+
+      // Delayed invalidates so map corrects after mobile layout (container can have 0 size at first paint)
+      [100, 400, 800, 1500].forEach((ms) => {
+        const id = setTimeout(invalidate, ms);
+        timeoutIds.push(id);
+      });
+    }
+
+    // Wait for layout so container has real dimensions before init (avoids 0-width map on mobile)
+    const rafId1 = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (!cancelled) runInit();
+      });
+    });
+
     return () => {
+      cancelled = true;
+      cancelAnimationFrame(rafId1);
+      timeoutIds.forEach((id) => clearTimeout(id));
+      timeoutIds = [];
+      resizeObserver?.disconnect();
+      resizeObserver = null;
       if (watchIdRef.current != null && typeof navigator !== "undefined" && navigator.geolocation?.clearWatch) {
         navigator.geolocation.clearWatch(watchIdRef.current);
       }
@@ -167,6 +205,7 @@ export function MapContainer({
       navigator.geolocation.getCurrentPosition(onPos, onErr, geoOptions);
       watchIdRef.current = navigator.geolocation.watchPosition(onPos, onErr, geoOptions);
     };
+    const mapWithInvalidate = map as { invalidateSize?: () => void };
     onMapReady({
       resetView: () => {
         const loc = userLocationRef.current;
@@ -177,6 +216,7 @@ export function MapContainer({
         }
       },
       locateUser,
+      invalidateSize: () => mapWithInvalidate.invalidateSize?.(),
     });
     locateUser();
   }, [onMapReady, onUserLocationChange]);
