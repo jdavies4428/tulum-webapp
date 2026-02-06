@@ -611,57 +611,69 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
 
         <div
           style={{
-            display: "flex",
-            gap: "8px",
-            padding: "0 24px",
             borderBottom: "1px solid var(--border-subtle)",
+            overflowX: "auto",
+            overflowY: "hidden",
+            WebkitOverflowScrolling: "touch",
+            paddingLeft: "24px",
+            paddingRight: "24px",
           }}
         >
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              style={{
-                padding: "14px 20px",
-                background: "transparent",
-                border: "none",
-                borderBottom:
-                  activeTab === tab.id
-                    ? "3px solid var(--tulum-turquoise)"
-                    : "3px solid transparent",
-                color:
-                  activeTab === tab.id
-                    ? "var(--text-primary)"
-                    : "var(--text-secondary)",
-                fontSize: "14px",
-                fontWeight: "600",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                transition: "all 0.2s",
-                marginBottom: "-1px",
-              }}
-            >
-              <span style={{ fontSize: "18px" }}>{tab.icon}</span>
-              {t[tab.labelKey] ?? tab.labelKey}
-              <span
+          <div
+            style={{
+              display: "flex",
+              gap: "8px",
+              flexWrap: "nowrap",
+              minWidth: "min-content",
+            }}
+          >
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
                 style={{
-                  padding: "2px 8px",
-                  borderRadius: "10px",
-                  background:
+                  padding: "14px 20px",
+                  background: "transparent",
+                  border: "none",
+                  borderBottom:
                     activeTab === tab.id
-                      ? "rgba(0, 212, 212, 0.15)"
-                      : "rgba(255, 255, 255, 0.08)",
-                  fontSize: "12px",
-                  fontWeight: "700",
+                      ? "3px solid var(--tulum-turquoise)"
+                      : "3px solid transparent",
+                  color:
+                    activeTab === tab.id
+                      ? "var(--text-primary)"
+                      : "var(--text-secondary)",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  transition: "all 0.2s",
+                  marginBottom: "-1px",
+                  flexShrink: 0,
                 }}
               >
-                {tabCounts[tab.id]}
-              </span>
-            </button>
-          ))}
+                <span style={{ fontSize: "18px" }}>{tab.icon}</span>
+                {t[tab.labelKey] ?? tab.labelKey}
+                <span
+                  style={{
+                    padding: "2px 8px",
+                    borderRadius: "10px",
+                    background:
+                      activeTab === tab.id
+                        ? "rgba(0, 212, 212, 0.15)"
+                        : "rgba(255, 255, 255, 0.08)",
+                    fontSize: "12px",
+                    fontWeight: "700",
+                  }}
+                >
+                  {tabCounts[tab.id]}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <div

@@ -804,9 +804,6 @@ body {
   .leaflet-marker-pane {
     z-index: 650 !important;
   }
-  .map-container {
-    min-height: 100vh;
-  }
 }
 
 @layer utilities {

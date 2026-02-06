@@ -70,6 +70,8 @@ export function MapContainer({
   const accuracyCircleRef = useRef<unknown>(null);
   const tulumMarkersRef = useRef<unknown[]>([]);
   const watchIdRef = useRef<number | null>(null);
+  const userLocationRef = useRef<UserLocation | null>(null);
+  userLocationRef.current = userLocation;
 
   const initMap = useCallback(() => {
     if (!containerRef.current || typeof window === "undefined") return;
@@ -166,7 +168,14 @@ export function MapContainer({
       watchIdRef.current = navigator.geolocation.watchPosition(onPos, onErr, geoOptions);
     };
     onMapReady({
-      resetView: () => map.setView([TULUM_LAT, TULUM_LNG], DEFAULT_ZOOM),
+      resetView: () => {
+        const loc = userLocationRef.current;
+        if (loc) {
+          map.setView([loc.lat, loc.lng], 14);
+        } else {
+          map.setView([TULUM_LAT, TULUM_LNG], DEFAULT_ZOOM);
+        }
+      },
       locateUser,
     });
     locateUser();

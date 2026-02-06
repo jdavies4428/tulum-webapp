@@ -133,7 +133,7 @@ export function DashboardClient() {
                 width: "100vw",
                 height: "100vh",
                 background: "#000000",
-                zIndex: 0,
+                zIndex: sidebarOpen ? 0 : 10,
               }
             : sidebarOpen
               ? {
