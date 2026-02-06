@@ -114,21 +114,22 @@ export function EnhancedSidebar({
         {isCollapsed ? "→" : "←"}
       </button>
 
-      {/* Sidebar outer container – overflow: hidden prevents white space */}
+      {/* Sidebar outer container – fully hidden when collapsed */}
       <div
         style={{
           position: "fixed",
           left: 0,
           top: 0,
-          width: "400px",
+          width: isCollapsed ? 0 : "400px",
           height: "100vh",
-          background: "rgba(10, 4, 4, 0.98)",
-          backdropFilter: "blur(20px)",
-          borderRight: "1px solid rgba(255, 255, 255, 0.08)",
+          background: isCollapsed ? "transparent" : "rgba(10, 4, 4, 0.98)",
+          backdropFilter: isCollapsed ? "none" : "blur(20px)",
+          borderRight: isCollapsed ? "none" : "1px solid rgba(255, 255, 255, 0.08)",
           transform: isCollapsed ? "translateX(-100%)" : "translateX(0)",
-          transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease",
           zIndex: 100,
           overflow: "hidden",
+          pointerEvents: isCollapsed ? "none" : "auto",
         }}
       >
         {/* Scrollable inner container – overflow-y: scroll + scrollbar hiding CSS */}

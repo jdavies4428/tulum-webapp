@@ -1,6 +1,11 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+
+function isMobileViewport(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.innerWidth < 768;
+}
 import type { MapLayersState } from "@/components/map/MapContainer";
 import { MapView } from "@/components/map/MapView";
 import { EnhancedSidebar } from "@/components/layout/EnhancedSidebar";
@@ -57,8 +62,13 @@ export function DashboardClient() {
     }
   }, [mapApi]);
 
+  // On mobile, start with sidebar collapsed so map gets full width and no white strip
+  useEffect(() => {
+    if (isMobileViewport()) setSidebarOpen(false);
+  }, []);
+
   return (
-    <main className="flex h-screen w-full overflow-hidden">
+    <main className="flex h-screen w-full min-w-0 max-w-full overflow-hidden">
       <EnhancedSidebar
         isCollapsed={!sidebarOpen}
         onToggle={() => setSidebarOpen((v) => !v)}
@@ -76,7 +86,10 @@ export function DashboardClient() {
       />
       <div
         className="relative flex-1 min-w-0 transition-all duration-300 ease-out"
-        style={{ marginLeft: sidebarOpen ? "400px" : 0 }}
+        style={{
+          marginLeft: sidebarOpen ? "400px" : 0,
+          width: sidebarOpen ? "calc(100% - 400px)" : "100%",
+        }}
       >
         <MapView
           lang={lang}
