@@ -1,0 +1,41 @@
+   # Tulum Discovery - Web MVP
+
+   This is a Next.js 14 Progressive Web App for Tulum tourism.
+
+   ## Tech Stack
+   - Next.js 14 (App Router)
+   - TypeScript (strict mode)
+   - Tailwind CSS + shadcn/ui
+   - Supabase (PostgreSQL + Auth)
+   - Mapbox GL JS for maps
+   - Google Places API for venues
+   - Claude API for AI itinerary
+
+   ## Project Goals
+   - Build web MVP first (8 weeks)
+   - Launch as PWA (installable)
+   - Only build native apps if validated
+
+   ## Core Features (MVP)
+   Week 1-2: Foundation (map, weather, venue browsing)
+   Week 3-4: Venue details, Google Places integration
+   Week 5-6: AI itinerary planner, user auth
+   Week 7: Events calendar, basic messaging
+   Week 8: Business portal, PWA setup, launch
+
+   ## Coding Standards
+   - Use Server Components by default
+   - Client Components only when needed ('use client')
+   - Never expose API keys in client code
+   - Mobile-first responsive design
+   - Tailwind utility classes (no custom CSS)
+   - All API routes in /app/api/*
+   - Components in /components
+   - Utilities in /lib
+
+   ## File Organization
+   /app - Next.js pages and API routes
+   /components - Reusable UI components
+   /lib - Utilities, API clients, types
+   /public - Static assets
+   
