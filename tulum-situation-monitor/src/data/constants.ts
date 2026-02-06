@@ -2,6 +2,21 @@ export const TULUM_LAT = 20.2114;
 export const TULUM_LNG = -87.4654;
 export const DEFAULT_ZOOM = 13;
 
+/** Distance (km) within which we treat user as "near Tulum" for map centering and distance calcs */
+export const USER_NEAR_TULUM_KM = 100;
+
+export function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 /**
  * Coastal strip for "Beach Clubs" – only venues on the beach, not in town.
  * Data comes from Google Places (cached in DB); Google has no beach_club type so we

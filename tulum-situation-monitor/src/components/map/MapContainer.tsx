@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
-import { TULUM_LAT, TULUM_LNG, DEFAULT_ZOOM } from "@/data/constants";
+import { TULUM_LAT, TULUM_LNG, DEFAULT_ZOOM, USER_NEAR_TULUM_KM, haversineKm } from "@/data/constants";
 import { useVenues } from "@/hooks/useVenues";
 import { useFavorites } from "@/hooks/useFavorites";
 import { getEnhancedMarkerHtml } from "@/lib/marker-config";
@@ -74,6 +74,11 @@ export function MapContainer({
   const watchIdRef = useRef<number | null>(null);
   const userLocationRef = useRef<UserLocation | null>(null);
   userLocationRef.current = userLocation;
+
+  const isUserNearTulum =
+    userLocation &&
+    haversineKm(TULUM_LAT, TULUM_LNG, userLocation.lat, userLocation.lng) <= USER_NEAR_TULUM_KM;
+  const effectiveUserLocation = isUserNearTulum ? userLocation : null;
 
   const initMap = useCallback(() => {
     if (!containerRef.current || typeof window === "undefined") return;
@@ -173,8 +178,11 @@ export function MapContainer({
     onMapReady({
       resetView: () => {
         const loc = userLocationRef.current;
-        if (loc) {
-          map.setView([loc.lat, loc.lng], 14);
+        const near =
+          loc &&
+          haversineKm(TULUM_LAT, TULUM_LNG, loc.lat, loc.lng) <= USER_NEAR_TULUM_KM;
+        if (near) {
+          map.setView([loc!.lat, loc!.lng], 14);
         } else {
           map.setView([TULUM_LAT, TULUM_LNG], DEFAULT_ZOOM);
         }
@@ -185,7 +193,7 @@ export function MapContainer({
     locateUser();
   }, [onMapReady, onUserLocationChange]);
 
-  // Draw or update user location marker when userLocation changes
+  // Draw or update user location marker only when user is near Tulum
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -199,21 +207,22 @@ export function MapContainer({
       userMarkerRef.current = null;
       accuracyCircleRef.current = null;
     };
-    if (!userLocation) {
+    if (!effectiveUserLocation) {
       removeUserLayers();
       return;
     }
+    const loc = effectiveUserLocation;
     const m = map as L.Map;
     if (!userMarkerRef.current) {
-      const marker = L.circleMarker([userLocation.lat, userLocation.lng], {
+      const marker = L.circleMarker([loc.lat, loc.lng], {
         radius: 10,
         fillColor: "#00D4D4",
         fillOpacity: 1,
         color: "#ffffff",
         weight: 2,
       }).addTo(m);
-      const radiusM = Math.min(Math.max(userLocation.accuracy, 10), 500);
-      const circle = L.circle([userLocation.lat, userLocation.lng], {
+      const radiusM = Math.min(Math.max(loc.accuracy, 10), 500);
+      const circle = L.circle([loc.lat, loc.lng], {
         radius: radiusM,
         fillColor: "#00D4D4",
         fillOpacity: 0.1,
@@ -222,17 +231,17 @@ export function MapContainer({
       }).addTo(m);
       userMarkerRef.current = marker;
       accuracyCircleRef.current = circle;
-      m.setView([userLocation.lat, userLocation.lng], 14);
+      m.setView([loc.lat, loc.lng], 14);
     } else {
-      (userMarkerRef.current as L.CircleMarker).setLatLng([userLocation.lat, userLocation.lng]);
+      (userMarkerRef.current as L.CircleMarker).setLatLng([loc.lat, loc.lng]);
       const acc = accuracyCircleRef.current as L.Circle | undefined;
       if (acc) {
-        acc.setLatLng([userLocation.lat, userLocation.lng]);
-        acc.setRadius(Math.min(Math.max(userLocation.accuracy, 10), 500));
+        acc.setLatLng([loc.lat, loc.lng]);
+        acc.setRadius(Math.min(Math.max(loc.accuracy, 10), 500));
       }
     }
     return removeUserLayers;
-  }, [userLocation]);
+  }, [effectiveUserLocation]);
 
   // Base layer toggles (only one of carto/satellite; radar is overlay)
   useEffect(() => {
@@ -284,8 +293,8 @@ export function MapContainer({
     const L = require("leaflet") as typeof import("leaflet");
     group.clearLayers();
     const t = translations[lang];
-    const userLat = userLocation?.lat;
-    const userLng = userLocation?.lng;
+    const userLat = effectiveUserLocation?.lat;
+    const userLng = effectiveUserLocation?.lng;
 
     const desc = (item: { desc?: string; descEs?: string; descFr?: string }) =>
       lang === "es"
@@ -402,7 +411,7 @@ export function MapContainer({
         addToGroup(m);
       });
     }
-  }, [lang, layers.clubs, layers.restaurants, layers.cafes, layers.cultural, layers.favorites, favoriteIds, clubs, restaurants, cafes, cultural, userLocation, onPlaceSelect]);
+  }, [lang, layers.clubs, layers.restaurants, layers.cafes, layers.cultural, layers.favorites, favoriteIds, clubs, restaurants, cafes, cultural, effectiveUserLocation, onPlaceSelect]);
 
   return <div ref={containerRef} className={`h-full w-full ${className}`} id="map" />;
 }
