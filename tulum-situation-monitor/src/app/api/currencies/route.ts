@@ -10,6 +10,8 @@ export type CurrenciesRates = {
   CAD?: number;
   EUR?: number;
   ARS?: number;
+  AUD?: number;
+  BRL?: number;
 };
 
 async function fetchRate(from: string, to: string): Promise<number | null> {
@@ -27,11 +29,13 @@ async function fetchRate(from: string, to: string): Promise<number | null> {
 }
 
 export async function GET() {
-  const [USD, CAD, EUR, ARS] = await Promise.all([
+  const [USD, CAD, EUR, ARS, AUD, BRL] = await Promise.all([
     fetchRate("USD", "MXN"),
     fetchRate("CAD", "MXN"),
     fetchRate("EUR", "MXN"),
     fetchRate("ARS", "MXN"),
+    fetchRate("AUD", "MXN"),
+    fetchRate("BRL", "MXN"),
   ]);
 
   const body: CurrenciesRates = {};
@@ -39,6 +43,8 @@ export async function GET() {
   if (CAD != null) body.CAD = CAD;
   if (EUR != null) body.EUR = EUR;
   if (ARS != null) body.ARS = ARS;
+  if (AUD != null) body.AUD = AUD;
+  if (BRL != null) body.BRL = BRL;
 
   return NextResponse.json(body);
 }

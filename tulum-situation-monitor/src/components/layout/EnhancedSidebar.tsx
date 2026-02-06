@@ -461,9 +461,9 @@ export function EnhancedSidebar({
             waterTemp={waterTemp}
             onRefresh={onWeatherRefresh}
           />
-          <CurrenciesPanel lang={lang} />
           <Sargassum7DayImage lang={lang} />
           <AlertsPanel lang={lang} alerts={alerts} />
+          <CurrenciesPanel lang={lang} />
         </div>
           </div>
         </div>

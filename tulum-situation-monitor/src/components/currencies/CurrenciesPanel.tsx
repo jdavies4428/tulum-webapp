@@ -10,6 +10,8 @@ const ROWS: { key: keyof CurrenciesRates; flag: string }[] = [
   { key: "CAD", flag: "🇨🇦" },
   { key: "EUR", flag: "🇪🇺" },
   { key: "ARS", flag: "🇦🇷" },
+  { key: "AUD", flag: "🇦🇺" },
+  { key: "BRL", flag: "🇧🇷" },
 ];
 
 interface CurrenciesPanelProps {
