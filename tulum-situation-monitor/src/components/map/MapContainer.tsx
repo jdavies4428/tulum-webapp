@@ -97,14 +97,14 @@ export function MapContainer({
     markersRef.current = L.layerGroup().addTo(map) as unknown;
     mapRef.current = map as unknown;
 
-    // Custom pane so Tulum marker stays on top of tile overlays (radar, etc.) and other markers
-    if (!map.getPane("tulumPane")) {
-      map.createPane("tulumPane");
-      map.getPane("tulumPane")!.style.zIndex = "999";
+    // Dot pane: above markers, interactive (clickable for popup)
+    if (!map.getPane("tulumDotPane")) {
+      map.createPane("tulumDotPane");
+      map.getPane("tulumDotPane")!.style.zIndex = "700";
     }
 
     const tulumDot = L.circleMarker([TULUM_LAT, TULUM_LNG], {
-      pane: "tulumPane",
+      pane: "tulumDotPane",
       radius: 8,
       fillColor: "#ff3b30",
       fillOpacity: 1,
@@ -112,17 +112,7 @@ export function MapContainer({
       weight: 2,
     }).addTo(map);
     tulumDot.bindPopup("<b>Tulum Centro</b>");
-    const tulumRing = L.circle([TULUM_LAT, TULUM_LNG], {
-      pane: "tulumPane",
-      radius: 5000,
-      fillColor: "#ff3b30",
-      fillOpacity: 0.1,
-      color: "#ff3b30",
-      weight: 2,
-      dashArray: "5, 10",
-      interactive: false,
-    }).addTo(map);
-    tulumMarkersRef.current = [tulumDot, tulumRing];
+    tulumMarkersRef.current = [tulumDot];
 
     carto.addTo(map);
     return () => {
