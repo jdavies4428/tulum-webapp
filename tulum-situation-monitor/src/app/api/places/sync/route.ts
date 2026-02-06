@@ -5,13 +5,14 @@ import { createAdminClient } from "@/lib/supabase/admin";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-/** Tulum area: ~6 grid points for coverage */
+/** Tulum area: beach-club searches on coast only; no generic "bar" to avoid town bars. */
 const TULUM_GRID = [
   { lat: 20.21, lng: -87.43, keyword: "beach club" },
+  { lat: 20.18, lng: -87.45, keyword: "beach club" },
+  { lat: 20.15, lng: -87.46, keyword: "beach club" },
   { lat: 20.18, lng: -87.46, keyword: "restaurant" },
   { lat: 20.15, lng: -87.46, keyword: "restaurant" },
   { lat: 20.21, lng: -87.50, keyword: "cenote" },
-  { lat: 20.17, lng: -87.44, keyword: "bar" },
   { lat: 20.14, lng: -87.46, keyword: "hotel" },
 ];
 

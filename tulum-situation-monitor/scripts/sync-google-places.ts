@@ -14,10 +14,11 @@ config({ path: resolve(process.cwd(), "tulum-situation-monitor/.env.local") });
 
 const TULUM_GRID = [
   { lat: 20.21, lng: -87.43, keyword: "beach club" },
+  { lat: 20.18, lng: -87.45, keyword: "beach club" },
+  { lat: 20.15, lng: -87.46, keyword: "beach club" },
   { lat: 20.18, lng: -87.46, keyword: "restaurant" },
   { lat: 20.15, lng: -87.46, keyword: "restaurant" },
   { lat: 20.21, lng: -87.5, keyword: "cenote" },
-  { lat: 20.17, lng: -87.44, keyword: "bar" },
   { lat: 20.14, lng: -87.46, keyword: "hotel" },
 ];
 

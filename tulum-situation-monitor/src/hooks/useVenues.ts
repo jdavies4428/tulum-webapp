@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { isInBeachZone } from "@/data/constants";
 import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
 
 type VenueRow = {
@@ -58,7 +59,11 @@ export function useVenues() {
         if (fetchError) throw fetchError;
 
         const rows = (data ?? []) as VenueRow[];
-        setClubs(rows.filter((r) => r.category === "club").map(venueToPlace) as BeachClub[]);
+        setClubs(
+          rows
+            .filter((r) => r.category === "club" && isInBeachZone(r.lat, r.lng))
+            .map(venueToPlace) as BeachClub[]
+        );
         setRestaurants(rows.filter((r) => r.category === "restaurant").map(venueToPlace) as Restaurant[]);
         setCultural(rows.filter((r) => r.category === "cultural").map(venueToPlace) as CulturalPlace[]);
         setSource("supabase");
