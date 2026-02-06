@@ -37,6 +37,8 @@ export interface NearbySearchParams {
 export interface PlaceDetailsParams {
   place_id: string;
   fields?: string;
+  /** Language code for localized name, reviews, opening_hours (e.g. en, es, fr). */
+  language?: string;
 }
 
 /** Fields for rich Place Details (photos, reviews, opening_hours) */
@@ -129,6 +131,9 @@ export async function getPlaceDetails(
   url.searchParams.set("place_id", params.place_id);
   url.searchParams.set("key", key);
   url.searchParams.set("fields", params.fields ?? PLACE_DETAILS_FIELDS);
+  if (params.language) {
+    url.searchParams.set("language", params.language);
+  }
 
   const res = await fetch(url.toString());
   const data = await res.json();

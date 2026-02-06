@@ -24,7 +24,7 @@ export interface PlaceDetailsData {
   types?: string[];
 }
 
-export function usePlaceDetails(placeId: string | null) {
+export function usePlaceDetails(placeId: string | null, lang?: string) {
   const [details, setDetails] = useState<PlaceDetailsData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +33,10 @@ export function usePlaceDetails(placeId: string | null) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/places/details?place_id=${encodeURIComponent(id)}`);
+      const url = new URL("/api/places/details", typeof window !== "undefined" ? window.location.origin : "");
+      url.searchParams.set("place_id", id);
+      if (lang) url.searchParams.set("lang", lang);
+      const res = await fetch(url.toString());
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? `HTTP ${res.status}`);
@@ -46,7 +49,7 @@ export function usePlaceDetails(placeId: string | null) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [lang]);
 
   useEffect(() => {
     if (!placeId) {

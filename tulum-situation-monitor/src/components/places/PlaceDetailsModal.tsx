@@ -53,7 +53,7 @@ function ActionButton({
 export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDetailsModalProps) {
   const [activeTab, setActiveTab] = useState<"overview" | "photos" | "reviews">("overview");
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
-  const { details, loading, error } = usePlaceDetails(placeId);
+  const { details, loading, error } = usePlaceDetails(placeId, lang);
   const t = translations[lang] as Record<string, string>;
 
   const loc = details?.geometry?.location;
