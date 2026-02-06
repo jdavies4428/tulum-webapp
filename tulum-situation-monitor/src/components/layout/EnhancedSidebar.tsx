@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { translations } from "@/lib/i18n";
 import { WeatherSection } from "@/components/weather/WeatherSection";
 import { AlertsPanel } from "@/components/weather/AlertsPanel";
@@ -59,6 +59,23 @@ export function EnhancedSidebar({
   const [sargassumForecastOpen, setSargassumForecastOpen] = useState(false);
   const [webcamOpen, setWebcamOpen] = useState(false);
   const t = translations[lang];
+
+  // Hide sidebar scrollbar
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      .sidebar-scrollable::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+      }
+      .sidebar-scrollable {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
   const tAny = t as Record<string, string>;
   const alerts = weatherData
     ? generateAlerts(weatherData, lang, {
@@ -116,6 +133,7 @@ export function EnhancedSidebar({
 
       {/* Sidebar outer container – fully hidden when collapsed */}
       <div
+        className="sidebar"
         style={{
           position: "fixed",
           left: 0,

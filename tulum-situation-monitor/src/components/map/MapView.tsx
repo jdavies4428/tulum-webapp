@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import type { MapLayersState, UserLocation } from "./MapContainer";
 import type { Lang } from "@/lib/weather";
+import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
 
 const MapContainer = dynamic(() => import("./MapContainer").then((m) => m.MapContainer), {
   ssr: false,
@@ -13,6 +14,8 @@ const MapContainer = dynamic(() => import("./MapContainer").then((m) => m.MapCon
   ),
 });
 
+type PlaceForSelect = BeachClub | Restaurant | CulturalPlace;
+
 interface MapViewProps {
   lang: Lang;
   layers: MapLayersState;
@@ -20,6 +23,7 @@ interface MapViewProps {
   userLocation?: UserLocation | null;
   onUserLocationChange?: (loc: UserLocation | null) => void;
   onMapReady?: (api: { resetView: () => void; locateUser: () => void }) => void;
+  onPlaceSelect?: (place: PlaceForSelect) => void;
 }
 
 export function MapView({
@@ -29,6 +33,7 @@ export function MapView({
   userLocation,
   onUserLocationChange,
   onMapReady,
+  onPlaceSelect,
 }: MapViewProps) {
   return (
     <div className="relative h-full w-full">
@@ -39,6 +44,7 @@ export function MapView({
         userLocation={userLocation}
         onUserLocationChange={onUserLocationChange}
         onMapReady={onMapReady}
+        onPlaceSelect={onPlaceSelect}
       />
       <div className="map-overlay" aria-hidden />
     </div>

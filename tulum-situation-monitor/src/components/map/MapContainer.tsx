@@ -6,6 +6,7 @@ import { useVenues } from "@/hooks/useVenues";
 import { getEnhancedMarkerHtml } from "@/lib/marker-config";
 import type { Lang } from "@/lib/weather";
 import { translations } from "@/lib/i18n";
+import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
 
 export type MapLayerId = "carto" | "satellite" | "radar" | "clubs" | "restaurants" | "cultural";
 
@@ -33,6 +34,8 @@ export interface UserLocation {
   accuracy: number;
 }
 
+type PlaceForSelect = BeachClub | Restaurant | CulturalPlace;
+
 interface MapContainerProps {
   lang: Lang;
   layers?: Partial<MapLayersState>;
@@ -40,6 +43,7 @@ interface MapContainerProps {
   userLocation?: UserLocation | null;
   onUserLocationChange?: (loc: UserLocation | null) => void;
   onMapReady?: (api: { resetView: () => void; locateUser: () => void }) => void;
+  onPlaceSelect?: (place: PlaceForSelect) => void;
   className?: string;
 }
 
@@ -50,6 +54,7 @@ export function MapContainer({
   userLocation = null,
   onUserLocationChange,
   onMapReady,
+  onPlaceSelect,
   className = "",
 }: MapContainerProps) {
   const { clubs, restaurants, cultural } = useVenues();
@@ -115,6 +120,7 @@ export function MapContainer({
       color: "#ff3b30",
       weight: 2,
       dashArray: "5, 10",
+      interactive: false,
     }).addTo(map);
     tulumMarkersRef.current = [tulumDot, tulumRing];
 
@@ -340,6 +346,7 @@ export function MapContainer({
         const icon = createVenueIcon("beachClub", club);
         const m = L.marker([club.lat, club.lng], { icon });
         m.bindPopup(popup(club.name, desc(club), club.url ?? "", club.whatsapp ?? "", club.lat, club.lng), { maxWidth: 260 });
+        m.on("click", () => onPlaceSelect?.(club));
         addToGroup(m);
       });
     }
@@ -348,6 +355,7 @@ export function MapContainer({
         const icon = createVenueIcon("restaurant", r);
         const m = L.marker([r.lat, r.lng], { icon });
         m.bindPopup(popup(r.name, desc(r), r.url ?? "", r.whatsapp ?? "", r.lat, r.lng), { maxWidth: 260 });
+        m.on("click", () => onPlaceSelect?.(r));
         addToGroup(m);
       });
     }
@@ -356,10 +364,11 @@ export function MapContainer({
         const icon = createVenueIcon("cultural", c);
         const m = L.marker([c.lat, c.lng], { icon });
         m.bindPopup(popup(c.name, desc(c), c.url ?? "", c.whatsapp ?? "", c.lat, c.lng), { maxWidth: 260 });
+        m.on("click", () => onPlaceSelect?.(c));
         addToGroup(m);
       });
     }
-  }, [lang, layers.clubs, layers.restaurants, layers.cultural, clubs, restaurants, cultural, userLocation]);
+  }, [lang, layers.clubs, layers.restaurants, layers.cultural, clubs, restaurants, cultural, userLocation, onPlaceSelect]);
 
   return <div ref={containerRef} className={`h-full w-full ${className}`} id="map" />;
 }

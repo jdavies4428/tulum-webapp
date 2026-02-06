@@ -13,6 +13,8 @@ import { StatusBar } from "@/components/layout/StatusBar";
 import { LayerControls } from "@/components/layout/LayerControls";
 import { MapLegend } from "@/components/layout/MapLegend";
 import { PlacesModal } from "@/components/places/PlacesModal";
+import { PlacePopup } from "@/components/places/PlacePopup";
+import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
 import { useWeather } from "@/hooks/useWeather";
 import { useTides } from "@/hooks/useTides";
 import type { Lang } from "@/lib/weather";
@@ -41,6 +43,7 @@ export function DashboardClient() {
   const [layers, setLayers] = useState<MapLayersState>(getDefaultLayers);
   const [placesOpen, setPlacesOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [selectedPlace, setSelectedPlace] = useState<(BeachClub | Restaurant | CulturalPlace) | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; accuracy: number } | null>(null);
   const [mapApi, setMapApi] = useState<MapApi | null>(null);
 
@@ -67,8 +70,32 @@ export function DashboardClient() {
     if (isMobileViewport()) setSidebarOpen(false);
   }, []);
 
+  // Fix white background and body styles
+  useEffect(() => {
+    document.body.style.backgroundColor = "#000000";
+    document.documentElement.style.backgroundColor = "#000000";
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.backgroundColor = "";
+      document.documentElement.style.backgroundColor = "";
+      document.body.style.margin = "";
+      document.body.style.padding = "";
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   return (
-    <main className="flex h-screen w-full min-w-0 max-w-full overflow-hidden">
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
+        background: "#000000",
+        position: "relative",
+      }}
+    >
       <EnhancedSidebar
         isCollapsed={!sidebarOpen}
         onToggle={() => setSidebarOpen((v) => !v)}
@@ -85,24 +112,16 @@ export function DashboardClient() {
         onWeatherRefresh={refetchWeather}
       />
       <div
-        className="relative flex-1 min-w-0 transition-all duration-300 ease-out overflow-hidden"
-        style={
-          sidebarOpen
-            ? {
-                marginLeft: "400px",
-                width: "calc(100% - 400px)",
-              }
-            : {
-                position: "fixed",
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                marginLeft: 0,
-                width: "100%",
-                zIndex: 50,
-              }
-        }
+        className="map-container transition-all duration-300 ease-out overflow-hidden"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: sidebarOpen ? 400 : 0,
+          right: 0,
+          bottom: 0,
+          background: "#000000",
+          zIndex: sidebarOpen ? 0 : 50,
+        }}
       >
         <MapView
           lang={lang}
@@ -111,6 +130,7 @@ export function DashboardClient() {
           userLocation={userLocation}
           onUserLocationChange={setUserLocation}
           onMapReady={setMapApi}
+          onPlaceSelect={setSelectedPlace}
         />
         <MapLegend lang={lang} />
         <LayerControls lang={lang} layers={layers} onLayersChange={setLayers} />
@@ -126,6 +146,9 @@ export function DashboardClient() {
         />
       </div>
       <PlacesModal lang={lang} isOpen={placesOpen} onClose={() => setPlacesOpen(false)} />
-    </main>
+      {selectedPlace && (
+        <PlacePopup place={selectedPlace} lang={lang} onClose={() => setSelectedPlace(null)} />
+      )}
+    </div>
   );
 }
