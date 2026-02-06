@@ -1,0 +1,10 @@
+{
+  "name": "Discover Tulum",
+  "short_name": "Tulum",
+  "description": "Real-time beach conditions, weather, and local spots",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary"
+}
