@@ -102,20 +102,21 @@ export default function ItineraryPage() {
     <div
       style={{
         minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
         background: "var(--bg-primary)",
         color: "var(--text-primary)",
-        padding: "24px",
-        paddingTop: "max(24px, env(safe-area-inset-top))",
       }}
     >
       <header
         style={{
+          flexShrink: 0,
           display: "flex",
           alignItems: "center",
           gap: "12px",
-          marginBottom: "24px",
+          padding: "24px",
+          paddingTop: "max(24px, env(safe-area-inset-top))",
           borderBottom: "1px solid var(--border-subtle)",
-          paddingBottom: "16px",
         }}
       >
         <Link
@@ -142,6 +143,13 @@ export default function ItineraryPage() {
         </h1>
       </header>
 
+      <main
+        style={{
+          flex: 1,
+          padding: "24px",
+          paddingBottom: "max(24px, env(safe-area-inset-bottom))",
+        }}
+      >
       {!itinerary ? (
         <div style={{ ...cardStyle, maxWidth: "800px", margin: "0 auto" }}>
           <p
@@ -386,6 +394,7 @@ export default function ItineraryPage() {
           t={t}
         />
       )}
+      </main>
 
       <style>{`
         @keyframes spin {

@@ -4,7 +4,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-const MODEL = "gemini-1.5-flash";
+const MODEL = "gemini-pro";
 
 function getApiKey(): string {
   const key = process.env.GEMINI_API_KEY;
