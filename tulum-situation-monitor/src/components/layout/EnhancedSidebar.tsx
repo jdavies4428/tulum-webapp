@@ -112,7 +112,7 @@ export function EnhancedSidebar({
         style={{
           position: "fixed",
           ...(isMobile && !isCollapsed
-            ? { left: "16px", right: "auto", top: "130px" }
+            ? { right: "16px", left: "auto", top: "130px" }
             : { left: isCollapsed ? "16px" : "384px", top: "16px" }),
           zIndex: 10001,
           width: "44px",
