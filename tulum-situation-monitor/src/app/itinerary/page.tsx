@@ -208,15 +208,16 @@ export default function ItineraryPage() {
                     background:
                       formData.days === d
                         ? "linear-gradient(135deg, var(--tulum-turquoise, #00D4D4) 0%, #00BABA 100%)"
-                        : "rgba(255,255,255,0.06)",
+                        : "rgba(255, 255, 255, 0.95)",
                     border:
                       formData.days === d
                         ? "2px solid var(--tulum-turquoise, #00D4D4)"
-                        : "2px solid transparent",
-                    color: "#FFF",
+                        : "2px solid rgba(0, 206, 209, 0.35)",
+                    color: formData.days === d ? "#FFF" : "var(--text-primary)",
                     fontSize: "16px",
                     fontWeight: "700",
                     cursor: "pointer",
+                    boxShadow: formData.days === d ? "0 4px 12px rgba(0, 206, 209, 0.3)" : "0 2px 8px rgba(0,0,0,0.06)",
                   }}
                 >
                   {d}
@@ -252,12 +253,12 @@ export default function ItineraryPage() {
                     padding: "12px",
                     borderRadius: "12px",
                     background: formData.interests.includes(opt.id)
-                      ? "rgba(0, 212, 212, 0.15)"
-                      : "rgba(255,255,255,0.05)",
+                      ? "rgba(0, 212, 212, 0.2)"
+                      : "rgba(255, 255, 255, 0.95)",
                     border: formData.interests.includes(opt.id)
                       ? "2px solid var(--tulum-turquoise, #00D4D4)"
-                      : "2px solid transparent",
-                    color: "#FFF",
+                      : "2px solid rgba(0, 206, 209, 0.35)",
+                    color: formData.interests.includes(opt.id) ? "var(--text-primary)" : "var(--text-primary)",
                     fontSize: "14px",
                     fontWeight: "600",
                     cursor: "pointer",
@@ -265,6 +266,9 @@ export default function ItineraryPage() {
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
+                    boxShadow: formData.interests.includes(opt.id)
+                      ? "0 4px 12px rgba(0, 206, 209, 0.25)"
+                      : "0 2px 8px rgba(0,0,0,0.06)",
                   }}
                 >
                   <span style={{ fontSize: "20px" }}>{opt.icon}</span>
@@ -301,14 +305,15 @@ export default function ItineraryPage() {
                     background:
                       formData.budget === b.value
                         ? "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)"
-                        : "rgba(255,255,255,0.05)",
+                        : "rgba(255, 255, 255, 0.95)",
                     border:
-                      formData.budget === b.value ? "2px solid #FFD700" : "2px solid transparent",
-                    color: formData.budget === b.value ? "#000" : "#FFF",
+                      formData.budget === b.value ? "2px solid #FFD700" : "2px solid rgba(0, 206, 209, 0.35)",
+                    color: formData.budget === b.value ? "#000" : "var(--text-primary)",
                     cursor: "pointer",
                     textAlign: "center",
                     fontSize: "14px",
                     fontWeight: "600",
+                    boxShadow: formData.budget === b.value ? "0 4px 12px rgba(255, 215, 0, 0.3)" : "0 2px 8px rgba(0,0,0,0.06)",
                   }}
                 >
                   <div>{t[b.labelKey] ?? b.labelKey}</div>
@@ -345,17 +350,18 @@ export default function ItineraryPage() {
                     borderRadius: "12px",
                     background:
                       formData.groupType === g.value
-                        ? "rgba(80, 200, 120, 0.2)"
-                        : "rgba(255,255,255,0.05)",
+                        ? "rgba(80, 200, 120, 0.25)"
+                        : "rgba(255, 255, 255, 0.95)",
                     border:
                       formData.groupType === g.value
                         ? "2px solid #50C878"
-                        : "2px solid transparent",
-                    color: "#FFF",
+                        : "2px solid rgba(0, 206, 209, 0.35)",
+                    color: formData.groupType === g.value ? "var(--text-primary)" : "var(--text-primary)",
                     fontSize: "14px",
                     fontWeight: "600",
                     cursor: "pointer",
                     textAlign: "center",
+                    boxShadow: formData.groupType === g.value ? "0 4px 12px rgba(80, 200, 120, 0.3)" : "0 2px 8px rgba(0,0,0,0.06)",
                   }}
                 >
                   <div style={{ fontSize: "24px", marginBottom: "4px" }}>{g.icon}</div>

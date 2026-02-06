@@ -23,6 +23,11 @@ function buildPrompt(params: {
   groupType: string;
 }): string {
   const { days, interests, budget, groupType } = params;
+  const dayEntries = Array.from(
+    { length: days },
+    (_, i) =>
+      `{ "day": ${i + 1}, "title": "Day ${i + 1} title", "activities": [{ "time": "9:00 AM", "duration": "2 hours", "title": "Activity name", "location": "Place", "description": "What to do", "tips": ["Tip"], "estimated_cost": "$20-40" }] }`
+  ).join(",\n    ");
   return `You are a local Tulum travel expert. Create a detailed ${days}-day itinerary for Tulum, Mexico.
 
 TRAVELER PROFILE:
@@ -31,43 +36,30 @@ TRAVELER PROFILE:
 - Budget: ${budget} (low/medium/high)
 - Group Type: ${groupType} (solo/couple/family/friends)
 
+CRITICAL: Return EXACTLY ${days} day objects in the "days" array. Each day gets its own object with day number 1 through ${days}. Do not truncate.
+
 REQUIREMENTS:
 1. Provide specific place names (real venues in Tulum)
 2. Include mix of popular spots and hidden gems
 3. Consider realistic timing and distances
-4. Include morning, afternoon, and evening activities
+4. Include morning, afternoon, and evening activities for EACH day
 5. Suggest specific restaurants and beach clubs
 6. Add cenote recommendations
 7. Include cultural/historical sites
 8. Provide transportation tips between locations
 
-FORMAT YOUR RESPONSE AS JSON ONLY, no other text:
+FORMAT YOUR RESPONSE AS JSON ONLY, no other text. Structure:
 {
   "title": "Your Tulum Adventure",
-  "summary": "Brief overview of the itinerary",
+  "summary": "Brief overview",
   "days": [
-    {
-      "day": 1,
-      "title": "Day title",
-      "activities": [
-        {
-          "time": "9:00 AM",
-          "duration": "2 hours",
-          "title": "Activity name",
-          "location": "Specific place name",
-          "description": "What to do and why",
-          "tips": ["Tip 1", "Tip 2"],
-          "estimated_cost": "$20-40",
-          "coordinates": {"lat": 20.2114, "lng": -87.4654}
-        }
-      ]
-    }
+    ${dayEntries}
   ],
   "tips": ["General tip 1", "General tip 2"],
   "estimated_total_cost": "$500-800"
 }
 
-Respond with valid JSON only.`;
+Replace each placeholder with real content. Respond with valid JSON only.`;
 }
 
 function parseItinerary(text: string): Record<string, unknown> {
