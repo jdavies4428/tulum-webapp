@@ -448,12 +448,15 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortBy>("popular");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const { clubs, restaurants, cafes, cultural, isLoading, error, source } = useVenues();
 
   useEffect(() => {
-    if (isOpen) {
-      closeButtonRef.current?.focus();
-    }
+    if (!isOpen) return;
+    const t = setTimeout(() => {
+      panelRef.current?.focus();
+    }, 150);
+    return () => clearTimeout(t);
   }, [isOpen]);
   const t = translations[lang] as Record<string, string>;
   const navigateLabel = t.navigate ?? "Go";
@@ -532,6 +535,11 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
       />
 
       <div
+        ref={panelRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t.places ?? "Places"}
         style={{
           position: "fixed",
           top: "50%",
@@ -550,6 +558,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           flexDirection: "column",
           overflow: "hidden",
           animation: "slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          outline: "none",
         }}
         onClick={(e) => e.stopPropagation()}
       >
