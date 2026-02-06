@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { TULUM_LAT, TULUM_LNG, DEFAULT_ZOOM } from "@/data/constants";
 import { useVenues } from "@/hooks/useVenues";
+import { getEnhancedMarkerHtml } from "@/lib/marker-config";
 import type { Lang } from "@/lib/weather";
 import { translations } from "@/lib/i18n";
 
@@ -181,16 +182,16 @@ export function MapContainer({
     if (!userMarkerRef.current) {
       const marker = L.circleMarker([userLocation.lat, userLocation.lng], {
         radius: 10,
-        fillColor: "#00d4ff",
+        fillColor: "#00D4D4",
         fillOpacity: 1,
         color: "#ffffff",
-        weight: 3,
+        weight: 2,
       }).addTo(m);
       const circle = L.circle([userLocation.lat, userLocation.lng], {
         radius: userLocation.accuracy,
-        fillColor: "#00d4ff",
+        fillColor: "#00D4D4",
         fillOpacity: 0.1,
-        color: "#00d4ff",
+        color: "#00D4D4",
         weight: 1,
       }).addTo(m);
       userMarkerRef.current = marker;
@@ -257,28 +258,8 @@ export function MapContainer({
     const L = require("leaflet") as typeof import("leaflet");
     group.clearLayers();
     const t = translations[lang];
-
-    const clubIcon = L.divIcon({
-      className: "club-marker",
-      html: '<div style="width:24px;height:24px;background:linear-gradient(135deg,#ffd600,#e6c200);border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(255,214,0,0.5);display:flex;align-items:center;justify-content:center;font-size:12px;">🏖️</div>',
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
-      popupAnchor: [0, -12],
-    });
-    const restaurantIcon = L.divIcon({
-      className: "restaurant-marker",
-      html: '<div style="width:24px;height:24px;background:linear-gradient(135deg,#9b59b6,#8e44ad);border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(155,89,182,0.5);display:flex;align-items:center;justify-content:center;font-size:12px;">🍽️</div>',
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
-      popupAnchor: [0, -12],
-    });
-    const culturalIcon = L.divIcon({
-      className: "cultural-marker",
-      html: '<div style="width:24px;height:24px;background:linear-gradient(135deg,#a0a0a0,#808080);border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(160,160,160,0.5);display:flex;align-items:center;justify-content:center;font-size:12px;">🎭</div>',
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
-      popupAnchor: [0, -12],
-    });
+    const userLat = userLocation?.lat;
+    const userLng = userLocation?.lng;
 
     const desc = (item: { desc?: string; descEs?: string; descFr?: string }) =>
       lang === "es"
@@ -286,9 +267,20 @@ export function MapContainer({
         : lang === "fr"
           ? ("descFr" in item ? (item as { descFr?: string }).descFr : item.desc) ?? ""
           : item.desc ?? "";
+    const navigateLabel = t.navigate ?? "Go";
     const popup = (name: string, d: string, url: string, whatsapp: string, lat: number, lng: number) => {
-      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+      const isIOS =
+        typeof navigator !== "undefined" &&
+        (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+          (navigator.platform === "MacIntel" && (navigator.maxTouchPoints ?? 0) > 1));
+      const encodedName = encodeURIComponent(name);
+      const mapsUrl = isIOS
+        ? `https://maps.apple.com/?daddr=${lat},${lng}&q=${encodedName}`
+        : `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
       const webLink = url ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="club-link website">🌐 ${t.website}</a>` : "";
+      const callLink = whatsapp
+        ? `<a href="tel:${whatsapp.replace(/\D/g, "")}" class="club-link call">📞</a>`
+        : "";
       const waLink = whatsapp
         ? `<a href="https://wa.me/${whatsapp.replace(/\D/g, "")}" target="_blank" rel="noopener noreferrer" class="club-link whatsapp">💬</a>`
         : "";
@@ -298,8 +290,9 @@ export function MapContainer({
           <p class="club-desc">${d}</p>
           <div class="club-links">
             ${webLink}
+            ${callLink}
             ${waLink}
-            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="club-link maps">↗️</a>
+            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="club-link maps">🧭 ${navigateLabel}</a>
           </div>
         </div>
       `;
@@ -308,28 +301,47 @@ export function MapContainer({
     const addToGroup = (marker: ReturnType<typeof L.marker>) => {
       (marker as { addTo: (t: unknown) => unknown }).addTo(group);
     };
+
+    const createVenueIcon = (
+      type: "beachClub" | "restaurant" | "cultural",
+      place: { id?: string; name: string; lat: number; lng: number; rating?: number | null }
+    ) =>
+      L.divIcon({
+        className: "enhanced-marker-wrapper",
+        html: getEnhancedMarkerHtml(type, place, {
+          userLat,
+          userLng,
+        }),
+        iconSize: [36, 36],
+        iconAnchor: [18, 36],
+        popupAnchor: [0, -30],
+      });
+
     if (layers.clubs) {
       clubs.forEach((club) => {
-        const m = L.marker([club.lat, club.lng], { icon: clubIcon });
+        const icon = createVenueIcon("beachClub", club);
+        const m = L.marker([club.lat, club.lng], { icon });
         m.bindPopup(popup(club.name, desc(club), club.url ?? "", club.whatsapp ?? "", club.lat, club.lng));
         addToGroup(m);
       });
     }
     if (layers.restaurants) {
       restaurants.forEach((r) => {
-        const m = L.marker([r.lat, r.lng], { icon: restaurantIcon });
+        const icon = createVenueIcon("restaurant", r);
+        const m = L.marker([r.lat, r.lng], { icon });
         m.bindPopup(popup(r.name, desc(r), r.url ?? "", r.whatsapp ?? "", r.lat, r.lng));
         addToGroup(m);
       });
     }
     if (layers.cultural) {
       cultural.forEach((c) => {
-        const m = L.marker([c.lat, c.lng], { icon: culturalIcon });
+        const icon = createVenueIcon("cultural", c);
+        const m = L.marker([c.lat, c.lng], { icon });
         m.bindPopup(popup(c.name, desc(c), c.url ?? "", c.whatsapp ?? "", c.lat, c.lng));
         addToGroup(m);
       });
     }
-  }, [lang, layers.clubs, layers.restaurants, layers.cultural, clubs, restaurants, cultural]);
+  }, [lang, layers.clubs, layers.restaurants, layers.cultural, clubs, restaurants, cultural, userLocation]);
 
   return <div ref={containerRef} className={`h-full w-full ${className}`} id="map" />;
 }

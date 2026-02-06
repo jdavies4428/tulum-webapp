@@ -3,16 +3,65 @@
 @tailwind utilities;
 
 :root {
-  --accent-cyan: #00d4ff;
+  /* Primary Brand Colors */
+  --tulum-turquoise: #00D4D4;
+  --tulum-coral: #FF6B6B;
+  --tulum-sand: #F4E4C1;
+  --tulum-jungle: #2D5016;
+
+  /* Background Layers */
+  --bg-primary: #0a0404;
+  --bg-secondary: #1a0f0f;
+  --bg-elevated: rgba(26, 15, 15, 0.95);
+  --bg-glass: rgba(20, 10, 10, 0.8);
+
+  /* Sidebar & Panels */
+  --sidebar-bg: rgba(10, 4, 4, 0.98);
+  --card-bg: rgba(30, 18, 18, 0.9);
+  --card-hover: rgba(40, 24, 24, 0.95);
+
+  /* Sargassum Status Colors */
+  --sargassum-low: #10B981;
+  --sargassum-medium: #F59E0B;
+  --sargassum-high: #EF4444;
+
+  /* Status badges */
+  --status-open: #10B981;
+  --status-closed: #EF4444;
+
+  /* Text Hierarchy */
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.75);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+  --text-muted: rgba(255, 255, 255, 0.35);
+
+  /* Interactive Elements */
+  --button-primary: #00D4D4;
+  --button-primary-hover: #00BABA;
+  --button-secondary: rgba(255, 255, 255, 0.1);
+  --button-secondary-hover: rgba(255, 255, 255, 0.15);
+
+  /* Borders & Dividers */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-emphasis: rgba(255, 255, 255, 0.15);
+  --border-accent: rgba(0, 212, 212, 0.3);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(0, 212, 212, 0.3);
+
+  /* Legacy aliases (used by existing components) */
+  --accent-cyan: var(--tulum-turquoise);
   --accent-yellow: #ffd600;
-  --accent-green: #00d46a;
-  --accent-red: #ff3b30;
+  --accent-green: var(--sargassum-low);
+  --accent-red: var(--sargassum-high);
   --accent-purple: #af52de;
   --accent-grey: #a0a0a0;
-  --bg-dark: #0a0a0a;
-  --bg-panel: rgba(10, 10, 10, 0.95);
-  --border-color: #333;
-  --text-muted: #888;
+  --bg-dark: var(--bg-primary);
+  --bg-panel: var(--bg-elevated);
+  --border-color: var(--border-emphasis);
 }
 
 * {
@@ -56,6 +105,257 @@ body {
 }
 .leaflet-control-zoom a:hover {
   background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Map overlay – semi-transparent gradient to darken map slightly */
+.map-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.05) 50%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Improve marker visibility with enhanced shadows */
+.marker {
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.marker:hover {
+  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.8));
+  transform: scale(1.15);
+}
+
+/* Enhanced marker – pin style with tooltip */
+@keyframes enhanced-marker-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) rotate(-45deg) scale(1);
+  }
+  50% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-45deg) scale(1.4);
+  }
+}
+
+@keyframes pulse-user {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.5);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.place-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-emphasis);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.place-card button:hover {
+  transform: scale(1.05);
+}
+
+.place-card button:active {
+  transform: scale(0.95);
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.sidebar-hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar-hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sidebar scrollable – hide scrollbar with !important for override */
+.sidebar-scrollable::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+}
+
+.sidebar-scrollable {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Sidebar content – hide scrollbar (Chrome, Safari, Opera) */
+.sidebar-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sidebar content – hide scrollbar (IE, Edge, Firefox) */
+.sidebar-content {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+/* Alternative: minimal scrollbar */
+.sidebar-content-with-minimal-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-content-with-minimal-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-content-with-minimal-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.sidebar-content-with-minimal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.enhanced-marker .marker-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enhanced-marker .marker-container:hover .marker-pin {
+  transform: rotate(-45deg) scale(1.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+.enhanced-marker .marker-container:hover .marker-glow {
+  opacity: 1;
+}
+
+.enhanced-marker .marker-container:hover .marker-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* Leaflet divIcon wrapper – remove default marker styling for enhanced markers */
+.enhanced-marker-wrapper.leaflet-marker-icon {
+  background: none !important;
+  border: none !important;
+}
+
+/* Map venue popup */
+.club-popup {
+  min-width: 200px;
+}
+.club-popup h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #fff;
+}
+.club-popup .club-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+.club-popup .club-links {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.club-popup .club-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.club-popup .club-link.website {
+  background: rgba(0, 212, 255, 0.2);
+  color: var(--accent-cyan);
+  border: 1px solid var(--accent-cyan);
+}
+.club-popup .club-link.call {
+  background: rgba(0, 122, 255, 0.2);
+  color: #007aff;
+  border: 1px solid #007aff;
+}
+.club-popup .club-link.whatsapp {
+  background: rgba(37, 211, 102, 0.2);
+  color: #25d366;
+  border: 1px solid #25d366;
+}
+.club-popup .club-link.maps {
+  background: rgba(125, 134, 143, 0.2);
+  color: #7d868f;
+  border: 1px solid #7d868f;
 }
 
 /* Right sidebar – match original index.html exactly */

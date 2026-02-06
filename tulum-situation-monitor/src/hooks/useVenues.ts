@@ -17,12 +17,14 @@ type VenueRow = {
   phone: string | null;
   website: string | null;
   has_webcam: boolean;
+  rating?: number | null;
 };
 
 type VenuePlace = BeachClub | Restaurant | CulturalPlace;
 
 function venueToPlace(venue: VenueRow): VenuePlace {
   const base = {
+    id: venue.id,
     name: venue.name,
     lat: venue.lat ?? 0,
     lng: venue.lng ?? 0,
@@ -31,6 +33,7 @@ function venueToPlace(venue: VenueRow): VenuePlace {
     descFr: venue.description_fr ?? undefined,
     whatsapp: venue.phone ?? "",
     url: venue.website ?? "",
+    rating: venue.rating ?? undefined,
   };
   if (venue.category === "club") {
     return { ...base, hasWebcam: venue.has_webcam } as BeachClub;

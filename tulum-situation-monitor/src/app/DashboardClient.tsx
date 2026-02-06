@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { MapLayersState } from "@/components/map/MapContainer";
 import { MapView } from "@/components/map/MapView";
-import { SituationHeader } from "@/components/layout/SituationHeader";
-import { LayerControls } from "@/components/layout/LayerControls";
-import { RightPanels } from "@/components/layout/RightPanels";
+import { EnhancedSidebar } from "@/components/layout/EnhancedSidebar";
 import { StatusBar } from "@/components/layout/StatusBar";
+import { LayerControls } from "@/components/layout/LayerControls";
 import { MapLegend } from "@/components/layout/MapLegend";
-import { ListingsPanel } from "@/components/places/ListingsPanel";
+import { PlacesModal } from "@/components/places/PlacesModal";
 import { useWeather } from "@/hooks/useWeather";
 import { useTides } from "@/hooks/useTides";
 import type { Lang } from "@/lib/weather";
@@ -35,8 +34,8 @@ export interface MapApi {
 export function DashboardClient() {
   const [lang, setLang] = useState<Lang>("en");
   const [layers, setLayers] = useState<MapLayersState>(getDefaultLayers);
-  const [panelsVisible, setPanelsVisible] = useState(true);
   const [placesOpen, setPlacesOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; accuracy: number } | null>(null);
   const [mapApi, setMapApi] = useState<MapApi | null>(null);
 
@@ -51,10 +50,6 @@ export function DashboardClient() {
     return { temp, condition };
   }, [weatherData, lang]);
 
-  const handleTogglePanels = useCallback(() => {
-    setPanelsVisible((v) => !v);
-  }, []);
-
   // Request GPS automatically when map is ready so user location shows without clicking Locate
   useEffect(() => {
     if (mapApi && typeof navigator !== "undefined" && navigator.geolocation) {
@@ -63,54 +58,48 @@ export function DashboardClient() {
   }, [mapApi]);
 
   return (
-    <main className="relative h-screen w-full overflow-hidden">
-      <MapView
+    <main className="flex h-screen w-full overflow-hidden">
+      <EnhancedSidebar
+        isCollapsed={!sidebarOpen}
+        onToggle={() => setSidebarOpen((v) => !v)}
         lang={lang}
-        layers={layers}
-        onLayersChange={setLayers}
-        userLocation={userLocation}
-        onUserLocationChange={setUserLocation}
-        onMapReady={setMapApi}
-      />
-      <SituationHeader
-        lang={lang}
-        sharePayload={sharePayload}
+        onLanguageChange={setLang}
         onOpenPlaces={() => setPlacesOpen(true)}
-        onTogglePanels={handleTogglePanels}
-        panelsVisible={panelsVisible}
+        onLocateUser={() => mapApi?.locateUser()}
+        sharePayload={sharePayload}
+        weatherData={weatherData}
+        weatherLoading={weatherLoading}
+        weatherError={weatherError}
+        waterTemp={waterTemp}
+        tide={tide}
+        onWeatherRefresh={refetchWeather}
       />
-      <MapLegend lang={lang} />
-      <StatusBar
-        lang={lang}
-        userLocation={userLocation}
-        onReset={() => mapApi?.resetView()}
-        lastUpdated={
-          weatherData?.current?.time
-            ? `Updated ${new Date(weatherData.current.time).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`
-            : undefined
-        }
-      />
-      <LayerControls lang={lang} layers={layers} onLayersChange={setLayers} />
       <div
-        className={`absolute right-0 top-0 z-[1000] transition-opacity ${
-          panelsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
+        className="relative flex-1 min-w-0 transition-all duration-300 ease-out"
+        style={{ marginLeft: sidebarOpen ? "400px" : 0 }}
       >
-        <RightPanels
+        <MapView
           lang={lang}
-          onLanguageChange={setLang}
-          panelsVisible={panelsVisible}
-          onTogglePanels={handleTogglePanels}
-          onOpenPlaces={() => setPlacesOpen(true)}
-          weatherData={weatherData}
-          weatherLoading={weatherLoading}
-          weatherError={weatherError}
-          waterTemp={waterTemp}
-          tide={tide}
-          onWeatherRefresh={refetchWeather}
+          layers={layers}
+          onLayersChange={setLayers}
+          userLocation={userLocation}
+          onUserLocationChange={setUserLocation}
+          onMapReady={setMapApi}
+        />
+        <MapLegend lang={lang} />
+        <LayerControls lang={lang} layers={layers} onLayersChange={setLayers} />
+        <StatusBar
+          lang={lang}
+          userLocation={userLocation}
+          onReset={() => mapApi?.resetView()}
+          lastUpdated={
+            weatherData?.current?.time
+              ? `Updated ${new Date(weatherData.current.time).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`
+              : undefined
+          }
         />
       </div>
-      <ListingsPanel lang={lang} isOpen={placesOpen} onClose={() => setPlacesOpen(false)} />
+      <PlacesModal lang={lang} isOpen={placesOpen} onClose={() => setPlacesOpen(false)} />
     </main>
   );
 }

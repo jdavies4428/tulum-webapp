@@ -37,7 +37,7 @@ export function SargassumPanel({ lang }: SargassumPanelProps) {
         tabIndex={0}
       >
         <span className="panel-icon">🌿</span>
-        <span>{t.sargassumForecast ?? "SARGASSUM FORECAST"}</span>
+        <span>{t.sargassumForecast ?? "Sargassum Satellite"}</span>
         <span style={{ marginLeft: "auto", fontSize: "12px" }}>
           {contentVisible ? "▼" : "▶"}
         </span>

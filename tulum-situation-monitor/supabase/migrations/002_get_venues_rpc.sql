@@ -12,7 +12,8 @@ RETURNS TABLE (
   description_fr TEXT,
   phone VARCHAR(50),
   website TEXT,
-  has_webcam BOOLEAN
+  has_webcam BOOLEAN,
+  rating DOUBLE PRECISION
 )
 LANGUAGE sql
 SECURITY DEFINER
@@ -30,7 +31,8 @@ AS $$
     v.description_fr,
     v.phone,
     v.website,
-    v.has_webcam
+    v.has_webcam,
+    v.rating
   FROM public.venues v
   ORDER BY v.name;
 $$;

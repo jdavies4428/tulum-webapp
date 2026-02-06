@@ -1,4 +1,5 @@
 export interface PlaceBase {
+  id?: string;
   name: string;
   lat: number;
   lng: number;
@@ -7,6 +8,7 @@ export interface PlaceBase {
   descFr?: string;
   whatsapp: string;
   url: string;
+  rating?: number | null;
 }
 
 export interface BeachClub extends PlaceBase {

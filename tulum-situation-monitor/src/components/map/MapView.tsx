@@ -31,7 +31,7 @@ export function MapView({
   onMapReady,
 }: MapViewProps) {
   return (
-    <div className="absolute inset-0 z-0">
+    <div className="relative h-full w-full">
       <MapContainer
         lang={lang}
         layers={layers}
@@ -40,6 +40,7 @@ export function MapView({
         onUserLocationChange={onUserLocationChange}
         onMapReady={onMapReady}
       />
+      <div className="map-overlay" aria-hidden />
     </div>
   );
 }
