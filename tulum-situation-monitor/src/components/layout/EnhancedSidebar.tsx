@@ -25,6 +25,7 @@ interface EnhancedSidebarProps {
   lang: Lang;
   onLanguageChange: (lang: Lang) => void;
   onOpenPlaces: () => void;
+  onOpenMap?: () => void;
   onLocateUser: () => void;
   sharePayload?: SharePayload | null;
   weatherData: OpenMeteoResponse | null;
@@ -47,6 +48,7 @@ export function EnhancedSidebar({
   lang,
   onLanguageChange,
   onOpenPlaces,
+  onOpenMap,
   onLocateUser,
   sharePayload,
   weatherData,
@@ -105,17 +107,17 @@ export function EnhancedSidebar({
 
   return (
     <>
-      {/* Toggle Button - Always Visible */}
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-label={isCollapsed ? "Show sidebar" : "Hide sidebar"}
-        style={{
-          position: "fixed",
-          ...(isMobile && !isCollapsed
-            ? { right: "16px", left: "auto", top: "130px" }
-            : { left: isCollapsed ? "16px" : "384px", top: "16px" }),
-          zIndex: 10001,
+      {/* Toggle Button - hidden on mobile (map is on separate page) */}
+      {!isMobile && (
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={isCollapsed ? "Show sidebar" : "Hide sidebar"}
+          style={{
+            position: "fixed",
+            left: isCollapsed ? "16px" : "384px",
+            top: "16px",
+            zIndex: 10001,
           width: "44px",
           height: "44px",
           borderRadius: "12px",
@@ -144,6 +146,7 @@ export function EnhancedSidebar({
       >
         {isCollapsed ? "→" : "←"}
       </button>
+      )}
 
       {/* Sidebar outer container – fully hidden when collapsed */}
       <div
@@ -221,18 +224,57 @@ export function EnhancedSidebar({
                 display: "flex",
                 alignItems: "center",
                 gap: "8px",
-                background: "var(--button-secondary)",
-                borderRadius: "8px",
-                padding: "4px",
               }}
             >
-              {LANG_FLAGS.map(({ lang: l, flag }) => (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  background: "var(--button-secondary)",
+                  borderRadius: "8px",
+                  padding: "4px",
+                }}
+              >
+                {LANG_FLAGS.map(({ lang: l, flag }) => (
+                  <button
+                    key={l}
+                    type="button"
+                    onClick={() => onLanguageChange(l)}
+                    style={{
+                      background: lang === l ? "var(--button-primary)" : "transparent",
+                      border: "none",
+                      fontSize: "20px",
+                      cursor: "pointer",
+                      padding: "6px 8px",
+                      borderRadius: "6px",
+                      transition: "background 0.2s",
+                    }}
+                  >
+                    {flag}
+                  </button>
+                ))}
+              </div>
+              {sharePayload && (
                 <button
-                  key={l}
                   type="button"
-                  onClick={() => onLanguageChange(l)}
+                  title="Share current weather & conditions"
+                  onClick={() => {
+                    const temp = sharePayload.temp ?? "";
+                    const condition = sharePayload.condition ?? "";
+                    const url = typeof window !== "undefined" ? window.location.href : "";
+                    const shareText = `🌴 Tulum right now: ${temp} ${condition}\n\nReal-time beach conditions, weather & local spots:`;
+                    if (typeof navigator !== "undefined" && navigator.share) {
+                      navigator.share({ title: "Discover Tulum", text: shareText, url }).catch(() => {});
+                    } else if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+                      const full = shareText + "\n" + url;
+                      navigator.clipboard.writeText(full).then(() => alert("Link copied to clipboard! 📋")).catch(() => prompt("Copy this link:", full));
+                    } else {
+                      prompt("Copy this link:", shareText + "\n" + url);
+                    }
+                  }}
                   style={{
-                    background: lang === l ? "var(--button-primary)" : "transparent",
+                    background: "var(--button-secondary)",
                     border: "none",
                     fontSize: "20px",
                     cursor: "pointer",
@@ -241,9 +283,9 @@ export function EnhancedSidebar({
                     transition: "background 0.2s",
                   }}
                 >
-                  {flag}
+                  📤
                 </button>
-              ))}
+              )}
             </div>
           </div>
           <p
@@ -310,28 +352,15 @@ export function EnhancedSidebar({
           >
             📍 {t.places}
           </button>
-          {sharePayload && (
+          {onOpenMap && (
             <button
               type="button"
-              title="Share current weather & conditions"
-              onClick={() => {
-                const temp = sharePayload.temp ?? "";
-                const condition = sharePayload.condition ?? "";
-                const url = typeof window !== "undefined" ? window.location.href : "";
-                const shareText = `🌴 Tulum right now: ${temp} ${condition}\n\nReal-time beach conditions, weather & local spots:`;
-                if (typeof navigator !== "undefined" && navigator.share) {
-                  navigator.share({ title: "Discover Tulum", text: shareText, url }).catch(() => {});
-                } else if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-                  const full = shareText + "\n" + url;
-                  navigator.clipboard.writeText(full).then(() => alert("Link copied to clipboard! 📋")).catch(() => prompt("Copy this link:", full));
-                } else {
-                  prompt("Copy this link:", shareText + "\n" + url);
-                }
-              }}
+              onClick={onOpenMap}
               style={{
+                flex: 1,
                 padding: "12px",
                 background: "var(--button-secondary)",
-                border: "none",
+                border: "1px solid var(--border-emphasis)",
                 borderRadius: "12px",
                 color: "var(--text-primary)",
                 fontWeight: "600",
@@ -339,32 +368,14 @@ export function EnhancedSidebar({
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
+                justifyContent: "center",
                 gap: "8px",
+                transition: "all 0.2s",
               }}
             >
-              📤
+              🗺️ {tAny.map ?? "Map"}
             </button>
           )}
-          <button
-            type="button"
-            title="Locate me – center map on your GPS location"
-            onClick={onLocateUser}
-            style={{
-              padding: "12px",
-              background: "var(--button-secondary)",
-              border: "none",
-              borderRadius: "12px",
-              color: "var(--text-primary)",
-              fontWeight: "600",
-              fontSize: "14px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }}
-          >
-            🎯
-          </button>
         </div>
 
         {/* Quick links: Satellite, Forecast, Beach Cams – single row */}

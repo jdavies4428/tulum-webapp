@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { MapLayersState } from "@/components/map/MapContainer";
 import { MapView } from "@/components/map/MapView";
 import { EnhancedSidebar } from "@/components/layout/EnhancedSidebar";
@@ -40,6 +41,7 @@ export interface MapApi {
 }
 
 export function DashboardClient() {
+  const router = useRouter();
   const [lang, setLang] = useState<Lang>("en");
   const [layers, setLayers] = useState<MapLayersState>(getDefaultLayers);
   const [placesOpen, setPlacesOpen] = useState(false);
@@ -115,6 +117,7 @@ export function DashboardClient() {
         lang={lang}
         onLanguageChange={setLang}
         onOpenPlaces={() => setPlacesOpen(true)}
+        onOpenMap={() => router.push(`/map?lang=${lang}`)}
         onLocateUser={() => mapApi?.locateUser()}
         sharePayload={sharePayload}
         weatherData={weatherData}
@@ -124,19 +127,12 @@ export function DashboardClient() {
         tide={tide}
         onWeatherRefresh={refetchWeather}
       />
-      <div
-        className="map-container transition-all duration-300 ease-out overflow-hidden"
-        style={
-          isMobile
-            ? {
-                position: "fixed",
-                inset: 0,
-                width: "100vw",
-                height: "100vh",
-                background: "#000000",
-                zIndex: 0,
-              }
-            : sidebarOpen
+      {/* On mobile, map is on /map page to avoid black box from sliding layout; desktop keeps map here */}
+      {!isMobile && (
+        <div
+          className="map-container transition-all duration-300 ease-out overflow-hidden"
+          style={
+            sidebarOpen
               ? {
                   position: "absolute",
                   top: 0,
@@ -154,30 +150,31 @@ export function DashboardClient() {
                   background: "#000000",
                   zIndex: 50,
                 }
-        }
-      >
-        <MapView
-          lang={lang}
-          layers={layers}
-          onLayersChange={setLayers}
-          userLocation={userLocation}
-          onUserLocationChange={setUserLocation}
-          onMapReady={setMapApi}
-          onPlaceSelect={setSelectedPlace}
-        />
-        <MapLegend lang={lang} />
-        <LayerControls lang={lang} layers={layers} onLayersChange={setLayers} />
-        <StatusBar
-          lang={lang}
-          userLocation={userLocation}
-          onReset={() => mapApi?.resetView()}
-          lastUpdated={
-            weatherData?.current?.time
-              ? `Updated ${new Date(weatherData.current.time).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`
-              : undefined
           }
-        />
-      </div>
+        >
+          <MapView
+            lang={lang}
+            layers={layers}
+            onLayersChange={setLayers}
+            userLocation={userLocation}
+            onUserLocationChange={setUserLocation}
+            onMapReady={setMapApi}
+            onPlaceSelect={setSelectedPlace}
+          />
+          <MapLegend lang={lang} />
+          <LayerControls lang={lang} layers={layers} onLayersChange={setLayers} />
+          <StatusBar
+            lang={lang}
+            userLocation={userLocation}
+            onReset={() => mapApi?.resetView()}
+            lastUpdated={
+              weatherData?.current?.time
+                ? `Updated ${new Date(weatherData.current.time).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`
+                : undefined
+            }
+          />
+        </div>
+      )}
       <PlacesModal
         lang={lang}
         isOpen={placesOpen}
