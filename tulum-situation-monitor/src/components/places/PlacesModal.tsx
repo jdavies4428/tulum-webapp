@@ -32,7 +32,7 @@ function FilterButton({
       onClick={onClick}
       style={{
         gridColumn: wide ? "1 / -1" : "auto",
-        padding: "16px 20px",
+        padding: "12px 16px",
         background: active ? gradient : "rgba(255, 255, 255, 0.8)",
         border: active ? "2px solid transparent" : "2px solid rgba(0, 206, 209, 0.2)",
         borderRadius: "16px",
@@ -183,6 +183,7 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
       onKeyDown={(e) => e.key === "Enter" && place.sourcePlace && onSelect?.(place.sourcePlace)}
       style={{
         background: "rgba(255, 255, 255, 0.9)",
+        WebkitBackdropFilter: "blur(20px)",
         backdropFilter: "blur(20px)",
         borderRadius: "24px",
         padding: "20px",
@@ -614,6 +615,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           position: "fixed",
           inset: 0,
           background: "rgba(0, 0, 0, 0.3)",
+          WebkitBackdropFilter: "blur(8px)",
           backdropFilter: "blur(8px)",
           zIndex: 9998,
           animation: "fadeIn 0.2s ease-out",
@@ -627,12 +629,13 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         aria-modal="true"
         aria-label={t.places ?? "Places"}
         style={{
-          position: "fixed",
-          inset: "60px 16px 16px",
-          background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
-          borderRadius: "32px",
-          boxShadow: "0 20px 60px rgba(0, 206, 209, 0.25)",
-          zIndex: 9999,
+        position: "fixed",
+        inset: "24px 16px 16px",
+        background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
+        borderRadius: "32px",
+        boxShadow: "0 20px 60px rgba(0, 206, 209, 0.25)",
+        zIndex: 9999,
+        WebkitOverflowScrolling: "touch",
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
@@ -645,7 +648,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         <div
           style={{
             background: "linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%)",
-            padding: "24px",
+            padding: "12px 16px 14px",
             position: "relative",
             overflow: "hidden",
             flexShrink: 0,
@@ -657,7 +660,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
               bottom: 0,
               left: 0,
               width: "100%",
-              height: "40px",
+              height: "24px",
               opacity: 0.2,
             }}
             viewBox="0 0 1200 120"
@@ -672,12 +675,13 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             onClick={onClose}
             style={{
               position: "absolute",
-              top: "16px",
-              right: "16px",
-              width: "40px",
-              height: "40px",
+              top: "12px",
+              right: "12px",
+              width: "36px",
+              height: "36px",
               borderRadius: "50%",
               background: "rgba(255, 255, 255, 0.9)",
+              WebkitBackdropFilter: "blur(10px)",
               backdropFilter: "blur(10px)",
               border: "2px solid rgba(0, 206, 209, 0.2)",
               fontSize: "20px",
@@ -692,12 +696,12 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             ✕
           </button>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
-            <div style={{ fontSize: "32px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))" }}>📍</div>
-            <div>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+            <div style={{ fontSize: "24px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))" }}>📍</div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
               <h2
                 style={{
-                  fontSize: "28px",
+                  fontSize: "22px",
                   fontWeight: "800",
                   margin: 0,
                   background: "linear-gradient(135deg, #0099CC 0%, #00CED1 100%)",
@@ -712,11 +716,10 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                 <div
                   style={{
                     display: "inline-block",
-                    marginTop: "4px",
-                    padding: "4px 10px",
+                    padding: "2px 8px",
                     background: "#00CED1",
-                    borderRadius: "8px",
-                    fontSize: "11px",
+                    borderRadius: "6px",
+                    fontSize: "10px",
                     fontWeight: "700",
                     color: "#FFF",
                     letterSpacing: "0.5px",
@@ -725,26 +728,25 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                   DB
                 </div>
               )}
+              <span
+                style={{
+                  fontSize: "13px",
+                  color: "#00ACC1",
+                  fontWeight: "600",
+                  position: "relative",
+                  zIndex: 1,
+                }}
+              >
+                Discover the best spots in Tulum
+              </span>
             </div>
           </div>
-          <p
-            style={{
-              fontSize: "15px",
-              color: "#00ACC1",
-              margin: 0,
-              fontWeight: "600",
-              position: "relative",
-              zIndex: 1,
-            }}
-          >
-            Discover the best spots in Tulum
-          </p>
         </div>
 
         {/* Filter Buttons */}
         <div
           style={{
-            padding: "20px 20px 12px",
+            padding: "14px 20px 10px",
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
             gap: "12px",
@@ -788,7 +790,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         </div>
 
         {/* Search input */}
-        <div style={{ padding: "0 20px 16px", position: "relative" }}>
+        <div style={{ padding: "0 20px 12px", position: "relative" }}>
           <input
             ref={searchInputRef}
             type="text"
@@ -853,7 +855,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "16px 20px 20px",
+            padding: "12px 20px 20px",
             WebkitOverflowScrolling: "touch",
           }}
         >
