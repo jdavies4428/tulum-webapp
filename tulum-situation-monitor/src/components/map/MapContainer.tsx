@@ -26,10 +26,10 @@ const DEFAULT_LAYERS: MapLayersState = {
   satellite: false,
   radar: true,
   clubs: false,
-  restaurants: true,
-  cafes: true,
+  restaurants: false,
+  cafes: false,
   cultural: true,
-  favorites: false,
+  favorites: true,
 };
 
 export interface UserLocation {

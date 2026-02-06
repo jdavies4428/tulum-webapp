@@ -27,10 +27,10 @@ function getDefaultLayers(): MapLayersState {
     satellite: isDaytime,
     radar: true,
     clubs: false,
-    restaurants: true,
-    cafes: true,
+    restaurants: false,
+    cafes: false,
     cultural: true,
-    favorites: false,
+    favorites: true,
   };
 }
 
@@ -60,10 +60,10 @@ export function DashboardClient() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  // Ensure Coffee Shops and Cultural are visible on mobile (in case of stale or wrong initial state)
+  // Ensure Favorites and Cultural are visible on mobile (match default venue layers)
   useEffect(() => {
     if (isMobile) {
-      setLayers((prev) => (prev.cafes && prev.cultural ? prev : { ...prev, cafes: true, cultural: true }));
+      setLayers((prev) => (prev.favorites && prev.cultural ? prev : { ...prev, favorites: true, cultural: true }));
     }
   }, [isMobile]);
 

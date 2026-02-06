@@ -24,10 +24,10 @@ function getDefaultLayers(): MapLayersState {
     satellite: isDaytime,
     radar: true,
     clubs: false,
-    restaurants: true,
-    cafes: true,
+    restaurants: false,
+    cafes: false,
     cultural: true,
-    favorites: false,
+    favorites: true,
   };
 }
 
@@ -47,6 +47,20 @@ export default function MapPage() {
   const [mapApi, setMapApi] = useState<{ resetView: () => void; locateUser: () => void; invalidateSize: () => void } | null>(null);
 
   const { data: weatherData } = useWeather();
+
+  // Request GPS as soon as map page loads (mobile often needs this before map is ready)
+  useEffect(() => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) return;
+    const opts = { enableHighAccuracy: true, maximumAge: 30000, timeout: 15000 };
+    const onPos = (position: GeolocationPosition) => {
+      setUserLocation({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+      });
+    };
+    navigator.geolocation.getCurrentPosition(onPos, () => {}, opts);
+  }, []);
 
   useEffect(() => {
     if (mapApi && typeof navigator !== "undefined" && navigator.geolocation) {
