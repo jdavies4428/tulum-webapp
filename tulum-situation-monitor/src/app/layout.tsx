@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://tulum-webapp.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: "Tulum Discovery App",
   description: "Tulum weather, mapping, and great locations.",
   openGraph: {
     title: "Discover Tulum",
     description: "Real-time beach conditions, weather, and local spots",
     type: "website",
+    images: ["/data/webcam/latest.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/data/webcam/latest.jpg"],
   },
 };
 
