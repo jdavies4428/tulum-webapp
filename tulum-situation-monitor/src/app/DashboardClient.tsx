@@ -135,7 +135,7 @@ export function DashboardClient() {
         height: "100vh",
         height: "calc(var(--vh, 1vh) * 100)",
         overflow: "hidden",
-        background: "#000000",
+        background: "transparent",
         position: "fixed",
         top: 0,
         left: 0,
@@ -143,21 +143,7 @@ export function DashboardClient() {
         bottom: 0,
       }}
     >
-      <EnhancedSidebar
-        isCollapsed={!sidebarOpen}
-        onToggle={() => setSidebarOpen((v) => !v)}
-        lang={lang}
-        onLanguageChange={setLang}
-        onOpenPlaces={() => setPlacesOpen(true)}
-        onLocateUser={() => mapApi?.locateUser()}
-        sharePayload={sharePayload}
-        weatherData={weatherData}
-        weatherLoading={weatherLoading}
-        weatherError={weatherError}
-        waterTemp={waterTemp}
-        tide={tide}
-        onWeatherRefresh={refetchWeather}
-      />
+      {/* Map layer first, lowest z-index (doc fix-black-overlay: no black box covering map) */}
       <div
         className="map-container transition-all duration-300 ease-out overflow-hidden"
         style={
@@ -168,8 +154,8 @@ export function DashboardClient() {
                 width: "100vw",
                 height: "100vh",
                 height: "calc(var(--vh, 1vh) * 100)",
-                background: "#000000",
-                zIndex: sidebarOpen ? 0 : 10,
+                background: "transparent",
+                zIndex: 1,
               }
             : sidebarOpen
               ? {
@@ -178,16 +164,16 @@ export function DashboardClient() {
                   left: 400,
                   right: 0,
                   bottom: 0,
-                  background: "#000000",
-                  zIndex: 0,
+                  background: "transparent",
+                  zIndex: 1,
                 }
               : {
                   position: "fixed",
                   inset: 0,
                   width: "100vw",
                   height: "100vh",
-                  background: "#000000",
-                  zIndex: 50,
+                  background: "transparent",
+                  zIndex: 1,
                 }
         }
       >
@@ -213,6 +199,21 @@ export function DashboardClient() {
           }
         />
       </div>
+      <EnhancedSidebar
+        isCollapsed={!sidebarOpen}
+        onToggle={() => setSidebarOpen((v) => !v)}
+        lang={lang}
+        onLanguageChange={setLang}
+        onOpenPlaces={() => setPlacesOpen(true)}
+        onLocateUser={() => mapApi?.locateUser()}
+        sharePayload={sharePayload}
+        weatherData={weatherData}
+        weatherLoading={weatherLoading}
+        weatherError={weatherError}
+        waterTemp={waterTemp}
+        tide={tide}
+        onWeatherRefresh={refetchWeather}
+      />
       <PlacesModal
         lang={lang}
         isOpen={placesOpen}

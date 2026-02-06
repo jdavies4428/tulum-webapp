@@ -115,13 +115,21 @@ body {
   background: #000000 !important;
 }
 
-/* Map container - full viewport so Leaflet gets correct size (Solution 1) */
+/* Map container - transparent so no black box covers map (fix-black-overlay-mobile) */
 .map-container {
-  background: #000000 !important;
+  background: transparent !important;
 }
 
 /* Mobile: map container and Leaflet must fill viewport (dvh = dynamic viewport height) */
 @media (max-width: 768px) {
+  /* Force transparent so black overlay doesn't cover map (fix-black-overlay doc) */
+  #root,
+  #__next,
+  #__next > div,
+  .map-container {
+    background: transparent !important;
+  }
+
   .map-container {
     position: fixed !important;
     top: 0 !important;
@@ -132,7 +140,7 @@ body {
     height: 100vh !important;
     height: 100dvh !important;
     height: calc(var(--vh, 1vh) * 100) !important;
-    z-index: 0 !important;
+    z-index: 1 !important;
   }
 
   /* Ensure Leaflet map and tiles fill container (Solution 1) */
@@ -150,6 +158,12 @@ body {
   .leaflet-container canvas {
     width: 100% !important;
     height: 100% !important;
+  }
+
+  /* Lighter overlay on mobile so it doesn’t look like a black box (fix-black-overlay) */
+  .map-overlay {
+    opacity: 0;
+    pointer-events: none;
   }
 }
 
