@@ -7,7 +7,7 @@ import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 
-type TabId = "beachClubs" | "restaurants" | "coffeeShops" | "cultural";
+type TabId = "all" | "beachClubs" | "restaurants" | "coffeeShops" | "cultural";
 type SortBy = "distance" | "rating" | "popular";
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
@@ -51,6 +51,8 @@ interface PlaceForCard {
   priceLevel: string;
   categoryLabel: string;
   hasWebcam?: boolean;
+  photo_reference?: string | null;
+  photo_url?: string | null;
   sourcePlace?: BeachClub | Restaurant | CulturalPlace | CafePlace;
 }
 
@@ -86,6 +88,8 @@ function placeToCard(
     priceLevel: "$$",
     categoryLabel,
     hasWebcam: "hasWebcam" in p ? p.hasWebcam : undefined,
+    photo_reference: p.photo_reference ?? undefined,
+    photo_url: p.photo_url ?? undefined,
   };
 }
 
@@ -97,6 +101,7 @@ interface PlaceCardProps {
 
 function PlaceCard({ place, navigateLabel, onSelect }: PlaceCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
+  const photoSrc = place.photo_url ?? (place.photo_reference ? `/api/places/photo?photo_reference=${encodeURIComponent(place.photo_reference)}&maxwidth=400` : null);
 
   return (
     <div
@@ -114,90 +119,138 @@ function PlaceCard({ place, navigateLabel, onSelect }: PlaceCardProps) {
         cursor: "pointer",
       }}
     >
-      <div
-        style={{
-          position: "relative",
-          height: "180px",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          overflow: "hidden",
-        }}
-      >
+      {photoSrc ? (
         <div
           style={{
-            position: "absolute",
-            top: "12px",
-            right: "12px",
-            padding: "6px 12px",
-            borderRadius: "20px",
-            background: place.isOpen ? "var(--status-open, #10B981)" : "var(--status-closed, #EF4444)",
-            fontSize: "11px",
-            fontWeight: "700",
-            color: "white",
+            position: "relative",
+            height: "180px",
+            overflow: "hidden",
+            background: "var(--card-bg)",
+          }}
+        >
+          <img
+            src={photoSrc}
+            alt=""
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: "12px",
+              right: "12px",
+              padding: "6px 12px",
+              borderRadius: "20px",
+              background: place.isOpen ? "var(--status-open, #10B981)" : "var(--status-closed, #EF4444)",
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              zIndex: 2,
+            }}
+          >
+            <span
+              style={{
+                width: "6px",
+                height: "6px",
+                borderRadius: "50%",
+                background: "white",
+                animation: place.isOpen ? "blink 2s infinite" : "none",
+              }}
+            />
+            {place.isOpen ? "OPEN" : "CLOSED"}
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              top: "12px",
+              left: "12px",
+              padding: "6px 12px",
+              borderRadius: "20px",
+              background: "rgba(0, 0, 0, 0.6)",
+              backdropFilter: "blur(10px)",
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "white",
+              zIndex: 2,
+            }}
+          >
+            {place.categoryLabel}
+            {place.hasWebcam ? " 📹" : ""}
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsFavorite(!isFavorite);
+            }}
+            style={{
+              position: "absolute",
+              bottom: "12px",
+              right: "12px",
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              background: "rgba(0, 0, 0, 0.6)",
+              backdropFilter: "blur(10px)",
+              border: "none",
+              fontSize: "20px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "transform 0.2s",
+              zIndex: 2,
+            }}
+          >
+            {isFavorite ? "❤️" : "🤍"}
+          </button>
+        </div>
+      ) : (
+        <div
+          style={{
+            padding: "12px 16px",
+            borderBottom: "1px solid var(--border-subtle)",
             display: "flex",
             alignItems: "center",
-            gap: "6px",
-            zIndex: 2,
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "8px",
           }}
         >
           <span
             style={{
-              width: "6px",
-              height: "6px",
-              borderRadius: "50%",
-              background: "white",
-              animation: place.isOpen ? "blink 2s infinite" : "none",
+              padding: "6px 12px",
+              borderRadius: "20px",
+              background: "rgba(0, 0, 0, 0.6)",
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "white",
             }}
-          />
-          {place.isOpen ? "OPEN" : "CLOSED"}
+          >
+            {place.categoryLabel}
+            {place.hasWebcam ? " 📹" : ""}
+          </span>
+          <span
+            style={{
+              padding: "6px 12px",
+              borderRadius: "20px",
+              background: place.isOpen ? "var(--status-open, #10B981)" : "var(--status-closed, #EF4444)",
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "white",
+            }}
+          >
+            {place.isOpen ? "• OPEN" : "CLOSED"}
+          </span>
         </div>
-
-        <div
-          style={{
-            position: "absolute",
-            top: "12px",
-            left: "12px",
-            padding: "6px 12px",
-            borderRadius: "20px",
-            background: "rgba(0, 0, 0, 0.6)",
-            backdropFilter: "blur(10px)",
-            fontSize: "11px",
-            fontWeight: "700",
-            color: "white",
-            zIndex: 2,
-          }}
-        >
-          {place.categoryLabel}
-          {place.hasWebcam ? " 📹" : ""}
-        </div>
-
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsFavorite(!isFavorite);
-          }}
-          style={{
-            position: "absolute",
-            bottom: "12px",
-            right: "12px",
-            width: "40px",
-            height: "40px",
-            borderRadius: "50%",
-            background: "rgba(0, 0, 0, 0.6)",
-            backdropFilter: "blur(10px)",
-            border: "none",
-            fontSize: "20px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transition: "transform 0.2s",
-            zIndex: 2,
-          }}
-        >
-          {isFavorite ? "❤️" : "🤍"}
-        </button>
-      </div>
+      )}
 
       <div style={{ padding: "16px" }}>
         <h3
@@ -391,7 +444,7 @@ const TABS: { id: TabId; labelKey: keyof typeof import("@/lib/i18n").translation
 ];
 
 export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModalProps) {
-  const [activeTab, setActiveTab] = useState<TabId>("beachClubs");
+  const [activeTab, setActiveTab] = useState<TabId>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortBy>("distance");
   const { clubs, restaurants, cafes, cultural, isLoading, error, source } = useVenues();
@@ -407,25 +460,31 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           ? t.coffeeShops ?? "Coffee Shops"
           : t.cultural ?? "Cultural";
 
-  const rawItems =
-    activeTab === "beachClubs"
-      ? clubs.map((p) => placeToCard(p, lang, "Club"))
-      : activeTab === "restaurants"
-        ? restaurants.map((p) => placeToCard(p, lang, "Restaurant"))
-        : activeTab === "coffeeShops"
-          ? cafes.map((p) => placeToCard(p, lang, "Coffee"))
-          : cultural.map((p) => placeToCard(p, lang, "Cultural"));
+  const allItems = useMemo(() => {
+    const clubCards = clubs.map((p) => placeToCard(p, lang, "Club"));
+    const restCards = restaurants.map((p) => placeToCard(p, lang, "Restaurant"));
+    const cafeCards = cafes.map((p) => placeToCard(p, lang, "Coffee"));
+    const culturalCards = cultural.map((p) => placeToCard(p, lang, "Cultural"));
+    return [...clubCards, ...restCards, ...cafeCards, ...culturalCards];
+  }, [clubs, restaurants, cafes, cultural, lang]);
 
   const items = useMemo(() => {
-    let list = [...rawItems];
+    const q = searchQuery.toLowerCase().trim();
+    let list: PlaceForCard[];
 
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      list = list.filter(
+    if (q) {
+      list = allItems.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
-          p.address.toLowerCase().includes(q)
+          p.address.toLowerCase().includes(q) ||
+          p.categoryLabel.toLowerCase().includes(q)
       );
+    } else {
+      if (activeTab === "beachClubs") list = allItems.filter((p) => p.categoryLabel === "Club");
+      else if (activeTab === "restaurants") list = allItems.filter((p) => p.categoryLabel === "Restaurant");
+      else if (activeTab === "coffeeShops") list = allItems.filter((p) => p.categoryLabel === "Coffee");
+      else if (activeTab === "cultural") list = allItems.filter((p) => p.categoryLabel === "Cultural");
+      else list = [...allItems];
     }
 
     if (sortBy === "distance") {
@@ -434,7 +493,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
       list.sort((a, b) => b.rating - a.rating);
     }
     return list;
-  }, [rawItems, searchQuery, sortBy]);
+  }, [allItems, activeTab, searchQuery, sortBy]);
 
   const tabCounts = {
     beachClubs: clubs.length,
@@ -442,6 +501,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
     coffeeShops: cafes.length,
     cultural: cultural.length,
   };
+  const totalCount = clubs.length + restaurants.length + cafes.length + cultural.length;
 
   if (!isOpen) return null;
 
@@ -554,12 +614,38 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           </button>
         </div>
 
-        <div style={{ padding: "20px 24px" }}>
+        <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+            <select
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value as TabId)}
+              style={{
+                padding: "14px 16px",
+                background: "var(--card-bg)",
+                border: "1px solid var(--border-subtle)",
+                borderRadius: "12px",
+                color: "var(--text-primary)",
+                fontSize: "14px",
+                fontWeight: "600",
+                cursor: "pointer",
+                outline: "none",
+                minWidth: "180px",
+              }}
+              aria-label="Category"
+            >
+              <option value="all">{t.allCategories ?? "All categories"} ({totalCount})</option>
+              {TABS.map((tab) => (
+                <option key={tab.id} value={tab.id}>
+                  {tab.icon} {t[tab.labelKey] ?? tab.labelKey} ({tabCounts[tab.id]})
+                </option>
+              ))}
+            </select>
+          </div>
           <div style={{ display: "flex", gap: "12px" }}>
             <div style={{ flex: 1, position: "relative" }}>
               <input
                 type="text"
-                placeholder="Search places..."
+                placeholder={t.searchPlaces ?? "Search all places…"}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
@@ -586,7 +672,6 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                 🔍
               </span>
             </div>
-
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortBy)}
@@ -606,73 +691,6 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
               <option value="rating">⭐ Rating</option>
               <option value="popular">🔥 Popular</option>
             </select>
-          </div>
-        </div>
-
-        <div
-          style={{
-            borderBottom: "1px solid var(--border-subtle)",
-            overflowX: "auto",
-            overflowY: "hidden",
-            WebkitOverflowScrolling: "touch",
-            paddingLeft: "24px",
-            paddingRight: "24px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-              flexWrap: "nowrap",
-              minWidth: "min-content",
-            }}
-          >
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                style={{
-                  padding: "14px 20px",
-                  background: "transparent",
-                  border: "none",
-                  borderBottom:
-                    activeTab === tab.id
-                      ? "3px solid var(--tulum-turquoise)"
-                      : "3px solid transparent",
-                  color:
-                    activeTab === tab.id
-                      ? "var(--text-primary)"
-                      : "var(--text-secondary)",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  transition: "all 0.2s",
-                  marginBottom: "-1px",
-                  flexShrink: 0,
-                }}
-              >
-                <span style={{ fontSize: "18px" }}>{tab.icon}</span>
-                {t[tab.labelKey] ?? tab.labelKey}
-                <span
-                  style={{
-                    padding: "2px 8px",
-                    borderRadius: "10px",
-                    background:
-                      activeTab === tab.id
-                        ? "rgba(0, 212, 212, 0.15)"
-                        : "rgba(255, 255, 255, 0.08)",
-                    fontSize: "12px",
-                    fontWeight: "700",
-                  }}
-                >
-                  {tabCounts[tab.id]}
-                </span>
-              </button>
-            ))}
           </div>
         </div>
 

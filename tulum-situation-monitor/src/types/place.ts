@@ -10,6 +10,10 @@ export interface PlaceBase {
   whatsapp: string;
   url: string;
   rating?: number | null;
+  /** First Google Place photo reference for thumbnail (from DB sync). */
+  photo_reference?: string | null;
+  /** Cached thumbnail URL (Supabase Storage); preferred over photo_reference to save API cost. */
+  photo_url?: string | null;
 }
 
 export interface BeachClub extends PlaceBase {

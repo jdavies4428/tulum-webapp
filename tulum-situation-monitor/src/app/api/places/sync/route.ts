@@ -1,35 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { nearbySearch, placeToVenueRow } from "@/lib/google-places";
+import { nearbySearchAllPages, placeToVenueRow } from "@/lib/google-places";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { TULUM_CENTER, TULUM_RADIUS, TULUM_SEARCHES } from "@/lib/sync-places-config";
+import { cacheVenuePhotoIfNeeded, ensureBucket } from "@/lib/venue-photo-cache";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-/** From google-places-api-integration.md: single center + 10km radius. */
-const TULUM_CENTER = { lat: 20.2114, lng: -87.4654 };
-const TULUM_RADIUS = 10000; // 10km
-const TULUM_SEARCHES: { keyword?: string; type?: string }[] = [
-  { keyword: "beach club" },
-  { type: "restaurant" },
-  { type: "cafe" },
-  { keyword: "cenote" },
-  { type: "tourist_attraction" },
-  { type: "lodging" },
-];
-
 /**
  * POST /api/places/sync
  * Fetches venues from Google Places for Tulum grid and upserts to Supabase.
+ * Caches first photo to Storage (venue-photos bucket) and sets venue.photo_url to save API cost.
  * Requires GOOGLE_MAPS_API_KEY and SUPABASE_SERVICE_ROLE_KEY.
  */
 export async function POST(request: NextRequest) {
   try {
     const supabase = createAdminClient();
+    await ensureBucket(supabase as Parameters<typeof ensureBucket>[0]);
     const seen = new Set<string>();
     let totalUpserted = 0;
 
     for (const search of TULUM_SEARCHES) {
-      const { results } = await nearbySearch({
+      const results = await nearbySearchAllPages({
         ...TULUM_CENTER,
         radius: TULUM_RADIUS,
         keyword: search.keyword,
@@ -57,9 +49,18 @@ export async function POST(request: NextRequest) {
           p_google_data: v.google_data,
         });
         totalUpserted++;
+
+        const photoRef = place.photos?.[0]?.photo_reference;
+        if (photoRef) {
+          try {
+            await cacheVenuePhotoIfNeeded(supabase as Parameters<typeof cacheVenuePhotoIfNeeded>[0], place.place_id, photoRef);
+          } catch {
+            // non-fatal: venue is saved, thumbnail may use proxy until next sync
+          }
+          await new Promise((r) => setTimeout(r, 350));
+        }
       }
 
-      // Rate limit: ~1 req/sec for Google Places
       await new Promise((r) => setTimeout(r, 1200));
     }
 

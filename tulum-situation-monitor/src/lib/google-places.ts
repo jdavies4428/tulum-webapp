@@ -20,6 +20,7 @@ export interface GooglePlaceResult {
   formatted_phone_number?: string;
   international_phone_number?: string;
   website?: string;
+  photos?: { photo_reference: string; width: number; height: number }[];
   [key: string]: unknown;
 }
 
@@ -29,6 +30,8 @@ export interface NearbySearchParams {
   radius?: number;
   keyword?: string;
   type?: string;
+  /** For pagination: use token from previous response; only key + pagetoken are sent */
+  pagetoken?: string;
 }
 
 export interface PlaceDetailsParams {
@@ -76,11 +79,15 @@ export async function nearbySearch(
 ): Promise<{ results: GooglePlaceResult[]; next_page_token?: string }> {
   const key = getApiKey();
   const url = new URL(BASE_URL);
-  url.searchParams.set("location", `${params.lat},${params.lng}`);
-  url.searchParams.set("radius", String(params.radius ?? 5000));
   url.searchParams.set("key", key);
-  if (params.keyword) url.searchParams.set("keyword", params.keyword);
-  if (params.type) url.searchParams.set("type", params.type);
+  if (params.pagetoken) {
+    url.searchParams.set("pagetoken", params.pagetoken);
+  } else {
+    url.searchParams.set("location", `${params.lat},${params.lng}`);
+    url.searchParams.set("radius", String(params.radius ?? 5000));
+    if (params.keyword) url.searchParams.set("keyword", params.keyword);
+    if (params.type) url.searchParams.set("type", params.type);
+  }
 
   const res = await fetch(url.toString());
   const data = await res.json();
@@ -93,6 +100,25 @@ export async function nearbySearch(
     results: data.results ?? [],
     next_page_token: data.next_page_token,
   };
+}
+
+/** Fetch all pages for a nearby search (Google returns max 20 per page). */
+export async function nearbySearchAllPages(
+  params: Omit<NearbySearchParams, "pagetoken">
+): Promise<GooglePlaceResult[]> {
+  const all: GooglePlaceResult[] = [];
+  let token: string | undefined;
+  do {
+    const { results, next_page_token } = await nearbySearch(
+      token ? { ...params, pagetoken: token } : params
+    );
+    all.push(...results);
+    token = next_page_token;
+    if (token) {
+      await new Promise((r) => setTimeout(r, 2200));
+    }
+  } while (token);
+  return all;
 }
 
 export async function getPlaceDetails(
@@ -114,12 +140,28 @@ export async function getPlaceDetails(
   return data.result ?? null;
 }
 
-/** Infer category from Google place types */
+/** Infer category from Google place types (maps to our 4: club | restaurant | cafe | cultural) */
 export function inferCategory(types: string[] = []): VenueCategory {
   const t = types.map((s) => s.toLowerCase());
+  // club: bars, nightlife
   if (t.some((x) => ["bar", "night_club", "casino"].includes(x))) return "club";
-  if (t.some((x) => ["cafe"].includes(x))) return "cafe";
-  if (t.some((x) => ["restaurant", "food", "meal_takeaway", "meal_delivery"].includes(x))) return "restaurant";
+  // cafe: coffee, light bites
+  if (t.some((x) => ["cafe", "coffee_shop", "bakery"].includes(x))) return "cafe";
+  // restaurant: sit-down, food, meals
+  if (
+    t.some((x) =>
+      [
+        "restaurant",
+        "food",
+        "meal_takeaway",
+        "meal_delivery",
+        "meal_dine_in",
+        "supermarket",
+      ].includes(x)
+    )
+  )
+    return "restaurant";
+  // cultural: museums, galleries, attractions, nature, wellness
   if (
     t.some((x) =>
       [
@@ -130,6 +172,12 @@ export function inferCategory(types: string[] = []): VenueCategory {
         "zoo",
         "park",
         "place_of_worship",
+        "natural_feature",
+        "spa",
+        "gym",
+        "stadium",
+        "library",
+        "movie_theater",
       ].includes(x)
     )
   )

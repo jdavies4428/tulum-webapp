@@ -6,7 +6,7 @@ import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 
 const DISCOVER_ITEMS: { id: keyof typeof translations.en; icon: string; labelKey?: keyof typeof translations.en }[] = [
-  { id: "event", icon: "📅" },
+  { id: "event", icon: "📅", labelKey: "localEvents" },
   { id: "transportation", icon: "🚗" },
   { id: "foodDelivery", icon: "🛵" },
   { id: "itinerary", icon: "📋", labelKey: "aiItinerary" },
