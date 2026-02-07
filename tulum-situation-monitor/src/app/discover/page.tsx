@@ -5,11 +5,13 @@ import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 
-const DISCOVER_ITEMS: { id: keyof typeof translations.en; icon: string; labelKey?: keyof typeof translations.en }[] = [
+const DISCOVER_ITEMS: { id: string; icon: string; labelKey?: string }[] = [
   { id: "transportation", icon: "🚗" },
   { id: "foodDelivery", icon: "🛵" },
   { id: "itinerary", icon: "📋", labelKey: "aiItinerary" },
   { id: "translation", icon: "🌐" },
+  { id: "yogaClasses", icon: "🧘", labelKey: "yogaClasses" },
+  { id: "communityBoard", icon: "📌", labelKey: "communityBoard" },
 ];
 
 export default function DiscoverPage() {
@@ -23,6 +25,8 @@ export default function DiscoverPage() {
     foodDelivery: "linear-gradient(135deg, #FFD4E5 0%, #FFC0D9 100%)",
     itinerary: "linear-gradient(135deg, #D4E4BC 0%, #C2D8A8 100%)",
     translation: "linear-gradient(135deg, #E8D4F1 0%, #DCC5E8 100%)",
+    yogaClasses: "linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)",
+    communityBoard: "linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%)",
   };
 
   return (
