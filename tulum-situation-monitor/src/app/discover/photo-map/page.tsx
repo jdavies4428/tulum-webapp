@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -9,11 +9,6 @@ import { translations } from "@/lib/i18n";
 import {
   readPhotoGPS,
   clusterPhotosByLocation,
-  getAllFilesFromDirHandle,
-  supportsDirectoryPicker,
-  getStoredDirHandle,
-  saveDirHandle,
-  clearStoredDirHandle,
   type PhotoWithGPS,
   type PhotoCluster,
 } from "@/lib/photo-map-utils";
@@ -57,12 +52,12 @@ function FloatingDecoration({
     <div
       style={{
         position: "absolute",
-        fontSize: "32px",
-        opacity: 0.15,
-        animation: `photoMapFloat 6s ease-in-out infinite`,
+        fontSize: "28px",
+        opacity: 0.06,
+        animation: `photoMapFloat 8s ease-in-out infinite`,
         animationDelay: `${delay}s`,
-        top: `${20 + delay * 15}%`,
-        left: `${10 + delay * 25}%`,
+        top: `${25 + delay * 12}%`,
+        left: `${15 + delay * 20}%`,
         pointerEvents: "none",
       }}
     >
@@ -83,7 +78,7 @@ function ScanningProgress({
   const statusText =
     photosFound > 0
       ? (t.photoMapFoundPhotos ?? "Found {{count}} Tulum photos!").replace("{{count}}", String(photosFound))
-      : (t.photoMapScanningLibrary ?? "Scanning your library...");
+      : (t.photoMapScanningPhotos ?? "Scanning selected photos...");
 
   return (
     <div
@@ -304,44 +299,8 @@ export default function PhotoMapPage() {
     []
   );
 
-  const scanFromDirHandle = useCallback(
-    async (dirHandle: FileSystemDirectoryHandle) => {
-      const files = await getAllFilesFromDirHandle(dirHandle);
-      await scanFiles(files);
-      await saveDirHandle(dirHandle);
-    },
-    [scanFiles]
-  );
-
-  const handleCreateMap = async (forcePicker = false) => {
-    if (!supportsDirectoryPicker()) {
-      fileInputRef.current?.click();
-      return;
-    }
-    try {
-      if (!forcePicker) {
-        const stored = await getStoredDirHandle();
-        if (stored) {
-          const perm = await stored.requestPermission?.({ mode: "read" });
-          if (perm === "granted") {
-            await scanFromDirHandle(stored);
-            return;
-          }
-        }
-      } else {
-        await clearStoredDirHandle();
-      }
-      const dirHandle = await window.showDirectoryPicker!({
-        mode: "read",
-        startIn: "pictures",
-      });
-      await scanFromDirHandle(dirHandle);
-    } catch (err) {
-      if (err instanceof Error && err.name === "AbortError") {
-        return;
-      }
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    }
+  const handleCreateMap = () => {
+    fileInputRef.current?.click();
   };
 
   const handleFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -357,27 +316,6 @@ export default function PhotoMapPage() {
     setError(null);
     fileInputRef.current?.click();
   };
-
-  useEffect(() => {
-    if (phase !== "onboarding" || !supportsDirectoryPicker()) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const stored = await getStoredDirHandle();
-        if (!stored || cancelled) return;
-        const perm = await stored.requestPermission?.({ mode: "read" });
-        if (perm !== "granted" || cancelled) return;
-        const files = await getAllFilesFromDirHandle(stored);
-        if (cancelled || files.length === 0) return;
-        await scanFiles(files);
-      } catch {
-        // No stored handle or permission denied - stay on onboarding
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [phase, scanFiles]);
 
   if (phase === "scanning") {
     return <ScanningProgress progress={progress} photosFound={photosFound} t={t} />;
@@ -494,9 +432,6 @@ export default function PhotoMapPage() {
         type="file"
         multiple
         accept="image/*"
-        // @ts-expect-error webkitdirectory is valid for folder picker
-        webkitdirectory=""
-        directory=""
         style={{ display: "none" }}
         onChange={handleFileInputChange}
       />
@@ -580,15 +515,15 @@ export default function PhotoMapPage() {
 
       <p
         style={{
-          fontSize: "18px",
+          fontSize: "16px",
           color: "#666",
           textAlign: "center",
-          margin: "0 0 48px 0",
-          maxWidth: "320px",
+          margin: "0 0 40px 0",
+          maxWidth: "300px",
           lineHeight: 1.5,
         }}
       >
-        {t.photoMapJourneySubtitle ?? "We'll find your Tulum photos and show where you've been"}
+        {t.photoMapSelectHint ?? "Select photos from your trip. We'll find the ones taken in Tulum."}
       </p>
 
       {error && (
@@ -662,25 +597,6 @@ export default function PhotoMapPage() {
           text={t.photoMapTrustFree ?? "Free"}
         />
       </div>
-
-      {supportsDirectoryPicker() && (
-        <button
-          type="button"
-          onClick={() => handleCreateMap(true)}
-          style={{
-            marginTop: "16px",
-            background: "transparent",
-            border: "none",
-            color: "#00BABA",
-            fontSize: "14px",
-            fontWeight: "600",
-            cursor: "pointer",
-            textDecoration: "underline",
-          }}
-        >
-          {t.photoMapChooseDifferentFolder ?? "Choose different folder"}
-        </button>
-      )}
 
       <Link
         href={`/discover?lang=${lang}`}
