@@ -185,6 +185,8 @@ export const translations: Record<
     details: "Details",
     away: "away",
     threeDayForecast: "3-Day Forecast",
+    signIn: "Sign in",
+    signOut: "Sign out",
   },
   es: {
     title: "Discover Tulum",
@@ -340,6 +342,8 @@ export const translations: Record<
     details: "Detalles",
     away: "de distancia",
     threeDayForecast: "Pronóstico 3 días",
+    signIn: "Iniciar sesión",
+    signOut: "Cerrar sesión",
   },
   fr: {
     title: "Discover Tulum",
@@ -495,5 +499,7 @@ export const translations: Record<
     details: "Détails",
     away: "de distance",
     threeDayForecast: "Prévisions 3 jours",
+    signIn: "Connexion",
+    signOut: "Déconnexion",
   },
 };

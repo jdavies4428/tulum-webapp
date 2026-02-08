@@ -145,31 +145,57 @@ export default function MapPage() {
         ←
       </Link>
 
-      {/* Places list button - top right */}
-      <button
-        type="button"
-        onClick={() => setPlacesOpen(true)}
+      {/* Top right: Sign in + Places */}
+      <div
         style={{
           position: "fixed",
           right: 16,
           top: 16,
           zIndex: 10001,
-          padding: "12px 20px",
-          borderRadius: 12,
-          background: "var(--button-secondary)",
-          border: "1px solid var(--border-emphasis)",
-          color: "var(--text-primary)",
-          fontWeight: 600,
-          fontSize: 14,
-          cursor: "pointer",
           display: "flex",
-          alignItems: "center",
           gap: 8,
-          boxShadow: "0 4px 16px rgba(0, 0, 0, 0.4)",
         }}
       >
-        📍 {t.places ?? "Places"}
-      </button>
+        <Link
+          href={`/signin?lang=${lang}`}
+          style={{
+            padding: "12px 20px",
+            borderRadius: 12,
+            background: "rgba(10, 4, 4, 0.95)",
+            border: "1px solid rgba(255, 255, 255, 0.15)",
+            color: "#fff",
+            fontWeight: 600,
+            fontSize: 14,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            textDecoration: "none",
+            boxShadow: "0 4px 16px rgba(0, 0, 0, 0.4)",
+          }}
+        >
+          🔐 {t.signIn ?? "Sign in"}
+        </Link>
+        <button
+          type="button"
+          onClick={() => setPlacesOpen(true)}
+          style={{
+            padding: "12px 20px",
+            borderRadius: 12,
+            background: "var(--button-secondary)",
+            border: "1px solid var(--border-emphasis)",
+            color: "var(--text-primary)",
+            fontWeight: 600,
+            fontSize: 14,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            boxShadow: "0 4px 16px rgba(0, 0, 0, 0.4)",
+          }}
+        >
+          📍 {t.places ?? "Places"}
+        </button>
+      </div>
 
       {/* Full-screen map */}
       <div

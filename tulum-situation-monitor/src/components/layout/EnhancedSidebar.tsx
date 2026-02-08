@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useAuthOptional } from "@/contexts/AuthContext";
 import { translations } from "@/lib/i18n";
 import { WeatherSection } from "@/components/weather/WeatherSection";
 import { CurrenciesPanel } from "@/components/currencies/CurrenciesPanel";
@@ -63,6 +64,7 @@ export function EnhancedSidebar({
   const [sargassumForecastOpen, setSargassumForecastOpen] = useState(false);
   const [webcamOpen, setWebcamOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const auth = useAuthOptional();
   const t = translations[lang];
 
   useEffect(() => {
@@ -361,6 +363,53 @@ export function EnhancedSidebar({
           >
             ✨ {tAny.discover ?? "Discover"}
           </Link>
+          {auth?.isAuthenticated ? (
+            <button
+              type="button"
+              onClick={() => auth.signOut()}
+              style={{
+                flex: 1,
+                padding: "14px 12px",
+                background: "linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)",
+                border: "none",
+                borderRadius: "20px",
+                color: "#333",
+                fontWeight: "700",
+                fontSize: "14px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+                boxShadow: "0 6px 20px rgba(76, 175, 80, 0.2)",
+              }}
+            >
+              👤 {tAny.signOut ?? "Sign out"}
+            </button>
+          ) : (
+            <Link
+              href={`/signin?lang=${lang}`}
+              style={{
+                flex: 1,
+                padding: "14px 12px",
+                background: "linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)",
+                border: "none",
+                borderRadius: "20px",
+                color: "#333",
+                fontWeight: "700",
+                fontSize: "14px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+                textDecoration: "none",
+                boxShadow: "0 6px 20px rgba(33, 150, 243, 0.2)",
+              }}
+            >
+              🔐 {tAny.signIn ?? "Sign in"}
+            </Link>
+          )}
           <button
             type="button"
             onClick={onOpenPlaces}

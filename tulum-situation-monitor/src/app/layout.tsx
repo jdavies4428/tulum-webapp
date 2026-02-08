@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ErrorBoundaryWrapper } from "@/components/ErrorBoundaryWrapper";
 import { QuickActionsFAB } from "@/components/quick-actions/QuickActionsFAB";
+import { Providers } from "@/components/Providers";
 import "./globals.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://tulum-webapp.vercel.app";
@@ -43,8 +44,10 @@ export default function RootLayout({
         />
       </head>
       <body className="w-full h-full overflow-hidden min-w-0" style={{ margin: 0, padding: 0, background: "var(--bg-primary)" }} suppressHydrationWarning>
-        <ErrorBoundaryWrapper>{children}</ErrorBoundaryWrapper>
-        <QuickActionsFAB />
+        <Providers>
+          <ErrorBoundaryWrapper>{children}</ErrorBoundaryWrapper>
+          <QuickActionsFAB />
+        </Providers>
       </body>
     </html>
   );

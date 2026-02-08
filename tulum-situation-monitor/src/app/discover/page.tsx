@@ -6,6 +6,7 @@ import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 
 const DISCOVER_ITEMS: { id: string; icon: string; labelKey?: string }[] = [
+  { id: "signin", icon: "🔐", labelKey: "signIn" },
   { id: "transportation", icon: "🚗" },
   { id: "foodDelivery", icon: "🛵" },
   { id: "itinerary", icon: "📋", labelKey: "aiItinerary" },
@@ -21,6 +22,7 @@ export default function DiscoverPage() {
   const tAny = t as Record<string, string>;
 
   const CARD_GRADIENTS: Record<string, string> = {
+    signin: "linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)",
     transportation: "linear-gradient(135deg, #B8E6F0 0%, #A0D8E8 100%)",
     foodDelivery: "linear-gradient(135deg, #FFD4E5 0%, #FFC0D9 100%)",
     itinerary: "linear-gradient(135deg, #D4E4BC 0%, #C2D8A8 100%)",
@@ -88,7 +90,9 @@ export default function DiscoverPage() {
       >
         {DISCOVER_ITEMS.map(({ id, icon, labelKey }) => {
           const href =
-            id === "transportation"
+            id === "signin"
+              ? `/signin?lang=${lang}`
+              : id === "transportation"
                 ? `/discover/transportation?lang=${lang}`
                 : id === "foodDelivery"
                   ? `/discover/food-delivery?lang=${lang}`
