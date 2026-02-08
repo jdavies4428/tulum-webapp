@@ -89,14 +89,14 @@ export default function DiscoverPage() {
         {DISCOVER_ITEMS.map(({ id, icon, labelKey }) => {
           const href =
             id === "transportation"
-              ? `/discover/transportation?lang=${lang}`
-              : id === "foodDelivery"
-                ? `/discover/food-delivery?lang=${lang}`
-                : id === "itinerary"
-                  ? `/itinerary?lang=${lang}`
-                  : id === "translation"
-                    ? `/discover/translation?lang=${lang}`
-                    : undefined;
+                ? `/discover/transportation?lang=${lang}`
+                : id === "foodDelivery"
+                  ? `/discover/food-delivery?lang=${lang}`
+                  : id === "itinerary"
+                    ? `/itinerary?lang=${lang}`
+                    : id === "translation"
+                      ? `/discover/translation?lang=${lang}`
+                      : undefined;
           const cardStyle = {
             background: CARD_GRADIENTS[id] ?? "var(--card-bg)",
             border: "none",

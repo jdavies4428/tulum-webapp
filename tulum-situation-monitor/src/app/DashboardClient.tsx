@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { MapLayersState } from "@/components/map/MapContainer";
 import { MapView } from "@/components/map/MapView";
+import { MapSearchBar, type SearchablePlace } from "@/components/map/MapSearchBar";
 import { EnhancedSidebar } from "@/components/layout/EnhancedSidebar";
 import { StatusBar } from "@/components/layout/StatusBar";
 import { LayerControls } from "@/components/layout/LayerControls";
@@ -12,7 +13,10 @@ import { PlacesModal } from "@/components/places/PlacesModal";
 import { PlacePopup } from "@/components/places/PlacePopup";
 import { PlaceDetailsModal } from "@/components/places/PlaceDetailsModal";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
+import { useVenues } from "@/hooks/useVenues";
 import { useWeather } from "@/hooks/useWeather";
+import { markerConfig } from "@/lib/marker-config";
+import { translations } from "@/lib/i18n";
 import { useTides } from "@/hooks/useTides";
 import type { Lang } from "@/lib/weather";
 import { formatTempFull, getWeatherDescription } from "@/lib/weather";
@@ -38,6 +42,7 @@ export interface MapApi {
   resetView: () => void;
   locateUser: () => void;
   invalidateSize: () => void;
+  flyTo?: (lat: number, lng: number, zoom?: number) => void;
 }
 
 export function DashboardClient() {
@@ -67,8 +72,17 @@ export function DashboardClient() {
     }
   }, [isMobile]);
 
+  const { clubs, restaurants, cafes, cultural } = useVenues();
   const { data: weatherData, waterTemp, loading: weatherLoading, error: weatherError, refetch: refetchWeather } = useWeather();
   const tide = useTides();
+
+  const t = translations[lang];
+  const searchablePlaces: SearchablePlace[] = [
+    ...clubs.map((p) => ({ ...p, category: "beachClubs" as const, searchText: [p.name, t.beachClubs, p.desc ?? ""].filter(Boolean).join(" "), icon: markerConfig.beachClub.icon })),
+    ...restaurants.map((p) => ({ ...p, category: "restaurants" as const, searchText: [p.name, t.restaurants, p.desc ?? ""].filter(Boolean).join(" "), icon: markerConfig.restaurant.icon })),
+    ...cafes.map((p) => ({ ...p, category: "coffeeShops" as const, searchText: [p.name, t.coffeeShops, p.desc ?? ""].filter(Boolean).join(" "), icon: markerConfig.cafe.icon })),
+    ...cultural.map((p) => ({ ...p, category: "cultural" as const, searchText: [p.name, t.cultural, p.desc ?? ""].filter(Boolean).join(" "), icon: markerConfig.cultural.icon })),
+  ];
 
   const sharePayload = useMemo(() => {
     if (!weatherData?.current) return null;
@@ -148,6 +162,12 @@ export function DashboardClient() {
                 }
           }
         >
+          <MapSearchBar
+            places={searchablePlaces}
+            lang={lang}
+            onSelectPlace={setSelectedPlace}
+            flyTo={mapApi?.flyTo}
+          />
           <MapView
             lang={lang}
             layers={layers}

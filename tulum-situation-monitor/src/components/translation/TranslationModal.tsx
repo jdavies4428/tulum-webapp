@@ -25,6 +25,13 @@ interface Phrase {
   translated: string;
 }
 
+interface PhraseCategory {
+  id: string;
+  emoji: string;
+  label: string;
+  phrases: Phrase[];
+}
+
 interface TranslationModalProps {
   lang: Lang;
   isOpen: boolean;
@@ -226,104 +233,173 @@ function TextMode({
 }
 
 function PhrasesMode({
-  phrases,
+  categories,
   targetLanguage,
   setTargetLanguage,
+  onRefresh,
+  loading,
   t,
 }: {
-  phrases: Phrase[];
+  categories: PhraseCategory[];
   targetLanguage: string;
   setTargetLanguage: (v: string) => void;
+  onRefresh: () => void;
+  loading: boolean;
   t: Record<string, string>;
 }) {
   return (
     <div>
-      <div style={{ marginBottom: "20px" }}>
-        <label
-          style={{
-            fontSize: "14px",
-            fontWeight: "700",
-            color: "#666",
-            marginBottom: "8px",
-            display: "block",
-          }}
-        >
-          {t.translateTo ?? "Translate to"}:
-        </label>
-        <select
-          value={targetLanguage}
-          onChange={(e) => setTargetLanguage(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "14px",
-            borderRadius: "12px",
-            border: "2px solid rgba(0, 206, 209, 0.3)",
-            background: "rgba(255, 255, 255, 0.9)",
-            fontSize: "15px",
-            fontWeight: "600",
-            cursor: "pointer",
-          }}
-        >
-          {LANGUAGES.map((l) => (
-            <option key={l.code} value={l.code}>
-              {l.flag} {l.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
       <div
         style={{
           display: "flex",
-          flexDirection: "column",
           gap: "12px",
+          marginBottom: "20px",
+          flexWrap: "wrap",
+          alignItems: "flex-end",
         }}
       >
-        {phrases.map((p, i) => (
-          <div
-            key={i}
+        <div style={{ flex: 1, minWidth: 180 }}>
+          <label
             style={{
-              background: "rgba(255, 255, 255, 0.9)",
-              borderRadius: "12px",
-              padding: "16px",
-              border: "2px solid rgba(0, 206, 209, 0.2)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
+              fontSize: "14px",
+              fontWeight: "700",
+              color: "#666",
+              marginBottom: "8px",
+              display: "block",
             }}
           >
-            <div style={{ fontSize: "14px", color: "#666", fontWeight: "600" }}>
-              {p.english}
-            </div>
-            <div
-              style={{
-                fontSize: "16px",
-                color: "#0099CC",
-                fontWeight: "700",
-              }}
-            >
-              {p.translated}
-            </div>
-            <button
-              type="button"
-              onClick={() => navigator.clipboard.writeText(p.translated)}
-              style={{
-                alignSelf: "flex-start",
-                padding: "6px 12px",
-                borderRadius: "8px",
-                background: "rgba(0, 206, 209, 0.15)",
-                border: "2px solid #00CED1",
-                fontSize: "13px",
-                fontWeight: "600",
-                color: "#00CED1",
-                cursor: "pointer",
-              }}
-            >
-              📋 {t.copy ?? "Copy"}
-            </button>
-          </div>
-        ))}
+            {t.translateTo ?? "Translate to"}:
+          </label>
+          <select
+            value={targetLanguage}
+            onChange={(e) => setTargetLanguage(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "14px",
+              borderRadius: "12px",
+              border: "2px solid rgba(0, 206, 209, 0.3)",
+              background: "rgba(255, 255, 255, 0.9)",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+            }}
+          >
+            {LANGUAGES.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.flag} {l.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <button
+          type="button"
+          onClick={onRefresh}
+          disabled={loading}
+          style={{
+            padding: "12px 20px",
+            borderRadius: "12px",
+            background: loading
+              ? "rgba(0, 206, 209, 0.3)"
+              : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
+            border: "none",
+            fontSize: "14px",
+            fontWeight: "700",
+            color: "#FFF",
+            cursor: loading ? "not-allowed" : "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <span style={{ fontSize: "18px" }}>🔄</span>
+          {loading ? "Refreshing…" : "Refresh"}
+        </button>
       </div>
+
+      {categories.length === 0 ? (
+        <div
+          style={{
+            textAlign: "center",
+            padding: "32px 16px",
+            color: "#666",
+            fontSize: "15px",
+          }}
+        >
+          Phrases unavailable. Try again or check your connection.
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          {categories.map((cat) => (
+            <div
+              key={cat.id}
+              style={{
+                background: "rgba(255, 255, 255, 0.9)",
+                borderRadius: "16px",
+                padding: "16px",
+                border: "2px solid rgba(0, 206, 209, 0.2)",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "16px",
+                  fontWeight: "700",
+                  color: "#333",
+                  marginBottom: "12px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <span style={{ fontSize: "22px" }}>{cat.emoji}</span>
+                {cat.label}
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                {cat.phrases.map((p, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "12px",
+                      padding: "10px 12px",
+                      background: "rgba(0, 206, 209, 0.06)",
+                      borderRadius: "10px",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: "13px", color: "#666", marginBottom: "2px" }}>
+                        {p.english}
+                      </div>
+                      <div style={{ fontSize: "15px", color: "#0099CC", fontWeight: "700" }}>
+                        {p.translated}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => navigator.clipboard.writeText(p.translated)}
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: "8px",
+                        background: "rgba(0, 206, 209, 0.15)",
+                        border: "2px solid #00CED1",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        color: "#00CED1",
+                        cursor: "pointer",
+                        flexShrink: 0,
+                      }}
+                    >
+                      📋 {t.copy ?? "Copy"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -335,7 +411,7 @@ export function TranslationModal({ lang, isOpen, onClose }: TranslationModalProp
   const [sourceLanguage, setSourceLanguage] = useState("en");
   const [targetLanguage, setTargetLanguage] = useState("es");
   const [loading, setLoading] = useState(false);
-  const [phrases, setPhrases] = useState<Phrase[]>([]);
+  const [phraseCategories, setPhraseCategories] = useState<PhraseCategory[]>([]);
   const [phrasesLoading, setPhrasesLoading] = useState(false);
 
   const t = translations[lang] as Record<string, string>;
@@ -351,13 +427,13 @@ export function TranslationModal({ lang, isOpen, onClose }: TranslationModalProp
     try {
       const res = await fetch(`/api/translate/phrases/${targetLanguage}`);
       const data = await res.json();
-      if (data.success && Array.isArray(data.phrases)) {
-        setPhrases(data.phrases);
+      if (data.success && Array.isArray(data.categories)) {
+        setPhraseCategories(data.categories);
       } else {
-        setPhrases([]);
+        setPhraseCategories([]);
       }
     } catch {
-      setPhrases([]);
+      setPhraseCategories([]);
     } finally {
       setPhrasesLoading(false);
     }
@@ -425,6 +501,7 @@ export function TranslationModal({ lang, isOpen, onClose }: TranslationModalProp
           transform: "translate(-50%, -50%)",
           width: "90%",
           maxWidth: "700px",
+          height: "min(90vh, 600px)",
           maxHeight: "90vh",
           background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
           borderRadius: "32px",
@@ -528,6 +605,7 @@ export function TranslationModal({ lang, isOpen, onClose }: TranslationModalProp
         <div
           style={{
             flex: 1,
+            minHeight: 0,
             overflowY: "auto",
             padding: "24px",
           }}
@@ -549,7 +627,7 @@ export function TranslationModal({ lang, isOpen, onClose }: TranslationModalProp
           )}
 
           {mode === "phrases" && (
-            phrasesLoading ? (
+            phrasesLoading && phraseCategories.length === 0 ? (
               <div
                 style={{
                   textAlign: "center",
@@ -558,13 +636,15 @@ export function TranslationModal({ lang, isOpen, onClose }: TranslationModalProp
                   fontSize: "16px",
                 }}
               >
-                {t.creatingItinerary ?? "Loading phrases..."}
+                {t.loading ?? "Loading phrases…"}
               </div>
             ) : (
               <PhrasesMode
-                phrases={phrases}
+                categories={phraseCategories}
                 targetLanguage={targetLanguage}
                 setTargetLanguage={setTargetLanguage}
+                onRefresh={loadPhrases}
+                loading={phrasesLoading}
                 t={t}
               />
             )

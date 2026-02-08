@@ -49,7 +49,7 @@ interface MapContainerProps {
   onLayersChange?: (layers: MapLayersState) => void;
   userLocation?: UserLocation | null;
   onUserLocationChange?: (loc: UserLocation | null) => void;
-  onMapReady?: (api: { resetView: () => void; locateUser: () => void; invalidateSize: () => void }) => void;
+  onMapReady?: (api: { resetView: () => void; locateUser: () => void; invalidateSize: () => void; flyTo: (lat: number, lng: number, zoom?: number) => void }) => void;
   onPlaceSelect?: (place: PlaceForSelect) => void;
   className?: string;
 }
@@ -198,7 +198,7 @@ export function MapContainer({
       navigator.geolocation.getCurrentPosition(onPos, onErr, geoOptions);
       watchIdRef.current = navigator.geolocation.watchPosition(onPos, onErr, geoOptions);
     };
-    const mapWithInvalidate = map as { invalidateSize?: () => void };
+    const mapWithFly = map as { invalidateSize?: () => void; flyTo?: (latlng: [number, number], zoom?: number, opts?: { duration?: number }) => void };
     onMapReady({
       resetView: () => {
         const loc = userLocationRef.current;
@@ -212,7 +212,10 @@ export function MapContainer({
         }
       },
       locateUser,
-      invalidateSize: () => mapWithInvalidate.invalidateSize?.(),
+      invalidateSize: () => mapWithFly.invalidateSize?.(),
+      flyTo: (lat: number, lng: number, zoom = 15) => {
+        mapWithFly.flyTo?.([lat, lng], zoom, { duration: 1500 });
+      },
     });
     locateUser();
   }, [onMapReady, onUserLocationChange]);
