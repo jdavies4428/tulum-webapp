@@ -25,34 +25,68 @@ const PhotoClusterViewer = dynamic(
   { ssr: false }
 );
 
-function Feature({
-  icon,
-  text,
-}: {
-  icon: string;
-  text: string;
-}) {
+function TrustBadge({ icon, text }: { icon: string; text: string }) {
   return (
     <div
       style={{
         display: "flex",
         alignItems: "center",
-        gap: "12px",
-        marginBottom: "12px",
+        gap: "6px",
+        fontSize: "14px",
+        fontWeight: "600",
+        color: "#666",
       }}
     >
-      <span style={{ fontSize: "24px" }}>{icon}</span>
-      <span style={{ fontSize: "15px", fontWeight: "600", color: "#333" }}>{text}</span>
+      <span style={{ fontSize: "18px" }}>{icon}</span>
+      <span>{text}</span>
     </div>
   );
 }
 
-function ScanningProgress({ progress }: { progress: number }) {
-  const t = translations["en"] as Record<string, string>;
+function FloatingDecoration({
+  emoji,
+  delay,
+}: {
+  emoji: string;
+  delay: number;
+}) {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        position: "absolute",
+        fontSize: "32px",
+        opacity: 0.15,
+        animation: `photoMapFloat 6s ease-in-out infinite`,
+        animationDelay: `${delay}s`,
+        top: `${20 + delay * 15}%`,
+        left: `${10 + delay * 25}%`,
+        pointerEvents: "none",
+      }}
+    >
+      {emoji}
+    </div>
+  );
+}
+
+function ScanningProgress({
+  progress,
+  photosFound,
+  t,
+}: {
+  progress: number;
+  photosFound: number;
+  t: Record<string, string>;
+}) {
+  const statusText =
+    photosFound > 0
+      ? (t.photoMapFoundPhotos ?? "Found {{count}} Tulum photos!").replace("{{count}}", String(photosFound))
+      : (t.photoMapScanningLibrary ?? "Scanning your library...");
+
+  return (
+    <div
+      style={{
+        height: "100dvh",
+        overflowY: "auto",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -61,60 +95,101 @@ function ScanningProgress({ progress }: { progress: number }) {
         background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
       }}
     >
-      <div
-        style={{
-          textAlign: "center",
-          padding: "48px",
-          background: "rgba(255, 255, 255, 0.95)",
-          borderRadius: "32px",
-          maxWidth: "500px",
-          boxShadow: "0 16px 64px rgba(0,0,0,0.08)",
-        }}
-      >
+      <div style={{ position: "relative", width: "160px", height: "160px", marginBottom: "32px" }}>
         <div
           style={{
-            fontSize: "80px",
-            marginBottom: "24px",
-            animation: "bounce 1s ease-in-out infinite",
+            position: "absolute",
+            inset: 0,
+            borderRadius: "50%",
+            background: "rgba(0, 206, 209, 0.2)",
+            animation: "photoMapPulse 2s ease-in-out infinite",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            inset: "20%",
+            borderRadius: "50%",
+            background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "64px",
           }}
         >
           🔍
         </div>
-        <h2
-          style={{
-            fontSize: "24px",
-            fontWeight: "700",
-            marginBottom: "16px",
-            color: "#333",
-          }}
-        >
-          {t.photoMapScanning ?? "Finding Your Tulum Photos..."}
-        </h2>
+      </div>
+
+      <h2
+        style={{
+          fontSize: "28px",
+          fontWeight: "700",
+          color: "#333",
+          marginBottom: "8px",
+          textAlign: "center",
+        }}
+      >
+        {t.photoMapScanningStatus ?? "Finding Your Photos..."}
+      </h2>
+
+      <p
+        style={{
+          fontSize: "16px",
+          color: "#666",
+          marginBottom: "32px",
+          textAlign: "center",
+        }}
+      >
+        {statusText}
+      </p>
+
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "320px",
+          height: "8px",
+          background: "rgba(0, 206, 209, 0.2)",
+          borderRadius: "8px",
+          overflow: "hidden",
+          marginBottom: "16px",
+        }}
+      >
         <div
           style={{
-            width: "100%",
-            height: "12px",
-            background: "rgba(0, 206, 209, 0.1)",
-            borderRadius: "12px",
-            overflow: "hidden",
-            marginBottom: "16px",
+            width: `${progress}%`,
+            height: "100%",
+            background: "linear-gradient(90deg, #00CED1 0%, #00BABA 100%)",
+            borderRadius: "8px",
+            transition: "width 0.3s ease-out",
           }}
-        >
-          <div
-            style={{
-              width: `${progress}%`,
-              height: "100%",
-              background: "linear-gradient(90deg, #00CED1 0%, #00BABA 100%)",
-              transition: "width 0.3s",
-            }}
-          />
-        </div>
-        <div style={{ fontSize: "18px", fontWeight: "700", color: "#00CED1" }}>{progress}%</div>
-        <p style={{ fontSize: "14px", color: "#666", marginTop: "16px" }}>
-          {t.photoMapScanningHint ?? "Scanning photos for GPS data..."}
-        </p>
+        />
       </div>
-      <style>{`@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }`}</style>
+
+      <div
+        style={{
+          fontSize: "24px",
+          fontWeight: "800",
+          color: "#00CED1",
+          marginBottom: "48px",
+        }}
+      >
+        {progress}%
+      </div>
+
+      <div
+        style={{
+          padding: "16px 24px",
+          background: "rgba(255, 255, 255, 0.7)",
+          borderRadius: "16px",
+          border: "2px solid rgba(0, 206, 209, 0.2)",
+          maxWidth: "320px",
+        }}
+      >
+        <div style={{ fontSize: "14px", color: "#666", textAlign: "center" }}>
+          {t.photoMapScanningTip ?? "💡 Tip: About 60-80% of phone photos have GPS data"}
+        </div>
+      </div>
     </div>
   );
 }
@@ -178,6 +253,7 @@ export default function PhotoMapPage() {
 
   const [phase, setPhase] = useState<"onboarding" | "scanning" | "map" | "empty">("onboarding");
   const [progress, setProgress] = useState(0);
+  const [photosFound, setPhotosFound] = useState(0);
   const [clusters, setClusters] = useState<PhotoCluster[]>([]);
   const [selectedCluster, setSelectedCluster] = useState<PhotoCluster | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -193,6 +269,7 @@ export default function PhotoMapPage() {
 
       setPhase("scanning");
       setProgress(0);
+      setPhotosFound(0);
       setError(null);
 
       const tulumPhotos: PhotoWithGPS[] = [];
@@ -203,6 +280,7 @@ export default function PhotoMapPage() {
           const photo = await readPhotoGPS(file);
           if (photo) {
             tulumPhotos.push(photo);
+            setPhotosFound(tulumPhotos.length);
           }
         } catch {
           // skip
@@ -259,7 +337,7 @@ export default function PhotoMapPage() {
   };
 
   if (phase === "scanning") {
-    return <ScanningProgress progress={progress} />;
+    return <ScanningProgress progress={progress} photosFound={photosFound} t={t} />;
   }
 
   if (phase === "empty") {
@@ -349,7 +427,7 @@ export default function PhotoMapPage() {
     );
   }
 
-  // onboarding
+  // onboarding – simplified design
   return (
     <div
       style={{
@@ -358,12 +436,14 @@ export default function PhotoMapPage() {
         overflowX: "auto",
         WebkitOverflowScrolling: "touch",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "24px",
-        paddingTop: "max(24px, env(safe-area-inset-top))",
+        padding: "32px 24px",
+        paddingTop: "max(32px, env(safe-area-inset-top))",
         paddingBottom: "100px",
         background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+        position: "relative",
       }}
     >
       <input
@@ -378,146 +458,183 @@ export default function PhotoMapPage() {
         onChange={handleFileInputChange}
       />
 
-      <div
+      <FloatingDecoration emoji="📸" delay={0} />
+      <FloatingDecoration emoji="🗺️" delay={1} />
+      <FloatingDecoration emoji="🌴" delay={2} />
+
+      <Link
+        href={`/discover?lang=${lang}`}
         style={{
-          maxWidth: "600px",
-          width: "100%",
-          textAlign: "center",
-          padding: "48px 32px",
-          background: "rgba(255, 255, 255, 0.95)",
-          borderRadius: "32px",
-          border: "3px solid rgba(0, 206, 209, 0.2)",
-          boxShadow: "0 16px 64px rgba(0, 0, 0, 0.1)",
+          position: "absolute",
+          top: "max(24px, env(safe-area-inset-top))",
+          left: 24,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "44px",
+          height: "44px",
+          borderRadius: "12px",
+          background: "rgba(255, 255, 255, 0.9)",
+          border: "2px solid rgba(0, 206, 209, 0.2)",
+          color: "var(--tulum-ocean)",
+          fontSize: "20px",
+          textDecoration: "none",
         }}
       >
-        <header
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "24px",
-            justifyContent: "center",
-          }}
-        >
-          <Link
-            href={`/discover?lang=${lang}`}
-            style={{
-              position: "absolute",
-              left: 24,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "44px",
-              height: "44px",
-              borderRadius: "12px",
-              background: "var(--button-secondary)",
-              border: "1px solid var(--border-emphasis)",
-              color: "var(--text-primary)",
-              fontSize: "20px",
-              textDecoration: "none",
-            }}
-          >
-            ←
-          </Link>
-        </header>
+        ←
+      </Link>
 
-        <div
-          style={{
-            fontSize: "120px",
-            marginBottom: "24px",
-            filter: "drop-shadow(0 8px 16px rgba(0, 0, 0, 0.1))",
-          }}
-        >
-          🗺️📸
-        </div>
+      {/* Map illustration */}
+      <div
+        style={{
+          width: "200px",
+          height: "200px",
+          marginBottom: "40px",
+          flexShrink: 0,
+        }}
+      >
+        <svg width="200" height="200" viewBox="0 0 240 240" style={{ width: "100%", height: "100%" }}>
+          <defs>
+            <linearGradient id="mapGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#B3E5FC" stopOpacity={1} />
+              <stop offset="100%" stopColor="#81D4FA" stopOpacity={1} />
+            </linearGradient>
+          </defs>
+          <rect
+            x="20"
+            y="40"
+            width="200"
+            height="160"
+            rx="20"
+            fill="url(#mapGradient)"
+            stroke="#00CED1"
+            strokeWidth="4"
+          />
+          <circle cx="80" cy="100" r="20" fill="#FF6B6B" stroke="#FFF" strokeWidth="3" />
+          <circle cx="140" cy="120" r="20" fill="#FFD93D" stroke="#FFF" strokeWidth="3" />
+          <circle cx="160" cy="80" r="20" fill="#6BCB77" stroke="#FFF" strokeWidth="3" />
+          <text x="120" y="50" fontSize="40" textAnchor="middle">
+            📷
+          </text>
+        </svg>
+      </div>
 
-        <h1
-          style={{
-            fontSize: "32px",
-            fontWeight: "800",
-            marginBottom: "16px",
-            background: "linear-gradient(135deg, #0099CC 0%, #00CED1 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          {t.photoMapCreateTitle ?? "Create Your Tulum Map"}
-        </h1>
+      <h1
+        style={{
+          fontSize: "clamp(28px, 6vw, 40px)",
+          fontWeight: "800",
+          margin: "0 0 16px 0",
+          textAlign: "center",
+          background: "linear-gradient(135deg, #0099CC 0%, #00CED1 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+          lineHeight: 1.2,
+        }}
+      >
+        {t.photoMapJourneyTitle ?? "Your Tulum Journey on a Map"}
+      </h1>
 
+      <p
+        style={{
+          fontSize: "18px",
+          color: "#666",
+          textAlign: "center",
+          margin: "0 0 48px 0",
+          maxWidth: "320px",
+          lineHeight: 1.5,
+        }}
+      >
+        {t.photoMapJourneySubtitle ?? "We'll find your Tulum photos and show where you've been"}
+      </p>
+
+      {error && (
         <p
           style={{
-            fontSize: "17px",
-            color: "#666",
-            marginBottom: "32px",
-            lineHeight: 1.6,
+            padding: "12px",
+            background: "rgba(239,68,68,0.15)",
+            borderRadius: "12px",
+            color: "#EF4444",
+            marginBottom: "16px",
+            fontSize: "14px",
           }}
         >
-          {t.photoMapCreateDesc ??
-            "We'll scan your photos for Tulum memories and create a beautiful map showing where you've been! 🌴"}
+          {error}
         </p>
+      )}
 
-        <div
-          style={{
-            textAlign: "left",
-            marginBottom: "32px",
-            padding: "24px",
-            background: "rgba(0, 206, 209, 0.05)",
-            borderRadius: "20px",
-          }}
-        >
-          <Feature icon="🔒" text={t.photoMapPrivate ?? "100% private - photos never leave your device"} />
-          <Feature icon="🤖" text={t.photoMapAuto ?? "Automatic - we find your Tulum photos"} />
-          <Feature icon="🎨" text={t.photoMapBeautiful ?? "Beautiful illustrated map view"} />
-          <Feature icon="📍" text={t.photoMapGrouped ?? "Photos grouped by location"} />
-        </div>
+      <button
+        type="button"
+        onClick={handleCreateMap}
+        style={{
+          width: "100%",
+          maxWidth: "320px",
+          padding: "20px",
+          borderRadius: "20px",
+          background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
+          border: "none",
+          color: "#FFF",
+          fontSize: "20px",
+          fontWeight: "800",
+          cursor: "pointer",
+          boxShadow: "0 12px 40px rgba(0, 206, 209, 0.4)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "12px",
+          transition: "all 0.3s",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-2px)";
+          e.currentTarget.style.boxShadow = "0 16px 48px rgba(0, 206, 209, 0.5)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "0 12px 40px rgba(0, 206, 209, 0.4)";
+        }}
+      >
+        <span style={{ fontSize: "28px" }}>🚀</span>
+        <span>{t.photoMapCreateButton ?? "Create My Map"}</span>
+      </button>
 
-        {error && (
-          <p
-            style={{
-              padding: "12px",
-              background: "rgba(239,68,68,0.15)",
-              borderRadius: "12px",
-              color: "#EF4444",
-              marginBottom: "16px",
-              fontSize: "14px",
-            }}
-          >
-            {error}
-          </p>
-        )}
-
-        <button
-          type="button"
-          onClick={handleCreateMap}
-          style={{
-            width: "100%",
-            padding: "20px",
-            borderRadius: "16px",
-            background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
-            border: "none",
-            color: "#FFF",
-            fontSize: "18px",
-            fontWeight: "800",
-            cursor: "pointer",
-            boxShadow: "0 8px 32px rgba(0, 206, 209, 0.3)",
-            transition: "all 0.3s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = "0 12px 48px rgba(0, 206, 209, 0.4)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 8px 32px rgba(0, 206, 209, 0.3)";
-          }}
-        >
-          🚀 {t.photoMapCreateButton ?? "Create My Map"}
-        </button>
-
-        <p style={{ fontSize: "13px", color: "#999", marginTop: "24px" }}>
-          {t.photoMapFolderHint ?? "You'll be asked to select your Photos folder"}
-        </p>
+      <div
+        style={{
+          marginTop: "32px",
+          display: "flex",
+          gap: "24px",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
+        <TrustBadge
+          icon="🔒"
+          text={t.photoMapTrustPrivate ?? "Private"}
+        />
+        <TrustBadge
+          icon="⚡"
+          text={t.photoMapTrustInstant ?? "Instant"}
+        />
+        <TrustBadge
+          icon="✨"
+          text={t.photoMapTrustFree ?? "Free"}
+        />
       </div>
+
+      <Link
+        href={`/discover?lang=${lang}`}
+        style={{
+          marginTop: "24px",
+          background: "transparent",
+          border: "none",
+          color: "#999",
+          fontSize: "15px",
+          fontWeight: "600",
+          cursor: "pointer",
+          textDecoration: "underline",
+        }}
+      >
+        {t.maybeLater ?? "Maybe Later"}
+      </Link>
     </div>
   );
 }

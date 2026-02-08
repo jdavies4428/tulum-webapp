@@ -331,6 +331,16 @@ body {
   }
 }
 
+/* Photo map floating & pulse */
+@keyframes photoMapFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.15; }
+  50% { transform: translateY(-20px) rotate(5deg); opacity: 0.2; }
+}
+@keyframes photoMapPulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.1); opacity: 0.2; }
+}
+
 /* Quick Actions FAB */
 @keyframes quickActionPop {
   from {
