@@ -87,70 +87,81 @@ function DiscoverCard({
 
   const content = (
     <div
+      className="discover-card-inner"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
         aspectRatio: item.size === "large" ? "2/1" : "1/1",
-        borderRadius: "32px",
+        borderRadius: "24px",
         background: gradient,
-        padding: "32px",
+        padding: 16,
         cursor: href ? "pointer" : "default",
         position: "relative",
         overflow: "hidden",
-        border: "3px solid rgba(255, 255, 255, 0.5)",
+        border: "2px solid rgba(255, 255, 255, 0.5)",
         boxShadow: hovered
-          ? "0 20px 60px rgba(0, 0, 0, 0.15)"
-          : "0 8px 32px rgba(0, 0, 0, 0.1)",
-        transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-        transform: hovered ? "translateY(-8px) scale(1.02)" : "translateY(0) scale(1)",
+          ? "0 12px 40px rgba(0, 0, 0, 0.12)"
+          : "0 4px 20px rgba(0, 0, 0, 0.08)",
+        transition: "all 0.3s ease",
+        transform: hovered ? "translateY(-4px)" : "translateY(0)",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
+        gap: 8,
       }}
     >
       <div
         style={{
           position: "absolute",
-          top: "-20%",
-          right: "-20%",
-          width: "60%",
-          height: "60%",
+          top: -40,
+          right: -40,
+          width: "50%",
+          height: "50%",
           borderRadius: "50%",
-          background: "rgba(255, 255, 255, 0.2)",
-          filter: "blur(40px)",
+          background: "rgba(255, 255, 255, 0.15)",
+          filter: "blur(30px)",
           pointerEvents: "none",
         }}
       />
       <div
+        className="discover-card-icon"
         style={{
-          fontSize: item.size === "large" ? "80px" : "64px",
-          marginBottom: item.size === "large" ? "24px" : "16px",
-          filter: "drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15))",
-          transition: "transform 0.3s",
-          transform: hovered ? "scale(1.1) rotate(5deg)" : "scale(1) rotate(0deg)",
+          fontSize: 48,
+          flexShrink: 0,
+          filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1))",
+          lineHeight: 1,
+          transition: "transform 0.2s",
+          transform: hovered ? "scale(1.05)" : "scale(1)",
         }}
       >
         {item.icon}
       </div>
-      <div>
+      <div className="discover-card-text" style={{ minWidth: 0, overflow: "hidden", flex: 1 }}>
         <h3
           style={{
-            fontSize: item.size === "large" ? "32px" : "24px",
-            fontWeight: "800",
+            fontSize: 18,
+            fontWeight: 800,
             color: "#1a1a1a",
-            margin: "0 0 8px 0",
-            textShadow: "0 2px 4px rgba(255, 255, 255, 0.5)",
+            margin: 0,
+            textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
           {t[item.labelKey] ?? item.id}
         </h3>
         <p
+          className="discover-card-desc"
           style={{
-            fontSize: item.size === "large" ? "16px" : "14px",
+            fontSize: 13,
             color: "#333",
             margin: 0,
-            fontWeight: "600",
+            fontWeight: 600,
             opacity: 0.9,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
           {t[item.descKey] ?? ""}
@@ -160,19 +171,17 @@ function DiscoverCard({
         <div
           style={{
             position: "absolute",
-            bottom: "24px",
-            right: "24px",
-            width: "40px",
-            height: "40px",
+            bottom: 12,
+            right: 12,
+            width: 36,
+            height: 36,
             borderRadius: "50%",
-            background: "rgba(255, 255, 255, 0.3)",
-            backdropFilter: "blur(10px)",
+            background: "rgba(255, 255, 255, 0.4)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "20px",
-            transition: "transform 0.3s",
-            transform: hovered ? "translateX(4px)" : "translateX(0)",
+            fontSize: 18,
+            flexShrink: 0,
           }}
         >
           →
@@ -186,8 +195,8 @@ function DiscoverCard({
       <Link
         key={item.id}
         href={href}
-        className={sizeClass}
-        style={{ textDecoration: "none", color: "inherit" }}
+        className={`${sizeClass} discover-card-link`}
+        style={{ textDecoration: "none", color: "inherit", minWidth: 0 }}
       >
         {content}
       </Link>
@@ -195,7 +204,7 @@ function DiscoverCard({
   }
 
   return (
-    <div key={item.id} className={sizeClass}>
+    <div key={item.id} className={sizeClass} style={{ minWidth: 0 }}>
       {content}
     </div>
   );
@@ -222,7 +231,7 @@ export default function DiscoverPage() {
         style={{
           padding: "24px",
           paddingTop: "max(48px, calc(24px + env(safe-area-inset-top)))",
-          paddingBottom: "max(120px, calc(100px + env(safe-area-inset-bottom)))",
+          paddingBottom: "max(140px, calc(120px + env(safe-area-inset-bottom)))",
           maxWidth: "1400px",
           margin: "0 auto",
         }}

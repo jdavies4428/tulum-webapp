@@ -477,7 +477,7 @@ body {
 @media (max-width: 768px) {
   .discover-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: 12px;
   }
   .discover-grid > * {
     min-width: 0;
@@ -486,6 +486,35 @@ body {
   .discover-card-medium,
   .discover-card-small {
     grid-column: span 1;
+  }
+  .discover-card-inner {
+    padding: 12px !important;
+    aspect-ratio: 1 / 1 !important;
+    border-radius: 20px !important;
+  }
+  .discover-card-icon {
+    font-size: 40px !important;
+  }
+  .discover-card-text h3 {
+    font-size: 15px !important;
+  }
+  .discover-card-desc {
+    display: none;
+  }
+  .discover-card-link {
+    min-width: 0;
+  }
+}
+
+@media (min-width: 769px) {
+  .discover-card-inner {
+    padding: 24px !important;
+  }
+  .discover-card-icon {
+    font-size: 56px !important;
+  }
+  .discover-card-text h3 {
+    font-size: 22px !important;
   }
 }
 
