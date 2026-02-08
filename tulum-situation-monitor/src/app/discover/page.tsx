@@ -212,7 +212,7 @@ export default function DiscoverPage() {
       style={{
         height: "100dvh",
         overflowY: "auto",
-        overflowX: "hidden",
+        overflowX: "auto",
         WebkitOverflowScrolling: "touch",
         background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
         color: "var(--text-primary)",

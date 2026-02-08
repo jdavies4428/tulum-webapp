@@ -353,12 +353,16 @@ export default function PhotoMapPage() {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        height: "100dvh",
+        overflowY: "auto",
+        overflowX: "auto",
+        WebkitOverflowScrolling: "touch",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
+        paddingBottom: "100px",
         background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
       }}
     >

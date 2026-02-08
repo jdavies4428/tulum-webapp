@@ -469,6 +469,9 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
+  .discover-grid > * {
+    min-width: 0;
+  }
   .discover-card-large,
   .discover-card-medium,
   .discover-card-small {
