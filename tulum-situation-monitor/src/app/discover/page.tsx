@@ -221,8 +221,8 @@ export default function DiscoverPage() {
       <div
         style={{
           padding: "24px",
-          paddingTop: "max(24px, env(safe-area-inset-top))",
-          paddingBottom: "100px",
+          paddingTop: "max(48px, calc(24px + env(safe-area-inset-top)))",
+          paddingBottom: "max(120px, calc(100px + env(safe-area-inset-bottom)))",
           maxWidth: "1400px",
           margin: "0 auto",
         }}
