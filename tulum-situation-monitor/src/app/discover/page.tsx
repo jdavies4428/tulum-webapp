@@ -203,7 +203,7 @@ function DiscoverCard({
 
 export default function DiscoverPage() {
   const searchParams = useSearchParams();
-  const [lang] = usePersistedLang(searchParams.get("lang")) as [Lang];
+  const [lang] = usePersistedLang(searchParams.get("lang"));
   const auth = useAuthOptional();
   const t = translations[lang] as Record<string, string>;
 
