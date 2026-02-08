@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3002",
+    "dev": "next dev --port 3011",
     "dev:3006": "next dev --port 3006",
     "seed:venues": "tsx scripts/seed-venues.ts",
     "sync:places": "npx tsx scripts/sync-google-places.ts",
     "update:sargassum": "npx tsx scripts/update-sargassum-images.ts",
     "update:webcam": "npx tsx scripts/update-webcam-image.ts",
-    "dev:turbo": "next dev --turbo --port 3002",
+    "dev:turbo": "next dev --turbo --port 3011",
     "build": "next build",
     "start": "next start -p 3003",
     "lint": "next lint"

@@ -49,7 +49,7 @@ interface MapContainerProps {
   onLayersChange?: (layers: MapLayersState) => void;
   userLocation?: UserLocation | null;
   onUserLocationChange?: (loc: UserLocation | null) => void;
-  onMapReady?: (api: { resetView: () => void; locateUser: () => void; invalidateSize: () => void; flyTo: (lat: number, lng: number, zoom?: number) => void }) => void;
+  onMapReady?: (api: { resetView: () => void; locateUser: () => void; invalidateSize: () => void; flyTo: (lat: number, lng: number, zoom?: number) => void; zoomIn: () => void; zoomOut: () => void }) => void;
   onPlaceSelect?: (place: PlaceForSelect) => void;
   className?: string;
 }
@@ -91,7 +91,6 @@ export function MapContainer({
       attributionControl: false,
     }).setView([TULUM_LAT, TULUM_LNG], DEFAULT_ZOOM);
     L.control.attribution({ position: "bottomright" }).addTo(map);
-    L.control.zoom({ position: "bottomleft" }).addTo(map);
 
     const osm = L.tileLayer(
       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -198,7 +197,7 @@ export function MapContainer({
       navigator.geolocation.getCurrentPosition(onPos, onErr, geoOptions);
       watchIdRef.current = navigator.geolocation.watchPosition(onPos, onErr, geoOptions);
     };
-    const mapWithFly = map as { invalidateSize?: () => void; flyTo?: (latlng: [number, number], zoom?: number, opts?: { duration?: number }) => void };
+    const mapWithFly = map as { invalidateSize?: () => void; flyTo?: (latlng: [number, number], zoom?: number, opts?: { duration?: number }) => void; zoomIn?: () => void; zoomOut?: () => void };
     onMapReady({
       resetView: () => {
         const loc = userLocationRef.current;
@@ -216,6 +215,8 @@ export function MapContainer({
       flyTo: (lat: number, lng: number, zoom = 15) => {
         mapWithFly.flyTo?.([lat, lng], zoom, { duration: 1500 });
       },
+      zoomIn: () => mapWithFly.zoomIn?.(),
+      zoomOut: () => mapWithFly.zoomOut?.(),
     });
     locateUser();
   }, [onMapReady, onUserLocationChange]);

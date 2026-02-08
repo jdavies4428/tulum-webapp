@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { TULUM_LAT, TULUM_LNG } from "@/data/constants";
 import { translations } from "@/lib/i18n";
 import { useAuthOptional } from "@/contexts/AuthContext";
+import { SignInButton } from "@/components/auth/SignInButton";
+import { SignedInMenu } from "@/components/auth/SignedInMenu";
 import type { Lang } from "@/lib/weather";
 
 function formatCoords(lat: number, lng: number): string {
@@ -43,22 +44,6 @@ export function StatusBar({ lang, userLocation, onReset, lastUpdated }: StatusBa
       </div>
       <span className="font-mono text-text-muted">{coords}</span>
       <div className="flex items-center gap-2">
-        {auth?.isAuthenticated ? (
-          <button
-            type="button"
-            onClick={() => auth.signOut()}
-            className="rounded border border-border bg-bg-panel px-2 py-1 text-[10px] font-semibold text-white hover:bg-white/10"
-          >
-            {tAny.signOut ?? "Sign out"}
-          </button>
-        ) : (
-          <Link
-            href="/signin"
-            className="rounded border border-border bg-bg-panel px-2 py-1 text-[10px] font-semibold text-white hover:bg-white/10"
-          >
-            {tAny.signIn ?? "Sign in"}
-          </Link>
-        )}
         {lastUpdated && (
           <span className="text-text-muted">{lastUpdated}</span>
         )}
@@ -69,6 +54,11 @@ export function StatusBar({ lang, userLocation, onReset, lastUpdated }: StatusBa
         >
           🎯 {(t as Record<string, string>).resetView ?? "Reset"}
         </button>
+        {auth?.isAuthenticated && auth.user ? (
+          <SignedInMenu user={auth.user} lang={lang} />
+        ) : (
+          <SignInButton lang={lang} compact />
+        )}
       </div>
     </div>
   );

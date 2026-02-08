@@ -39,6 +39,10 @@ interface MapSearchBarProps {
   onSelectPlace: (place: PlaceForSelect) => void;
   onSearch?: (query: string) => void;
   flyTo?: (lat: number, lng: number, zoom?: number) => void;
+  /** Top offset (e.g. 72 for below top bar). Default 16. */
+  topOffset?: number;
+  /** Full-width layout (left/right 16px). Default false (centered, max 500px). */
+  fullWidth?: boolean;
 }
 
 function SuggestionItem({
@@ -183,11 +187,12 @@ function PopularSearchItem({
   );
 }
 
-export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo }: MapSearchBarProps) {
+export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, topOffset = 16, fullWidth = false }: MapSearchBarProps) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<SearchablePlace[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [focused, setFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
   const t = translations[lang];
@@ -281,16 +286,21 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo }: M
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleBlur = () => {
+    setFocused(false);
+  };
+
   return (
     <div
       ref={searchRef}
       style={{
         position: "absolute",
-        top: 16,
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: "90%",
-        maxWidth: 500,
+        top: topOffset,
+        left: fullWidth ? 16 : "50%",
+        right: fullWidth ? 16 : undefined,
+        transform: fullWidth ? undefined : "translateX(-50%)",
+        width: fullWidth ? undefined : "90%",
+        maxWidth: fullWidth ? undefined : 500,
         zIndex: 1000,
       }}
     >
@@ -299,9 +309,10 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo }: M
           position: "relative",
           background: "rgba(255, 255, 255, 0.98)",
           borderRadius: 16,
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
-          border: "2px solid rgba(0, 206, 209, 0.3)",
+          boxShadow: focused ? "0 8px 32px rgba(0, 206, 209, 0.3)" : "0 4px 16px rgba(0, 0, 0, 0.15)",
+          border: focused ? "2px solid #00CED1" : "2px solid transparent",
           backdropFilter: "blur(20px)",
+          transition: "all 0.3s",
         }}
       >
         <div
@@ -320,7 +331,8 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo }: M
               setQuery(e.target.value);
               setShowSuggestions(true);
             }}
-            onFocus={() => setShowSuggestions(true)}
+            onFocus={() => { setShowSuggestions(true); setFocused(true); }}
+            onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             placeholder={t.mapSearchPlaceholder ?? "Search beaches, restaurants, cenotes…"}
             style={{
@@ -367,14 +379,13 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo }: M
           )}
         </div>
 
-        {/* Category Quick Filters */}
+        {/* Category Quick Filters - wrap so labels are never cut off */}
         <div
           style={{
             display: "flex",
+            flexWrap: "wrap",
             gap: 8,
             padding: "0 16px 12px",
-            overflowX: "auto",
-            WebkitOverflowScrolling: "touch",
           }}
           className="map-search-categories"
         >

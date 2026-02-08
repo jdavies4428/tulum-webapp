@@ -3,6 +3,10 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useVenues } from "@/hooks/useVenues";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useAuthOptional } from "@/contexts/AuthContext";
+import { AuthPromptModal } from "@/components/auth/AuthPromptModal";
+import { useLists } from "@/hooks/useLists";
+import { AddToListModal } from "@/components/favorites/AddToListModal";
 import { TULUM_LAT, TULUM_LNG } from "@/data/constants";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
@@ -167,9 +171,14 @@ interface PlaceCardProps {
   onSelect?: (place: BeachClub | Restaurant | CulturalPlace | CafePlace) => void;
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
+  /** When true, show lock icon and require sign-in to save */
+  isLocked?: boolean;
+  /** When true and favorited, show Add to List button */
+  onAddToList?: (placeId: string, placeName: string) => void;
+  addToListLabel?: string;
 }
 
-function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggleFavorite }: PlaceCardProps) {
+function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggleFavorite, isLocked = false, onAddToList, addToListLabel = "Add to List" }: PlaceCardProps) {
   const photoSrc = place.photo_url ?? (place.photo_reference ? `/api/places/photo?photo_reference=${encodeURIComponent(place.photo_reference)}&maxwidth=400` : null);
   const distanceStr =
     place.distance < 1
@@ -241,23 +250,25 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
               width: "40px",
               height: "40px",
               borderRadius: "50%",
-              background: isFavorite
-                ? "linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
-                : "rgba(255, 255, 255, 0.9)",
-              border: isFavorite ? "none" : "2px solid rgba(0, 0, 0, 0.1)",
+              background: isLocked
+                ? "rgba(0, 0, 0, 0.08)"
+                : isFavorite
+                  ? "linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
+                  : "rgba(255, 255, 255, 0.9)",
+              border: isFavorite && !isLocked ? "none" : "2px solid rgba(0, 0, 0, 0.1)",
               fontSize: "20px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: isFavorite
+              boxShadow: isFavorite && !isLocked
                 ? "0 4px 16px rgba(255, 107, 107, 0.3)"
                 : "0 2px 8px rgba(0, 0, 0, 0.08)",
               transition: "all 0.3s",
             }}
-            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+            aria-label={isLocked ? "Sign in to save" : isFavorite ? "Remove from favorites" : "Add to favorites"}
           >
-            {isFavorite ? "❤️" : "🤍"}
+            {isLocked ? "🔒" : isFavorite ? "❤️" : "🤍"}
           </button>
           <div
             style={{
@@ -429,14 +440,16 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
           }}
           style={{
             padding: "14px 20px",
-            background: isFavorite
-              ? "linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
-              : "rgba(0, 0, 0, 0.06)",
+            background: isLocked
+              ? "rgba(0, 0, 0, 0.06)"
+              : isFavorite
+                ? "linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
+                : "rgba(0, 0, 0, 0.06)",
             border: "none",
             borderRadius: "14px",
             fontSize: "15px",
             fontWeight: "700",
-            color: isFavorite ? "#FFF" : "#333",
+            color: isLocked ? "#999" : isFavorite ? "#FFF" : "#333",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -445,8 +458,35 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
             transition: "all 0.2s",
           }}
         >
-          {isFavorite ? "❤️" : "🤍"} {isFavorite ? "Saved" : "Save"}
+          {isLocked ? "🔒" : isFavorite ? "❤️" : "🤍"} {isLocked ? "Sign in to save" : isFavorite ? "Saved" : "Save"}
         </button>
+        {!isLocked && isFavorite && onAddToList && (place.id ?? place.sourcePlace?.id ?? place.sourcePlace?.place_id) && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              const id = place.id ?? place.sourcePlace?.id ?? place.sourcePlace?.place_id;
+              if (id) onAddToList(id, place.name);
+            }}
+            style={{
+              padding: "14px 20px",
+              background: "rgba(0, 206, 209, 0.1)",
+              border: "2px solid rgba(0, 206, 209, 0.3)",
+              borderRadius: "14px",
+              fontSize: "15px",
+              fontWeight: "700",
+              color: "#00CED1",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              transition: "all 0.2s",
+            }}
+          >
+            📋 {addToListLabel}
+          </button>
+        )}
         {place.phone ? (
           <a
             href={`tel:${place.phone.replace(/\D/g, "")}`}
@@ -542,11 +582,27 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortBy>("popular");
   const [isMobile, setIsMobile] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [pendingPlaceId, setPendingPlaceId] = useState<string | undefined>(undefined);
+  const [addToListPlace, setAddToListPlace] = useState<{ placeId: string; placeName: string } | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { clubs, restaurants, cafes, cultural, isLoading, error, source } = useVenues();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { lists, addPlaceToLists, removePlaceFromList } = useLists();
+  const auth = useAuthOptional();
+  const isAuthenticated = auth?.isAuthenticated ?? false;
+
+  const handleFavoriteClick = (placeId: string | undefined) => {
+    if (!placeId) return;
+    if (!isAuthenticated) {
+      setPendingPlaceId(placeId);
+      setAuthModalOpen(true);
+      return;
+    }
+    toggleFavorite(placeId);
+  };
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 768px)");
@@ -942,7 +998,10 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                     navigateLabel={navigateLabel}
                     onSelect={onPlaceSelect}
                     isFavorite={isFavorite(placeId)}
-                    onToggleFavorite={() => toggleFavorite(placeId)}
+                    onToggleFavorite={() => handleFavoriteClick(placeId)}
+                    isLocked={!isAuthenticated}
+                    onAddToList={isAuthenticated ? (id, name) => setAddToListPlace({ placeId: id, placeName: name }) : undefined}
+                    addToListLabel={t.addToList ?? "Add to List"}
                   />
                 );
               })}
@@ -950,6 +1009,30 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           )}
         </div>
       </div>
+
+      <AuthPromptModal
+        open={authModalOpen}
+        onClose={() => {
+          setAuthModalOpen(false);
+          setPendingPlaceId(undefined);
+        }}
+        reason="save"
+        pendingPlaceId={pendingPlaceId}
+        lang={lang}
+      />
+
+      {addToListPlace && (
+        <AddToListModal
+          placeId={addToListPlace.placeId}
+          placeName={addToListPlace.placeName}
+          lists={lists}
+          onClose={() => setAddToListPlace(null)}
+          onSave={() => setAddToListPlace(null)}
+          addPlaceToLists={addPlaceToLists}
+          removePlaceFromList={removePlaceFromList}
+          lang={lang}
+        />
+      )}
     </>
   );
 }

@@ -4,9 +4,11 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { useAuthOptional } from "@/contexts/AuthContext";
+import { SignInButton } from "@/components/auth/SignInButton";
+import { SignedInMenu } from "@/components/auth/SignedInMenu";
 
 const DISCOVER_ITEMS: { id: string; icon: string; labelKey?: string }[] = [
-  { id: "signin", icon: "🔐", labelKey: "signIn" },
   { id: "transportation", icon: "🚗" },
   { id: "foodDelivery", icon: "🛵" },
   { id: "itinerary", icon: "📋", labelKey: "aiItinerary" },
@@ -18,11 +20,11 @@ const DISCOVER_ITEMS: { id: string; icon: string; labelKey?: string }[] = [
 export default function DiscoverPage() {
   const searchParams = useSearchParams();
   const [lang] = usePersistedLang(searchParams.get("lang"));
+  const auth = useAuthOptional();
   const t = translations[lang];
   const tAny = t as Record<string, string>;
 
   const CARD_GRADIENTS: Record<string, string> = {
-    signin: "linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)",
     transportation: "linear-gradient(135deg, #B8E6F0 0%, #A0D8E8 100%)",
     foodDelivery: "linear-gradient(135deg, #FFD4E5 0%, #FFC0D9 100%)",
     itinerary: "linear-gradient(135deg, #D4E4BC 0%, #C2D8A8 100%)",
@@ -45,40 +47,50 @@ export default function DiscoverPage() {
         style={{
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
           gap: "12px",
           marginBottom: "24px",
           paddingBottom: "16px",
         }}
       >
-        <Link
-          href="/"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "44px",
-            height: "44px",
-            borderRadius: "12px",
-            background: "rgba(0, 206, 209, 0.12)",
-            border: "2px solid rgba(0, 206, 209, 0.2)",
-            color: "var(--tulum-ocean)",
-            fontSize: "20px",
-            textDecoration: "none",
-            flexShrink: 0,
-          }}
-        >
-          ←
-        </Link>
-        <h1
-          style={{
-            fontSize: "28px",
-            fontWeight: "800",
-            margin: 0,
-            color: "var(--tulum-ocean)",
-          }}
-        >
-          ✨ {tAny.discover ?? "Discover"}
-        </h1>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <Link
+            href="/"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "44px",
+              height: "44px",
+              borderRadius: "12px",
+              background: "rgba(0, 206, 209, 0.12)",
+              border: "2px solid rgba(0, 206, 209, 0.2)",
+              color: "var(--tulum-ocean)",
+              fontSize: "20px",
+              textDecoration: "none",
+              flexShrink: 0,
+            }}
+          >
+            ←
+          </Link>
+          <h1
+            style={{
+              fontSize: "28px",
+              fontWeight: "800",
+              margin: 0,
+              color: "var(--tulum-ocean)",
+            }}
+          >
+            ✨ {tAny.discover ?? "Discover"}
+          </h1>
+        </div>
+        <div>
+          {auth?.isAuthenticated && auth.user ? (
+            <SignedInMenu user={auth.user} lang={lang} />
+          ) : (
+            <SignInButton lang={lang} />
+          )}
+        </div>
       </header>
 
       <div
@@ -90,9 +102,7 @@ export default function DiscoverPage() {
       >
         {DISCOVER_ITEMS.map(({ id, icon, labelKey }) => {
           const href =
-            id === "signin"
-              ? `/signin?lang=${lang}`
-              : id === "transportation"
+            id === "transportation"
                 ? `/discover/transportation?lang=${lang}`
                 : id === "foodDelivery"
                   ? `/discover/food-delivery?lang=${lang}`

@@ -22,7 +22,7 @@ ulimit -n 10240
 npm run dev
 ```
 
-Then open **http://localhost:3002**
+Then open **http://localhost:3011**
 
 **Option 3 – Dev with Turbopack**
 
@@ -31,15 +31,15 @@ cd tulum-situation-monitor
 npm run dev:turbo
 ```
 
-Open **http://localhost:3002**
+Open **http://localhost:3011**
 
 ## Ports
 
-- **Dev:** port **3002**
+- **Dev:** port **3011**
 - **Production (npm run start):** port **3003**
 
 ## If you see 404
 
 - Make sure you’re in the `tulum-situation-monitor` folder when running commands.
-- **Dev:** use **http://localhost:3002**. **Production:** use **http://localhost:3003**.
+- **Dev:** use **http://localhost:3011**. **Production:** use **http://localhost:3003**.
 - If dev keeps returning 404 (often due to “too many open files” on macOS), use production: `npm run build && npm run start`, then open **http://localhost:3003**.

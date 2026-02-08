@@ -1,20 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type { MapLayersState } from "@/components/map/MapContainer";
 import { MapView } from "@/components/map/MapView";
 import { MapSearchBar, type SearchablePlace } from "@/components/map/MapSearchBar";
-import { StatusBar } from "@/components/layout/StatusBar";
+import { MapTopBar } from "@/components/map/MapTopBar";
+import { MapControls } from "@/components/map/MapControls";
+import { MapBottomNav } from "@/components/map/MapBottomNav";
 import { LayerControls } from "@/components/layout/LayerControls";
 import { MapLegend } from "@/components/layout/MapLegend";
-import { PlacesModal } from "@/components/places/PlacesModal";
 import { PlacePopup } from "@/components/places/PlacePopup";
 import { PlaceDetailsModal } from "@/components/places/PlaceDetailsModal";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 import { useVenues } from "@/hooks/useVenues";
-import { useWeather } from "@/hooks/useWeather";
 import { markerConfig } from "@/lib/marker-config";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
@@ -38,7 +37,6 @@ export default function MapPage() {
   const langParam = searchParams.get("lang");
   const [lang] = usePersistedLang(langParam);
   const [layers, setLayers] = useState<MapLayersState>(getDefaultLayers);
-  const [placesOpen, setPlacesOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<(BeachClub | Restaurant | CulturalPlace | CafePlace) | null>(null);
   const [showDetailsForPlaceId, setShowDetailsForPlaceId] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; accuracy: number } | null>(null);
@@ -47,11 +45,11 @@ export default function MapPage() {
     locateUser: () => void;
     invalidateSize: () => void;
     flyTo: (lat: number, lng: number, zoom?: number) => void;
+    zoomIn: () => void;
+    zoomOut: () => void;
   } | null>(null);
 
   const { clubs, restaurants, cafes, cultural } = useVenues();
-  const { data: weatherData } = useWeather();
-
   const t = translations[lang];
   const searchablePlaces: SearchablePlace[] = [
     ...clubs.map((p) => ({
@@ -118,84 +116,7 @@ export default function MapPage() {
         overflow: "hidden",
       }}
     >
-      {/* Back button - top left */}
-      <Link
-        href="/"
-        style={{
-          position: "fixed",
-          left: 16,
-          top: 16,
-          zIndex: 10001,
-          width: 44,
-          height: 44,
-          borderRadius: 12,
-          background: "rgba(10, 4, 4, 0.95)",
-          backdropFilter: "blur(20px)",
-          border: "1px solid rgba(255, 255, 255, 0.15)",
-          color: "#fff",
-          fontSize: 20,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          textDecoration: "none",
-          boxShadow: "0 4px 16px rgba(0, 0, 0, 0.4)",
-        }}
-        aria-label="Back to Discover Tulum"
-      >
-        ←
-      </Link>
-
-      {/* Top right: Sign in + Places */}
-      <div
-        style={{
-          position: "fixed",
-          right: 16,
-          top: 16,
-          zIndex: 10001,
-          display: "flex",
-          gap: 8,
-        }}
-      >
-        <Link
-          href={`/signin?lang=${lang}`}
-          style={{
-            padding: "12px 20px",
-            borderRadius: 12,
-            background: "rgba(10, 4, 4, 0.95)",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-            color: "#fff",
-            fontWeight: 600,
-            fontSize: 14,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            textDecoration: "none",
-            boxShadow: "0 4px 16px rgba(0, 0, 0, 0.4)",
-          }}
-        >
-          🔐 {t.signIn ?? "Sign in"}
-        </Link>
-        <button
-          type="button"
-          onClick={() => setPlacesOpen(true)}
-          style={{
-            padding: "12px 20px",
-            borderRadius: 12,
-            background: "var(--button-secondary)",
-            border: "1px solid var(--border-emphasis)",
-            color: "var(--text-primary)",
-            fontWeight: 600,
-            fontSize: 14,
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            boxShadow: "0 4px 16px rgba(0, 0, 0, 0.4)",
-          }}
-        >
-          📍 {t.places ?? "Places"}
-        </button>
-      </div>
+      <MapTopBar lang={lang} />
 
       {/* Full-screen map */}
       <div
@@ -217,6 +138,8 @@ export default function MapPage() {
           lang={lang}
           onSelectPlace={setSelectedPlace}
           flyTo={mapApi?.flyTo}
+          topOffset={72}
+          fullWidth
         />
         <MapView
           lang={lang}
@@ -229,27 +152,15 @@ export default function MapPage() {
         />
         <MapLegend lang={lang} />
         <LayerControls lang={lang} layers={layers} onLayersChange={setLayers} />
-        <StatusBar
+        <MapControls
           lang={lang}
-          userLocation={userLocation}
-          onReset={() => mapApi?.resetView()}
-          lastUpdated={
-            weatherData?.current?.time
-              ? `Updated ${new Date(weatherData.current.time).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`
-              : undefined
-          }
+          onRecenter={() => mapApi?.resetView()}
+          onZoomIn={() => mapApi?.zoomIn?.()}
+          onZoomOut={() => mapApi?.zoomOut?.()}
         />
+        <MapBottomNav lang={lang} />
       </div>
 
-      <PlacesModal
-        lang={lang}
-        isOpen={placesOpen}
-        onClose={() => setPlacesOpen(false)}
-        onPlaceSelect={(p) => {
-          setSelectedPlace(p);
-          setPlacesOpen(false);
-        }}
-      />
       {showDetailsForPlaceId && selectedPlace && selectedPlace.place_id === showDetailsForPlaceId ? (
         <PlaceDetailsModal
           placeId={showDetailsForPlaceId}

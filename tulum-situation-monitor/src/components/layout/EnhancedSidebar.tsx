@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuthOptional } from "@/contexts/AuthContext";
+import { SignInButton } from "@/components/auth/SignInButton";
+import { SignedInMenu } from "@/components/auth/SignedInMenu";
 import { translations } from "@/lib/i18n";
 import { WeatherSection } from "@/components/weather/WeatherSection";
 import { CurrenciesPanel } from "@/components/currencies/CurrenciesPanel";
@@ -191,10 +193,10 @@ export function EnhancedSidebar({
               flexDirection: "column",
             }}
           >
-        {/* Header - Beachy gradient */}
+        {/* Header - Beachy gradient (compact) */}
         <div
           style={{
-            padding: "24px",
+            padding: "12px 20px",
             borderBottom: "1px solid var(--border-subtle)",
             background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 50%, #FFE4CC 100%)",
             position: "sticky",
@@ -204,96 +206,103 @@ export function EnhancedSidebar({
             boxShadow: "0 8px 32px rgba(0, 206, 209, 0.12)",
           }}
         >
+          <h1
+            style={{
+              fontSize: "22px",
+              fontWeight: "800",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              margin: "0 0 4px 0",
+              color: "var(--tulum-ocean)",
+            }}
+          >
+            🌴 <span>{t.title}</span>
+          </h1>
+          <p style={{ color: "var(--text-secondary)", fontSize: "13px", margin: 0, fontWeight: "500" }}>
+            {t.subtitle}
+          </p>
+
+          {/* Language, Share, User circle row */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "8px",
+              gap: "8px",
+              marginTop: "12px",
             }}
           >
-            <h1
+            <div
               style={{
-                fontSize: "28px",
-                fontWeight: "800",
                 display: "flex",
                 alignItems: "center",
-                gap: "12px",
-                margin: 0,
-                color: "var(--tulum-ocean)",
+                gap: "4px",
+                background: "rgba(255, 255, 255, 0.9)",
+                borderRadius: "10px",
+                padding: "4px",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+                border: "2px solid rgba(0, 206, 209, 0.2)",
               }}
             >
-              🌴 <span>{t.title}</span>
-            </h1>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  background: "rgba(255, 255, 255, 0.9)",
-                  borderRadius: "12px",
-                  padding: "4px",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
-                  border: "2px solid rgba(0, 206, 209, 0.2)",
-                }}
-              >
-                {LANG_FLAGS.map(({ lang: l, flag }) => (
-                  <button
-                    key={l}
-                    type="button"
-                    onClick={() => onLanguageChange(l)}
-                    style={{
-                      background: lang === l ? "var(--button-primary)" : "transparent",
-                      border: "none",
-                      fontSize: "20px",
-                      cursor: "pointer",
-                      padding: "6px 8px",
-                      borderRadius: "8px",
-                      transition: "all 0.2s",
-                    }}
-                  >
-                    {flag}
-                  </button>
-                ))}
-              </div>
-              {sharePayload && (
+              {LANG_FLAGS.map(({ lang: l, flag }) => (
                 <button
+                  key={l}
                   type="button"
-                  title="Share current weather & conditions"
-                  onClick={() => {
-                    const temp = sharePayload.temp ?? "";
-                    const condition = sharePayload.condition ?? "";
-                    const url = typeof window !== "undefined" ? window.location.href : "";
-                    const shareText = `🌴 Tulum right now: ${temp} ${condition}\n\nReal-time beach conditions, weather & local spots:`;
-                    if (typeof navigator !== "undefined" && navigator.share) {
-                      navigator.share({ title: "Discover Tulum", text: shareText, url }).catch(() => {});
-                    } else if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-                      const full = shareText + "\n" + url;
-                      navigator.clipboard.writeText(full).then(() => alert("Link copied to clipboard! 📋")).catch(() => prompt("Copy this link:", full));
-                    } else {
-                      prompt("Copy this link:", shareText + "\n" + url);
-                    }
-                  }}
+                  onClick={() => onLanguageChange(l)}
                   style={{
-                    background: "rgba(255, 255, 255, 0.9)",
-                    border: "2px solid rgba(0, 206, 209, 0.2)",
-                    fontSize: "20px",
+                    background: lang === l ? "var(--button-primary)" : "transparent",
+                    border: "none",
+                    fontSize: "18px",
                     cursor: "pointer",
-                    padding: "6px 8px",
-                    borderRadius: "10px",
+                    padding: "4px 6px",
+                    borderRadius: "6px",
                     transition: "all 0.2s",
-                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
                   }}
                 >
-                  📤
+                  {flag}
                 </button>
+              ))}
+            </div>
+            {sharePayload && (
+              <button
+                type="button"
+                title="Share current weather & conditions"
+                onClick={() => {
+                  const temp = sharePayload.temp ?? "";
+                  const condition = sharePayload.condition ?? "";
+                  const url = typeof window !== "undefined" ? window.location.href : "";
+                  const shareText = `🌴 Tulum right now: ${temp} ${condition}\n\nReal-time beach conditions, weather & local spots:`;
+                  if (typeof navigator !== "undefined" && navigator.share) {
+                    navigator.share({ title: "Discover Tulum", text: shareText, url }).catch(() => {});
+                  } else if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+                    const full = shareText + "\n" + url;
+                    navigator.clipboard.writeText(full).then(() => alert("Link copied to clipboard! 📋")).catch(() => prompt("Copy this link:", full));
+                  } else {
+                    prompt("Copy this link:", shareText + "\n" + url);
+                  }
+                }}
+                style={{
+                  background: "rgba(255, 255, 255, 0.9)",
+                  border: "2px solid rgba(0, 206, 209, 0.2)",
+                  fontSize: "18px",
+                  cursor: "pointer",
+                  padding: "4px 6px",
+                  borderRadius: "8px",
+                  transition: "all 0.2s",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+                }}
+              >
+                📤
+              </button>
+            )}
+            <div>
+              {auth?.isAuthenticated && auth.user ? (
+                <SignedInMenu user={auth.user} lang={lang} />
+              ) : (
+                <SignInButton lang={lang} />
               )}
             </div>
           </div>
-          <p style={{ color: "var(--text-secondary)", fontSize: "14px", margin: 0, fontWeight: "500" }}>
-            {t.subtitle}
-          </p>
         </div>
 
         {/* Local Events – full-width button above Discover/Places/Map */}
@@ -330,7 +339,7 @@ export function EnhancedSidebar({
           </Link>
         </div>
 
-        {/* Action buttons - Beachy gradients */}
+        {/* Action buttons - Beachy gradients (Discover, Places, Map) */}
         <div
           style={{
             padding: "16px 24px",
@@ -363,53 +372,6 @@ export function EnhancedSidebar({
           >
             ✨ {tAny.discover ?? "Discover"}
           </Link>
-          {auth?.isAuthenticated ? (
-            <button
-              type="button"
-              onClick={() => auth.signOut()}
-              style={{
-                flex: 1,
-                padding: "14px 12px",
-                background: "linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)",
-                border: "none",
-                borderRadius: "20px",
-                color: "#333",
-                fontWeight: "700",
-                fontSize: "14px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                boxShadow: "0 6px 20px rgba(76, 175, 80, 0.2)",
-              }}
-            >
-              👤 {tAny.signOut ?? "Sign out"}
-            </button>
-          ) : (
-            <Link
-              href={`/signin?lang=${lang}`}
-              style={{
-                flex: 1,
-                padding: "14px 12px",
-                background: "linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)",
-                border: "none",
-                borderRadius: "20px",
-                color: "#333",
-                fontWeight: "700",
-                fontSize: "14px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                textDecoration: "none",
-                boxShadow: "0 6px 20px rgba(33, 150, 243, 0.2)",
-              }}
-            >
-              🔐 {tAny.signIn ?? "Sign in"}
-            </Link>
-          )}
           <button
             type="button"
             onClick={onOpenPlaces}

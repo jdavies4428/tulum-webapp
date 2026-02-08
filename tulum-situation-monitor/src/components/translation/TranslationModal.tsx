@@ -247,6 +247,11 @@ function PhrasesMode({
   loading: boolean;
   t: Record<string, string>;
 }) {
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const selectedCategory = selectedCategoryId
+    ? categories.find((c) => c.id === selectedCategoryId)
+    : null;
+
   return (
     <div>
       <div
@@ -328,10 +333,59 @@ function PhrasesMode({
           Phrases unavailable. Try again or check your connection.
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          {categories.map((cat) => (
+        <>
+          {/* Category icon grid - no scroll needed, quick scan */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "12px",
+              marginBottom: "20px",
+            }}
+          >
+            {categories.map((cat) => {
+              const isSelected = selectedCategoryId === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setSelectedCategoryId(isSelected ? null : cat.id)}
+                  style={{
+                    padding: "14px 10px",
+                    borderRadius: "14px",
+                    background: isSelected
+                      ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
+                      : "rgba(255, 255, 255, 0.9)",
+                    border: isSelected ? "2px solid #00CED1" : "2px solid rgba(0, 206, 209, 0.2)",
+                    cursor: "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "6px",
+                    transition: "all 0.2s",
+                    boxShadow: isSelected ? "0 4px 16px rgba(0, 206, 209, 0.35)" : "none",
+                  }}
+                >
+                  <span style={{ fontSize: 28 }}>{cat.emoji}</span>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: isSelected ? "#FFF" : "#333",
+                      textAlign: "center",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {cat.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Selected category's phrases - own list, no scrolling through others */}
+          {selectedCategory ? (
             <div
-              key={cat.id}
               style={{
                 background: "rgba(255, 255, 255, 0.9)",
                 borderRadius: "16px",
@@ -350,11 +404,11 @@ function PhrasesMode({
                   gap: "8px",
                 }}
               >
-                <span style={{ fontSize: "22px" }}>{cat.emoji}</span>
-                {cat.label}
+                <span style={{ fontSize: "22px" }}>{selectedCategory.emoji}</span>
+                {selectedCategory.label}
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                {cat.phrases.map((p, i) => (
+                {selectedCategory.phrases.map((p, i) => (
                   <div
                     key={i}
                     style={{
@@ -397,8 +451,20 @@ function PhrasesMode({
                 ))}
               </div>
             </div>
-          ))}
-        </div>
+          ) : (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "24px 16px",
+                color: "#999",
+                fontSize: "14px",
+                fontWeight: 600,
+              }}
+            >
+              {t.pickCategoryToSeePhrases ?? "Pick a category to see phrases"}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
