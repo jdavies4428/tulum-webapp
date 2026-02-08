@@ -233,7 +233,10 @@ export function SignedInMenu({ user, lang = "en" }: SignedInMenuProps) {
               <MenuItem
                 icon="🎯"
                 label={t.myItineraries ?? "My Itineraries"}
-                onClick={() => setShowMenu(false)}
+                onClick={() => {
+                  setShowMenu(false);
+                  router.push(`/itineraries?lang=${lang}`);
+                }}
               />
               <div
                 style={{

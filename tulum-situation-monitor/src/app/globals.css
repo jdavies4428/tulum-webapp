@@ -433,6 +433,15 @@ body {
   display: none;
 }
 
+/* Modal scroll – hide scrollbar, keep scroll */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .enhanced-marker .marker-container {
   position: relative;
   display: inline-flex;

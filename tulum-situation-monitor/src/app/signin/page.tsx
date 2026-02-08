@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { AuthScreen } from "@/components/auth/AuthScreen";
 import { useRouter } from "next/navigation";
 import { useAuthOptional } from "@/contexts/AuthContext";
 
-export default function SignInPage() {
+function SignInContent() {
   const router = useRouter();
   const auth = useAuthOptional();
 
@@ -26,14 +26,31 @@ export default function SignInPage() {
   return (
     <AuthScreen
       onSignInComplete={(user) => {
-        if (user) {
-          router.push("/");
-          router.refresh();
-        } else {
-          router.push("/");
-          router.refresh();
-        }
+        router.push("/");
+        router.refresh();
       }}
     />
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          style={{
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "var(--bg-primary)",
+          }}
+        >
+          Loading…
+        </div>
+      }
+    >
+      <SignInContent />
+    </Suspense>
   );
 }

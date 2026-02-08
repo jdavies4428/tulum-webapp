@@ -1,15 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-function getErrorMessage(code: string): string {
+function getErrorMessage(code: string, message?: string): string {
+  if (message) return message;
   const messages: Record<string, string> = {
     "auth/popup-closed-by-user": "Sign-in cancelled",
     "auth/popup-blocked": "Please enable popups for this site",
     "auth/cancelled-popup-request": "Sign-in cancelled",
     "auth/account-exists-with-different-credential":
       "An account already exists with this email",
+    auth_oauth_error: "Google sign-in was declined or failed.",
+    auth_callback_no_code: "Sign-in incomplete. Please try again.",
+    auth_exchange_failed:
+      "Session exchange failed. Try again or clear cookies and retry.",
   };
   return messages[code] ?? "Sign-in failed. Please try again.";
 }
@@ -21,7 +27,16 @@ interface AuthScreenProps {
 export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
   const supabase = createClient();
+
+  useEffect(() => {
+    const err = searchParams.get("error");
+    const msg = searchParams.get("message");
+    if (err) {
+      setError(getErrorMessage(err, msg ? decodeURIComponent(msg) : undefined));
+    }
+  }, [searchParams]);
 
   const signInWithProvider = async (provider: "google" | "apple") => {
     setLoading(provider);
@@ -32,12 +47,17 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
         options: {
           redirectTo:
             typeof window !== "undefined"
-              ? `${window.location.origin}/auth/callback?next=/`
+              ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(
+                  window.location.pathname === "/signin"
+                    ? "/"
+                    : window.location.pathname + window.location.search
+                )}`
               : undefined,
+          scopes: provider === "google" ? "email profile" : undefined,
         },
       });
       if (err) {
-        setError(getErrorMessage(err.message) || err.message);
+        setError(getErrorMessage(err.message) ?? err.message);
         setLoading(null);
         return;
       }

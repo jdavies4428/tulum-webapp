@@ -70,13 +70,18 @@ interface AuthPromptModalProps {
   lang?: Lang;
 }
 
-function getErrorMessage(code: string): string {
+function getErrorMessage(code: string, message?: string): string {
+  if (message) return message;
   const messages: Record<string, string> = {
     "auth/popup-closed-by-user": "Sign-in cancelled",
     "auth/popup-blocked": "Please enable popups for this site",
     "auth/cancelled-popup-request": "Sign-in cancelled",
     "auth/account-exists-with-different-credential":
       "An account already exists with this email",
+    auth_oauth_error: "Google sign-in was declined or failed.",
+    auth_callback_no_code: "Sign-in incomplete. Please try again.",
+    auth_exchange_failed:
+      "Session exchange failed. Try again or clear cookies and retry.",
   };
   return messages[code] ?? "Sign-in failed. Please try again.";
 }
@@ -118,6 +123,7 @@ export function AuthPromptModal({
             typeof window !== "undefined"
               ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
               : undefined,
+          scopes: provider === "google" ? "email profile" : undefined,
         },
       });
       if (err) {

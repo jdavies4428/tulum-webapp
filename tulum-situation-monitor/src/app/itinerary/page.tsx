@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { useAuthOptional } from "@/contexts/AuthContext";
 import type { Lang } from "@/lib/weather";
 
 const INTEREST_OPTIONS: { id: string; labelEn: string; icon: string }[] = [
@@ -54,6 +55,7 @@ const cardStyle = {
 export default function ItineraryPage() {
   const searchParams = useSearchParams();
   const [lang] = usePersistedLang(searchParams.get("lang"));
+  const auth = useAuthOptional();
   const t = translations[lang] as Record<string, string>;
 
   const [loading, setLoading] = useState(false);
@@ -426,6 +428,7 @@ export default function ItineraryPage() {
             mainRef.current?.scrollTo({ top: 0 });
           }}
           t={t}
+          isAuthenticated={auth?.isAuthenticated ?? false}
         />
       )}
       </main>
@@ -445,13 +448,46 @@ function ItineraryDisplay({
   lang,
   onReset,
   t,
+  isAuthenticated,
 }: {
   itinerary: ItineraryData;
   lang: Lang;
   onReset: () => void;
   t: Record<string, string>;
+  isAuthenticated: boolean;
 }) {
   const [selectedDay, setSelectedDay] = useState(0);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async () => {
+    if (!isAuthenticated || saving || saved) return;
+    setSaving(true);
+    try {
+      const res = await fetch("/api/itinerary/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: itinerary.title ?? "My Tulum Itinerary",
+          summary: itinerary.summary ?? null,
+          days: itinerary.days ?? [],
+          tips: itinerary.tips ?? [],
+          estimated_total_cost: itinerary.estimated_total_cost ?? null,
+          raw_data: itinerary,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSaved(true);
+      } else {
+        setSaved(false);
+      }
+    } catch {
+      setSaved(false);
+    } finally {
+      setSaving(false);
+    }
+  };
   const days = itinerary.days ?? [];
   const day = days[selectedDay];
 
@@ -485,22 +521,45 @@ function ItineraryDisplay({
               </div>
             )}
           </div>
-          <button
-            type="button"
-            onClick={onReset}
-            style={{
-              padding: "12px 20px",
-              borderRadius: "12px",
-              background: "rgba(255,255,255,0.08)",
-              border: "1px solid var(--border-subtle)",
-              color: "var(--text-primary)",
-              fontSize: "14px",
-              fontWeight: "600",
-              cursor: "pointer",
-            }}
-          >
-            🔄 {t.createNew ?? "Create New"}
-          </button>
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            {isAuthenticated && (
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={saving || saved}
+                style={{
+                  padding: "12px 20px",
+                  borderRadius: "12px",
+                  background: saved
+                    ? "rgba(80, 200, 120, 0.2)"
+                    : "linear-gradient(135deg, var(--tulum-turquoise, #00D4D4) 0%, #00BABA 100%)",
+                  border: saved ? "2px solid #50C878" : "none",
+                  color: saved ? "#50C878" : "#FFF",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  cursor: saving || saved ? "default" : "pointer",
+                }}
+              >
+                {saved ? "✓ " + (t.itinerarySaved ?? "Saved") : saving ? "…" : "💾 " + (t.saveItinerary ?? "Save")}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onReset}
+              style={{
+                padding: "12px 20px",
+                borderRadius: "12px",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid var(--border-subtle)",
+                color: "var(--text-primary)",
+                fontSize: "14px",
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
+            >
+              🔄 {t.createNew ?? "Create New"}
+            </button>
+          </div>
         </div>
       </div>
 

@@ -20,6 +20,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "home", icon: "🏠", labelKey: "navHome", href: "/" },
   { id: "discover", icon: "✨", labelKey: "discover", href: "/discover" },
   { id: "map", icon: "🗺️", labelKey: "map", href: "/map" },
+  { id: "messages", icon: "💬", labelKey: "messages", href: "/messages" },
   { id: "saved", icon: "⭐", labelKey: "navSaved", href: "/favorites" },
 ];
 

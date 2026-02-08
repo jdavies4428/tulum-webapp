@@ -310,12 +310,31 @@ export default function UserProfilePage() {
         </div>
 
         {!profile.is_own_profile && auth?.isAuthenticated && (
+          <div style={{ display: "flex", gap: 12, width: "100%" }}>
+          <Link
+            href={`/messages?new=${profile.id}&lang=${lang}`}
+            style={{
+              flex: 1,
+              padding: 14,
+              borderRadius: 12,
+              background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
+              border: "none",
+              color: "#FFF",
+              fontSize: 15,
+              fontWeight: 700,
+              textDecoration: "none",
+              textAlign: "center",
+              boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
+            }}
+          >
+            💬 {t.message ?? "Message"}
+          </Link>
           <button
             type="button"
             onClick={handleToggleFollow}
             disabled={followLoading}
             style={{
-              width: "100%",
+              flex: 1,
               padding: "14px",
               borderRadius: "12px",
               background: profile.is_following
@@ -343,6 +362,7 @@ export default function UserProfilePage() {
                 ? `✓ ${t.following ?? "Following"}`
                 : `+ ${t.follow ?? "Follow"}`}
           </button>
+          </div>
         )}
 
         {profile.is_own_profile && (

@@ -13,6 +13,10 @@ const DISCOVER_ITEMS: { id: string; icon: string; labelKey?: string }[] = [
   { id: "foodDelivery", icon: "🛵" },
   { id: "itinerary", icon: "📋", labelKey: "aiItinerary" },
   { id: "translation", icon: "🌐" },
+  { id: "shopLocal", icon: "🛍️", labelKey: "shopLocal" },
+  { id: "healing", icon: "🌿", labelKey: "healing" },
+  { id: "excursions", icon: "⛵", labelKey: "excursions" },
+  { id: "marketplace", icon: "🏪", labelKey: "marketplace" },
   { id: "yogaClasses", icon: "🧘", labelKey: "yogaClasses" },
   { id: "communityBoard", icon: "📌", labelKey: "communityBoard" },
 ];
@@ -29,6 +33,10 @@ export default function DiscoverPage() {
     foodDelivery: "linear-gradient(135deg, #FFD4E5 0%, #FFC0D9 100%)",
     itinerary: "linear-gradient(135deg, #D4E4BC 0%, #C2D8A8 100%)",
     translation: "linear-gradient(135deg, #E8D4F1 0%, #DCC5E8 100%)",
+    shopLocal: "linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%)",
+    healing: "linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%)",
+    excursions: "linear-gradient(135deg, #B3E5FC 0%, #81D4FA 100%)",
+    marketplace: "linear-gradient(135deg, #E1BEE7 0%, #CE93D8 100%)",
     yogaClasses: "linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)",
     communityBoard: "linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%)",
   };
@@ -110,7 +118,15 @@ export default function DiscoverPage() {
                     ? `/itinerary?lang=${lang}`
                     : id === "translation"
                       ? `/discover/translation?lang=${lang}`
-                      : undefined;
+                      : id === "shopLocal"
+                        ? `/discover/shop-local?lang=${lang}`
+                        : id === "healing"
+                          ? `/discover/healing?lang=${lang}`
+                          : id === "excursions"
+                            ? `/discover/excursions?lang=${lang}`
+                            : id === "marketplace"
+                              ? `/discover/marketplace?lang=${lang}`
+                              : undefined;
           const cardStyle = {
             background: CARD_GRADIENTS[id] ?? "var(--card-bg)",
             border: "none",
