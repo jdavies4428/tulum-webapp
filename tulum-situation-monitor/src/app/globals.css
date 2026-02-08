@@ -442,6 +442,40 @@ body {
   display: none;
 }
 
+/* Discover page – desktop hero grid */
+.discover-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.discover-card-large { grid-column: span 6; }
+.discover-card-medium { grid-column: span 4; }
+.discover-card-small { grid-column: span 3; }
+
+@media (max-width: 1199px) {
+  .discover-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .discover-card-large { grid-column: span 6; }
+  .discover-card-medium { grid-column: span 3; }
+  .discover-card-small { grid-column: span 2; }
+}
+
+@media (max-width: 768px) {
+  .discover-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .discover-card-large,
+  .discover-card-medium,
+  .discover-card-small {
+    grid-column: span 1;
+  }
+}
+
 .enhanced-marker .marker-container {
   position: relative;
   display: inline-flex;

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { TranslationModal } from "@/components/translation/TranslationModal";
@@ -8,6 +9,8 @@ import { EmergencyModal } from "./EmergencyModal";
 import { TaxiModal } from "./TaxiModal";
 import { CurrencyModal } from "./CurrencyModal";
 import type { Lang } from "@/lib/weather";
+
+export const OPEN_MAP_LAYERS_EVENT = "open-map-layers";
 
 const ACTIONS = [
   {
@@ -38,19 +41,50 @@ const ACTIONS = [
     color: "#50C878",
     priority: null as string | null,
   },
+  {
+    id: "mapLayers",
+    icon: "🗺️",
+    labelKey: "mapLayers",
+    color: "#00CED1",
+    priority: null as string | null,
+    mapOnly: true,
+    mobileOnly: true,
+  },
 ] as const;
 
 export function QuickActionsFAB() {
   const [lang] = usePersistedLang(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [modal, setModal] = useState<"emergency" | "translate" | "taxi" | "currency" | null>(null);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const fn = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", fn);
+    return () => mq.removeEventListener("change", fn);
+  }, []);
 
   const t = translations[lang] as Record<string, string>;
+
+  const visibleActions = ACTIONS.filter((a) => {
+    const mapOnly = "mapOnly" in a && a.mapOnly;
+    const mobileOnly = "mobileOnly" in a && a.mobileOnly;
+    if (mapOnly && pathname !== "/map") return false;
+    if (mobileOnly && !isMobile) return false;
+    return true;
+  });
 
   const handleAction = (actionId: string) => {
     setIsExpanded(false);
     if (typeof navigator !== "undefined" && navigator.vibrate) {
       navigator.vibrate(10);
+    }
+    if (actionId === "mapLayers") {
+      window.dispatchEvent(new CustomEvent(OPEN_MAP_LAYERS_EVENT));
+      return;
     }
     if (actionId === "emergency") setModal("emergency");
     else if (actionId === "translate") setModal("translate");
@@ -102,7 +136,7 @@ export function QuickActionsFAB() {
         }}
       >
         {isExpanded &&
-          ACTIONS.map((action, index) => (
+          visibleActions.map((action, index) => (
             <button
               key={action.id}
               type="button"

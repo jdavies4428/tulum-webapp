@@ -19,22 +19,22 @@ interface Flight {
 
 // Representative daily schedule for Tulum (TQO). Times are approximate; check airline for current schedule.
 const TULUM_FLIGHTS: Flight[] = [
-  { carrier: "American", flightNumber: "AA 342", direction: "arrival", city: "Miami", airport: "MIA", scheduledTime: "13:15" },
-  { carrier: "American", flightNumber: "AA 342", direction: "departure", city: "Miami", airport: "MIA", scheduledTime: "14:15" },
-  { carrier: "American", flightNumber: "AA 1248", direction: "arrival", city: "Dallas", airport: "DFW", scheduledTime: "14:25" },
-  { carrier: "American", flightNumber: "AA 1248", direction: "departure", city: "Dallas", airport: "DFW", scheduledTime: "15:25" },
-  { carrier: "American", flightNumber: "AA 2428", direction: "arrival", city: "Charlotte", airport: "CLT", scheduledTime: "13:20" },
-  { carrier: "American", flightNumber: "AA 2428", direction: "departure", city: "Charlotte", airport: "CLT", scheduledTime: "14:20" },
-  { carrier: "United", flightNumber: "UA 1234", direction: "arrival", city: "Houston", airport: "IAH", scheduledTime: "12:45" },
-  { carrier: "United", flightNumber: "UA 1234", direction: "departure", city: "Houston", airport: "IAH", scheduledTime: "13:45" },
-  { carrier: "Volaris", flightNumber: "Y4 123", direction: "arrival", city: "Mexico City", airport: "MEX", scheduledTime: "11:30" },
-  { carrier: "Volaris", flightNumber: "Y4 123", direction: "departure", city: "Mexico City", airport: "MEX", scheduledTime: "12:30" },
-  { carrier: "Volaris", flightNumber: "Y4 456", direction: "arrival", city: "Guadalajara", airport: "GDL", scheduledTime: "15:00" },
-  { carrier: "Volaris", flightNumber: "Y4 456", direction: "departure", city: "Guadalajara", airport: "GDL", scheduledTime: "16:00" },
-  { carrier: "Viva Aerobus", flightNumber: "VB 789", direction: "arrival", city: "Monterrey", airport: "MTY", scheduledTime: "10:45" },
-  { carrier: "Viva Aerobus", flightNumber: "VB 789", direction: "departure", city: "Monterrey", airport: "MTY", scheduledTime: "11:45" },
-  { carrier: "Delta", flightNumber: "DL 567", direction: "arrival", city: "Atlanta", airport: "ATL", scheduledTime: "14:00" },
-  { carrier: "Delta", flightNumber: "DL 567", direction: "departure", city: "Atlanta", airport: "ATL", scheduledTime: "15:00" },
+  { carrier: "American", flightNumber: "AA 342", direction: "arrival" as const, city: "Miami", airport: "MIA", scheduledTime: "13:15" },
+  { carrier: "American", flightNumber: "AA 342", direction: "departure" as const, city: "Miami", airport: "MIA", scheduledTime: "14:15" },
+  { carrier: "American", flightNumber: "AA 1248", direction: "arrival" as const, city: "Dallas", airport: "DFW", scheduledTime: "14:25" },
+  { carrier: "American", flightNumber: "AA 1248", direction: "departure" as const, city: "Dallas", airport: "DFW", scheduledTime: "15:25" },
+  { carrier: "American", flightNumber: "AA 2428", direction: "arrival" as const, city: "Charlotte", airport: "CLT", scheduledTime: "13:20" },
+  { carrier: "American", flightNumber: "AA 2428", direction: "departure" as const, city: "Charlotte", airport: "CLT", scheduledTime: "14:20" },
+  { carrier: "United", flightNumber: "UA 1234", direction: "arrival" as const, city: "Houston", airport: "IAH", scheduledTime: "12:45" },
+  { carrier: "United", flightNumber: "UA 1234", direction: "departure" as const, city: "Houston", airport: "IAH", scheduledTime: "13:45" },
+  { carrier: "Volaris", flightNumber: "Y4 123", direction: "arrival" as const, city: "Mexico City", airport: "MEX", scheduledTime: "11:30" },
+  { carrier: "Volaris", flightNumber: "Y4 123", direction: "departure" as const, city: "Mexico City", airport: "MEX", scheduledTime: "12:30" },
+  { carrier: "Volaris", flightNumber: "Y4 456", direction: "arrival" as const, city: "Guadalajara", airport: "GDL", scheduledTime: "15:00" },
+  { carrier: "Volaris", flightNumber: "Y4 456", direction: "departure" as const, city: "Guadalajara", airport: "GDL", scheduledTime: "16:00" },
+  { carrier: "Viva Aerobus", flightNumber: "VB 789", direction: "arrival" as const, city: "Monterrey", airport: "MTY", scheduledTime: "10:45" },
+  { carrier: "Viva Aerobus", flightNumber: "VB 789", direction: "departure" as const, city: "Monterrey", airport: "MTY", scheduledTime: "11:45" },
+  { carrier: "Delta", flightNumber: "DL 567", direction: "arrival" as const, city: "Atlanta", airport: "ATL", scheduledTime: "14:00" },
+  { carrier: "Delta", flightNumber: "DL 567", direction: "departure" as const, city: "Atlanta", airport: "ATL", scheduledTime: "15:00" },
 ].sort((a, b) => {
   const t = (x: Flight) => x.scheduledTime.replace(":", "");
   return parseInt(t(a), 10) - parseInt(t(b), 10);

@@ -8,7 +8,9 @@ import { MapSearchBar, type SearchablePlace } from "@/components/map/MapSearchBa
 import { MapTopBar } from "@/components/map/MapTopBar";
 import { MapControls } from "@/components/map/MapControls";
 import { MapBottomNav } from "@/components/map/MapBottomNav";
+import { MapLayersSheet } from "@/components/map/MapLayersSheet";
 import { LayerControls } from "@/components/layout/LayerControls";
+import { OPEN_MAP_LAYERS_EVENT } from "@/components/quick-actions/QuickActionsFAB";
 import { MapLegend } from "@/components/layout/MapLegend";
 import { PlacePopup } from "@/components/places/PlacePopup";
 import { PlaceDetailsModal } from "@/components/places/PlaceDetailsModal";
@@ -105,6 +107,13 @@ export default function MapPage() {
     }
   }, [mapApi]);
 
+  const [showLayersSheet, setShowLayersSheet] = useState(false);
+  useEffect(() => {
+    const open = () => setShowLayersSheet(true);
+    window.addEventListener(OPEN_MAP_LAYERS_EVENT, open);
+    return () => window.removeEventListener(OPEN_MAP_LAYERS_EVENT, open);
+  }, []);
+
   return (
     <div
       style={{
@@ -151,7 +160,16 @@ export default function MapPage() {
           onPlaceSelect={setSelectedPlace}
         />
         <MapLegend lang={lang} />
-        <LayerControls lang={lang} layers={layers} onLayersChange={setLayers} />
+        <div className="hidden md:block">
+          <LayerControls lang={lang} layers={layers} onLayersChange={setLayers} />
+        </div>
+        <MapLayersSheet
+          lang={lang}
+          layers={layers}
+          onLayersChange={setLayers}
+          isOpen={showLayersSheet}
+          onClose={() => setShowLayersSheet(false)}
+        />
         <MapControls
           lang={lang}
           onRecenter={() => mapApi?.resetView()}
