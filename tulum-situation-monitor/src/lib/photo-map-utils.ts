@@ -125,3 +125,84 @@ export async function getAllFilesFromDirHandle(
 export function supportsDirectoryPicker(): boolean {
   return typeof window !== "undefined" && "showDirectoryPicker" in window;
 }
+
+const PHOTO_MAP_DB = "photo-map-db";
+const PHOTO_MAP_STORE = "dir-handle";
+const DIR_HANDLE_KEY = "photos";
+
+export async function getStoredDirHandle(): Promise<FileSystemDirectoryHandle | null> {
+  if (typeof window === "undefined" || !("indexedDB" in window)) return null;
+  return new Promise((resolve) => {
+    const req = indexedDB.open(PHOTO_MAP_DB, 1);
+    req.onerror = () => resolve(null);
+    req.onsuccess = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(PHOTO_MAP_STORE)) {
+        db.close();
+        resolve(null);
+        return;
+      }
+      const tx = db.transaction(PHOTO_MAP_STORE, "readonly");
+      const store = tx.objectStore(PHOTO_MAP_STORE);
+      const getReq = store.get(DIR_HANDLE_KEY);
+      getReq.onerror = () => resolve(null);
+      getReq.onsuccess = () => {
+        const handle = getReq.result as FileSystemDirectoryHandle | undefined;
+        resolve(handle ?? null);
+      };
+    };
+    req.onupgradeneeded = (e) => {
+      const db = (e.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(PHOTO_MAP_STORE)) {
+        db.createObjectStore(PHOTO_MAP_STORE);
+      }
+    };
+  });
+}
+
+export async function saveDirHandle(handle: FileSystemDirectoryHandle): Promise<void> {
+  if (typeof window === "undefined" || !("indexedDB" in window)) return;
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(PHOTO_MAP_DB, 1);
+    req.onerror = () => reject(req.error);
+    req.onsuccess = () => {
+      const db = req.result;
+      const tx = db.transaction(PHOTO_MAP_STORE, "readwrite");
+      const store = tx.objectStore(PHOTO_MAP_STORE);
+      store.put(handle, DIR_HANDLE_KEY);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    };
+    req.onupgradeneeded = (e) => {
+      const db = (e.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(PHOTO_MAP_STORE)) {
+        db.createObjectStore(PHOTO_MAP_STORE);
+      }
+    };
+  });
+}
+
+export async function clearStoredDirHandle(): Promise<void> {
+  if (typeof window === "undefined" || !("indexedDB" in window)) return;
+  return new Promise((resolve) => {
+    const req = indexedDB.open(PHOTO_MAP_DB, 1);
+    req.onsuccess = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(PHOTO_MAP_STORE)) {
+        db.close();
+        resolve();
+        return;
+      }
+      const tx = db.transaction(PHOTO_MAP_STORE, "readwrite");
+      const store = tx.objectStore(PHOTO_MAP_STORE);
+      store.delete(DIR_HANDLE_KEY);
+      tx.oncomplete = () => resolve();
+    };
+    req.onupgradeneeded = (e) => {
+      const db = (e.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(PHOTO_MAP_STORE)) {
+        db.createObjectStore(PHOTO_MAP_STORE);
+      }
+    };
+  });
+}

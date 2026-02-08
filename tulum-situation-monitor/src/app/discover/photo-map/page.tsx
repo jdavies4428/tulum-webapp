@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -11,6 +11,9 @@ import {
   clusterPhotosByLocation,
   getAllFilesFromDirHandle,
   supportsDirectoryPicker,
+  getStoredDirHandle,
+  saveDirHandle,
+  clearStoredDirHandle,
   type PhotoWithGPS,
   type PhotoCluster,
 } from "@/lib/photo-map-utils";
@@ -301,24 +304,43 @@ export default function PhotoMapPage() {
     []
   );
 
-  const handleCreateMap = async () => {
-    if (supportsDirectoryPicker()) {
-      try {
-        const dirHandle = await window.showDirectoryPicker!({
-          mode: "read",
-          startIn: "pictures",
-        });
-        const files = await getAllFilesFromDirHandle(dirHandle);
-        await scanFiles(files);
-      } catch (err) {
-        if (err instanceof Error && err.name === "AbortError") {
-          // User cancelled
-          return;
-        }
-        setError(err instanceof Error ? err.message : "Something went wrong");
-      }
-    } else {
+  const scanFromDirHandle = useCallback(
+    async (dirHandle: FileSystemDirectoryHandle) => {
+      const files = await getAllFilesFromDirHandle(dirHandle);
+      await scanFiles(files);
+      await saveDirHandle(dirHandle);
+    },
+    [scanFiles]
+  );
+
+  const handleCreateMap = async (forcePicker = false) => {
+    if (!supportsDirectoryPicker()) {
       fileInputRef.current?.click();
+      return;
+    }
+    try {
+      if (!forcePicker) {
+        const stored = await getStoredDirHandle();
+        if (stored) {
+          const perm = await stored.requestPermission?.({ mode: "read" });
+          if (perm === "granted") {
+            await scanFromDirHandle(stored);
+            return;
+          }
+        }
+      } else {
+        await clearStoredDirHandle();
+      }
+      const dirHandle = await window.showDirectoryPicker!({
+        mode: "read",
+        startIn: "pictures",
+      });
+      await scanFromDirHandle(dirHandle);
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        return;
+      }
+      setError(err instanceof Error ? err.message : "Something went wrong");
     }
   };
 
@@ -335,6 +357,27 @@ export default function PhotoMapPage() {
     setError(null);
     fileInputRef.current?.click();
   };
+
+  useEffect(() => {
+    if (phase !== "onboarding" || !supportsDirectoryPicker()) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const stored = await getStoredDirHandle();
+        if (!stored || cancelled) return;
+        const perm = await stored.requestPermission?.({ mode: "read" });
+        if (perm !== "granted" || cancelled) return;
+        const files = await getAllFilesFromDirHandle(stored);
+        if (cancelled || files.length === 0) return;
+        await scanFiles(files);
+      } catch {
+        // No stored handle or permission denied - stay on onboarding
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [phase, scanFiles]);
 
   if (phase === "scanning") {
     return <ScanningProgress progress={progress} photosFound={photosFound} t={t} />;
@@ -565,7 +608,7 @@ export default function PhotoMapPage() {
 
       <button
         type="button"
-        onClick={handleCreateMap}
+        onClick={() => handleCreateMap()}
         style={{
           width: "100%",
           maxWidth: "320px",
@@ -619,6 +662,25 @@ export default function PhotoMapPage() {
           text={t.photoMapTrustFree ?? "Free"}
         />
       </div>
+
+      {supportsDirectoryPicker() && (
+        <button
+          type="button"
+          onClick={() => handleCreateMap(true)}
+          style={{
+            marginTop: "16px",
+            background: "transparent",
+            border: "none",
+            color: "#00BABA",
+            fontSize: "14px",
+            fontWeight: "600",
+            cursor: "pointer",
+            textDecoration: "underline",
+          }}
+        >
+          {t.photoMapChooseDifferentFolder ?? "Choose different folder"}
+        </button>
+      )}
 
       <Link
         href={`/discover?lang=${lang}`}

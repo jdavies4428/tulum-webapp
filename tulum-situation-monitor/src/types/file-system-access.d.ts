@@ -1,15 +1,19 @@
 /* File System Access API - not in lib.dom yet */
-interface FileSystemDirectoryHandle {
-  kind: "directory";
+interface FileSystemHandle {
+  kind: "file" | "directory";
   name: string;
+  requestPermission?(options?: { mode?: "read" | "readwrite" }): Promise<PermissionState>;
+}
+
+interface FileSystemDirectoryHandle extends FileSystemHandle {
+  kind: "directory";
   getDirectoryHandle(name: string, options?: { create?: boolean }): Promise<FileSystemDirectoryHandle>;
   getFileHandle(name: string, options?: { create?: boolean }): Promise<FileSystemFileHandle>;
   values(): AsyncIterableIterator<FileSystemDirectoryHandle | FileSystemFileHandle>;
 }
 
-interface FileSystemFileHandle {
+interface FileSystemFileHandle extends FileSystemHandle {
   kind: "file";
-  name: string;
   getFile(): Promise<File>;
 }
 
