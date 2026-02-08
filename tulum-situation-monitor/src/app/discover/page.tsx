@@ -210,7 +210,6 @@ export default function DiscoverPage() {
   return (
     <div
       style={{
-        height: "100vh",
         height: "100dvh",
         overflowY: "auto",
         overflowX: "hidden",
