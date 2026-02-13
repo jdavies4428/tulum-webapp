@@ -5,10 +5,14 @@ import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 import type { CurrenciesRates } from "@/app/api/currencies/route";
 
+// Match sidebar CurrenciesPanel: all currencies with rates to MXN
 const CURRENCIES = [
   { code: "USD", flag: "🇺🇸" },
-  { code: "EUR", flag: "🇪🇺" },
   { code: "CAD", flag: "🇨🇦" },
+  { code: "EUR", flag: "🇪🇺" },
+  { code: "ARS", flag: "🇦🇷" },
+  { code: "AUD", flag: "🇦🇺" },
+  { code: "BRL", flag: "🇧🇷" },
   { code: "MXN", flag: "🇲🇽" },
 ];
 
