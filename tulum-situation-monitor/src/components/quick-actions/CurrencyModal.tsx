@@ -143,7 +143,7 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
               background: "var(--bg-panel)",
             }}
           >
-            {CURRENCIES.filter((c) => c.code !== toCurrency).map((c) => (
+            {CURRENCIES.map((c) => (
               <option key={c.code} value={c.code}>
                 {c.flag} {c.code}
               </option>
@@ -177,7 +177,7 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
               background: "var(--bg-panel)",
             }}
           >
-            {CURRENCIES.filter((c) => c.code !== fromCurrency).map((c) => (
+            {CURRENCIES.map((c) => (
               <option key={c.code} value={c.code}>
                 {c.flag} {c.code}
               </option>
