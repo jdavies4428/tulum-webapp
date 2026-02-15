@@ -80,7 +80,7 @@ export function TaxiModal({ lang, onClose }: TaxiModalProps) {
   const title = t.callTaxi ?? "Call a Taxi";
 
   return (
-    <Modal isOpen onClose={onClose} maxWidth="420px">
+    <Modal isOpen onClose={onClose} size="sm">
       <div style={{ padding: spacing.lg }}>
         {/* Header */}
         <h2

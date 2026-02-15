@@ -62,7 +62,7 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
   };
 
   return (
-    <Modal isOpen onClose={onClose} maxWidth="420px">
+    <Modal isOpen onClose={onClose} size="sm">
       <div style={{ padding: spacing.lg }}>
         {/* Header */}
         <h2

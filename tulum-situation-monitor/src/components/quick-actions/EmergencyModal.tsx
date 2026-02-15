@@ -23,7 +23,7 @@ export function EmergencyModal({ lang, onClose }: EmergencyModalProps) {
   const title = t.emergencyServices ?? "Emergency Services";
 
   return (
-    <Modal isOpen onClose={onClose} maxWidth="400px">
+    <Modal isOpen onClose={onClose} size="sm">
       <div style={{ padding: spacing.lg }}>
         {/* Header */}
         <h2
