@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { spacing, shadows } from "@/lib/design-tokens";
 import { EmergencyModal } from "./EmergencyModal";
 import { TaxiModal } from "./TaxiModal";
 import type { Lang } from "@/lib/weather";
@@ -122,12 +123,15 @@ export function QuickActionsFAB() {
       {isExpanded && (
         <div
           onClick={() => setIsExpanded(false)}
+          className="spring-slide-up"
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(0, 0, 0, 0.5)",
-            backdropFilter: "blur(4px)",
+            background: "rgba(0, 0, 0, 0.6)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
             zIndex: 998,
+            animation: "fadeIn 0.3s ease-out",
           }}
           aria-hidden
         />
@@ -137,12 +141,12 @@ export function QuickActionsFAB() {
         style={{
           position: "fixed",
           bottom,
-          right: 24,
+          right: spacing.lg,
           zIndex: 999,
           display: "flex",
           flexDirection: "column-reverse",
           alignItems: "flex-end",
-          gap: 12,
+          gap: spacing.md,
         }}
       >
         {isExpanded &&
@@ -151,7 +155,7 @@ export function QuickActionsFAB() {
               key={action.id}
               type="button"
               onClick={() => handleAction(action.id)}
-              className="quick-action-fab-item"
+              className="quick-action-fab-item hover-scale"
               data-index={index}
               style={{
                 width: 56,
@@ -164,14 +168,18 @@ export function QuickActionsFAB() {
                     ? "linear-gradient(135deg, #FF0000 0%, #CC0000 100%)"
                     : `linear-gradient(135deg, ${action.color} 0%, ${action.color}DD 100%)`,
                 border: "none",
-                boxShadow: `0 8px 24px ${action.color}40`,
+                boxShadow: action.priority === "critical"
+                  ? "0 8px 32px rgba(255, 0, 0, 0.5)"
+                  : `0 8px 24px ${action.color}60`,
                 cursor: "pointer",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 2,
+                gap: `${spacing.xs}px`,
                 position: "relative",
+                animation: `spring-slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.05}s both`,
+                transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
               }}
             >
               <span style={{ fontSize: 24 }}>{action.icon}</span>
@@ -206,7 +214,7 @@ export function QuickActionsFAB() {
           onClick={() => setIsExpanded(!isExpanded)}
           aria-expanded={isExpanded}
           aria-label={isExpanded ? "Close quick actions" : "Open quick actions"}
-          className="quick-action-fab-main"
+          className="quick-action-fab-main shadow-glow"
           style={{
             width: 64,
             height: 64,
@@ -215,14 +223,16 @@ export function QuickActionsFAB() {
               ? "linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
               : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
             border: "none",
-            boxShadow: "0 8px 32px rgba(0, 206, 209, 0.4)",
+            boxShadow: isExpanded
+              ? "0 8px 32px rgba(255, 107, 107, 0.5)"
+              : "0 8px 32px rgba(0, 206, 209, 0.5)",
             cursor: "pointer",
             fontSize: 28,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             transform: isExpanded ? "rotate(45deg) scale(1.1)" : "rotate(0deg) scale(1)",
-            transition: "transform 0.3s ease, background 0.3s ease",
+            transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         >
           ⚡

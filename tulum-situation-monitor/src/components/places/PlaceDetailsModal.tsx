@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { usePlaceDetails, getPlacePhotoUrl } from "@/hooks/usePlaceDetails";
 import { translations } from "@/lib/i18n";
+import { spacing, radius } from "@/lib/design-tokens";
+import { Modal } from "@/components/ui/Modal";
+import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Lang } from "@/lib/weather";
 
@@ -29,9 +32,10 @@ function ActionButton({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      className="hover-lift interactive"
       style={{
-        padding: "12px",
-        borderRadius: "10px",
+        padding: `${spacing.md}px`,
+        borderRadius: radius.md,
         background: color,
         color: "white",
         fontSize: "13px",
@@ -41,8 +45,10 @@ function ActionButton({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: "4px",
+        gap: `${spacing.xs}px`,
         textDecoration: "none",
+        boxShadow: `0 4px 12px ${color}40`,
+        transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
       }}
     >
       <span style={{ fontSize: "18px" }}>{icon}</span>
@@ -70,6 +76,7 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
     <>
       <div
         onClick={onClose}
+        className="spring-slide-up"
         style={{
           position: "fixed",
           top: 0,
@@ -77,27 +84,31 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
           right: 0,
           bottom: 0,
           background: "rgba(0, 0, 0, 0.7)",
-          backdropFilter: "blur(4px)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
           zIndex: 9998,
+          animation: "fadeIn 0.3s ease-out",
         }}
         aria-hidden
       />
 
       <div
+        className="spring-slide-up"
         style={{
           position: "fixed",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          background: "rgba(10, 4, 4, 0.98)",
-          backdropFilter: "blur(20px)",
-          borderRadius: "20px",
-          border: "1px solid rgba(255, 255, 255, 0.15)",
+          background: "rgba(255, 255, 255, 0.95)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          borderRadius: radius.xl,
+          border: "1px solid rgba(0, 206, 209, 0.2)",
           width: "90%",
           maxWidth: "700px",
           maxHeight: "90vh",
           overflow: "hidden",
-          boxShadow: "0 20px 60px rgba(0, 0, 0, 0.8)",
+          boxShadow: "0 20px 60px rgba(0, 206, 209, 0.3)",
           zIndex: 9999,
           display: "flex",
           flexDirection: "column",
@@ -108,19 +119,20 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
           type="button"
           onClick={onClose}
           aria-label="Close"
+          className="glass hover-scale interactive"
           style={{
             position: "absolute",
-            top: "16px",
-            right: "16px",
+            top: spacing.md,
+            right: spacing.md,
             width: "40px",
             height: "40px",
             borderRadius: "50%",
-            background: "rgba(0, 0, 0, 0.6)",
-            border: "none",
-            color: "#FFF",
+            border: "2px solid rgba(0, 206, 209, 0.3)",
+            color: "var(--tulum-ocean)",
             fontSize: "20px",
             cursor: "pointer",
             zIndex: 10,
+            boxShadow: "0 4px 12px rgba(0, 206, 209, 0.2)",
           }}
         >
           ✕
@@ -171,24 +183,26 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
               }}
             >
               <div
+                className="glass-heavy"
                 style={{
                   position: "absolute",
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  padding: "20px",
-                  background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%)",
+                  padding: spacing.lg,
+                  border: "none",
+                  borderTop: "1px solid rgba(255, 255, 255, 0.3)",
                 }}
               >
-                <h2 style={{ color: "#FFD700", fontSize: "22px", fontWeight: 700, margin: "0 0 8px 0" }}>
+                <h2 style={{ color: "var(--tulum-ocean)", fontSize: "22px", fontWeight: 700, margin: `0 0 ${spacing.sm}px 0` }}>
                   {details.name ?? placeName}
                 </h2>
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: spacing.md, flexWrap: "wrap" }}>
                   {details.rating != null && (
-                    <span style={{ color: "#FFF", fontWeight: 600 }}>
+                    <span style={{ color: "#333", fontWeight: 600 }}>
                       ★ {details.rating}
                       {details.user_ratings_total != null && (
-                        <span style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", marginLeft: "4px" }}>
+                        <span style={{ color: "#666", fontSize: "13px", marginLeft: spacing.xs }}>
                           ({details.user_ratings_total})
                         </span>
                       )}
@@ -202,11 +216,11 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
                   {details.opening_hours && (
                     <span
                       style={{
-                        padding: "4px 10px",
-                        borderRadius: "8px",
+                        padding: `${spacing.xs}px ${spacing.sm}px`,
+                        borderRadius: radius.sm,
                         background: details.opening_hours.open_now
-                          ? "rgba(16, 185, 129, 0.2)"
-                          : "rgba(239, 68, 68, 0.2)",
+                          ? "rgba(16, 185, 129, 0.15)"
+                          : "rgba(239, 68, 68, 0.15)",
                         color: details.opening_hours.open_now ? "#10B981" : "#EF4444",
                         fontSize: "12px",
                         fontWeight: 600,
@@ -221,11 +235,12 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
 
             {/* Tabs */}
             <div
+              className="glass"
               style={{
                 display: "flex",
-                borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                padding: "0 20px",
-                background: "rgba(0, 0, 0, 0.3)",
+                borderBottom: "1px solid rgba(0, 206, 209, 0.15)",
+                padding: `0 ${spacing.lg}px`,
+                border: "none",
               }}
             >
               {(["overview", "photos", "reviews"] as const).map((tab) => (
@@ -233,16 +248,18 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
                   key={tab}
                   type="button"
                   onClick={() => setActiveTab(tab)}
+                  className="interactive"
                   style={{
-                    padding: "12px 16px",
+                    padding: `${spacing.md}px ${spacing.md}px`,
                     background: "transparent",
                     border: "none",
-                    borderBottom: activeTab === tab ? "3px solid #00D4D4" : "3px solid transparent",
-                    color: activeTab === tab ? "#FFF" : "rgba(255,255,255,0.6)",
+                    borderBottom: activeTab === tab ? "3px solid #00CED1" : "3px solid transparent",
+                    color: activeTab === tab ? "var(--tulum-ocean)" : "#666",
                     fontSize: "14px",
                     fontWeight: 600,
                     cursor: "pointer",
                     textTransform: "capitalize",
+                    transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                   }}
                 >
                   {tab === "overview" && (t.placeOverview ?? "Overview")}
@@ -253,41 +270,41 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
             </div>
 
             {/* Content */}
-            <div style={{ flex: 1, overflowY: "auto", padding: "20px" }}>
+            <div style={{ flex: 1, overflowY: "auto", padding: spacing.lg }}>
               {activeTab === "overview" && (
-                <div>
+                <div className="spring-slide-up">
                   {details.formatted_address && (
-                    <div style={{ marginBottom: "16px" }}>
-                      <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", marginBottom: "4px", textTransform: "uppercase" }}>
+                    <div style={{ marginBottom: spacing.md }}>
+                      <div style={{ fontSize: "11px", color: "#666", marginBottom: spacing.xs, textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.5px" }}>
                         {t.placeAddress ?? "Address"}
                       </div>
-                      <div style={{ color: "#FFF", fontSize: "14px" }}>{details.formatted_address}</div>
+                      <div style={{ color: "#333", fontSize: "14px" }}>{details.formatted_address}</div>
                     </div>
                   )}
-                  <div style={{ marginBottom: "16px" }}>
-                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", marginBottom: "4px", textTransform: "uppercase" }}>
+                  <div style={{ marginBottom: spacing.md }}>
+                    <div style={{ fontSize: "11px", color: "#666", marginBottom: spacing.xs, textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.5px" }}>
                       {t.placeContact ?? "Contact"}
                     </div>
-                    {phone && <div style={{ color: "#FFF", fontSize: "14px", marginBottom: "6px" }}>📞 {phone}</div>}
+                    {phone && <div style={{ color: "#333", fontSize: "14px", marginBottom: spacing.sm }}>📞 {phone}</div>}
                     {details.website && (
-                      <a href={details.website} target="_blank" rel="noopener noreferrer" style={{ color: "#00D4D4", fontSize: "14px" }}>
+                      <a href={details.website} target="_blank" rel="noopener noreferrer" className="interactive" style={{ color: "var(--tulum-ocean)", fontSize: "14px", transition: "all 0.2s" }}>
                         🌐 {t.visitWebsite ?? "Visit Website"} →
                       </a>
                     )}
                   </div>
                   {details.opening_hours?.weekday_text && details.opening_hours.weekday_text.length > 0 && (
-                    <div style={{ marginBottom: "20px" }}>
-                      <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.5)", marginBottom: "4px", textTransform: "uppercase" }}>
+                    <div style={{ marginBottom: spacing.lg }}>
+                      <div style={{ fontSize: "11px", color: "#666", marginBottom: spacing.xs, textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.5px" }}>
                         {t.placeHours ?? "Hours"}
                       </div>
                       {details.opening_hours.weekday_text.map((day, i) => (
-                        <div key={i} style={{ color: "rgba(255,255,255,0.8)", fontSize: "13px", marginBottom: "2px" }}>
+                        <div key={i} style={{ color: "#555", fontSize: "13px", marginBottom: spacing.xs }}>
                           {day}
                         </div>
                       ))}
                     </div>
                   )}
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(70px, 1fr))", gap: "8px", marginTop: "16px" }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(70px, 1fr))", gap: spacing.sm, marginTop: spacing.md }}>
                     {details.website && <ActionButton href={details.website} icon="🌐" label={t.website ?? "Website"} color="#00D4D4" />}
                     {phone && <ActionButton href={`tel:${phone.replace(/\D/g, "")}`} icon="📞" label="Call" color="#4A90E2" />}
                     {phone && (
@@ -304,9 +321,9 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
               )}
 
               {activeTab === "photos" && (
-                <div>
+                <div className="spring-slide-up">
                   {!details.photos || details.photos.length === 0 ? (
-                    <div style={{ color: "rgba(255,255,255,0.5)", textAlign: "center", padding: "24px" }}>
+                    <div style={{ color: "#666", textAlign: "center", padding: spacing.lg }}>
                       {t.noPhotos ?? "No photos available"}
                     </div>
                   ) : (
@@ -314,23 +331,32 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
                       <img
                         src={getPlacePhotoUrl(details.photos[selectedPhotoIndex].photo_reference, 800)}
                         alt=""
-                        style={{ width: "100%", height: "240px", objectFit: "cover", borderRadius: "12px" }}
+                        className="hover-scale"
+                        style={{
+                          width: "100%",
+                          height: "240px",
+                          objectFit: "cover",
+                          borderRadius: radius.md,
+                          transition: "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                        }}
                       />
-                      <div style={{ display: "flex", gap: "8px", marginTop: "12px", overflowX: "auto", paddingBottom: "8px" }}>
+                      <div style={{ display: "flex", gap: spacing.sm, marginTop: spacing.md, overflowX: "auto", paddingBottom: spacing.sm }}>
                         {details.photos.map((photo, i) => (
                           <button
                             key={i}
                             type="button"
                             onClick={() => setSelectedPhotoIndex(i)}
+                            className="hover-scale interactive"
                             style={{
                               flexShrink: 0,
                               width: "60px",
                               height: "60px",
-                              borderRadius: "8px",
+                              borderRadius: radius.sm,
                               overflow: "hidden",
-                              border: selectedPhotoIndex === i ? "3px solid #00D4D4" : "2px solid transparent",
+                              border: selectedPhotoIndex === i ? "3px solid #00CED1" : "2px solid rgba(0, 206, 209, 0.2)",
                               padding: 0,
                               cursor: "pointer",
+                              boxShadow: selectedPhotoIndex === i ? "0 4px 12px rgba(0, 206, 209, 0.3)" : "none",
                             }}
                           >
                             <img
@@ -347,44 +373,44 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
               )}
 
               {activeTab === "reviews" && (
-                <div>
+                <div className="spring-slide-up">
                   {!details.reviews || details.reviews.length === 0 ? (
-                    <div style={{ color: "rgba(255,255,255,0.5)", textAlign: "center", padding: "24px" }}>
+                    <div style={{ color: "#666", textAlign: "center", padding: spacing.lg }}>
                       {t.noReviews ?? "No reviews yet"}
                     </div>
                   ) : (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: spacing.md }}>
                       {[...details.reviews].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0)).map((review, i) => (
                         <div
                           key={i}
+                          className="glass-heavy hover-lift"
                           style={{
-                            background: "rgba(255,255,255,0.05)",
-                            borderRadius: "12px",
-                            padding: "14px",
-                            border: "1px solid rgba(255,255,255,0.1)",
+                            borderRadius: radius.md,
+                            padding: spacing.md,
+                            border: "1px solid rgba(0, 206, 209, 0.15)",
                           }}
                         >
-                          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: spacing.sm, marginBottom: spacing.sm }}>
                             {review.profile_photo_url && (
                               <img
                                 src={review.profile_photo_url}
                                 alt=""
-                                style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover" }}
+                                style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(0, 206, 209, 0.2)" }}
                               />
                             )}
                             <div style={{ flex: 1 }}>
-                              <div style={{ fontWeight: 600, color: "#FFF", fontSize: "14px" }}>{review.author_name}</div>
-                              <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>{review.relative_time_description}</div>
+                              <div style={{ fontWeight: 600, color: "#333", fontSize: "14px" }}>{review.author_name}</div>
+                              <div style={{ fontSize: "12px", color: "#666" }}>{review.relative_time_description}</div>
                             </div>
                             <div style={{ display: "flex", gap: "2px" }}>
                               {[1, 2, 3, 4, 5].map((star) => (
-                                <span key={star} style={{ color: (review.rating ?? 0) >= star ? "#FFD700" : "rgba(255,255,255,0.2)", fontSize: "14px" }}>
+                                <span key={star} style={{ color: (review.rating ?? 0) >= star ? "#FFD700" : "rgba(0, 0, 0, 0.15)", fontSize: "14px" }}>
                                   ★
                                 </span>
                               ))}
                             </div>
                           </div>
-                          <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "13px", lineHeight: 1.5, margin: 0 }}>
+                          <p style={{ color: "#555", fontSize: "13px", lineHeight: 1.5, margin: 0 }}>
                             {review.text}
                           </p>
                         </div>

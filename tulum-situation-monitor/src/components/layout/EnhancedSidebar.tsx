@@ -14,6 +14,9 @@ import { SargassumCurrentModal } from "@/components/sargassum/SargassumCurrentMo
 import { SargassumForecastModal } from "@/components/sargassum/SargassumForecastModal";
 import { WebcamModal } from "@/components/webcam/WebcamModal";
 import { generateAlerts } from "@/lib/alerts";
+import { spacing, radius } from "@/lib/design-tokens";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
 import type { Lang } from "@/lib/weather";
 import type { OpenMeteoResponse } from "@/types/weather";
 import type { TideState } from "@/hooks/useTides";
@@ -130,56 +133,44 @@ export function EnhancedSidebar({
           type="button"
           onClick={onToggle}
           aria-label={isCollapsed ? "Show sidebar" : "Hide sidebar"}
+          className="glass hover-scale interactive"
           style={{
             position: "fixed",
-            left: isCollapsed ? "16px" : "384px",
-            top: "16px",
+            left: isCollapsed ? `${spacing.md}px` : "384px",
+            top: `${spacing.md}px`,
             zIndex: 10001,
-          width: "44px",
-          height: "44px",
-          borderRadius: "12px",
-          background: "rgba(255, 255, 255, 0.95)",
-          backdropFilter: "blur(20px)",
-          border: "2px solid rgba(0, 206, 209, 0.3)",
-          color: "var(--tulum-ocean)",
-          fontSize: "20px",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-          boxShadow: "0 4px 20px rgba(0, 206, 209, 0.2)",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "scale(1.05)";
-          e.currentTarget.style.background = "rgba(0, 206, 209, 0.15)";
-          e.currentTarget.style.borderColor = "rgba(0, 206, 209, 0.5)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "scale(1)";
-          e.currentTarget.style.background = "rgba(255, 255, 255, 0.95)";
-          e.currentTarget.style.borderColor = "rgba(0, 206, 209, 0.3)";
-        }}
-      >
-        {isCollapsed ? "→" : "←"}
-      </button>
+            width: "44px",
+            height: "44px",
+            borderRadius: radius.md,
+            border: "2px solid rgba(0, 206, 209, 0.3)",
+            color: "var(--tulum-ocean)",
+            fontSize: "20px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 4px 20px rgba(0, 206, 209, 0.2)",
+          }}
+        >
+          {isCollapsed ? "→" : "←"}
+        </button>
       )}
 
       {/* Sidebar outer container – fully hidden when collapsed */}
       <div
-        className="sidebar"
+        className={`sidebar ${!isCollapsed ? "glass-medium" : ""}`}
         style={{
           position: "fixed",
           left: 0,
           top: 0,
           width: sidebarWidth,
           height: "100vh",
-          background: isCollapsed ? "transparent" : "linear-gradient(180deg, #FFF8E7 0%, #E0F7FA 30%, #FFFFFF 100%)",
-          backdropFilter: isCollapsed ? "none" : "blur(20px)",
-          borderRight: isCollapsed ? "none" : "1px solid rgba(0, 206, 209, 0.2)",
-          boxShadow: isCollapsed ? "none" : "4px 0 24px rgba(0, 206, 209, 0.12)",
+          background: isCollapsed ? "transparent" : "rgba(255, 255, 255, 0.85)",
+          backdropFilter: isCollapsed ? "none" : "blur(24px)",
+          WebkitBackdropFilter: isCollapsed ? "none" : "blur(24px)",
+          borderRight: isCollapsed ? "none" : "1px solid rgba(0, 206, 209, 0.15)",
+          boxShadow: isCollapsed ? "none" : "4px 0 32px rgba(0, 206, 209, 0.15)",
           transform: isCollapsed ? "translateX(-100%)" : "translateX(0)",
-          transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease",
+          transition: "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.3s ease",
           zIndex: 100,
           overflow: "hidden",
           pointerEvents: isCollapsed ? "none" : "auto",
@@ -205,55 +196,56 @@ export function EnhancedSidebar({
               flexDirection: "column",
             }}
           >
-        {/* Header - Beachy gradient (compact) */}
-        <div
+        {/* Header - Modern glass card (compact) */}
+        <Card
+          variant="glass"
+          hover={false}
+          padding="md"
           style={{
-            padding: "12px 20px",
-            borderBottom: "1px solid var(--border-subtle)",
-            background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 50%, #FFE4CC 100%)",
             position: "sticky",
             top: 0,
             zIndex: 10,
-            borderRadius: "0 0 24px 24px",
-            boxShadow: "0 8px 32px rgba(0, 206, 209, 0.12)",
+            borderRadius: `0 0 ${radius.xl}px ${radius.xl}px`,
+            border: "none",
+            borderBottom: "1px solid rgba(0, 206, 209, 0.15)",
           }}
         >
-          <h1
-            style={{
-              fontSize: "22px",
-              fontWeight: "800",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              margin: "0 0 4px 0",
-              color: "var(--tulum-ocean)",
-            }}
-          >
-            🌴 <span>{t.title}</span>
-          </h1>
-          <p style={{ color: "var(--text-secondary)", fontSize: "13px", margin: 0, fontWeight: "500" }}>
-            {t.subtitle}
-          </p>
+          <CardContent>
+            <h1
+              style={{
+                fontSize: "22px",
+                fontWeight: "800",
+                display: "flex",
+                alignItems: "center",
+                gap: `${spacing.sm}px`,
+                margin: `0 0 ${spacing.xs}px 0`,
+                color: "var(--tulum-ocean)",
+              }}
+            >
+              🌴 <span>{t.title}</span>
+            </h1>
+            <p style={{ color: "var(--text-secondary)", fontSize: "13px", margin: 0, fontWeight: "500" }}>
+              {t.subtitle}
+            </p>
 
           {/* Language, Share, User circle row */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "8px",
-              marginTop: "12px",
+              gap: `${spacing.sm}px`,
+              marginTop: `${spacing.md}px`,
             }}
           >
             <div
+              className="glass-heavy hover-lift"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "4px",
-                background: "rgba(255, 255, 255, 0.9)",
-                borderRadius: "10px",
-                padding: "4px",
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
-                border: "2px solid rgba(0, 206, 209, 0.2)",
+                gap: `${spacing.xs}px`,
+                borderRadius: radius.md,
+                padding: `${spacing.xs}px`,
+                border: "2px solid rgba(0, 206, 209, 0.3)",
               }}
             >
               {LANG_FLAGS.map(({ lang: l, flag }) => (
@@ -261,14 +253,16 @@ export function EnhancedSidebar({
                   key={l}
                   type="button"
                   onClick={() => onLanguageChange(l)}
+                  className={lang === l ? "interactive" : "hover-scale interactive"}
                   style={{
-                    background: lang === l ? "var(--button-primary)" : "transparent",
+                    background: lang === l ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)" : "transparent",
                     border: "none",
                     fontSize: "18px",
                     cursor: "pointer",
-                    padding: "4px 6px",
-                    borderRadius: "6px",
-                    transition: "all 0.2s",
+                    padding: `${spacing.xs}px ${spacing.sm}px`,
+                    borderRadius: radius.sm,
+                    transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                    boxShadow: lang === l ? "0 2px 8px rgba(0, 206, 209, 0.3)" : "none",
                   }}
                 >
                   {flag}
@@ -293,15 +287,13 @@ export function EnhancedSidebar({
                     prompt("Copy this link:", shareText + "\n" + url);
                   }
                 }}
+                className="glass-heavy hover-scale interactive"
                 style={{
-                  background: "rgba(255, 255, 255, 0.9)",
-                  border: "2px solid rgba(0, 206, 209, 0.2)",
+                  border: "2px solid rgba(0, 206, 209, 0.3)",
                   fontSize: "18px",
                   cursor: "pointer",
-                  padding: "4px 6px",
-                  borderRadius: "8px",
-                  transition: "all 0.2s",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+                  padding: `${spacing.xs}px ${spacing.sm}px`,
+                  borderRadius: radius.md,
                 }}
               >
                 📤
@@ -315,34 +307,30 @@ export function EnhancedSidebar({
               )}
             </div>
           </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Local Events – full-width button above Discover/Places/Map */}
         <div
           style={{
-            padding: "12px 24px 0",
-            borderBottom: "1px solid var(--border-subtle)",
-            background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
+            padding: `${spacing.md}px ${spacing.lg}px 0`,
           }}
         >
           <Link
             href={`/discover/events?lang=${lang}`}
+            className="btn btn-primary hover-lift"
             style={{
               width: "100%",
-              padding: "14px 12px",
-              background: "linear-gradient(135deg, #00CED1 0%, #4DD0E1 100%)",
-              border: "none",
-              borderRadius: "20px",
+              padding: `${spacing.md}px ${spacing.md}px`,
+              borderRadius: radius.xl,
               color: "#FFF",
               fontWeight: "700",
               fontSize: "14px",
-              cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: "8px",
-              marginBottom: "12px",
-              transition: "all 0.3s",
+              gap: `${spacing.sm}px`,
+              marginBottom: `${spacing.md}px`,
               textDecoration: "none",
               boxShadow: "0 6px 20px rgba(0, 206, 209, 0.35)",
             }}
@@ -354,21 +342,20 @@ export function EnhancedSidebar({
         {/* Action buttons - Beachy gradients (Discover, Places, Map) */}
         <div
           style={{
-            padding: "16px 24px",
+            padding: `${spacing.md}px ${spacing.lg}px`,
             display: "flex",
-            gap: "12px",
-            borderBottom: "1px solid var(--border-subtle)",
-            background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
+            gap: `${spacing.md}px`,
           }}
         >
           <Link
             href={`/discover?lang=${lang}`}
+            className="hover-lift interactive"
             style={{
               flex: 1,
-              padding: "14px 12px",
+              padding: `${spacing.md}px ${spacing.md}px`,
               background: "linear-gradient(135deg, #FFE4CC 0%, #FFD4B8 100%)",
               border: "none",
-              borderRadius: "20px",
+              borderRadius: radius.xl,
               color: "#333",
               fontWeight: "700",
               fontSize: "14px",
@@ -376,8 +363,7 @@ export function EnhancedSidebar({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: "8px",
-              transition: "all 0.3s",
+              gap: `${spacing.sm}px`,
               textDecoration: "none",
               boxShadow: "0 6px 20px rgba(255, 153, 102, 0.2)",
             }}
@@ -387,12 +373,13 @@ export function EnhancedSidebar({
           <button
             type="button"
             onClick={onOpenPlaces}
+            className="hover-lift interactive"
             style={{
               flex: 1,
-              padding: "14px 12px",
+              padding: `${spacing.md}px ${spacing.md}px`,
               background: "linear-gradient(135deg, #FFB6C1 0%, #FF9AA2 100%)",
               border: "none",
-              borderRadius: "20px",
+              borderRadius: radius.xl,
               color: "#333",
               fontWeight: "700",
               fontSize: "14px",
@@ -400,8 +387,7 @@ export function EnhancedSidebar({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: "8px",
-              transition: "all 0.3s",
+              gap: `${spacing.sm}px`,
               boxShadow: "0 6px 20px rgba(255, 107, 107, 0.2)",
             }}
           >
@@ -411,12 +397,13 @@ export function EnhancedSidebar({
             <button
               type="button"
               onClick={onOpenMap}
+              className="hover-lift interactive"
               style={{
                 flex: 1,
-                padding: "14px 12px",
+                padding: `${spacing.md}px ${spacing.md}px`,
                 background: "linear-gradient(135deg, #B8E6F0 0%, #A0D8E8 100%)",
                 border: "none",
-                borderRadius: "20px",
+                borderRadius: radius.xl,
                 color: "#333",
                 fontWeight: "700",
                 fontSize: "14px",
@@ -424,8 +411,7 @@ export function EnhancedSidebar({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: "8px",
-                transition: "all 0.3s",
+                gap: `${spacing.sm}px`,
                 boxShadow: "0 6px 20px rgba(77, 208, 225, 0.25)",
               }}
             >
@@ -437,8 +423,7 @@ export function EnhancedSidebar({
         {/* Sargassum Monitoring – label + quick links */}
         <div
           style={{
-            padding: "12px 24px",
-            borderBottom: "1px solid var(--border-subtle)",
+            padding: `${spacing.md}px ${spacing.lg}px`,
           }}
         >
           <div
@@ -446,8 +431,9 @@ export function EnhancedSidebar({
               fontSize: "11px",
               fontWeight: "700",
               color: "var(--text-secondary)",
-              marginBottom: "8px",
+              marginBottom: `${spacing.sm}px`,
               letterSpacing: "0.3px",
+              textTransform: "uppercase",
             }}
           >
             {tAny.sargassumMonitoring ?? "Sargassum Monitoring"}
@@ -456,17 +442,17 @@ export function EnhancedSidebar({
             style={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr 1fr",
-              gap: "8px",
+              gap: `${spacing.sm}px`,
             }}
           >
           <button
             type="button"
             onClick={() => setSargassumCurrentOpen(true)}
+            className="glass-heavy hover-lift interactive"
             style={{
-              padding: "10px 8px",
-              background: "rgba(255, 255, 255, 0.9)",
-              border: "2px solid rgba(0, 206, 209, 0.2)",
-              borderRadius: "12px",
+              padding: `${spacing.sm}px ${spacing.sm}px`,
+              border: "2px solid rgba(0, 206, 209, 0.3)",
+              borderRadius: radius.md,
               color: "var(--tulum-ocean)",
               fontSize: "10px",
               fontWeight: "600",
@@ -475,10 +461,9 @@ export function EnhancedSidebar({
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: "4px",
+              gap: `${spacing.xs}px`,
               minWidth: 0,
               minHeight: "56px",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
             <span style={{ flexShrink: 0, fontSize: "16px" }}>🛰️</span>
@@ -487,11 +472,11 @@ export function EnhancedSidebar({
           <button
             type="button"
             onClick={() => setSargassumForecastOpen(true)}
+            className="glass-heavy hover-lift interactive"
             style={{
-              padding: "10px 8px",
-              background: "rgba(255, 255, 255, 0.9)",
-              border: "2px solid rgba(0, 206, 209, 0.2)",
-              borderRadius: "12px",
+              padding: `${spacing.sm}px ${spacing.sm}px`,
+              border: "2px solid rgba(0, 206, 209, 0.3)",
+              borderRadius: radius.md,
               color: "var(--tulum-ocean)",
               fontSize: "10px",
               fontWeight: "600",
@@ -500,10 +485,9 @@ export function EnhancedSidebar({
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: "4px",
+              gap: `${spacing.xs}px`,
               minWidth: 0,
               minHeight: "56px",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
             <span style={{ flexShrink: 0, fontSize: "16px" }}>🗺️</span>
@@ -512,11 +496,11 @@ export function EnhancedSidebar({
           <button
             type="button"
             onClick={() => setWebcamOpen(true)}
+            className="glass-heavy hover-lift interactive"
             style={{
-              padding: "10px 8px",
-              background: "rgba(255, 255, 255, 0.9)",
-              border: "2px solid rgba(0, 206, 209, 0.2)",
-              borderRadius: "12px",
+              padding: `${spacing.sm}px ${spacing.sm}px`,
+              border: "2px solid rgba(0, 206, 209, 0.3)",
+              borderRadius: radius.md,
               color: "var(--tulum-ocean)",
               fontSize: "10px",
               fontWeight: "600",
@@ -525,10 +509,9 @@ export function EnhancedSidebar({
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: "4px",
+              gap: `${spacing.xs}px`,
               minWidth: 0,
               minHeight: "56px",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
             <span style={{ flexShrink: 0, fontSize: "16px" }}>📹</span>
@@ -538,7 +521,15 @@ export function EnhancedSidebar({
         </div>
 
         {/* Content sections */}
-        <div style={{ flex: 1, padding: "16px 24px", display: "flex", flexDirection: "column", gap: "12px", background: "linear-gradient(180deg, #FFFFFF 0%, #FFF8E7 100%)" }}>
+        <div
+          style={{
+            flex: 1,
+            padding: `${spacing.md}px ${spacing.lg}px ${spacing.xl}px`,
+            display: "flex",
+            flexDirection: "column",
+            gap: `${spacing.md}px`,
+          }}
+        >
           <WeatherSection
             lang={lang}
             data={weatherData}

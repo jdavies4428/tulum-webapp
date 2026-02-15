@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { spacing, radius } from "@/lib/design-tokens";
+import { Card, CardContent } from "@/components/ui/Card";
 
 function getErrorMessage(code: string, message?: string): string {
   if (message) return message;
@@ -82,22 +84,25 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "24px",
-        background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+        padding: spacing.lg,
+        background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 50%, #FFE4CC 100%)",
+        backgroundSize: "200% 200%",
+        animation: "gradient-shift 15s ease infinite",
       }}
     >
       <div
+        className="spring-slide-up"
         style={{
           textAlign: "center",
-          marginBottom: "48px",
+          marginBottom: spacing.xxxl,
         }}
       >
-        <div style={{ fontSize: "64px", marginBottom: "16px" }}>🌴</div>
+        <div style={{ fontSize: "64px", marginBottom: spacing.md, animation: "spring-bounce 1s ease-out" }}>🌴</div>
         <h1
           style={{
             fontSize: "36px",
             fontWeight: "800",
-            margin: "0 0 12px 0",
+            margin: `0 0 ${spacing.md}px 0`,
             background: "linear-gradient(135deg, #0099CC 0%, #00CED1 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
@@ -111,34 +116,46 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
         </p>
       </div>
 
-      <div
+      <Card
+        variant="glass"
+        className="spring-slide-up"
         style={{
           width: "100%",
           maxWidth: "400px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "16px",
+          animation: "spring-slide-up 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both",
+          border: "2px solid rgba(0, 206, 209, 0.2)",
         }}
       >
+        <CardContent>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: spacing.md,
+            }}
+          >
         <button
           type="button"
           onClick={() => signInWithProvider("google")}
           disabled={!!loading}
+          className={loading ? "" : "hover-lift interactive"}
           style={{
             width: "100%",
-            padding: "16px 24px",
-            borderRadius: "12px",
+            padding: `${spacing.md}px ${spacing.lg}px`,
+            borderRadius: radius.md,
             background: "#FFFFFF",
             border: "2px solid rgba(0, 0, 0, 0.1)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "12px",
+            gap: spacing.md,
             cursor: loading ? "not-allowed" : "pointer",
             fontSize: "16px",
             fontWeight: "600",
             color: "#333",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+            opacity: loading ? 0.6 : 1,
+            transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         >
           <svg width="20" height="20" viewBox="0 0 20 20">
@@ -154,21 +171,24 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
           type="button"
           onClick={() => signInWithProvider("apple")}
           disabled={!!loading}
+          className={loading ? "" : "hover-lift interactive"}
           style={{
             width: "100%",
-            padding: "16px 24px",
-            borderRadius: "12px",
+            padding: `${spacing.md}px ${spacing.lg}px`,
+            borderRadius: radius.md,
             background: "#000000",
             border: "none",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "12px",
+            gap: spacing.md,
             cursor: loading ? "not-allowed" : "pointer",
             fontSize: "16px",
             fontWeight: "600",
             color: "#FFFFFF",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+            opacity: loading ? 0.6 : 1,
+            transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
@@ -179,25 +199,29 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
 
         {error && (
           <div
+            className="spring-slide-up"
             style={{
-              padding: "12px 16px",
+              padding: `${spacing.md}px ${spacing.md}px`,
               background: "rgba(255, 107, 107, 0.1)",
               border: "2px solid rgba(255, 107, 107, 0.3)",
-              borderRadius: "12px",
+              borderRadius: radius.md,
               color: "#FF6B6B",
               fontSize: "14px",
               fontWeight: "600",
               textAlign: "center",
+              animation: "spring-slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
             }}
           >
             {error}
           </div>
         )}
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <p
         style={{
-          marginTop: "32px",
+          marginTop: spacing.xl,
           fontSize: "13px",
           color: "#999",
           textAlign: "center",
@@ -210,9 +234,10 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
       <button
         type="button"
         onClick={handleGuest}
+        className="interactive"
         style={{
-          marginTop: "16px",
-          padding: "12px",
+          marginTop: spacing.md,
+          padding: spacing.md,
           background: "transparent",
           border: "none",
           color: "#999",
@@ -220,6 +245,7 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
           fontWeight: "600",
           cursor: "pointer",
           textDecoration: "underline",
+          transition: "all 0.2s",
         }}
       >
         Continue as guest
