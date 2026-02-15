@@ -84,9 +84,20 @@ export function MapContainer({
 
   const initMap = useCallback(() => {
     if (!containerRef.current || typeof window === "undefined") return;
+
+    // Check if map is already initialized
+    if (mapRef.current) return;
+
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const L = require("leaflet") as typeof import("leaflet");
-    const map = L.map(containerRef.current, {
+
+    // Clear any existing Leaflet state on the container
+    const container = containerRef.current;
+    if ((container as any)._leaflet_id) {
+      delete (container as any)._leaflet_id;
+    }
+
+    const map = L.map(container, {
       zoomControl: false,
       attributionControl: false,
     }).setView([TULUM_LAT, TULUM_LNG], DEFAULT_ZOOM);
@@ -113,7 +124,35 @@ export function MapContainer({
     layersRef.current.carto = carto;
     layersRef.current.satellite = satellite;
     layersRef.current.radar = radar;
-    markersRef.current = L.layerGroup().addTo(map) as unknown;
+
+    // Add OSM layer first so map has a maxZoom defined
+    osm.addTo(map);
+
+    // Use MarkerClusterGroup for better performance with many markers
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require('leaflet.markercluster');
+    const markers = (L as any).markerClusterGroup({
+      chunkedLoading: true,
+      maxClusterRadius: 50,
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      disableClusteringAtZoom: 18,
+      maxZoom: 19,
+      iconCreateFunction: (cluster: any) => {
+        const count = cluster.getChildCount();
+        let size = 'small';
+        if (count >= 10) size = 'medium';
+        if (count >= 25) size = 'large';
+
+        return L.divIcon({
+          html: `<div class="cluster-marker cluster-${size}">${count}</div>`,
+          className: 'custom-cluster-icon',
+          iconSize: L.point(40, 40),
+        });
+      }
+    }).addTo(map);
+
+    markersRef.current = markers as unknown;
     mapRef.current = map as unknown;
 
     // Remove any leftover tulumRingPane from previous versions (large red circle)
@@ -137,7 +176,6 @@ export function MapContainer({
     tulumDot.bindPopup("<b>Tulum Centro</b>");
     tulumMarkersRef.current = [tulumDot];
 
-    osm.addTo(map);
     return () => {
       (tulumMarkersRef.current as { remove: () => void }[]).forEach((layer) => layer.remove());
       tulumMarkersRef.current = [];

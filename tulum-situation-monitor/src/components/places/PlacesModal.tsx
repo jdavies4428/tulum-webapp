@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
+import { toast } from "sonner";
 import { useVenues } from "@/hooks/useVenues";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useAuthOptional } from "@/contexts/AuthContext";
 import { AuthPromptModal } from "@/components/auth/AuthPromptModal";
 import { useLists } from "@/hooks/useLists";
 import { AddToListModal } from "@/components/favorites/AddToListModal";
+import { SkeletonList } from "@/components/ui/skeleton";
 import { TULUM_LAT, TULUM_LNG } from "@/data/constants";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
@@ -594,14 +596,30 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   const auth = useAuthOptional();
   const isAuthenticated = auth?.isAuthenticated ?? false;
 
-  const handleFavoriteClick = (placeId: string | undefined) => {
+  const handleFavoriteClick = (placeId: string | undefined, placeName?: string) => {
     if (!placeId) return;
     if (!isAuthenticated) {
       setPendingPlaceId(placeId);
       setAuthModalOpen(true);
       return;
     }
+    const wasFavorite = isFavorite(placeId);
     toggleFavorite(placeId);
+
+    // Show toast notification
+    if (wasFavorite) {
+      toast.success('Removed from favorites', {
+        description: placeName || 'Place removed from your favorites',
+      });
+    } else {
+      toast.success('Added to favorites!', {
+        description: placeName || 'Place saved to your favorites',
+        action: {
+          label: 'View',
+          onClick: () => window.location.href = '/favorites'
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -956,17 +974,8 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             </p>
           )}
           {isLoading ? (
-            <div
-              style={{
-                display: "flex",
-                minHeight: "200px",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "var(--text-secondary)",
-                fontSize: "14px",
-              }}
-            >
-              Loading…
+            <div style={{ padding: "16px" }}>
+              <SkeletonList count={5} />
             </div>
           ) : items.length === 0 ? (
             <div
@@ -998,7 +1007,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                     navigateLabel={navigateLabel}
                     onSelect={onPlaceSelect}
                     isFavorite={isFavorite(placeId)}
-                    onToggleFavorite={() => handleFavoriteClick(placeId)}
+                    onToggleFavorite={() => handleFavoriteClick(placeId, place.name)}
                     isLocked={!isAuthenticated}
                     onAddToList={isAuthenticated ? (id, name) => setAddToListPlace({ placeId: id, placeName: name }) : undefined}
                     addToListLabel={t.addToList ?? "Add to List"}

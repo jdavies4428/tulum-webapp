@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ErrorBoundaryWrapper } from "@/components/ErrorBoundaryWrapper";
 import { QuickActionsFAB } from "@/components/quick-actions/QuickActionsFAB";
 import { Providers } from "@/components/Providers";
+import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://tulum-webapp.vercel.app";
@@ -42,11 +43,20 @@ export default function RootLayout({
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossOrigin=""
         />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+        />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+        />
       </head>
       <body className="w-full h-full overflow-hidden min-w-0" style={{ margin: 0, padding: 0, background: "var(--bg-primary)" }} suppressHydrationWarning>
         <Providers>
           <ErrorBoundaryWrapper>{children}</ErrorBoundaryWrapper>
           <QuickActionsFAB />
+          <Toaster />
         </Providers>
       </body>
     </html>

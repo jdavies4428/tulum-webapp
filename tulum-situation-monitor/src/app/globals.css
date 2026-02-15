@@ -9,8 +9,11 @@
   --tulum-turquoise: #00CED1;
   --tulum-aqua: #4DD0E1;
   --tulum-ocean: #0099CC;
+  --tulum-ocean-deep: #006B7D;
   --tulum-coral: #FF6B6B;
-  --tulum-sand: #F5E6D3;
+  --tulum-coral-soft: #FFB3B3;
+  --tulum-teal: #1A7B7A;
+  --tulum-sand: #EDD9A3;
   --tulum-sand-dark: #E8D4B8;
   --tulum-cream: #FFF8E7;
   --tulum-beige: #D4C4A8;
@@ -997,4 +1000,52 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Marker Cluster Styles */
+.custom-cluster-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.cluster-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.cluster-marker:hover {
+  transform: scale(1.1);
+}
+
+.cluster-small {
+  width: 35px;
+  height: 35px;
+  background: var(--tulum-turquoise);
+  font-size: 12px;
+}
+
+.cluster-medium {
+  width: 40px;
+  height: 40px;
+  background: var(--tulum-ocean);
+  font-size: 14px;
+}
+
+.cluster-large {
+  width: 45px;
+  height: 45px;
+  background: var(--tulum-coral);
+  font-size: 16px;
+}
+
+/* Cluster polygon (coverage area on hover) - hide it */
+.leaflet-cluster-anim .leaflet-marker-icon {
+  transition: all 0.3s ease-out;
 }

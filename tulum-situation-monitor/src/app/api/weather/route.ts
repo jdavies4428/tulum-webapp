@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
 import type { OpenMeteoResponse } from "@/types/weather";
 import type { MarineResponse } from "@/types/weather";
 import { TULUM_LAT, TULUM_LNG } from "@/data/constants";
+import { successResponse, errorResponse, withErrorHandling } from "@/lib/api/utils";
 
 // Cache for 5 minutes – weather doesn't change that fast
 export const revalidate = 300;
@@ -12,7 +12,7 @@ const OPEN_METEO_MARINE_URL = "https://marine-api.open-meteo.com/v1/marine";
 const FORECAST_PARAMS =
   "current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=temperature_2m,precipitation_probability,weather_code&daily=uv_index_max,sunrise,sunset&timezone=America/Cancun&forecast_hours=6";
 
-export async function GET() {
+export const GET = withErrorHandling(async () => {
   const forecastUrl = `${OPEN_METEO_URL}?latitude=${TULUM_LAT}&longitude=${TULUM_LNG}&${FORECAST_PARAMS}`;
   const marineUrl = `${OPEN_METEO_MARINE_URL}?latitude=${TULUM_LAT}&longitude=${TULUM_LNG}&current=sea_surface_temperature&timezone=America/Cancun`;
 
@@ -28,7 +28,7 @@ export async function GET() {
     clearTimeout(timeout);
 
     if (!forecastRes.ok) {
-      throw new Error("Weather fetch failed");
+      throw errorResponse("Weather service unavailable", 502);
     }
 
     const forecast = (await forecastRes.json()) as OpenMeteoResponse;
@@ -39,12 +39,8 @@ export async function GET() {
       waterTemp = marine.current?.sea_surface_temperature ?? null;
     }
 
-    return NextResponse.json({ forecast, waterTemp });
-  } catch (e) {
+    return successResponse({ forecast, waterTemp });
+  } finally {
     clearTimeout(timeout);
-    return NextResponse.json(
-      { error: e instanceof Error ? e.message : "Weather fetch failed" },
-      { status: 502 }
-    );
   }
-}
+});

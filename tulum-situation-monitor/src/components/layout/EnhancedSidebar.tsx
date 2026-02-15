@@ -456,19 +456,21 @@ export function EnhancedSidebar({
               border: "2px solid rgba(0, 206, 209, 0.2)",
               borderRadius: "12px",
               color: "var(--tulum-ocean)",
-              fontSize: "11px",
+              fontSize: "10px",
               fontWeight: "600",
               cursor: "pointer",
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: "6px",
+              gap: "4px",
               minWidth: 0,
+              minHeight: "56px",
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
-            <span style={{ flexShrink: 0 }}>🛰️</span>
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tAny.currentSatellite ?? "Satellite"}</span>
+            <span style={{ flexShrink: 0, fontSize: "16px" }}>🛰️</span>
+            <span style={{ textAlign: "center", lineHeight: "1.2" }}>{tAny.currentSatellite ?? "Current Satellite"}</span>
           </button>
           <button
             type="button"
@@ -479,19 +481,21 @@ export function EnhancedSidebar({
               border: "2px solid rgba(0, 206, 209, 0.2)",
               borderRadius: "12px",
               color: "var(--tulum-ocean)",
-              fontSize: "11px",
+              fontSize: "10px",
               fontWeight: "600",
               cursor: "pointer",
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: "6px",
+              gap: "4px",
               minWidth: 0,
+              minHeight: "56px",
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
-            <span style={{ flexShrink: 0 }}>🗺️</span>
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tAny.sargassum7Day ?? "7-Day Forecast"}</span>
+            <span style={{ flexShrink: 0, fontSize: "16px" }}>🗺️</span>
+            <span style={{ textAlign: "center", lineHeight: "1.2" }}>{tAny.sargassum7Day ?? "7-Day Forecast"}</span>
           </button>
           <button
             type="button"
@@ -502,19 +506,21 @@ export function EnhancedSidebar({
               border: "2px solid rgba(0, 206, 209, 0.2)",
               borderRadius: "12px",
               color: "var(--tulum-ocean)",
-              fontSize: "11px",
+              fontSize: "10px",
               fontWeight: "600",
               cursor: "pointer",
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              gap: "6px",
+              gap: "4px",
               minWidth: 0,
+              minHeight: "56px",
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
-            <span style={{ flexShrink: 0 }}>📹</span>
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tAny.beachCams ?? "Beach Cams"}</span>
+            <span style={{ flexShrink: 0, fontSize: "16px" }}>📹</span>
+            <span style={{ textAlign: "center", lineHeight: "1.2" }}>{tAny.beachCams ?? "Beach Cams"}</span>
           </button>
           </div>
         </div>

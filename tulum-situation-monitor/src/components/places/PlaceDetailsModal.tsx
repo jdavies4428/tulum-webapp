@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePlaceDetails, getPlacePhotoUrl } from "@/hooks/usePlaceDetails";
 import { translations } from "@/lib/i18n";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { Lang } from "@/lib/weather";
 
 interface PlaceDetailsModalProps {
@@ -126,8 +127,26 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
         </button>
 
         {loading ? (
-          <div style={{ padding: "48px", textAlign: "center", color: "var(--text-secondary)" }}>
-            Loading...
+          <div style={{ padding: "24px" }}>
+            <div style={{ marginBottom: "16px" }}>
+              <Skeleton height={200} />
+            </div>
+            <div style={{ marginBottom: "12px" }}>
+              <Skeleton variant="text" width="60%" height={32} />
+            </div>
+            <div style={{ marginBottom: "16px" }}>
+              <Skeleton variant="text" width="40%" />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <Skeleton variant="text" width="90%" />
+              <Skeleton variant="text" width="85%" />
+              <Skeleton variant="text" width="75%" />
+            </div>
+            <div style={{ marginTop: "16px", display: "flex", gap: "8px" }}>
+              <Skeleton width={100} height={40} />
+              <Skeleton width={100} height={40} />
+              <Skeleton width={100} height={40} />
+            </div>
           </div>
         ) : error ? (
           <div style={{ padding: "48px", textAlign: "center", color: "var(--accent-red)" }}>

@@ -36,12 +36,16 @@ export function Sargassum7DayImage({ lang }: Sargassum7DayImageProps) {
           setImgSrc(urls[index]);
         }
       };
-      img.onerror = () => tryLoad(index + 1);
+      img.onerror = () => {
+        tryLoad(index + 1);
+      };
       img.src = urls[index];
     }
     tryLoad(0);
     const timeoutId = setTimeout(() => {
-      if (!loaded) setImgSrc(FALLBACK_SRC);
+      if (!loaded) {
+        setImgSrc(FALLBACK_SRC);
+      }
     }, 3000);
     return () => clearTimeout(timeoutId);
   }, []);
