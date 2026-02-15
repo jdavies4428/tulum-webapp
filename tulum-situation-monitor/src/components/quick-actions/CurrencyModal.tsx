@@ -83,8 +83,13 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
         {/* Amount Input */}
         <input
           type="number"
+          inputMode="decimal"
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value) || 0)}
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck="false"
           className="glass hover-lift"
           style={{
             width: "100%",
@@ -93,8 +98,9 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
             fontWeight: 700,
             borderRadius: radius.md,
             border: "2px solid rgba(0, 206, 209, 0.3)",
-            background: "rgba(255, 255, 255, 0.1)",
+            background: "rgba(0, 0, 0, 0.3)",
             color: "#FFF",
+            WebkitTextFillColor: "#FFF",
             marginBottom: spacing.md,
             textAlign: "center",
             boxSizing: "border-box",
