@@ -114,9 +114,13 @@ export default function SettingsPage() {
     <div
       style={{
         minHeight: "100vh",
+        height: "100%",
         background:
           "linear-gradient(180deg, #E0F7FA 0%, #FFF8E7 50%, #FFFFFF 100%)",
         paddingTop: "max(24px, env(safe-area-inset-top))",
+        paddingBottom: "max(24px, env(safe-area-inset-bottom))",
+        overflowY: "auto",
+        WebkitOverflowScrolling: "touch",
       }}
     >
       {/* Header */}
