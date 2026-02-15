@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 import type { CurrenciesRates } from "@/app/api/currencies/route";
+import { spacing, radius } from "@/lib/design-tokens";
+import { Modal } from "@/components/ui/Modal";
 
 // Match sidebar CurrenciesPanel: all currencies with rates to MXN
 const CURRENCIES = [
@@ -60,173 +62,182 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
   };
 
   return (
-    <>
-      <div
-        onClick={onClose}
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(0, 0, 0, 0.6)",
-          backdropFilter: "blur(4px)",
-          zIndex: 9998,
-        }}
-        aria-hidden
-      />
-      <div
-        role="dialog"
-        aria-modal
-        aria-labelledby="currency-title"
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "min(400px, calc(100vw - 32px))",
-          maxHeight: "85vh",
-          overflowY: "auto",
-          background: "var(--bg-panel)",
-          borderRadius: 16,
-          boxShadow: "0 24px 48px rgba(0,0,0,0.4)",
-          zIndex: 9999,
-          padding: 20,
-        }}
-      >
+    <Modal isOpen onClose={onClose} maxWidth="420px">
+      <div style={{ padding: spacing.lg }}>
+        {/* Header */}
         <h2
           id="currency-title"
           style={{
-            fontSize: 18,
+            fontSize: "20px",
             fontWeight: 700,
-            margin: "0 0 16px 0",
-            color: "var(--text-primary)",
+            margin: `0 0 ${spacing.lg}px 0`,
+            color: "#FFF",
             display: "flex",
             alignItems: "center",
-            gap: 8,
+            gap: spacing.sm,
           }}
         >
           💱 {title}
         </h2>
 
+        {/* Amount Input */}
         <input
           type="number"
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value) || 0)}
+          className="glass hover-lift"
           style={{
             width: "100%",
-            padding: 16,
-            fontSize: 24,
+            padding: spacing.md,
+            fontSize: "24px",
             fontWeight: 700,
-            borderRadius: 12,
+            borderRadius: radius.md,
             border: "2px solid rgba(0, 206, 209, 0.3)",
-            marginBottom: 16,
+            background: "rgba(255, 255, 255, 0.1)",
+            color: "#FFF",
+            marginBottom: spacing.md,
             textAlign: "center",
             boxSizing: "border-box",
+            transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         />
 
+        {/* Currency Selection */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr auto 1fr",
-            gap: 12,
-            marginBottom: 20,
+            gap: spacing.md,
+            marginBottom: spacing.lg,
+            alignItems: "center",
           }}
         >
           <select
             value={fromCurrency}
             onChange={(e) => setFromCurrency(e.target.value)}
+            className="glass"
             style={{
-              padding: 12,
-              borderRadius: 10,
+              padding: spacing.sm,
+              borderRadius: radius.sm,
               border: "2px solid rgba(0, 206, 209, 0.3)",
-              fontSize: 15,
+              fontSize: "15px",
               fontWeight: 600,
-              background: "var(--bg-panel)",
+              background: "rgba(255, 255, 255, 0.1)",
+              color: "#FFF",
+              cursor: "pointer",
             }}
           >
             {CURRENCIES.map((c) => (
-              <option key={c.code} value={c.code}>
+              <option key={c.code} value={c.code} style={{ background: "#1a1a2e", color: "#FFF" }}>
                 {c.flag} {c.code}
               </option>
             ))}
           </select>
+
           <button
             type="button"
             onClick={swap}
+            className="interactive hover-scale"
             style={{
               width: 44,
               height: 44,
               borderRadius: "50%",
-              background: "rgba(0, 206, 209, 0.15)",
-              border: "none",
-              fontSize: 20,
+              background: "rgba(0, 206, 209, 0.2)",
+              border: "2px solid #00CED1",
+              fontSize: "20px",
+              color: "#00CED1",
               cursor: "pointer",
-              alignSelf: "center",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
             }}
           >
             ⇄
           </button>
+
           <select
             value={toCurrency}
             onChange={(e) => setToCurrency(e.target.value)}
+            className="glass"
             style={{
-              padding: 12,
-              borderRadius: 10,
+              padding: spacing.sm,
+              borderRadius: radius.sm,
               border: "2px solid rgba(0, 206, 209, 0.3)",
-              fontSize: 15,
+              fontSize: "15px",
               fontWeight: 600,
-              background: "var(--bg-panel)",
+              background: "rgba(255, 255, 255, 0.1)",
+              color: "#FFF",
+              cursor: "pointer",
             }}
           >
             {CURRENCIES.map((c) => (
-              <option key={c.code} value={c.code}>
+              <option key={c.code} value={c.code} style={{ background: "#1a1a2e", color: "#FFF" }}>
                 {c.flag} {c.code}
               </option>
             ))}
           </select>
         </div>
 
+        {/* Loading / Result */}
         {loading && (
-          <div style={{ textAlign: "center", padding: 20, color: "var(--text-tertiary)" }}>
+          <div
+            className="spring-slide-up"
+            style={{
+              textAlign: "center",
+              padding: spacing.lg,
+              color: "rgba(255, 255, 255, 0.6)",
+              fontSize: "14px",
+            }}
+          >
             {t.loading ?? "Loading…"}
           </div>
         )}
+
         {!loading && result != null && (
           <div
+            className="spring-slide-up shadow-glow"
             style={{
-              padding: 20,
+              padding: spacing.lg,
               background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
-              borderRadius: 16,
+              borderRadius: radius.md,
               textAlign: "center",
               color: "#FFF",
+              boxShadow: "0 8px 32px rgba(0, 206, 209, 0.4)",
+              animation: "spring-slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
             }}
           >
-            <div style={{ fontSize: 14, opacity: 0.9, marginBottom: 8 }}>
+            <div style={{ fontSize: "14px", opacity: 0.9, marginBottom: spacing.sm }}>
               {amount} {fromCurrency} =
             </div>
-            <div style={{ fontSize: 32, fontWeight: 800 }}>
+            <div style={{ fontSize: "36px", fontWeight: 800 }}>
               {result.toFixed(2)} {toCurrency}
             </div>
           </div>
         )}
 
+        {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
+          className="interactive hover-scale"
           style={{
-            marginTop: 16,
+            marginTop: spacing.lg,
             width: "100%",
-            padding: 12,
-            borderRadius: 10,
-            background: "rgba(0,0,0,0.1)",
-            border: "none",
-            color: "var(--text-primary)",
+            padding: spacing.md,
+            borderRadius: radius.md,
+            background: "rgba(255, 255, 255, 0.1)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            color: "#FFF",
             fontWeight: 600,
+            fontSize: "14px",
             cursor: "pointer",
+            transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         >
           {t.close ?? "Close"}
         </button>
       </div>
-    </>
+    </Modal>
   );
 }

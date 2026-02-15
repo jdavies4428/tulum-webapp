@@ -6,6 +6,7 @@ import { useAuthOptional } from "@/contexts/AuthContext";
 import { SignInButton } from "@/components/auth/SignInButton";
 import { SignedInMenu } from "@/components/auth/SignedInMenu";
 import type { Lang } from "@/lib/weather";
+import { spacing, radius, shadows } from "@/lib/design-tokens";
 
 function formatCoords(lat: number, lng: number): string {
   const latDir = lat >= 0 ? "N" : "S";
@@ -29,30 +30,115 @@ export function StatusBar({ lang, userLocation, onReset, lastUpdated }: StatusBa
     : formatCoords(TULUM_LAT, TULUM_LNG);
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-[1000] flex items-center justify-between gap-2 border-t border-border bg-bg-panel px-3 py-2 text-[10px] backdrop-blur-md">
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1.5">
-          <div className="h-2 w-2 rounded-full bg-accent-green shadow-[0_0_4px_var(--accent-green)]" />
-          <span className="uppercase text-text-muted">{(t as Record<string, string>).online}</span>
-        </div>
-        <div className="flex items-center gap-1.5">
+    <div
+      className="glass-heavy"
+      style={{
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: spacing.sm,
+        borderTop: "2px solid rgba(0, 206, 209, 0.15)",
+        background: "rgba(20, 20, 30, 0.85)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
+        padding: `${spacing.sm}px ${spacing.md}px`,
+        fontSize: "10px",
+        boxShadow: "0 -4px 24px rgba(0, 0, 0, 0.3)",
+      }}
+    >
+      {/* Left: Status Indicators */}
+      <div style={{ display: "flex", alignItems: "center", gap: spacing.md }}>
+        {/* Online Status */}
+        <div style={{ display: "flex", alignItems: "center", gap: spacing.xs }}>
           <div
-            className={`h-2 w-2 rounded-full ${userLocation ? "bg-accent-cyan shadow-[0_0_6px_var(--accent-cyan)]" : "bg-text-muted"}`}
+            className="quick-action-sos-pulse"
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: "#50C878",
+              boxShadow: "0 0 8px rgba(80, 200, 120, 0.6)",
+            }}
           />
-          <span className="uppercase text-text-muted">{userLocation ? "GPS" : "—"}</span>
+          <span
+            style={{
+              textTransform: "uppercase",
+              color: "rgba(255, 255, 255, 0.6)",
+              fontWeight: 600,
+              letterSpacing: "0.5px",
+            }}
+          >
+            {tAny.online}
+          </span>
+        </div>
+
+        {/* GPS Status */}
+        <div style={{ display: "flex", alignItems: "center", gap: spacing.xs }}>
+          <div
+            className={userLocation ? "quick-action-sos-pulse" : ""}
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: userLocation ? "#00CED1" : "rgba(255, 255, 255, 0.3)",
+              boxShadow: userLocation ? "0 0 10px rgba(0, 206, 209, 0.7)" : "none",
+            }}
+          />
+          <span
+            style={{
+              textTransform: "uppercase",
+              color: userLocation ? "#00CED1" : "rgba(255, 255, 255, 0.4)",
+              fontWeight: 600,
+              letterSpacing: "0.5px",
+            }}
+          >
+            {userLocation ? "GPS" : "—"}
+          </span>
         </div>
       </div>
-      <span className="font-mono text-text-muted">{coords}</span>
-      <div className="flex items-center gap-2">
+
+      {/* Center: Coordinates */}
+      <span
+        style={{
+          fontFamily: "monospace",
+          color: "rgba(255, 255, 255, 0.6)",
+          fontSize: "10px",
+          fontWeight: 500,
+        }}
+      >
+        {coords}
+      </span>
+
+      {/* Right: Actions */}
+      <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
         {lastUpdated && (
-          <span className="text-text-muted">{lastUpdated}</span>
+          <span style={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "9px" }}>{lastUpdated}</span>
         )}
         <button
           type="button"
           onClick={onReset}
-          className="rounded border border-border bg-bg-panel px-2 py-1 font-semibold text-white hover:bg-white/10"
+          className="interactive hover-lift"
+          style={{
+            borderRadius: radius.sm,
+            border: "1px solid rgba(0, 206, 209, 0.3)",
+            background: "linear-gradient(135deg, rgba(0, 206, 209, 0.15) 0%, rgba(0, 206, 209, 0.05) 100%)",
+            padding: `${spacing.xs}px ${spacing.sm}px`,
+            fontWeight: 600,
+            color: "#00CED1",
+            fontSize: "10px",
+            cursor: "pointer",
+            transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            display: "flex",
+            alignItems: "center",
+            gap: spacing.xs,
+          }}
         >
-          🎯 {(t as Record<string, string>).resetView ?? "Reset"}
+          🎯 {tAny.resetView ?? "Reset"}
         </button>
         {auth?.isAuthenticated && auth.user ? (
           <SignedInMenu user={auth.user} lang={lang} />

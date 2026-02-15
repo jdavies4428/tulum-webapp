@@ -5,6 +5,7 @@ import { useAuthOptional } from "@/contexts/AuthContext";
 import { SignInButton } from "@/components/auth/SignInButton";
 import { SignedInMenu } from "@/components/auth/SignedInMenu";
 import type { Lang } from "@/lib/weather";
+import { spacing, radius, shadows } from "@/lib/design-tokens";
 
 interface MapTopBarProps {
   lang: Lang;
@@ -15,37 +16,44 @@ export function MapTopBar({ lang }: MapTopBarProps) {
 
   return (
     <div
+      className="spring-slide-up"
       style={{
         position: "absolute",
         top: 0,
         left: 0,
         right: 0,
-        padding: "12px 16px",
-        background: "linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%)",
+        padding: `${spacing.md}px ${spacing.lg}px`,
+        background: "linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%)",
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         zIndex: 10001,
+        animation: "spring-slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)",
       }}
     >
       {/* Left: Back button */}
       <Link
         href="/"
+        className="glass hover-lift interactive"
         style={{
           width: 44,
           height: 44,
-          borderRadius: 12,
+          borderRadius: radius.md,
           background: "rgba(255, 255, 255, 0.95)",
           backdropFilter: "blur(20px)",
-          border: "none",
+          WebkitBackdropFilter: "blur(20px)",
+          border: "1px solid rgba(255, 255, 255, 0.3)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 20,
+          fontSize: "20px",
           cursor: "pointer",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+          boxShadow: shadows.float,
           textDecoration: "none",
           color: "#333",
+          transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
         }}
         aria-label="Back to Discover Tulum"
       >
@@ -56,10 +64,7 @@ export function MapTopBar({ lang }: MapTopBarProps) {
       {auth?.isAuthenticated && auth.user ? (
         <SignedInMenu user={auth.user} lang={lang} />
       ) : (
-        <SignInButton
-          lang={lang}
-          variant="frosted"
-        />
+        <SignInButton lang={lang} variant="frosted" />
       )}
     </div>
   );

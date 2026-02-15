@@ -12,6 +12,8 @@ import type { Lang } from "@/lib/weather";
 import type { OpenMeteoResponse } from "@/types/weather";
 import type { TideState } from "@/hooks/useTides";
 import { translations } from "@/lib/i18n";
+import { spacing, radius, shadows } from "@/lib/design-tokens";
+import { Card, CardContent } from "@/components/ui/Card";
 
 interface WeatherPanelProps {
   lang: Lang;
@@ -31,27 +33,66 @@ export function WeatherPanel({ lang, data, loading, error, tide, waterTemp, onRe
 
   if (!data) {
     return (
-      <div className="panel conditions-panel">
-        <div className="flex items-center gap-1.5 border-b border-border bg-white/5 px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          <span>🌤️</span>
-          <span>{t.weatherConditions}</span>
-          <button type="button" onClick={onRefresh} className="ml-auto opacity-60 hover:opacity-100">
+      <Card variant="glass" className="spring-slide-up">
+        <div
+          className="glass-heavy interactive"
+          style={{
+            padding: `${spacing.sm}px ${spacing.md}px`,
+            borderRadius: `${radius.md}px ${radius.md}px 0 0`,
+            display: "flex",
+            alignItems: "center",
+            gap: spacing.xs,
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+          }}
+        >
+          <span style={{ fontSize: "16px" }}>🌤️</span>
+          <span style={{ fontSize: "10px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", color: "rgba(255, 255, 255, 0.7)" }}>
+            {t.weatherConditions}
+          </span>
+          <button
+            type="button"
+            onClick={onRefresh}
+            className="interactive"
+            style={{
+              marginLeft: "auto",
+              background: "transparent",
+              border: "none",
+              fontSize: "16px",
+              cursor: "pointer",
+              opacity: 0.6,
+              transition: "all 0.2s",
+            }}
+          >
             ⟳
           </button>
         </div>
-        <div className="p-4 text-center text-text-muted">
-          {loading ? "Loading…" : error ? (
-            <span>
-              {error}
-              <button type="button" onClick={onRefresh} className="ml-2 underline hover:no-underline">
-                Retry
-              </button>
-            </span>
-          ) : (
-            "Loading…"
-          )}
-        </div>
-      </div>
+        <CardContent>
+          <div style={{ textAlign: "center", color: "rgba(255, 255, 255, 0.6)" }}>
+            {loading ? "Loading…" : error ? (
+              <span>
+                {error}
+                <button
+                  type="button"
+                  onClick={onRefresh}
+                  className="interactive"
+                  style={{
+                    marginLeft: spacing.sm,
+                    textDecoration: "underline",
+                    background: "transparent",
+                    border: "none",
+                    color: "inherit",
+                    cursor: "pointer",
+                  }}
+                >
+                  Retry
+                </button>
+              </span>
+            ) : (
+              "Loading…"
+            )}
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -59,106 +100,208 @@ export function WeatherPanel({ lang, data, loading, error, tide, waterTemp, onRe
   const locale = lang === "es" ? "es-MX" : "en-US";
 
   return (
-    <div className="panel conditions-panel">
-      <div className="panel-header">
-        <span className="panel-icon">🌤️</span>
-        <span>{t.weatherConditions}</span>
-        <span className="refresh-icon" role="button" tabIndex={0} onClick={onRefresh} onKeyDown={(e) => e.key === "Enter" && onRefresh()}>
-          ⟳
+    <Card variant="glass" className="spring-slide-up" style={{ overflow: "hidden" }}>
+      {/* Header */}
+      <div
+        className="glass-heavy interactive"
+        style={{
+          padding: `${spacing.sm}px ${spacing.md}px`,
+          borderRadius: `${radius.md}px ${radius.md}px 0 0`,
+          display: "flex",
+          alignItems: "center",
+          gap: spacing.xs,
+          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+        }}
+      >
+        <span style={{ fontSize: "16px" }}>🌤️</span>
+        <span style={{ fontSize: "10px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", color: "rgba(255, 255, 255, 0.7)" }}>
+          {t.weatherConditions}
         </span>
+        <button
+          type="button"
+          onClick={onRefresh}
+          onKeyDown={(e) => e.key === "Enter" && onRefresh()}
+          className="interactive hover-scale"
+          style={{
+            marginLeft: "auto",
+            background: "transparent",
+            border: "none",
+            fontSize: "16px",
+            cursor: "pointer",
+            opacity: 0.6,
+            transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+          }}
+        >
+          ⟳
+        </button>
       </div>
-      <div className="border-b border-border p-3 text-center">
-        <div className="mb-1 flex items-center justify-center gap-2">
-          <span className="text-3xl">{weather.icon}</span>
-          <span className="text-3xl font-bold text-white">
+
+      {/* Main Temperature Display */}
+      <div
+        className="glass"
+        style={{
+          padding: spacing.md,
+          textAlign: "center",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: spacing.sm, marginBottom: spacing.xs }}>
+          <span style={{ fontSize: "48px" }}>{weather.icon}</span>
+          <span style={{ fontSize: "48px", fontWeight: 700, color: "#FFF" }}>
             {formatTempFull(current!.temperature_2m, lang)}
           </span>
         </div>
-        <p className="text-xs uppercase tracking-wider text-text-muted">{weather.desc}</p>
-        <p className="mt-0.5 text-[10px] text-[#666]">
+        <p style={{ fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.5px", color: "rgba(255, 255, 255, 0.7)", marginBottom: spacing.xs }}>
+          {weather.desc}
+        </p>
+        <p style={{ fontSize: "10px", color: "rgba(255, 255, 255, 0.5)" }}>
           {t.feelsLike} {formatTempFull(current!.apparent_temperature, lang)}
         </p>
       </div>
-      {hourly?.time && (
-        <HourlyStrip hourly={hourly} lang={lang} />
-      )}
-      <div className="grid grid-cols-2 gap-2 border-b border-border p-3">
+
+      {/* Hourly Forecast Strip */}
+      {hourly?.time && <HourlyStrip hourly={hourly} lang={lang} />}
+
+      {/* Weather Details Grid */}
+      <div
+        className="glass"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: spacing.md,
+          padding: spacing.md,
+          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+        }}
+      >
         <div>
-          <p className="text-[10px] text-text-muted">🌬️ {t.wind}</p>
-          <p className="text-sm font-medium">
+          <p style={{ fontSize: "10px", color: "rgba(255, 255, 255, 0.7)", marginBottom: spacing.xs }}>🌬️ {t.wind}</p>
+          <p style={{ fontSize: "14px", fontWeight: 500, color: "#FFF" }}>
             {formatWind(current!.wind_speed_10m, lang)}
           </p>
-          <p className="text-[10px] text-[#666]">
+          <p style={{ fontSize: "10px", color: "rgba(255, 255, 255, 0.5)" }}>
             {getWindDirection(current!.wind_direction_10m)}
           </p>
         </div>
         <div>
-          <p className="text-[10px] text-text-muted">💨 {t.gusts}</p>
-          <p className="text-sm font-medium">
-            {current!.wind_gusts_10m != null
-              ? formatWind(current!.wind_gusts_10m, lang)
-              : "--"}
+          <p style={{ fontSize: "10px", color: "rgba(255, 255, 255, 0.7)", marginBottom: spacing.xs }}>💨 {t.gusts}</p>
+          <p style={{ fontSize: "14px", fontWeight: 500, color: "#FFF" }}>
+            {current!.wind_gusts_10m != null ? formatWind(current!.wind_gusts_10m, lang) : "--"}
           </p>
         </div>
         <div>
-          <p className="text-[10px] text-text-muted">💧 {t.humidity}</p>
-          <p className="text-sm font-medium">{current!.relative_humidity_2m}%</p>
+          <p style={{ fontSize: "10px", color: "rgba(255, 255, 255, 0.7)", marginBottom: spacing.xs }}>💧 {t.humidity}</p>
+          <p style={{ fontSize: "14px", fontWeight: 500, color: "#FFF" }}>{current!.relative_humidity_2m}%</p>
         </div>
         <div>
-          <p className="text-[10px] text-text-muted">🔽 {t.pressure}</p>
-          <p className="text-sm font-medium">{Math.round(current!.pressure_msl)} mb</p>
+          <p style={{ fontSize: "10px", color: "rgba(255, 255, 255, 0.7)", marginBottom: spacing.xs }}>🔽 {t.pressure}</p>
+          <p style={{ fontSize: "14px", fontWeight: 500, color: "#FFF" }}>{Math.round(current!.pressure_msl)} mb</p>
         </div>
       </div>
+
+      {/* Tide Information */}
       {tide && (
         <>
-          <div className="flex justify-around border-b border-border bg-black/30 px-2 py-2.5">
-            <div className="flex-1 border-r border-border py-1.5 text-center">
-              <p className="mb-1 text-[8px] uppercase tracking-wider text-text-muted">🌊 {t.highTide}</p>
-              <p className="mb-0.5 text-sm font-semibold text-white">
+          <div
+            className="glass-heavy"
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              padding: `${spacing.sm}px ${spacing.xs}px`,
+              borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            }}
+          >
+            <div style={{ flex: 1, borderRight: "1px solid rgba(255, 255, 255, 0.1)", padding: `${spacing.xs}px 0`, textAlign: "center" }}>
+              <p style={{ fontSize: "8px", textTransform: "uppercase", letterSpacing: "0.5px", color: "rgba(255, 255, 255, 0.6)", marginBottom: spacing.xs }}>
+                🌊 {t.highTide}
+              </p>
+              <p style={{ fontSize: "14px", fontWeight: 600, color: "#FFF", marginBottom: spacing.xs }}>
                 {tide.nextHighTime.toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit", hour12: true })}
               </p>
-              <p className="text-[10px] text-accent-cyan">{tide.highHeight}</p>
+              <p style={{ fontSize: "10px", color: "#00CED1" }}>{tide.highHeight}</p>
             </div>
-            <div className="flex-1 py-1.5 text-center">
-              <p className="mb-1 text-[8px] uppercase tracking-wider text-text-muted">🌊 {t.lowTide}</p>
-              <p className="mb-0.5 text-sm font-semibold text-white">
+            <div style={{ flex: 1, padding: `${spacing.xs}px 0`, textAlign: "center" }}>
+              <p style={{ fontSize: "8px", textTransform: "uppercase", letterSpacing: "0.5px", color: "rgba(255, 255, 255, 0.6)", marginBottom: spacing.xs }}>
+                🌊 {t.lowTide}
+              </p>
+              <p style={{ fontSize: "14px", fontWeight: 600, color: "#FFF", marginBottom: spacing.xs }}>
                 {tide.nextLowTime.toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit", hour12: true })}
               </p>
-              <p className="text-[10px] text-accent-cyan">{tide.lowHeight}</p>
+              <p style={{ fontSize: "10px", color: "#00CED1" }}>{tide.lowHeight}</p>
             </div>
           </div>
-          <p className="border-b border-border bg-black/20 py-1.5 text-center text-[9px] text-text-muted">
+          <div
+            className="glass"
+            style={{
+              padding: `${spacing.xs}px ${spacing.md}px`,
+              textAlign: "center",
+              fontSize: "9px",
+              color: "rgba(255, 255, 255, 0.6)",
+              borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            }}
+          >
             {tide.isRising ? (
-              <span className="text-accent-green">↑ {t.tideRising}</span>
+              <span style={{ color: "#50C878" }}>↑ {t.tideRising}</span>
             ) : (
-              <span className="text-amber-500">↓ {t.tideFalling}</span>
+              <span style={{ color: "#F59E0B" }}>↓ {t.tideFalling}</span>
             )}{" "}
             • {tide.isRising ? t.nextHigh : t.nextLow}:{" "}
             {(tide.isRising ? tide.nextHighTime : tide.nextLowTime).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit", hour12: true })}
-          </p>
+          </div>
         </>
       )}
-      <div className="flex items-center justify-center gap-2 border-b border-border bg-accent-cyan/10 py-2">
-        <span className="text-lg">🏊</span>
+
+      {/* Water Temperature */}
+      <div
+        className="glass hover-lift"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: spacing.sm,
+          padding: spacing.sm,
+          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+          background: "linear-gradient(135deg, rgba(0, 206, 209, 0.1) 0%, rgba(0, 206, 209, 0.05) 100%)",
+          transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+        }}
+      >
+        <span style={{ fontSize: "24px" }}>🏊</span>
         <div>
-          <p className="text-base font-bold text-accent-cyan">
+          <p style={{ fontSize: "16px", fontWeight: 700, color: "#00CED1" }}>
             {waterTemp != null ? formatTempFull(waterTemp, lang) : "~27°C"}
           </p>
-          <p className="text-[9px] uppercase text-text-muted">{t.waterTemp}</p>
+          <p style={{ fontSize: "9px", textTransform: "uppercase", color: "rgba(255, 255, 255, 0.6)" }}>{t.waterTemp}</p>
         </div>
       </div>
+
+      {/* Sunrise/Sunset */}
       {daily?.sunrise?.[0] && daily?.sunset?.[0] && (
-        <div className="flex justify-around border-b border-border bg-amber-500/10 py-2.5 text-sm font-semibold text-amber-500">
-          <span className="flex items-center gap-1.5">
+        <div
+          className="glass"
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+            padding: spacing.sm,
+            fontSize: "14px",
+            fontWeight: 600,
+            color: "#F59E0B",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            background: "linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%)",
+          }}
+        >
+          <span style={{ display: "flex", alignItems: "center", gap: spacing.xs }}>
             🌅 {new Date(daily.sunrise[0]).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })}
           </span>
-          <span className="flex items-center gap-1.5">
+          <span style={{ display: "flex", alignItems: "center", gap: spacing.xs }}>
             🌇 {new Date(daily.sunset[0]).toLocaleTimeString(locale, { hour: "numeric", minute: "2-digit" })}
           </span>
         </div>
       )}
-      <p className="border-t border-border px-3 py-1.5 text-center text-[8px] text-[#555]">📡 {t.dataSource}</p>
-    </div>
+
+      {/* Data Source Footer */}
+      <div style={{ padding: `${spacing.xs}px ${spacing.md}px`, textAlign: "center", fontSize: "8px", color: "rgba(255, 255, 255, 0.4)" }}>
+        📡 {t.dataSource}
+      </div>
+    </Card>
   );
 }
 
@@ -180,18 +323,37 @@ function HourlyStrip({
     const code = hourly.weather_code?.[i] ?? 0;
     const icon = getWeatherIcon(code);
     items.push(
-      <div key={i} className="flex flex-col items-center text-center">
-        <span className="text-[10px] text-text-muted">{hourStr}</span>
-        <span className="text-lg">{icon}</span>
-        <span className="text-xs font-medium">{formatTemp(temp, lang)}</span>
-        <span className={`text-[10px] ${rainProb > 50 ? "text-accent-cyan" : "text-text-muted"}`}>
+      <div
+        key={i}
+        className="hover-lift"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          textAlign: "center",
+          gap: spacing.xs,
+          transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+        }}
+      >
+        <span style={{ fontSize: "10px", color: "rgba(255, 255, 255, 0.6)" }}>{hourStr}</span>
+        <span style={{ fontSize: "24px" }}>{icon}</span>
+        <span style={{ fontSize: "12px", fontWeight: 500, color: "#FFF" }}>{formatTemp(temp, lang)}</span>
+        <span style={{ fontSize: "10px", color: rainProb > 50 ? "#00CED1" : "rgba(255, 255, 255, 0.6)" }}>
           💧{rainProb}%
         </span>
       </div>
     );
   }
   return (
-    <div className="flex justify-between border-b border-border bg-black/30 px-2 py-2.5">
+    <div
+      className="glass-heavy"
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        padding: `${spacing.sm}px ${spacing.xs}px`,
+        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+      }}
+    >
       {items}
     </div>
   );

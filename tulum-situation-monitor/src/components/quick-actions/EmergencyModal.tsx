@@ -2,6 +2,8 @@
 
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
+import { spacing, radius } from "@/lib/design-tokens";
+import { Modal } from "@/components/ui/Modal";
 
 interface EmergencyModalProps {
   lang: Lang;
@@ -21,98 +23,81 @@ export function EmergencyModal({ lang, onClose }: EmergencyModalProps) {
   const title = t.emergencyServices ?? "Emergency Services";
 
   return (
-    <>
-      <div
-        onClick={onClose}
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(0, 0, 0, 0.6)",
-          backdropFilter: "blur(4px)",
-          zIndex: 9998,
-        }}
-        aria-hidden
-      />
-      <div
-        role="dialog"
-        aria-modal
-        aria-labelledby="emergency-title"
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "min(400px, calc(100vw - 32px))",
-          maxHeight: "85vh",
-          overflowY: "auto",
-          background: "var(--bg-panel)",
-          borderRadius: 16,
-          boxShadow: "0 24px 48px rgba(0,0,0,0.4)",
-          zIndex: 9999,
-          padding: 20,
-        }}
-      >
+    <Modal isOpen onClose={onClose} maxWidth="400px">
+      <div style={{ padding: spacing.lg }}>
+        {/* Header */}
         <h2
           id="emergency-title"
           style={{
-            fontSize: 18,
+            fontSize: "20px",
             fontWeight: 700,
-            margin: "0 0 16px 0",
-            color: "var(--text-primary)",
+            margin: `0 0 ${spacing.lg}px 0`,
+            color: "#FFF",
             display: "flex",
             alignItems: "center",
-            gap: 8,
+            gap: spacing.sm,
           }}
         >
           🚨 {title}
         </h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {EMERGENCY_CONTACTS.map(({ icon, label, number, href }) => (
+
+        {/* Emergency Contacts */}
+        <div style={{ display: "flex", flexDirection: "column", gap: spacing.md }}>
+          {EMERGENCY_CONTACTS.map(({ icon, label, number, href }, index) => (
             <a
               key={label}
               href={href}
+              className="hover-lift spring-slide-up"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 12,
-                padding: 16,
-                borderRadius: 12,
+                gap: spacing.md,
+                padding: spacing.md,
+                borderRadius: radius.md,
                 background: "linear-gradient(135deg, #FF0000 0%, #CC0000 100%)",
-                border: "none",
+                border: "2px solid rgba(255, 255, 255, 0.2)",
                 color: "#FFF",
-                fontSize: 16,
+                fontSize: "16px",
                 fontWeight: 700,
                 cursor: "pointer",
                 textDecoration: "none",
+                boxShadow: "0 4px 16px rgba(255, 0, 0, 0.3)",
+                transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                animation: `spring-slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.05}s both`,
               }}
             >
-              <span style={{ fontSize: 24 }}>{icon}</span>
+              <span style={{ fontSize: "28px" }}>{icon}</span>
               <div style={{ flex: 1, textAlign: "left" }}>
-                <div>{label}</div>
-                <div style={{ fontSize: 13, opacity: 0.95 }}>{number}</div>
+                <div style={{ marginBottom: spacing.xs }}>{label}</div>
+                <div style={{ fontSize: "13px", opacity: 0.9, fontWeight: 500 }}>{number}</div>
               </div>
-              <span>📞</span>
+              <span style={{ fontSize: "24px" }}>📞</span>
             </a>
           ))}
         </div>
+
+        {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
+          className="interactive hover-scale"
           style={{
-            marginTop: 16,
+            marginTop: spacing.lg,
             width: "100%",
-            padding: 12,
-            borderRadius: 10,
-            background: "rgba(0,0,0,0.1)",
-            border: "none",
-            color: "var(--text-primary)",
+            padding: spacing.md,
+            borderRadius: radius.md,
+            background: "rgba(255, 255, 255, 0.1)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            color: "#FFF",
             fontWeight: 600,
+            fontSize: "14px",
             cursor: "pointer",
+            transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
           }}
         >
           {t.close ?? "Close"}
         </button>
       </div>
-    </>
+    </Modal>
   );
 }
