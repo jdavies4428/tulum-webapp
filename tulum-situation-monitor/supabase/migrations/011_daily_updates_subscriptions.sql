@@ -36,10 +36,17 @@ CREATE TRIGGER update_daily_updates_subscriptions_updated_at
 -- RLS policies: Allow public insert for subscriptions, admin access for management
 ALTER TABLE public.daily_updates_subscriptions ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Anyone can create subscriptions"
-  ON public.daily_updates_subscriptions FOR INSERT
+-- Allow anyone (including anonymous users) to insert subscriptions
+CREATE POLICY "Enable insert for all users"
+  ON public.daily_updates_subscriptions
+  FOR INSERT
+  TO anon, authenticated
   WITH CHECK (true);
 
-CREATE POLICY "Service role can manage all subscriptions"
-  ON public.daily_updates_subscriptions FOR ALL
-  USING (auth.role() = 'service_role');
+-- Service role can do anything
+CREATE POLICY "Service role full access"
+  ON public.daily_updates_subscriptions
+  FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);
