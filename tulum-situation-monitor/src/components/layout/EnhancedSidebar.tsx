@@ -179,6 +179,7 @@ export function EnhancedSidebar({
           left: 0,
           top: 0,
           width: sidebarWidth,
+          maxWidth: isMobile ? "100vw" : "400px",
           height: "100vh",
           background: isCollapsed ? "transparent" : "rgba(255, 255, 255, 0.85)",
           backdropFilter: isCollapsed ? "none" : "blur(24px)",
@@ -190,6 +191,7 @@ export function EnhancedSidebar({
           zIndex: 100,
           overflow: "hidden",
           pointerEvents: isCollapsed ? "none" : "auto",
+          boxSizing: "border-box",
         }}
       >
         {/* Scrollable inner container – overflow-y: scroll + scrollbar hiding CSS */}
@@ -200,6 +202,7 @@ export function EnhancedSidebar({
             height: "100%",
             overflowY: "scroll",
             overflowX: "hidden",
+            boxSizing: "border-box",
           }}
         >
           {/* Content wrapper – box-sizing + proper padding */}
