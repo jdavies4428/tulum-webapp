@@ -7,7 +7,7 @@ import type { Lang } from "@/lib/weather";
 const FORECAST_BASE =
   "https://sargassummonitoring.com/wp-content/uploads";
 const FALLBACK_FORECAST =
-  "https://sargassummonitoring.com/wp-content/uploads/2026/02/mexico-sargazo-monitoreo-sargassum-monitoring-pronosticos-04-02-2026.gif";
+  "https://sargassummonitoring.com/wp-content/uploads/2026/02/mexico-sargazo-monitoreo-sargassum-monitoring-pronosticos-12-02-2026.gif";
 
 interface SargassumForecastModalProps {
   lang: Lang;
@@ -31,7 +31,8 @@ export function SargassumForecastModal({ lang, isOpen, onClose }: SargassumForec
     if (!isOpen) return;
     const today = new Date();
     const urls: string[] = [];
-    for (let i = 0; i < 7; i++) {
+    // Try last 14 days (forecasts aren't published daily)
+    for (let i = 0; i < 14; i++) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
       urls.push(getForecastUrlForDate(d));
@@ -52,7 +53,7 @@ export function SargassumForecastModal({ lang, isOpen, onClose }: SargassumForec
     tryLoad(0);
     const timeoutId = setTimeout(() => {
       if (!loaded) setImgSrc(FALLBACK_FORECAST);
-    }, 3000);
+    }, 5000);
     return () => clearTimeout(timeoutId);
   }, [isOpen]);
 

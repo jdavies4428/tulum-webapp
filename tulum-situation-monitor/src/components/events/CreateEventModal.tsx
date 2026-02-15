@@ -146,12 +146,16 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
         style={{
           width: "100%",
           maxWidth: "500px",
+          maxHeight: "90vh",
           background: colors.neutral.white,
           borderRadius: radius.lg,
           boxShadow: shadows.lg,
-          padding: spacing.xl,
+          overflow: "auto",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
+        <div style={{ padding: spacing.xl, flex: "1 1 auto", overflow: "auto" }}>
         <h2
           style={{
             margin: 0,
@@ -466,6 +470,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
             </button>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ const DISCOVER_ITEMS: {
   descKey: string;
   size: CardSize;
 }[] = [
+  { id: "events", icon: "📅", labelKey: "localEvents", descKey: "discoverEventsDesc", size: "small" },
   { id: "transportation", icon: "🚗", labelKey: "transportation", descKey: "discoverTransportationDesc", size: "large" },
   { id: "foodDelivery", icon: "🛵", labelKey: "foodDelivery", descKey: "discoverFoodDesc", size: "medium" },
   { id: "itinerary", icon: "📋", labelKey: "aiItinerary", descKey: "discoverItineraryDesc", size: "medium" },
@@ -30,7 +31,6 @@ const DISCOVER_ITEMS: {
   { id: "yogaClasses", icon: "🧘", labelKey: "yogaClasses", descKey: "discoverYogaDesc", size: "small" },
   { id: "communityBoard", icon: "📌", labelKey: "communityBoard", descKey: "discoverCommunityDesc", size: "small" },
   { id: "photoMap", icon: "🗺️", labelKey: "photoMap", descKey: "discoverPhotoMapDesc", size: "medium" },
-  { id: "events", icon: "📅", labelKey: "localEvents", descKey: "discoverEventsDesc", size: "small" },
 ];
 
 const CARD_GRADIENTS: Record<string, string> = {
