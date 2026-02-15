@@ -333,7 +333,7 @@ export function EnhancedSidebar({
               alignItems: "center",
               justifyContent: "center",
               gap: `${spacing.sm}px`,
-              marginBottom: `${spacing.xl}px`,
+              marginBottom: `${spacing.md}px`,
               border: "none",
               cursor: "pointer",
               boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
@@ -346,7 +346,7 @@ export function EnhancedSidebar({
         {/* Sargassum Monitoring – label + quick links */}
         <div
           style={{
-            padding: `0 ${spacing.lg}px ${spacing.xl}px`,
+            padding: `0 ${spacing.lg}px ${spacing.md}px`,
           }}
         >
           <div
@@ -446,7 +446,7 @@ export function EnhancedSidebar({
         {/* AI Concierge & Local Events – unified turquoise */}
         <div
           style={{
-            padding: `0 ${spacing.lg}px ${spacing.xl}px`,
+            padding: `0 ${spacing.lg}px ${spacing.md}px`,
           }}
         >
           <Link
@@ -502,95 +502,101 @@ export function EnhancedSidebar({
         {/* Action buttons - Discover, Places, Map */}
         <div
           style={{
-            padding: `0 ${spacing.lg}px ${spacing.xl}px`,
-            display: "flex",
-            gap: `${spacing.sm}px`,
+            padding: `0 ${spacing.lg}px ${spacing.md}px`,
           }}
         >
-          <Link
-            href={`/discover?lang=${lang}`}
-            className="hover-lift interactive"
+          <div
             style={{
-              flex: 1,
-              padding: `${spacing.sm}px ${spacing.md}px`,
-              background: "rgba(255, 255, 255, 0.85)",
-              backdropFilter: "blur(20px)",
-              border: "2px solid rgba(0, 206, 209, 0.3)",
-              borderRadius: radius.md,
-              color: "#00CED1",
-              fontWeight: "700",
-              fontSize: "13px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: `${spacing.xs}px`,
-              textDecoration: "none",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gap: `${spacing.sm}px`,
             }}
           >
-            ✨ {tAny.discover ?? "Discover"}
-          </Link>
-          <button
-            type="button"
-            onClick={onOpenPlaces}
-            className="hover-lift interactive"
-            style={{
-              flex: 1,
-              padding: `${spacing.sm}px ${spacing.md}px`,
-              background: "rgba(255, 255, 255, 0.85)",
-              backdropFilter: "blur(20px)",
-              border: "2px solid rgba(0, 206, 209, 0.3)",
-              borderRadius: radius.md,
-              color: "#00CED1",
-              fontWeight: "700",
-              fontSize: "13px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: `${spacing.xs}px`,
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
-            }}
-          >
-            📍 {t.places}
-          </button>
-          {onOpenMap && (
-            <button
-              type="button"
-              onClick={onOpenMap}
-              className="hover-lift interactive"
+            <Link
+              href={`/discover?lang=${lang}`}
+              className="glass-heavy hover-lift interactive"
               style={{
-                flex: 1,
-                padding: `${spacing.sm}px ${spacing.md}px`,
-                background: "rgba(255, 255, 255, 0.85)",
-                backdropFilter: "blur(20px)",
+                padding: `${spacing.sm}px ${spacing.sm}px`,
                 border: "2px solid rgba(0, 206, 209, 0.3)",
                 borderRadius: radius.md,
-                color: "#00CED1",
-                fontWeight: "700",
-                fontSize: "13px",
+                color: "var(--tulum-ocean)",
+                fontSize: "10px",
+                fontWeight: "600",
                 cursor: "pointer",
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: `${spacing.xs}px`,
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+                minWidth: 0,
+                minHeight: "56px",
+                textDecoration: "none",
               }}
             >
-              🗺️ {tAny.map ?? "Map"}
+              <span style={{ flexShrink: 0, fontSize: "18px" }}>✨</span>
+              <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>{tAny.discover ?? "Discover"}</span>
+            </Link>
+            <button
+              type="button"
+              onClick={onOpenPlaces}
+              className="glass-heavy hover-lift interactive"
+              style={{
+                padding: `${spacing.sm}px ${spacing.sm}px`,
+                border: "2px solid rgba(0, 206, 209, 0.3)",
+                borderRadius: radius.md,
+                color: "var(--tulum-ocean)",
+                fontSize: "10px",
+                fontWeight: "600",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: `${spacing.xs}px`,
+                minWidth: 0,
+                minHeight: "56px",
+              }}
+            >
+              <span style={{ flexShrink: 0, fontSize: "18px" }}>📍</span>
+              <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>{t.places}</span>
             </button>
-          )}
+            {onOpenMap && (
+              <button
+                type="button"
+                onClick={onOpenMap}
+                className="glass-heavy hover-lift interactive"
+                style={{
+                  padding: `${spacing.sm}px ${spacing.sm}px`,
+                  border: "2px solid rgba(0, 206, 209, 0.3)",
+                  borderRadius: radius.md,
+                  color: "var(--tulum-ocean)",
+                  fontSize: "10px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: `${spacing.xs}px`,
+                  minWidth: 0,
+                  minHeight: "56px",
+                }}
+              >
+                <span style={{ flexShrink: 0, fontSize: "18px" }}>🗺️</span>
+                <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>{tAny.map ?? "Map"}</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Content sections */}
         <div
           style={{
             flex: 1,
-            padding: `${spacing.lg}px ${spacing.lg}px ${spacing.xl}px`,
+            padding: `${spacing.md}px ${spacing.lg}px ${spacing.md}px`,
             display: "flex",
             flexDirection: "column",
-            gap: `${spacing.lg}px`,
+            gap: `${spacing.md}px`,
           }}
         >
           <WeatherSection
