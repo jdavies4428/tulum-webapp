@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { spacing, colors, radius, shadows } from "@/lib/design-tokens";
 
 interface CreateEventModalProps {
@@ -23,15 +24,27 @@ const EMOJI_SUGGESTIONS = [
 ];
 
 export function CreateEventModal({ onClose }: CreateEventModalProps) {
+  const { user } = useAuth();
+  const supabase = createClient();
+
+  // Pre-fill with user's profile info
   const [content, setContent] = useState("");
-  const [authorName, setAuthorName] = useState("");
-  const [authorHandle, setAuthorHandle] = useState("");
-  const [authorAvatar, setAuthorAvatar] = useState("📅");
+  const [authorName, setAuthorName] = useState(
+    user?.user_metadata?.full_name || user?.email?.split("@")[0] || ""
+  );
+  const [authorHandle, setAuthorHandle] = useState(
+    user?.email?.split("@")[0] ? `@${user.email.split("@")[0]}` : ""
+  );
+  const [authorAvatar, setAuthorAvatar] = useState(
+    user?.user_metadata?.avatar_url || "📅"
+  );
+  const [useProfilePhoto, setUseProfilePhoto] = useState(
+    !!user?.user_metadata?.avatar_url
+  );
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const supabase = createClient();
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -185,21 +198,60 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
             <div
               style={{ display: "flex", gap: spacing.sm, flexWrap: "wrap" }}
             >
-              {EMOJI_SUGGESTIONS.map((emoji) => (
+              {/* Profile Photo Option (if available) */}
+              {user?.user_metadata?.avatar_url && (
                 <button
-                  key={emoji}
                   type="button"
-                  onClick={() => setAuthorAvatar(emoji)}
+                  onClick={() => {
+                    setAuthorAvatar(user.user_metadata.avatar_url);
+                    setUseProfilePhoto(true);
+                  }}
                   style={{
                     width: "48px",
                     height: "48px",
                     border:
-                      authorAvatar === emoji
+                      useProfilePhoto
+                        ? `3px solid ${colors.primary.base}`
+                        : "2px solid rgba(0, 206, 209, 0.2)",
+                    borderRadius: "50%",
+                    background: colors.neutral.white,
+                    cursor: "pointer",
+                    padding: 0,
+                    overflow: "hidden",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  <img
+                    src={user.user_metadata.avatar_url}
+                    alt="Your photo"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </button>
+              )}
+
+              {/* Emoji Options */}
+              {EMOJI_SUGGESTIONS.map((emoji) => (
+                <button
+                  key={emoji}
+                  type="button"
+                  onClick={() => {
+                    setAuthorAvatar(emoji);
+                    setUseProfilePhoto(false);
+                  }}
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    border:
+                      !useProfilePhoto && authorAvatar === emoji
                         ? `3px solid ${colors.primary.base}`
                         : "2px solid rgba(0, 206, 209, 0.2)",
                     borderRadius: "50%",
                     background:
-                      authorAvatar === emoji
+                      !useProfilePhoto && authorAvatar === emoji
                         ? "rgba(0, 206, 209, 0.1)"
                         : colors.neutral.white,
                     cursor: "pointer",

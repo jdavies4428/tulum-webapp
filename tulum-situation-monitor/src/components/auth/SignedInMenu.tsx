@@ -66,8 +66,12 @@ export function SignedInMenu({ user, lang = "en" }: SignedInMenuProps) {
   const { signOut } = useAuth();
   const t = translations[lang] as Record<string, string>;
 
-  const avatarUrl =
+  const baseAvatarUrl =
     (user.user_metadata?.avatar_url as string | undefined) ?? null;
+  // Add cache buster to prevent stale images
+  const avatarUrl = baseAvatarUrl
+    ? `${baseAvatarUrl}?v=${Date.now()}`
+    : null;
   const displayName =
     (user.user_metadata?.full_name as string | undefined) ??
     user.email?.split("@")[0] ??

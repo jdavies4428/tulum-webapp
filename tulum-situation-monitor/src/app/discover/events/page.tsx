@@ -174,17 +174,31 @@ export default function EventsPage() {
                   width: "48px",
                   height: "48px",
                   borderRadius: "50%",
-                  background:
-                    "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+                  background: event.author_avatar?.startsWith("http")
+                    ? "#FFF"
+                    : "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
                   border: "2px solid rgba(0, 206, 209, 0.3)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: "24px",
                   flexShrink: 0,
+                  overflow: "hidden",
                 }}
               >
-                {event.author_avatar}
+                {event.author_avatar?.startsWith("http") ? (
+                  <img
+                    src={event.author_avatar}
+                    alt={event.author_name}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  event.author_avatar
+                )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div

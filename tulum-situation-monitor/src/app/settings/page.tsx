@@ -13,9 +13,7 @@ export default function SettingsPage() {
   const { user, refreshUser } = useAuth();
   const supabase = createClient();
   const [uploading, setUploading] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState(
-    user?.user_metadata?.avatar_url || null
-  );
+  const [cacheBuster, setCacheBuster] = useState(Date.now());
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!user) {
@@ -25,6 +23,11 @@ export default function SettingsPage() {
 
   const displayName =
     user.user_metadata?.full_name || user.email?.split("@")[0] || "User";
+
+  // Use user metadata directly, with cache buster for images
+  const avatarUrl = user.user_metadata?.avatar_url
+    ? `${user.user_metadata.avatar_url}?v=${cacheBuster}`
+    : null;
 
   const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -70,13 +73,13 @@ export default function SettingsPage() {
 
       if (updateError) throw updateError;
 
-      setAvatarUrl(publicUrl);
       toast.success("Profile photo updated!");
 
-      // Refresh user data in auth context
+      // Refresh user data in auth context and update cache buster
       if (refreshUser) {
         await refreshUser();
       }
+      setCacheBuster(Date.now());
     } catch (error) {
       console.error("Error uploading image:", error);
       toast.error("Failed to upload profile photo");
@@ -97,13 +100,13 @@ export default function SettingsPage() {
 
       if (error) throw error;
 
-      setAvatarUrl(null);
       toast.success("Profile photo removed");
 
-      // Refresh user data
+      // Refresh user data and update cache buster
       if (refreshUser) {
         await refreshUser();
       }
+      setCacheBuster(Date.now());
     } catch (error) {
       console.error("Error removing photo:", error);
       toast.error("Failed to remove profile photo");
