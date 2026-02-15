@@ -29,36 +29,68 @@ export function SargassumForecastModal({ lang, isOpen, onClose }: SargassumForec
 
   useEffect(() => {
     if (!isOpen) return;
-    const today = new Date();
-    const urls: string[] = [];
-    // Try last 30 days (forecasts are published irregularly, sometimes weekly)
-    for (let i = 0; i < 30; i++) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
-      urls.push(getForecastUrlForDate(d));
-    }
-    let loaded = false;
-    function tryLoad(index: number) {
-      if (index >= urls.length || loaded) return;
-      const img = new Image();
-      img.onload = () => {
-        if (!loaded) {
-          loaded = true;
-          setImgSrc(urls[index]);
-          console.log(`Loaded forecast from: ${urls[index]}`);
+
+    // Try API first (scrapes source page for latest forecast)
+    async function fetchFromAPI() {
+      try {
+        const response = await fetch("/api/sargassum-forecast");
+        const data = await response.json();
+
+        if (response.ok && data.url) {
+          setImgSrc(data.url);
+          console.log(
+            `Loaded forecast from API: ${data.url} (cached: ${data.cached || false})`
+          );
+          return true;
         }
-      };
-      img.onerror = () => tryLoad(index + 1);
-      img.src = urls[index];
-    }
-    tryLoad(0);
-    const timeoutId = setTimeout(() => {
-      if (!loaded) {
-        console.log(`No forecast found in last 30 days, using fallback`);
-        setImgSrc(FALLBACK_FORECAST);
+        return false;
+      } catch (error) {
+        console.error("API fetch failed:", error);
+        return false;
       }
-    }, 10000);
-    return () => clearTimeout(timeoutId);
+    }
+
+    // Fallback: client-side search through last 30 days
+    function tryClientSideSearch() {
+      const today = new Date();
+      const urls: string[] = [];
+      // Try last 30 days (forecasts are published irregularly, sometimes weekly)
+      for (let i = 0; i < 30; i++) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        urls.push(getForecastUrlForDate(d));
+      }
+      let loaded = false;
+      function tryLoad(index: number) {
+        if (index >= urls.length || loaded) return;
+        const img = new Image();
+        img.onload = () => {
+          if (!loaded) {
+            loaded = true;
+            setImgSrc(urls[index]);
+            console.log(`Loaded forecast from client-side: ${urls[index]}`);
+          }
+        };
+        img.onerror = () => tryLoad(index + 1);
+        img.src = urls[index];
+      }
+      tryLoad(0);
+      const timeoutId = setTimeout(() => {
+        if (!loaded) {
+          console.log(`No forecast found, using fallback`);
+          setImgSrc(FALLBACK_FORECAST);
+        }
+      }, 10000);
+      return () => clearTimeout(timeoutId);
+    }
+
+    // Execute: try API first, fallback to client-side if it fails
+    fetchFromAPI().then((success) => {
+      if (!success) {
+        console.log("API failed, falling back to client-side search");
+        tryClientSideSearch();
+      }
+    });
   }, [isOpen]);
 
   if (!isOpen) return null;
