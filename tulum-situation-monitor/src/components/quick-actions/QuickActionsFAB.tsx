@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
@@ -35,6 +35,13 @@ const ACTIONS = [
     labelKey: "sos",
     color: "#FF0000",
     priority: "critical" as const,
+  },
+  {
+    id: "settings",
+    icon: "⚙️",
+    labelKey: "settings",
+    color: "#9370DB",
+    priority: null as string | null,
   },
   {
     id: "dailyUpdates",
@@ -81,6 +88,7 @@ export function QuickActionsFAB() {
   const [isMobile, setIsMobile] = useState(false);
   const [modal, setModal] = useState<"emergency" | "translate" | "taxi" | "currency" | "dailyUpdates" | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
@@ -107,6 +115,10 @@ export function QuickActionsFAB() {
     }
     if (actionId === "mapLayers") {
       window.dispatchEvent(new CustomEvent(OPEN_MAP_LAYERS_EVENT));
+      return;
+    }
+    if (actionId === "settings") {
+      router.push(`/settings?lang=${lang}`);
       return;
     }
     if (actionId === "emergency") setModal("emergency");
