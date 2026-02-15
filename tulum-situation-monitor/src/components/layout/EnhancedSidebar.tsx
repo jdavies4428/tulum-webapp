@@ -230,24 +230,6 @@ export function EnhancedSidebar({
           }}
         >
           <CardContent style={{ position: "relative" }}>
-            {/* User Profile Button - Upper Right (smaller on mobile) */}
-            <div
-              style={{
-                position: "absolute",
-                top: isMobile ? `${spacing.sm}px` : "52px",
-                right: isMobile ? `${spacing.sm}px` : `${spacing.md}px`,
-                zIndex: 20,
-                transform: isMobile ? "scale(0.8)" : "scale(1)",
-                transformOrigin: "top right",
-              }}
-            >
-              {auth?.isAuthenticated && auth.user ? (
-                <SignedInMenu user={auth.user} lang={lang} />
-              ) : (
-                <SignInButton lang={lang} />
-              )}
-            </div>
-
             <h1
               style={{
                 fontSize: isMobile ? "20px" : "22px",
@@ -257,7 +239,6 @@ export function EnhancedSidebar({
                 gap: `${spacing.sm}px`,
                 margin: `0 0 ${spacing.xs}px 0`,
                 color: "var(--tulum-ocean)",
-                paddingRight: isMobile ? "50px" : "60px", // Space for user button
               }}
             >
               🌴 <span>{t.title}</span>
@@ -266,7 +247,7 @@ export function EnhancedSidebar({
               {t.subtitle}
             </p>
 
-          {/* Language & Share buttons row */}
+          {/* Language, Share & User buttons row */}
           <div
             style={{
               display: "flex",
@@ -337,6 +318,23 @@ export function EnhancedSidebar({
                 📤
               </button>
             )}
+
+            {/* Spacer to push user avatar to the right */}
+            <div style={{ flex: 1 }} />
+
+            {/* User Profile Button - inline with language/share buttons */}
+            <div
+              style={{
+                transform: isMobile ? "scale(0.8)" : "scale(1)",
+                transformOrigin: "center right",
+              }}
+            >
+              {auth?.isAuthenticated && auth.user ? (
+                <SignedInMenu user={auth.user} lang={lang} />
+              ) : (
+                <SignInButton lang={lang} />
+              )}
+            </div>
           </div>
           </CardContent>
         </Card>
