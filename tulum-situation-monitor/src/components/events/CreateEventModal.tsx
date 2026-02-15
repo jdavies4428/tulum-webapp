@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
+import { createClient } from "@/lib/supabase/client";
 import { spacing, colors, radius, shadows } from "@/lib/design-tokens";
 
 interface CreateEventModalProps {
@@ -26,7 +27,57 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
   const [authorName, setAuthorName] = useState("");
   const [authorHandle, setAuthorHandle] = useState("");
   const [authorAvatar, setAuthorAvatar] = useState("📅");
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const supabase = createClient();
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const path = `${Date.now()}-${file.name}`;
+      const { data, error } = await supabase.storage
+        .from("event-images")
+        .upload(path, file, { contentType: file.type });
+
+      if (error) throw error;
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("event-images").getPublicUrl(data.path);
+
+      setImageUrl(publicUrl);
+      toast.success("Image uploaded!");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageUrl(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +105,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
             ? authorHandle.trim()
             : `@${authorHandle.trim()}`,
           authorAvatar,
+          imageUrl,
         }),
       });
 
@@ -266,6 +318,103 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                 e.target.style.borderColor = colors.neutral.gray[200];
               }}
             />
+          </div>
+
+          {/* Image Upload */}
+          <div style={{ marginBottom: spacing.lg }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: spacing.sm,
+                fontSize: "14px",
+                fontWeight: "600",
+                color: colors.neutral.gray[700],
+              }}
+            >
+              Event Image (Optional)
+            </label>
+
+            {imageUrl ? (
+              <div
+                style={{
+                  position: "relative",
+                  borderRadius: radius.md,
+                  overflow: "hidden",
+                  border: `2px solid ${colors.neutral.gray[200]}`,
+                }}
+              >
+                <img
+                  src={imageUrl}
+                  alt="Event preview"
+                  style={{
+                    width: "100%",
+                    maxHeight: "300px",
+                    objectFit: "cover",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  style={{
+                    position: "absolute",
+                    top: spacing.sm,
+                    right: spacing.sm,
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    background: "rgba(0, 0, 0, 0.7)",
+                    border: "none",
+                    color: "#FFF",
+                    fontSize: "18px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            ) : (
+              <div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  style={{ display: "none" }}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  style={{
+                    width: "100%",
+                    padding: spacing.lg,
+                    border: `2px dashed ${colors.neutral.gray[300]}`,
+                    borderRadius: radius.md,
+                    background: colors.neutral.gray[50],
+                    cursor: uploading ? "not-allowed" : "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: spacing.sm,
+                    color: colors.neutral.gray[600],
+                    fontSize: "14px",
+                  }}
+                >
+                  <span style={{ fontSize: "32px" }}>
+                    {uploading ? "⏳" : "📸"}
+                  </span>
+                  <span>
+                    {uploading ? "Uploading..." : "Click to upload image"}
+                  </span>
+                  <span style={{ fontSize: "12px", color: colors.neutral.gray[500] }}>
+                    Max 5MB • JPG, PNG, GIF
+                  </span>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}

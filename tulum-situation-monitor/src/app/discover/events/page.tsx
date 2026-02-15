@@ -213,6 +213,27 @@ export default function EventsPage() {
                 >
                   {event.content}
                 </p>
+                {event.image_url && (
+                  <div
+                    style={{
+                      marginTop: "12px",
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                      border: "1px solid rgba(0, 206, 209, 0.2)",
+                    }}
+                  >
+                    <img
+                      src={event.image_url}
+                      alt="Event"
+                      style={{
+                        width: "100%",
+                        maxHeight: "500px",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    />
+                  </div>
+                )}
                 <div
                   style={{
                     display: "flex",

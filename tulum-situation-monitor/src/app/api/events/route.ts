@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { content, authorName, authorHandle, authorAvatar } = body;
+    const { content, authorName, authorHandle, authorAvatar, imageUrl } = body;
 
     // Validation
     if (!content || !authorName || !authorHandle) {
@@ -87,6 +87,7 @@ export async function POST(request: NextRequest) {
         author_name: authorName.trim(),
         author_handle: authorHandle.trim(),
         author_avatar: authorAvatar || "📅",
+        image_url: imageUrl || null,
         metadata: { likes_count: 0, replies_count: 0 },
       })
       .select()
