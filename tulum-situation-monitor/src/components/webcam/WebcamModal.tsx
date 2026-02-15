@@ -89,7 +89,7 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
 
       {/* Modal */}
       <div
-        className="spring-slide-up"
+        className="spring-slide-up scrollbar-hide"
         style={{
           position: "fixed",
           top: "5vh",
@@ -98,10 +98,10 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
           width: "95%",
           maxWidth: "1000px",
           maxHeight: "90vh",
-          background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
+          background: "linear-gradient(135deg, #2d1a1a 0%, #3d2121 100%)",
           borderRadius: radius.xl,
-          border: "2px solid rgba(0, 206, 209, 0.3)",
-          boxShadow: shadows.glow,
+          border: "2px solid rgba(255, 107, 107, 0.3)",
+          boxShadow: "0 0 40px rgba(255, 107, 107, 0.2)",
           zIndex: 9999,
           overflowY: "auto",
           display: "flex",
@@ -116,7 +116,7 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
           style={{
             padding: `${spacing.lg}px ${spacing.xl}px`,
             background: "rgba(0, 0, 0, 0.4)",
-            borderBottom: "2px solid rgba(0, 206, 209, 0.2)",
+            borderBottom: "2px solid rgba(255, 107, 107, 0.2)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -130,8 +130,8 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
                 width: 56,
                 height: 56,
                 borderRadius: radius.lg,
-                background: "linear-gradient(135deg, rgba(0, 206, 209, 0.2) 0%, rgba(0, 206, 209, 0.1) 100%)",
-                border: "2px solid rgba(0, 206, 209, 0.4)",
+                background: "linear-gradient(135deg, rgba(255, 107, 107, 0.3) 0%, rgba(255, 142, 83, 0.2) 100%)",
+                border: "2px solid rgba(255, 107, 107, 0.5)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -235,9 +235,9 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
                 style={{
                   borderRadius: radius.lg,
                   overflow: "hidden",
-                  border: "2px solid rgba(0, 206, 209, 0.25)",
+                  border: "2px solid rgba(255, 107, 107, 0.25)",
                   background: "rgba(0, 0, 0, 0.3)",
-                  boxShadow: "0 12px 40px rgba(0, 0, 0, 0.5)",
+                  boxShadow: "0 12px 40px rgba(255, 107, 107, 0.15)",
                   animation: `spring-slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.15}s both`,
                   transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                 }}
@@ -246,8 +246,8 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
                 <div
                   style={{
                     padding: `${spacing.md}px ${spacing.lg}px`,
-                    background: "linear-gradient(135deg, rgba(0, 206, 209, 0.15) 0%, rgba(0, 206, 209, 0.05) 100%)",
-                    borderBottom: "2px solid rgba(0, 206, 209, 0.2)",
+                    background: "linear-gradient(135deg, rgba(255, 107, 107, 0.15) 0%, rgba(255, 142, 83, 0.05) 100%)",
+                    borderBottom: "2px solid rgba(255, 107, 107, 0.2)",
                     display: "flex",
                     alignItems: "center",
                     gap: spacing.md,

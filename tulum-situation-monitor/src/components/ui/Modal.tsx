@@ -200,6 +200,7 @@ export const Modal: React.FC<ModalProps> = ({
 
           {/* Content */}
           <div
+            className="scrollbar-hide"
             style={{
               flex: 1,
               overflow: "auto",

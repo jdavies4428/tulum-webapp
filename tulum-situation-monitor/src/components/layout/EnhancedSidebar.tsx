@@ -9,9 +9,9 @@ import { translations } from "@/lib/i18n";
 import { WeatherSection } from "@/components/weather/WeatherSection";
 import { CurrenciesPanel } from "@/components/currencies/CurrenciesPanel";
 import { AlertsPanel } from "@/components/weather/AlertsPanel";
-import { Sargassum7DayImage } from "@/components/sargassum/Sargassum7DayImage";
 import { SargassumCurrentModal } from "@/components/sargassum/SargassumCurrentModal";
 import { SargassumForecastModal } from "@/components/sargassum/SargassumForecastModal";
+import { Sargassum7DayModal } from "@/components/sargassum/Sargassum7DayModal";
 import { WebcamModal } from "@/components/webcam/WebcamModal";
 import { generateAlerts } from "@/lib/alerts";
 import { spacing, radius } from "@/lib/design-tokens";
@@ -68,6 +68,7 @@ export function EnhancedSidebar({
 }: EnhancedSidebarProps) {
   const [sargassumCurrentOpen, setSargassumCurrentOpen] = useState(false);
   const [sargassumForecastOpen, setSargassumForecastOpen] = useState(false);
+  const [sargassum7DayOpen, setSargassum7DayOpen] = useState(false);
   const [webcamOpen, setWebcamOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const auth = useAuthOptional();
@@ -310,10 +311,142 @@ export function EnhancedSidebar({
           </CardContent>
         </Card>
 
-        {/* Local Events – full-width button above Discover/Places/Map */}
+        {/* See the Beach – prominent button */}
         <div
           style={{
             padding: `${spacing.md}px ${spacing.lg}px 0`,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setWebcamOpen(true)}
+            className="hover-lift"
+            style={{
+              width: "100%",
+              padding: `${spacing.md}px ${spacing.md}px`,
+              borderRadius: radius.xl,
+              background: "linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)",
+              color: "#FFF",
+              fontWeight: "700",
+              fontSize: "14px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: `${spacing.sm}px`,
+              marginBottom: `${spacing.md}px`,
+              border: "none",
+              cursor: "pointer",
+              boxShadow: "0 6px 20px rgba(255, 107, 107, 0.4)",
+            }}
+          >
+            📹 {tAny.seeTheBeach ?? "See the Beach"}
+          </button>
+        </div>
+
+        {/* Sargassum Monitoring – label + quick links */}
+        <div
+          style={{
+            padding: `${spacing.md}px ${spacing.lg}px`,
+          }}
+        >
+          <div
+            style={{
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "var(--text-secondary)",
+              marginBottom: `${spacing.sm}px`,
+              letterSpacing: "0.3px",
+              textTransform: "uppercase",
+            }}
+          >
+            {tAny.sargassumMonitoring ?? "Sargassum Monitoring"}
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gap: `${spacing.sm}px`,
+            }}
+          >
+          <button
+            type="button"
+            onClick={() => setSargassumCurrentOpen(true)}
+            className="glass-heavy hover-lift interactive"
+            style={{
+              padding: `${spacing.sm}px ${spacing.sm}px`,
+              border: "2px solid rgba(0, 206, 209, 0.3)",
+              borderRadius: radius.md,
+              color: "var(--tulum-ocean)",
+              fontSize: "10px",
+              fontWeight: "600",
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: `${spacing.xs}px`,
+              minWidth: 0,
+              minHeight: "56px",
+            }}
+          >
+            <span style={{ flexShrink: 0, fontSize: "18px" }}>🛰️</span>
+            <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>Current</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSargassumForecastOpen(true)}
+            className="glass-heavy hover-lift interactive"
+            style={{
+              padding: `${spacing.sm}px ${spacing.sm}px`,
+              border: "2px solid rgba(0, 206, 209, 0.3)",
+              borderRadius: radius.md,
+              color: "var(--tulum-ocean)",
+              fontSize: "10px",
+              fontWeight: "600",
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: `${spacing.xs}px`,
+              minWidth: 0,
+              minHeight: "56px",
+            }}
+          >
+            <span style={{ flexShrink: 0, fontSize: "18px" }}>🗺️</span>
+            <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>Forecast</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSargassum7DayOpen(true)}
+            className="glass-heavy hover-lift interactive"
+            style={{
+              padding: `${spacing.sm}px ${spacing.sm}px`,
+              border: "2px solid rgba(0, 206, 209, 0.3)",
+              borderRadius: radius.md,
+              color: "var(--tulum-ocean)",
+              fontSize: "10px",
+              fontWeight: "600",
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: `${spacing.xs}px`,
+              minWidth: 0,
+              minHeight: "56px",
+            }}
+          >
+            <span style={{ flexShrink: 0, fontSize: "18px" }}>📊</span>
+            <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>Historical</span>
+          </button>
+          </div>
+        </div>
+
+        {/* Local Events – full-width button above Discover/Places/Map */}
+        <div
+          style={{
+            padding: `0 ${spacing.lg}px 0`,
           }}
         >
           <Link
@@ -420,106 +553,6 @@ export function EnhancedSidebar({
           )}
         </div>
 
-        {/* Sargassum Monitoring – label + quick links */}
-        <div
-          style={{
-            padding: `${spacing.md}px ${spacing.lg}px`,
-          }}
-        >
-          <div
-            style={{
-              fontSize: "11px",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              marginBottom: `${spacing.sm}px`,
-              letterSpacing: "0.3px",
-              textTransform: "uppercase",
-            }}
-          >
-            {tAny.sargassumMonitoring ?? "Sargassum Monitoring"}
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gap: `${spacing.sm}px`,
-            }}
-          >
-          <button
-            type="button"
-            onClick={() => setSargassumCurrentOpen(true)}
-            className="glass-heavy hover-lift interactive"
-            style={{
-              padding: `${spacing.sm}px ${spacing.sm}px`,
-              border: "2px solid rgba(0, 206, 209, 0.3)",
-              borderRadius: radius.md,
-              color: "var(--tulum-ocean)",
-              fontSize: "10px",
-              fontWeight: "600",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: `${spacing.xs}px`,
-              minWidth: 0,
-              minHeight: "56px",
-            }}
-          >
-            <span style={{ flexShrink: 0, fontSize: "16px" }}>🛰️</span>
-            <span style={{ textAlign: "center", lineHeight: "1.2" }}>{tAny.currentSatellite ?? "Current Satellite"}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setSargassumForecastOpen(true)}
-            className="glass-heavy hover-lift interactive"
-            style={{
-              padding: `${spacing.sm}px ${spacing.sm}px`,
-              border: "2px solid rgba(0, 206, 209, 0.3)",
-              borderRadius: radius.md,
-              color: "var(--tulum-ocean)",
-              fontSize: "10px",
-              fontWeight: "600",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: `${spacing.xs}px`,
-              minWidth: 0,
-              minHeight: "56px",
-            }}
-          >
-            <span style={{ flexShrink: 0, fontSize: "16px" }}>🗺️</span>
-            <span style={{ textAlign: "center", lineHeight: "1.2" }}>{tAny.sargassum7Day ?? "7-Day Forecast"}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setWebcamOpen(true)}
-            className="glass-heavy hover-lift interactive"
-            style={{
-              padding: `${spacing.sm}px ${spacing.sm}px`,
-              border: "2px solid rgba(0, 206, 209, 0.3)",
-              borderRadius: radius.md,
-              color: "var(--tulum-ocean)",
-              fontSize: "10px",
-              fontWeight: "600",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: `${spacing.xs}px`,
-              minWidth: 0,
-              minHeight: "56px",
-            }}
-          >
-            <span style={{ flexShrink: 0, fontSize: "16px" }}>📹</span>
-            <span style={{ textAlign: "center", lineHeight: "1.2" }}>{tAny.beachCams ?? "Beach Cams"}</span>
-          </button>
-          </div>
-        </div>
-
         {/* Content sections */}
         <div
           style={{
@@ -539,7 +572,6 @@ export function EnhancedSidebar({
             waterTemp={waterTemp}
             onRefresh={onWeatherRefresh}
           />
-          <Sargassum7DayImage lang={lang} />
           <AlertsPanel lang={lang} alerts={alerts} />
           <CurrenciesPanel lang={lang} />
         </div>
@@ -556,6 +588,11 @@ export function EnhancedSidebar({
         lang={lang}
         isOpen={sargassumForecastOpen}
         onClose={() => setSargassumForecastOpen(false)}
+      />
+      <Sargassum7DayModal
+        lang={lang}
+        isOpen={sargassum7DayOpen}
+        onClose={() => setSargassum7DayOpen(false)}
       />
       <WebcamModal lang={lang} isOpen={webcamOpen} onClose={() => setWebcamOpen(false)} />
     </>
