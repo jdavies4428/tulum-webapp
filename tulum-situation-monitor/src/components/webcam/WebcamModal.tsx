@@ -10,7 +10,7 @@ const WEBCAMS = [
     id: "tulum",
     name: "Casa Malca",
     icon: "🏖️",
-    url: "https://g3.ipcamlive.com/player/player.php?alias=08a1898ad840",
+    url: "https://g3.ipcamlive.com/player/player.php?alias=08a1898ad840&autoplay=1",
     locationEn: "Tulum Hotel Zone",
     locationEs: "Zona Hotelera Tulum",
     locationFr: "Zone Hôtelière de Tulum",
@@ -19,7 +19,7 @@ const WEBCAMS = [
     id: "akumal",
     name: "Akumal Bay",
     icon: "🐢",
-    url: "https://g1.ipcamlive.com/player/player.php?alias=akumalsouth",
+    url: "https://g1.ipcamlive.com/player/player.php?alias=akumalsouth&autoplay=1",
     locationEn: "Akumal Bay",
     locationEs: "Bahía de Akumal",
     locationFr: "Baie d'Akumal",
@@ -291,6 +291,7 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
                   <iframe
                     src={cam.url}
                     title={`${cam.name} - ${location}`}
+                    allow="autoplay; fullscreen"
                     allowFullScreen
                     style={{
                       position: "absolute",
