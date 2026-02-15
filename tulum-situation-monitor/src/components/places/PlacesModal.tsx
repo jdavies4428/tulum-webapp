@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { useVenues } from "@/hooks/useVenues";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -18,8 +18,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 type TabId = "all" | "local" | "beachClubs" | "restaurants" | "coffeeShops" | "cultural";
 type SortBy = "distance" | "rating" | "popular";
 
-// Memoized FilterButton to prevent unnecessary re-renders
-const FilterButton = React.memo(function FilterButton({
+function FilterButton({
   icon,
   label,
   active,
@@ -84,7 +83,7 @@ const FilterButton = React.memo(function FilterButton({
       </span>
     </button>
   );
-});
+}
 
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371;
@@ -182,8 +181,7 @@ interface PlaceCardProps {
   addToListLabel?: string;
 }
 
-// Memoized PlaceCard to prevent unnecessary re-renders in loops
-const PlaceCard = React.memo(function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggleFavorite, isLocked = false, onAddToList, addToListLabel = "Add to List" }: PlaceCardProps) {
+function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggleFavorite, isLocked = false, onAddToList, addToListLabel = "Add to List" }: PlaceCardProps) {
   const photoSrc = place.photo_url ?? (place.photo_reference ? `/api/places/photo?photo_reference=${encodeURIComponent(place.photo_reference)}&maxwidth=400` : null);
   const distanceStr =
     place.distance < 1
@@ -566,7 +564,7 @@ const PlaceCard = React.memo(function PlaceCard({ place, navigateLabel, onSelect
       </div>
     </div>
   );
-});
+}
 
 interface PlacesModalProps {
   lang: Lang;
@@ -608,8 +606,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
     setSearchQuery(debouncedSearch);
   }, [debouncedSearch]);
 
-  // Memoize favorite handler to prevent unnecessary re-renders of child components
-  const handleFavoriteClick = useCallback((placeId: string | undefined, placeName?: string) => {
+  const handleFavoriteClick = (placeId: string | undefined, placeName?: string) => {
     if (!placeId) return;
     if (!isAuthenticated) {
       setPendingPlaceId(placeId);
@@ -633,7 +630,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         }
       });
     }
-  }, [isAuthenticated, isFavorite, toggleFavorite]);
+  };
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 768px)");
