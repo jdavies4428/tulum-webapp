@@ -60,13 +60,16 @@ export function DashboardClient() {
     () => typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT
   );
 
+  // Mobile breakpoint check function
+  const checkMobile = () => setIsMobile(typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT);
+
   // Throttle resize handler to reduce unnecessary re-renders (250ms delay)
+  const throttledCheck = useThrottle(checkMobile, 250);
+
   useEffect(() => {
-    const check = () => setIsMobile(typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT);
-    const throttledCheck = useThrottle(check, 250);
     window.addEventListener("resize", throttledCheck);
     return () => window.removeEventListener("resize", throttledCheck);
-  }, []);
+  }, [throttledCheck]);
 
   // Ensure Favorites and Restaurants are visible on mobile (match default venue layers)
   useEffect(() => {

@@ -70,14 +70,17 @@ export function EnhancedSidebar({
   const auth = useAuthOptional();
   const t = translations[lang];
 
+  // Mobile breakpoint check function
+  const checkMobile = () => setIsMobile(typeof window !== "undefined" && window.innerWidth < 768);
+
   // Throttle resize handler to reduce unnecessary re-renders (250ms delay)
+  const throttledCheck = useThrottle(checkMobile, 250);
+
   useEffect(() => {
-    const check = () => setIsMobile(typeof window !== "undefined" && window.innerWidth < 768);
-    check();
-    const throttledCheck = useThrottle(check, 250);
+    checkMobile(); // Check once on mount
     window.addEventListener("resize", throttledCheck);
     return () => window.removeEventListener("resize", throttledCheck);
-  }, []);
+  }, [throttledCheck]);
 
   const sidebarWidth = isMobile && !isCollapsed ? "100vw" : isCollapsed ? 0 : "400px";
 
