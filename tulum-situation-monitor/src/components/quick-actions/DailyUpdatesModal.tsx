@@ -139,6 +139,10 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
             placeholder="+52 984 123 4567"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck="false"
             style={{
               width: "100%",
               padding: `${spacing.sm}px ${spacing.md}px`,
