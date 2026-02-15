@@ -41,9 +41,11 @@ export default function SettingsPage() {
       return;
     }
 
-    // Validate file size (max 2MB for profile photos)
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("Image must be less than 2MB");
+    // Validate file size (max 5MB for profile photos)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      toast.error(`Image is too large (${fileSizeMB}MB). Max size is 5MB`);
       return;
     }
 
@@ -346,7 +348,7 @@ export default function SettingsPage() {
                 margin: 0,
               }}
             >
-              Max 2MB • JPG, PNG, or GIF
+              Max 5MB • JPG, PNG, or GIF
             </p>
           </div>
         </div>
