@@ -21,6 +21,11 @@ const CurrencyModal = dynamic(
   { ssr: false, loading: () => null }
 );
 
+const DailyUpdatesModal = dynamic(
+  () => import("./DailyUpdatesModal").then((mod) => ({ default: mod.DailyUpdatesModal })),
+  { ssr: false, loading: () => null }
+);
+
 export const OPEN_MAP_LAYERS_EVENT = "open-map-layers";
 
 const ACTIONS = [
@@ -30,6 +35,13 @@ const ACTIONS = [
     labelKey: "sos",
     color: "#FF0000",
     priority: "critical" as const,
+  },
+  {
+    id: "dailyUpdates",
+    icon: "📱",
+    labelKey: "dailyBeachUpdates",
+    color: "#00CED1",
+    priority: null as string | null,
   },
   {
     id: "translate",
@@ -67,7 +79,7 @@ export function QuickActionsFAB() {
   const [lang] = usePersistedLang(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [modal, setModal] = useState<"emergency" | "translate" | "taxi" | "currency" | null>(null);
+  const [modal, setModal] = useState<"emergency" | "translate" | "taxi" | "currency" | "dailyUpdates" | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -101,6 +113,7 @@ export function QuickActionsFAB() {
     else if (actionId === "translate") setModal("translate");
     else if (actionId === "taxi") setModal("taxi");
     else if (actionId === "currency") setModal("currency");
+    else if (actionId === "dailyUpdates") setModal("dailyUpdates");
   };
 
   const closeModal = () => setModal(null);
@@ -119,6 +132,7 @@ export function QuickActionsFAB() {
       )}
       {modal === "taxi" && <TaxiModal lang={lang} onClose={closeModal} />}
       {modal === "currency" && <CurrencyModal lang={lang} onClose={closeModal} />}
+      {modal === "dailyUpdates" && <DailyUpdatesModal lang={lang} onClose={closeModal} />}
 
       {isExpanded && (
         <div

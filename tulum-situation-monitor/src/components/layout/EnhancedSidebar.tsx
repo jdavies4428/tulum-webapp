@@ -314,7 +314,7 @@ export function EnhancedSidebar({
         {/* See the Beach – prominent button */}
         <div
           style={{
-            padding: `${spacing.md}px ${spacing.lg}px 0`,
+            padding: `${spacing.lg}px ${spacing.lg}px 0`,
           }}
         >
           <button
@@ -324,8 +324,8 @@ export function EnhancedSidebar({
             style={{
               width: "100%",
               padding: `${spacing.md}px ${spacing.md}px`,
-              borderRadius: radius.xl,
-              background: "linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)",
+              borderRadius: radius.md,
+              background: `linear-gradient(135deg, #00CED1 0%, #00BABA 100%)`,
               color: "#FFF",
               fontWeight: "700",
               fontSize: "14px",
@@ -333,10 +333,10 @@ export function EnhancedSidebar({
               alignItems: "center",
               justifyContent: "center",
               gap: `${spacing.sm}px`,
-              marginBottom: `${spacing.md}px`,
+              marginBottom: `${spacing.xl}px`,
               border: "none",
               cursor: "pointer",
-              boxShadow: "0 6px 20px rgba(255, 107, 107, 0.4)",
+              boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
             }}
           >
             📹 {tAny.tulumBeachLive ?? "Tulum Beach Live"}
@@ -346,16 +346,16 @@ export function EnhancedSidebar({
         {/* Sargassum Monitoring – label + quick links */}
         <div
           style={{
-            padding: `${spacing.md}px ${spacing.lg}px`,
+            padding: `0 ${spacing.lg}px ${spacing.xl}px`,
           }}
         >
           <div
             style={{
-              fontSize: "11px",
+              fontSize: "12px",
               fontWeight: "700",
               color: "var(--text-secondary)",
-              marginBottom: `${spacing.sm}px`,
-              letterSpacing: "0.3px",
+              marginBottom: `${spacing.md}px`,
+              letterSpacing: "0.5px",
               textTransform: "uppercase",
             }}
           >
@@ -443,19 +443,10 @@ export function EnhancedSidebar({
           </div>
         </div>
 
-        {/* Divider */}
+        {/* AI Concierge & Local Events – unified turquoise */}
         <div
           style={{
-            height: "1px",
-            background: "rgba(0, 0, 0, 0.08)",
-            margin: `${spacing.md}px ${spacing.lg}px`,
-          }}
-        />
-
-        {/* AI Concierge & Local Events – full-width buttons */}
-        <div
-          style={{
-            padding: `0 ${spacing.lg}px 0`,
+            padding: `0 ${spacing.lg}px ${spacing.xl}px`,
           }}
         >
           <Link
@@ -464,8 +455,8 @@ export function EnhancedSidebar({
             style={{
               width: "100%",
               padding: `${spacing.md}px ${spacing.md}px`,
-              borderRadius: radius.xl,
-              background: "linear-gradient(135deg, #9333EA 0%, #7C3AED 100%)",
+              borderRadius: radius.md,
+              background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
               color: "#FFF",
               fontWeight: "700",
               fontSize: "14px",
@@ -473,22 +464,23 @@ export function EnhancedSidebar({
               alignItems: "center",
               justifyContent: "center",
               gap: `${spacing.sm}px`,
-              marginBottom: `${spacing.md}px`,
+              marginBottom: `${spacing.sm}px`,
               textDecoration: "none",
               border: "none",
               cursor: "pointer",
-              boxShadow: "0 6px 20px rgba(147, 51, 234, 0.35)",
+              boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
             }}
           >
             🤖 {tAny.aiConcierge ?? "AI Concierge"}
           </Link>
           <Link
             href={`/discover/events?lang=${lang}`}
-            className="btn btn-primary hover-lift"
+            className="hover-lift"
             style={{
               width: "100%",
               padding: `${spacing.md}px ${spacing.md}px`,
-              borderRadius: radius.xl,
+              borderRadius: radius.md,
+              background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
               color: "#FFF",
               fontWeight: "700",
               fontSize: "14px",
@@ -496,21 +488,23 @@ export function EnhancedSidebar({
               alignItems: "center",
               justifyContent: "center",
               gap: `${spacing.sm}px`,
-              marginBottom: `${spacing.md}px`,
+              marginBottom: `${spacing.sm}px`,
               textDecoration: "none",
-              boxShadow: "0 6px 20px rgba(0, 206, 209, 0.35)",
+              border: "none",
+              cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
             }}
           >
             📅 {tAny.localEvents ?? "Local Events"}
           </Link>
         </div>
 
-        {/* Action buttons - Beachy gradients (Discover, Places, Map) */}
+        {/* Action buttons - Discover, Places, Map */}
         <div
           style={{
-            padding: `${spacing.md}px ${spacing.lg}px`,
+            padding: `0 ${spacing.lg}px ${spacing.xl}px`,
             display: "flex",
-            gap: `${spacing.md}px`,
+            gap: `${spacing.sm}px`,
           }}
         >
           <Link
@@ -518,20 +512,21 @@ export function EnhancedSidebar({
             className="hover-lift interactive"
             style={{
               flex: 1,
-              padding: `${spacing.md}px ${spacing.md}px`,
-              background: "linear-gradient(135deg, #FFE4CC 0%, #FFD4B8 100%)",
-              border: "none",
-              borderRadius: radius.xl,
-              color: "#333",
+              padding: `${spacing.sm}px ${spacing.md}px`,
+              background: "rgba(255, 255, 255, 0.85)",
+              backdropFilter: "blur(20px)",
+              border: "2px solid rgba(0, 206, 209, 0.3)",
+              borderRadius: radius.md,
+              color: "#00CED1",
               fontWeight: "700",
-              fontSize: "14px",
+              fontSize: "13px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: `${spacing.sm}px`,
+              gap: `${spacing.xs}px`,
               textDecoration: "none",
-              boxShadow: "0 6px 20px rgba(255, 153, 102, 0.2)",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
             ✨ {tAny.discover ?? "Discover"}
@@ -542,19 +537,20 @@ export function EnhancedSidebar({
             className="hover-lift interactive"
             style={{
               flex: 1,
-              padding: `${spacing.md}px ${spacing.md}px`,
-              background: "linear-gradient(135deg, #FFB6C1 0%, #FF9AA2 100%)",
-              border: "none",
-              borderRadius: radius.xl,
-              color: "#333",
+              padding: `${spacing.sm}px ${spacing.md}px`,
+              background: "rgba(255, 255, 255, 0.85)",
+              backdropFilter: "blur(20px)",
+              border: "2px solid rgba(0, 206, 209, 0.3)",
+              borderRadius: radius.md,
+              color: "#00CED1",
               fontWeight: "700",
-              fontSize: "14px",
+              fontSize: "13px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: `${spacing.sm}px`,
-              boxShadow: "0 6px 20px rgba(255, 107, 107, 0.2)",
+              gap: `${spacing.xs}px`,
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
             }}
           >
             📍 {t.places}
@@ -566,19 +562,20 @@ export function EnhancedSidebar({
               className="hover-lift interactive"
               style={{
                 flex: 1,
-                padding: `${spacing.md}px ${spacing.md}px`,
-                background: "linear-gradient(135deg, #B8E6F0 0%, #A0D8E8 100%)",
-                border: "none",
-                borderRadius: radius.xl,
-                color: "#333",
+                padding: `${spacing.sm}px ${spacing.md}px`,
+                background: "rgba(255, 255, 255, 0.85)",
+                backdropFilter: "blur(20px)",
+                border: "2px solid rgba(0, 206, 209, 0.3)",
+                borderRadius: radius.md,
+                color: "#00CED1",
                 fontWeight: "700",
-                fontSize: "14px",
+                fontSize: "13px",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: `${spacing.sm}px`,
-                boxShadow: "0 6px 20px rgba(77, 208, 225, 0.25)",
+                gap: `${spacing.xs}px`,
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
               }}
             >
               🗺️ {tAny.map ?? "Map"}
@@ -590,10 +587,10 @@ export function EnhancedSidebar({
         <div
           style={{
             flex: 1,
-            padding: `${spacing.md}px ${spacing.lg}px ${spacing.xl}px`,
+            padding: `${spacing.lg}px ${spacing.lg}px ${spacing.xl}px`,
             display: "flex",
             flexDirection: "column",
-            gap: `${spacing.md}px`,
+            gap: `${spacing.lg}px`,
           }}
         >
           <WeatherSection
