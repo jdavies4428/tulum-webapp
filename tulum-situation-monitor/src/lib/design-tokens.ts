@@ -199,7 +199,7 @@ export const button = {
 } as const;
 
 // ============================================================================
-// CARD STYLES - Only 2 Variants (Glass is our signature)
+// CARD STYLES - Simplified variants
 // ============================================================================
 export const card = {
   // Glass: Primary card style (Tulum aesthetic)
@@ -219,6 +219,36 @@ export const card = {
     shadow: shadows.md,
     borderRadius: radius.md,
     padding: spacing.lg,
+  },
+} as const;
+
+// Backward compatibility: cardVariants (for existing components)
+export const cardVariants = {
+  flat: {
+    background: colors.neutral.white,
+    border: `1px solid ${colors.neutral.gray[200]}`,
+    shadow: shadows.none,
+    hoverShadow: shadows.sm,
+  },
+  elevated: {
+    background: colors.neutral.white,
+    border: 'none',
+    shadow: shadows.md,
+    hoverShadow: shadows.lg,
+  },
+  glass: {
+    background: glass.light.background,
+    border: glass.light.border,
+    backdropFilter: glass.light.backdropFilter,
+    shadow: shadows.sm,
+    hoverShadow: shadows.md,
+  },
+  glassHeavy: {
+    background: glass.light.background,
+    border: glass.light.border,
+    backdropFilter: glass.light.backdropFilter,
+    shadow: shadows.md,
+    hoverShadow: shadows.lg,
   },
 } as const;
 
