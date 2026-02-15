@@ -47,6 +47,7 @@ export function TulumRightNowModal({ lang, onClose }: TulumRightNowModalProps) {
           padding: '20px',
           pointerEvents: 'none',
         }}
+        onClick={onClose}
       >
         <div
           onClick={(e) => e.stopPropagation()}
@@ -56,11 +57,13 @@ export function TulumRightNowModal({ lang, onClose }: TulumRightNowModalProps) {
             maxWidth: '1000px',
             width: '100%',
             maxHeight: '90vh',
-            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
             boxShadow: '0 24px 80px rgba(0, 0, 0, 0.3)',
             animation: 'spring-slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
             pointerEvents: 'auto',
             position: 'relative',
+            overflow: 'hidden',
           }}
         >
           <button
@@ -73,41 +76,51 @@ export function TulumRightNowModal({ lang, onClose }: TulumRightNowModalProps) {
               width: '44px',
               height: '44px',
               borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.4)',
+              background: 'rgba(255, 255, 255, 0.9)',
               backdropFilter: 'blur(20px)',
-              border: '2px solid rgba(255, 255, 255, 0.5)',
+              border: '2px solid rgba(0, 0, 0, 0.1)',
               cursor: 'pointer',
-              fontSize: '24px',
+              fontSize: '28px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              zIndex: 10,
+              zIndex: 100,
               transition: 'all 0.2s',
+              color: '#333',
+              fontWeight: 300,
+              lineHeight: 1,
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.1)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.6)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 1)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.4)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
             }}
           >
             ×
           </button>
 
-          {weatherData?.current && (
-            <ContextualGrid
-              weather={{
-                temperature: weatherData.current.temperature_2m,
-                condition: getWeatherDescription(weatherData.current.weather_code, lang).desc as any,
-                uvIndex: weatherData.daily?.uv_index_max?.[0] ?? 0,
-                sunrise: weatherData.daily?.sunrise?.[0],
-                sunset: weatherData.daily?.sunset?.[0],
-              }}
-              lang={lang}
-            />
-          )}
+          <div style={{
+            flex: 1,
+            overflow: 'auto',
+            WebkitOverflowScrolling: 'touch',
+          }}>
+            {weatherData?.current && (
+              <ContextualGrid
+                weather={{
+                  temperature: weatherData.current.temperature_2m,
+                  condition: getWeatherDescription(weatherData.current.weather_code, lang).desc as any,
+                  uvIndex: weatherData.daily?.uv_index_max?.[0] ?? 0,
+                  sunrise: weatherData.daily?.sunrise?.[0],
+                  sunset: weatherData.daily?.sunset?.[0],
+                }}
+                lang={lang}
+              />
+            )}
+          </div>
         </div>
       </div>
     </>

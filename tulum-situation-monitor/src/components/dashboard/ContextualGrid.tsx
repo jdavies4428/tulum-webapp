@@ -42,11 +42,9 @@ export function ContextualGrid({ weather, lang }: ContextualGridProps) {
       style={{
         position: 'relative',
         width: '100%',
-        height: '100%',
-        overflowY: 'auto',
-        overflowX: 'hidden',
         padding: '24px',
-        paddingTop: '80px',
+        paddingTop: '70px',
+        paddingBottom: '40px',
       }}
     >
       <LivePulse lastUpdateTime={lastUpdateTime} />
