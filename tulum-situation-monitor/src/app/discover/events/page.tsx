@@ -3,25 +3,41 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
-import { useLocalEvents } from "@/hooks/useLocalEvents";
+import { useLocalEvents, type LocalEvent } from "@/hooks/useLocalEvents";
 import { useAuthOptional } from "@/contexts/AuthContext";
 import { CreateEventModal } from "@/components/events/CreateEventModal";
+import { EditEventModal } from "@/components/events/EditEventModal";
+import { ConfirmDialog } from "@/components/events/ConfirmDialog";
 import { formatChatTimestamp } from "@/lib/chat-helpers";
 
 export default function EventsPage() {
   const searchParams = useSearchParams();
   const [lang] = usePersistedLang(searchParams.get("lang"));
   const t = translations[lang] as Record<string, string>;
-  const { events, loading } = useLocalEvents();
+  const { events, loading, deleteEvent, updateEvent } = useLocalEvents();
   const auth = useAuthOptional();
   const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<LocalEvent | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState<string | null>(null);
 
   // Admin check (same pattern as PlacesModal.tsx line 592-593)
   const isAdmin =
     auth?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
     auth?.user?.user_metadata?.role === "admin";
+
+  const handleDelete = async (eventId: string) => {
+    try {
+      await deleteEvent(eventId);
+      toast.success("Event deleted successfully");
+      setDeleteConfirm(null);
+    } catch (error) {
+      toast.error("Failed to delete event");
+    }
+  };
 
   return (
     <div
@@ -137,6 +153,14 @@ export default function EventsPage() {
                 display: "flex",
                 gap: "12px",
                 transition: "background 0.2s",
+                position: "relative",
+              }}
+              onClick={(e) => {
+                // Close menu if clicking outside menu area
+                const target = e.target as HTMLElement;
+                if (!target.closest("button")) {
+                  setMenuOpen(null);
+                }
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "rgba(255, 255, 255, 0.6)";
@@ -200,6 +224,117 @@ export default function EventsPage() {
                       new Date(event.created_at).getTime()
                     )}
                   </span>
+
+                  {/* Three-dot menu for event author */}
+                  {isAdmin && auth?.user?.id === event.author_id && (
+                    <div style={{ marginLeft: "auto", position: "relative" }}>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setMenuOpen(menuOpen === event.id ? null : event.id)
+                        }
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: "4px 8px",
+                          fontSize: "16px",
+                          color: "#999",
+                          borderRadius: "4px",
+                          transition: "background 0.2s",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background =
+                            "rgba(0, 206, 209, 0.1)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "transparent";
+                        }}
+                      >
+                        ⋯
+                      </button>
+
+                      {/* Dropdown menu */}
+                      {menuOpen === event.id && (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "100%",
+                            right: 0,
+                            background: "#FFF",
+                            borderRadius: "8px",
+                            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+                            border: "1px solid rgba(0, 206, 209, 0.2)",
+                            minWidth: "150px",
+                            zIndex: 100,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingEvent(event);
+                              setMenuOpen(null);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "12px 16px",
+                              background: "transparent",
+                              border: "none",
+                              textAlign: "left",
+                              cursor: "pointer",
+                              fontSize: "14px",
+                              fontWeight: "600",
+                              color: "#333",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background =
+                                "rgba(0, 206, 209, 0.08)";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = "transparent";
+                            }}
+                          >
+                            ✏️ Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDeleteConfirm(event.id);
+                              setMenuOpen(null);
+                            }}
+                            style={{
+                              width: "100%",
+                              padding: "12px 16px",
+                              background: "transparent",
+                              border: "none",
+                              borderTop: "1px solid rgba(0, 0, 0, 0.05)",
+                              textAlign: "left",
+                              cursor: "pointer",
+                              fontSize: "14px",
+                              fontWeight: "600",
+                              color: "#FF6B6B",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background =
+                                "rgba(255, 107, 107, 0.08)";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = "transparent";
+                            }}
+                          >
+                            🗑️ Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <p
                   style={{
@@ -274,6 +409,28 @@ export default function EventsPage() {
       {/* Create Modal */}
       {isAdmin && createModalOpen && (
         <CreateEventModal onClose={() => setCreateModalOpen(false)} />
+      )}
+
+      {/* Edit Modal */}
+      {isAdmin && editingEvent && (
+        <EditEventModal
+          event={editingEvent}
+          onClose={() => setEditingEvent(null)}
+          onUpdate={updateEvent}
+        />
+      )}
+
+      {/* Delete Confirmation */}
+      {deleteConfirm && (
+        <ConfirmDialog
+          title="Delete Event?"
+          message="Are you sure you want to delete this event? This action cannot be undone."
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
+          onConfirm={() => handleDelete(deleteConfirm)}
+          onCancel={() => setDeleteConfirm(null)}
+          danger
+        />
       )}
     </div>
   );

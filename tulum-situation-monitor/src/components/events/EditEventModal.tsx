@@ -1,0 +1,479 @@
+"use client";
+
+import { useState, useRef } from "react";
+import { toast } from "sonner";
+import { createClient } from "@/lib/supabase/client";
+import { spacing, colors, radius, shadows } from "@/lib/design-tokens";
+import type { LocalEvent } from "@/hooks/useLocalEvents";
+
+interface EditEventModalProps {
+  event: LocalEvent;
+  onClose: () => void;
+  onUpdate: (
+    eventId: string,
+    updates: {
+      content: string;
+      authorName?: string;
+      authorHandle?: string;
+      authorAvatar?: string;
+      imageUrl?: string | null;
+    }
+  ) => Promise<void>;
+}
+
+const EMOJI_SUGGESTIONS = [
+  "📅",
+  "🎉",
+  "🏖️",
+  "🍽️",
+  "🏊",
+  "🐢",
+  "🌴",
+  "🎵",
+  "🍹",
+  "🌅",
+];
+
+export function EditEventModal({ event, onClose, onUpdate }: EditEventModalProps) {
+  const [content, setContent] = useState(event.content);
+  const [authorName, setAuthorName] = useState(event.author_name);
+  const [authorHandle, setAuthorHandle] = useState(event.author_handle);
+  const [authorAvatar, setAuthorAvatar] = useState(event.author_avatar);
+  const [imageUrl, setImageUrl] = useState<string | null>(event.image_url);
+  const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const supabase = createClient();
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const path = `${Date.now()}-${file.name}`;
+      const { data, error } = await supabase.storage
+        .from("event-images")
+        .upload(path, file, { contentType: file.type });
+
+      if (error) throw error;
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("event-images").getPublicUrl(data.path);
+
+      setImageUrl(publicUrl);
+      toast.success("Image uploaded!");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageUrl(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!content.trim() || !authorName.trim() || !authorHandle.trim()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (content.length > 2000) {
+      toast.error("Content is too long (max 2000 characters)");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await onUpdate(event.id, {
+        content: content.trim(),
+        authorName: authorName.trim(),
+        authorHandle: authorHandle.trim().startsWith("@")
+          ? authorHandle.trim()
+          : `@${authorHandle.trim()}`,
+        authorAvatar,
+        imageUrl,
+      });
+
+      toast.success("Event updated successfully!");
+      onClose();
+    } catch (error) {
+      console.error("Error updating event:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update event"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0, 0, 0, 0.5)",
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: spacing.lg,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%",
+          maxWidth: "500px",
+          maxHeight: "90vh",
+          background: colors.neutral.white,
+          borderRadius: radius.lg,
+          boxShadow: shadows.lg,
+          overflow: "auto",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div style={{ padding: spacing.xl, flex: "1 1 auto", overflow: "auto" }}>
+        <h2
+          style={{
+            margin: 0,
+            marginBottom: spacing.lg,
+            fontSize: "24px",
+            fontWeight: "800",
+            color: colors.primary.base,
+          }}
+        >
+          ✏️ Edit Event Post
+        </h2>
+
+        <form onSubmit={handleSubmit}>
+          {/* Avatar Picker */}
+          <div style={{ marginBottom: spacing.lg }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: spacing.sm,
+                fontSize: "14px",
+                fontWeight: "600",
+                color: colors.neutral.gray[700],
+              }}
+            >
+              Avatar
+            </label>
+            <div
+              style={{ display: "flex", gap: spacing.sm, flexWrap: "wrap" }}
+            >
+              {EMOJI_SUGGESTIONS.map((emoji) => (
+                <button
+                  key={emoji}
+                  type="button"
+                  onClick={() => setAuthorAvatar(emoji)}
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    border:
+                      authorAvatar === emoji
+                        ? `3px solid ${colors.primary.base}`
+                        : "2px solid rgba(0, 206, 209, 0.2)",
+                    borderRadius: "50%",
+                    background:
+                      authorAvatar === emoji
+                        ? "rgba(0, 206, 209, 0.1)"
+                        : colors.neutral.white,
+                    cursor: "pointer",
+                    fontSize: "24px",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Author Name */}
+          <div style={{ marginBottom: spacing.md }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: spacing.sm,
+                fontSize: "14px",
+                fontWeight: "600",
+                color: colors.neutral.gray[700],
+              }}
+            >
+              Author Name
+            </label>
+            <input
+              type="text"
+              value={authorName}
+              onChange={(e) => setAuthorName(e.target.value)}
+              placeholder="e.g., Tulum Beach Club"
+              maxLength={100}
+              style={{
+                width: "100%",
+                padding: spacing.md,
+                border: `2px solid ${colors.neutral.gray[200]}`,
+                borderRadius: radius.md,
+                fontSize: "15px",
+                outline: "none",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = colors.primary.base;
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = colors.neutral.gray[200];
+              }}
+            />
+          </div>
+
+          {/* Author Handle */}
+          <div style={{ marginBottom: spacing.lg }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: spacing.sm,
+                fontSize: "14px",
+                fontWeight: "600",
+                color: colors.neutral.gray[700],
+              }}
+            >
+              Handle
+            </label>
+            <input
+              type="text"
+              value={authorHandle}
+              onChange={(e) => setAuthorHandle(e.target.value)}
+              placeholder="@tulumbeach"
+              maxLength={50}
+              style={{
+                width: "100%",
+                padding: spacing.md,
+                border: `2px solid ${colors.neutral.gray[200]}`,
+                borderRadius: radius.md,
+                fontSize: "15px",
+                outline: "none",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = colors.primary.base;
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = colors.neutral.gray[200];
+              }}
+            />
+          </div>
+
+          {/* Content */}
+          <div style={{ marginBottom: spacing.lg }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: spacing.sm,
+                fontSize: "14px",
+                fontWeight: "600",
+                color: colors.neutral.gray[700],
+              }}
+            >
+              Event Content ({content.length}/2000)
+            </label>
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="What's happening in Tulum?"
+              maxLength={2000}
+              rows={6}
+              style={{
+                width: "100%",
+                padding: spacing.md,
+                border: `2px solid ${colors.neutral.gray[200]}`,
+                borderRadius: radius.md,
+                fontSize: "15px",
+                lineHeight: "1.5",
+                resize: "vertical",
+                outline: "none",
+                fontFamily: "inherit",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = colors.primary.base;
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = colors.neutral.gray[200];
+              }}
+            />
+          </div>
+
+          {/* Image Upload */}
+          <div style={{ marginBottom: spacing.lg }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: spacing.sm,
+                fontSize: "14px",
+                fontWeight: "600",
+                color: colors.neutral.gray[700],
+              }}
+            >
+              Event Image (Optional)
+            </label>
+
+            {imageUrl ? (
+              <div
+                style={{
+                  position: "relative",
+                  borderRadius: radius.md,
+                  overflow: "hidden",
+                  border: `2px solid ${colors.neutral.gray[200]}`,
+                }}
+              >
+                <img
+                  src={imageUrl}
+                  alt="Event preview"
+                  style={{
+                    width: "100%",
+                    maxHeight: "300px",
+                    objectFit: "cover",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  style={{
+                    position: "absolute",
+                    top: spacing.sm,
+                    right: spacing.sm,
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    background: "rgba(0, 0, 0, 0.7)",
+                    border: "none",
+                    color: "#FFF",
+                    fontSize: "18px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            ) : (
+              <div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  style={{ display: "none" }}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  style={{
+                    width: "100%",
+                    padding: spacing.lg,
+                    border: `2px dashed ${colors.neutral.gray[300]}`,
+                    borderRadius: radius.md,
+                    background: colors.neutral.gray[50],
+                    cursor: uploading ? "not-allowed" : "pointer",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: spacing.sm,
+                    color: colors.neutral.gray[600],
+                    fontSize: "14px",
+                  }}
+                >
+                  <span style={{ fontSize: "32px" }}>
+                    {uploading ? "⏳" : "📸"}
+                  </span>
+                  <span>
+                    {uploading ? "Uploading..." : "Click to upload image"}
+                  </span>
+                  <span style={{ fontSize: "12px", color: colors.neutral.gray[500] }}>
+                    Max 5MB • JPG, PNG, GIF
+                  </span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{ display: "flex", gap: spacing.md }}>
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={loading}
+              style={{
+                flex: 1,
+                padding: spacing.md,
+                background: colors.neutral.gray[100],
+                border: "none",
+                borderRadius: radius.md,
+                fontSize: "15px",
+                fontWeight: "600",
+                color: colors.neutral.gray[700],
+                cursor: loading ? "not-allowed" : "pointer",
+                opacity: loading ? 0.5 : 1,
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={
+                loading ||
+                !content.trim() ||
+                !authorName.trim() ||
+                !authorHandle.trim()
+              }
+              style={{
+                flex: 1,
+                padding: spacing.md,
+                background:
+                  "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
+                border: "none",
+                borderRadius: radius.md,
+                fontSize: "15px",
+                fontWeight: "700",
+                color: colors.neutral.white,
+                cursor:
+                  loading || !content.trim() ? "not-allowed" : "pointer",
+                opacity: loading || !content.trim() ? 0.5 : 1,
+                boxShadow: shadows.md,
+              }}
+            >
+              {loading ? "Updating..." : "Update Event"}
+            </button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+  );
+}
