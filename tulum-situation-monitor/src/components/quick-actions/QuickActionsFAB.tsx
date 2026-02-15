@@ -2,13 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
-import { TranslationModal } from "@/components/translation/TranslationModal";
 import { EmergencyModal } from "./EmergencyModal";
 import { TaxiModal } from "./TaxiModal";
-import { CurrencyModal } from "./CurrencyModal";
 import type { Lang } from "@/lib/weather";
+
+// Code-split large modals for better initial bundle size (~30KB+ savings)
+const TranslationModal = dynamic(
+  () => import("@/components/translation/TranslationModal").then((mod) => ({ default: mod.TranslationModal })),
+  { ssr: false, loading: () => null }
+);
+
+const CurrencyModal = dynamic(
+  () => import("./CurrencyModal").then((mod) => ({ default: mod.CurrencyModal })),
+  { ssr: false, loading: () => null }
+);
 
 export const OPEN_MAP_LAYERS_EVENT = "open-map-layers";
 

@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import type { MapLayersState } from "@/components/map/MapContainer";
 import { MapView } from "@/components/map/MapView";
 import { MapSearchBar, type SearchablePlace } from "@/components/map/MapSearchBar";
@@ -9,9 +10,7 @@ import { EnhancedSidebar } from "@/components/layout/EnhancedSidebar";
 import { StatusBar } from "@/components/layout/StatusBar";
 import { LayerControls } from "@/components/layout/LayerControls";
 import { MapLegend } from "@/components/layout/MapLegend";
-import { PlacesModal } from "@/components/places/PlacesModal";
 import { PlacePopup } from "@/components/places/PlacePopup";
-import { PlaceDetailsModal } from "@/components/places/PlaceDetailsModal";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 import { useVenues } from "@/hooks/useVenues";
 import { useWeather } from "@/hooks/useWeather";
@@ -22,6 +21,17 @@ import type { Lang } from "@/lib/weather";
 import { formatTempFull, getWeatherDescription } from "@/lib/weather";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { useThrottle } from "@/hooks/useThrottle";
+
+// Code-split large modals for better initial bundle size (~50KB+ savings)
+const PlacesModal = dynamic(
+  () => import("@/components/places/PlacesModal").then((mod) => ({ default: mod.PlacesModal })),
+  { ssr: false, loading: () => null }
+);
+
+const PlaceDetailsModal = dynamic(
+  () => import("@/components/places/PlaceDetailsModal").then((mod) => ({ default: mod.PlaceDetailsModal })),
+  { ssr: false, loading: () => null }
+);
 
 const MOBILE_BREAKPOINT = 768;
 
