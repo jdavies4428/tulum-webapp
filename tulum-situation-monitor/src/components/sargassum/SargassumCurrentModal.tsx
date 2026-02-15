@@ -2,10 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { translations } from "@/lib/i18n";
-import { getUsf1DayUrl } from "@/lib/sargassum-usf";
 import type { Lang } from "@/lib/weather";
 
+const SATELLITE_BASE = "https://sargassummonitoring.com/wp-content/uploads";
 const FALLBACK_SRC = "/data/sargassum/latest_1day.png";
+
+function getCmemsUrlForDate(d: Date): string {
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${SATELLITE_BASE}/${yyyy}/${mm}/mexico-sargazo-monitoreo-sargassum-monitoring-satelite-${dd}-${mm}-${yyyy}.png`;
+}
 
 interface SargassumCurrentModalProps {
   lang: Lang;
@@ -25,7 +32,7 @@ export function SargassumCurrentModal({ lang, isOpen, onClose }: SargassumCurren
     for (let i = 0; i < 7; i++) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      urls.push(getUsf1DayUrl(d));
+      urls.push(getCmemsUrlForDate(d));
     }
     let loaded = false;
     function tryLoad(index: number) {
@@ -70,8 +77,8 @@ export function SargassumCurrentModal({ lang, isOpen, onClose }: SargassumCurren
           </button>
         </div>
         <p className="px-4 py-2 text-[11px] text-text-muted">
-          Latest 1-day satellite image showing current sargassum concentration around Tulum/Yucatán.
-          Updated daily at 6 AM.
+          Latest CMEMS satellite image showing current sargassum concentration around Tulum/Yucatán.
+          Updated daily.
         </p>
         <div className="flex-1 overflow-auto bg-[#111] p-3 text-center">
           <img
@@ -81,9 +88,9 @@ export function SargassumCurrentModal({ lang, isOpen, onClose }: SargassumCurren
           />
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border px-4 py-2 text-[10px] text-text-muted">
-          <span>🛰️ NASA/USF MODIS • 1km resolution</span>
+          <span>🛰️ CMEMS Copernicus Sentinel-3 OLCI</span>
           <a
-            href="https://optics.marine.usf.edu/cgi-bin/optics_data?roi=YUCATAN&comp=1"
+            href="https://sargassummonitoring.com/en/satellite-sargassum-mexico/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-accent-cyan hover:underline"
