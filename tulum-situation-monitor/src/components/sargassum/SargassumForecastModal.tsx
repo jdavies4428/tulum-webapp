@@ -24,7 +24,7 @@ function getForecastUrlForDate(d: Date): string {
 
 export function SargassumForecastModal({ lang, isOpen, onClose }: SargassumForecastModalProps) {
   const t = translations[lang] as Record<string, string>;
-  const title = t.sargassumForecast ?? "Sargassum 7-Day Forecast";
+  const title = t.sargassumForecast ?? "7-Day Forecast";
   const [imgSrc, setImgSrc] = useState(FALLBACK_FORECAST);
 
   useEffect(() => {

@@ -296,10 +296,12 @@ export function WeatherSection({
             style={{
               background: "transparent",
               border: "none",
-              color: "var(--text-tertiary)",
+              color: loading ? "var(--tulum-turquoise)" : "var(--text-tertiary)",
               fontSize: "12px",
               cursor: "pointer",
+              animation: loading ? "spin 1s linear infinite" : "none",
             }}
+            title="Refresh weather data"
           >
             🔄
           </button>

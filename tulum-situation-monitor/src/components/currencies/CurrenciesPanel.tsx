@@ -7,13 +7,13 @@ import type { CurrenciesRates } from "@/app/api/currencies/route";
 import { spacing, radius } from "@/lib/design-tokens";
 import { Card, CardContent } from "@/components/ui/Card";
 
-const ROWS: { key: keyof CurrenciesRates; flag: string }[] = [
-  { key: "USD", flag: "🇺🇸" },
-  { key: "CAD", flag: "🇨🇦" },
-  { key: "EUR", flag: "🇪🇺" },
-  { key: "ARS", flag: "🇦🇷" },
-  { key: "AUD", flag: "🇦🇺" },
-  { key: "BRL", flag: "🇧🇷" },
+const ROWS: { key: keyof CurrenciesRates; flag: string; name: string }[] = [
+  { key: "USD", flag: "🇺🇸", name: "US Dollar" },
+  { key: "CAD", flag: "🇨🇦", name: "Canadian Dollar" },
+  { key: "EUR", flag: "🇪🇺", name: "Euro" },
+  { key: "ARS", flag: "🇦🇷", name: "Argentine Peso" },
+  { key: "AUD", flag: "🇦🇺", name: "Australian Dollar" },
+  { key: "BRL", flag: "🇧🇷", name: "Brazilian Real" },
 ];
 
 interface CurrenciesPanelProps {
@@ -55,26 +55,25 @@ export function CurrenciesPanel({ lang }: CurrenciesPanelProps) {
     };
   }, []);
 
-  const title = t.currenciesPanel ?? "Currencies";
-
   return (
     <Card variant="glass" className="spring-slide-up" style={{ flexShrink: 0, overflow: "hidden" }}>
       {/* Header */}
       <div
-        className="glass-heavy"
         style={{
-          padding: `${spacing.sm}px ${spacing.md}px`,
-          borderRadius: `${radius.md}px ${radius.md}px 0 0`,
-          display: "flex",
-          alignItems: "center",
-          gap: spacing.xs,
-          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+          padding: `${spacing.md}px`,
+          background: "rgba(0, 0, 0, 0.3)",
+          borderBottom: "2px solid rgba(0, 206, 209, 0.3)",
         }}
       >
-        <span style={{ fontSize: "16px" }}>💱</span>
-        <span style={{ fontSize: "10px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", color: "rgba(255, 255, 255, 0.7)" }}>
-          {title}
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: spacing.sm, marginBottom: "4px" }}>
+          <span style={{ fontSize: "18px" }}>💵</span>
+          <span style={{ fontSize: "14px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.8px", color: "#FFF" }}>
+            Exchange Rates
+          </span>
+        </div>
+        <div style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.6)", fontWeight: 600, paddingLeft: "26px" }}>
+          to Mexican Peso (MXN) 🇲🇽
+        </div>
       </div>
 
       {/* Content */}
@@ -108,47 +107,8 @@ export function CurrenciesPanel({ lang }: CurrenciesPanelProps) {
         )}
 
         {!loading && !error && rates && (
-          <div style={{ display: "flex", flexDirection: "column", gap: spacing.md }}>
-            {/* Featured USD/MXN Rate */}
-            {rates.USD && (
-              <div
-                className="glass-heavy shadow-glow spring-slide-up"
-                style={{
-                  padding: spacing.lg,
-                  background: "linear-gradient(135deg, rgba(0, 206, 209, 0.2) 0%, rgba(0, 206, 209, 0.08) 100%)",
-                  borderRadius: radius.lg,
-                  border: "2px solid rgba(0, 206, 209, 0.4)",
-                  animation: "spring-slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                  textAlign: "center",
-                }}
-              >
-                <div style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.5)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px", marginBottom: spacing.xs }}>
-                  USD to MXN
-                </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: spacing.sm, marginBottom: spacing.sm }}>
-                  <span style={{ fontSize: "32px" }}>🇺🇸</span>
-                  <div
-                    style={{
-                      fontSize: "48px",
-                      fontWeight: 900,
-                      color: "#00CED1",
-                      textShadow: "0 0 16px rgba(0, 206, 209, 0.5)",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {formatRate(rates.USD)}
-                  </div>
-                  <span style={{ fontSize: "32px" }}>🇲🇽</span>
-                </div>
-                <div style={{ fontSize: "13px", color: "rgba(255, 255, 255, 0.6)", fontWeight: 500 }}>
-                  1 USD = {formatRate(rates.USD)} MXN
-                </div>
-              </div>
-            )}
-
-            {/* All Currency Rates */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-              {ROWS.map(({ key, flag }, index) => {
+          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+            {ROWS.map(({ key, flag, name }, index) => {
               const value = rates[key];
               if (value == null) return null;
               return (
@@ -160,28 +120,33 @@ export function CurrenciesPanel({ lang }: CurrenciesPanelProps) {
                     alignItems: "center",
                     justifyContent: "space-between",
                     gap: spacing.sm,
-                    padding: `${spacing.sm}px ${spacing.md}px`,
+                    padding: `${spacing.md}px`,
                     borderBottom: index < ROWS.length - 1 ? "1px solid rgba(255, 255, 255, 0.05)" : "none",
                     animation: `spring-slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.05}s both`,
                     transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                   }}
                 >
-                  <span style={{ display: "flex", alignItems: "center", gap: spacing.xs }}>
-                    <span style={{ fontSize: "20px" }}>{flag}</span>
-                    <span style={{ color: "#FFF", fontWeight: 600, fontSize: "13px" }}>
-                      {key} / MXN
-                    </span>
-                  </span>
-                  <span
+                  <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
+                    <span style={{ fontSize: "24px" }}>{flag}</span>
+                    <div>
+                      <div style={{ color: "#FFF", fontWeight: 700, fontSize: "13px", lineHeight: "1.3" }}>
+                        {name}
+                      </div>
+                      <div style={{ color: "rgba(255, 255, 255, 0.6)", fontSize: "11px", fontWeight: 600 }}>
+                        1 {key} = ${formatRate(value)} MXN
+                      </div>
+                    </div>
+                  </div>
+                  <div
                     style={{
                       color: "#00CED1",
-                      fontWeight: 700,
-                      fontSize: "14px",
+                      fontWeight: 900,
+                      fontSize: "20px",
                       textShadow: "0 0 8px rgba(0, 206, 209, 0.3)",
                     }}
                   >
-                    {formatRate(value)}
-                  </span>
+                    ${formatRate(value)}
+                  </div>
                 </div>
               );
             })}
@@ -190,7 +155,6 @@ export function CurrenciesPanel({ lang }: CurrenciesPanelProps) {
                 {t.currenciesError ?? "Rates unavailable"}
               </div>
             )}
-            </div>
           </div>
         )}
       </CardContent>

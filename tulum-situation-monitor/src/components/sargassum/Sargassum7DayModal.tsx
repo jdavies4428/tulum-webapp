@@ -15,7 +15,7 @@ interface Sargassum7DayModalProps {
 
 export function Sargassum7DayModal({ lang, isOpen, onClose }: Sargassum7DayModalProps) {
   const t = translations[lang] as Record<string, string>;
-  const title = t.sargassum7DayHistorical ?? "7-Day Historical Average";
+  const title = t.sargassum7DayHistorical ?? "7-Day Historical";
   const [imgSrc, setImgSrc] = useState(FALLBACK_SRC);
 
   useEffect(() => {

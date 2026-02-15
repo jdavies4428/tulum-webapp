@@ -339,7 +339,7 @@ export function EnhancedSidebar({
               boxShadow: "0 6px 20px rgba(255, 107, 107, 0.4)",
             }}
           >
-            📹 {tAny.seeTheBeach ?? "See the Beach"}
+            📹 {tAny.tulumBeachLive ?? "Tulum Beach Live"}
           </button>
         </div>
 
@@ -414,7 +414,7 @@ export function EnhancedSidebar({
             }}
           >
             <span style={{ flexShrink: 0, fontSize: "18px" }}>🗺️</span>
-            <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>Forecast</span>
+            <span style={{ textAlign: "center", lineHeight: "1.2" }}>7-Day Forecast</span>
           </button>
           <button
             type="button"
@@ -438,10 +438,19 @@ export function EnhancedSidebar({
             }}
           >
             <span style={{ flexShrink: 0, fontSize: "18px" }}>📊</span>
-            <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>Historical</span>
+            <span style={{ textAlign: "center", lineHeight: "1.2" }}>7-Day Historical</span>
           </button>
           </div>
         </div>
+
+        {/* Divider */}
+        <div
+          style={{
+            height: "1px",
+            background: "rgba(0, 0, 0, 0.08)",
+            margin: `${spacing.md}px ${spacing.lg}px`,
+          }}
+        />
 
         {/* Local Events – full-width button above Discover/Places/Map */}
         <div
