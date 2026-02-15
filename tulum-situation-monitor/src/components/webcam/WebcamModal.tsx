@@ -1,34 +1,31 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
+import { spacing, radius } from "@/lib/design-tokens";
+import { Modal } from "@/components/ui/Modal";
 
-const WEBCAMS = {
-  tulum: {
+const WEBCAMS = [
+  {
     id: "tulum",
-    name: "Tulum",
+    name: "Tulum Beach",
     icon: "🏖️",
     url: "https://g3.ipcamlive.com/player/player.php?alias=08a1898ad840",
-    locationEn: "Tulum Beach Hotel Zone",
+    locationEn: "Tulum Hotel Zone",
     locationEs: "Zona Hotelera Tulum",
     locationFr: "Zone Hôtelière de Tulum",
-    thumbnail: "/data/webcam/latest.jpg",
   },
-  "akumal-south": {
-    id: "akumal-south",
-    name: "Akumal",
+  {
+    id: "akumal",
+    name: "Akumal Bay",
     icon: "🐢",
     url: "https://g1.ipcamlive.com/player/player.php?alias=akumalsouth",
     locationEn: "Akumal Bay",
     locationEs: "Bahía de Akumal",
     locationFr: "Baie d'Akumal",
-    thumbnail: "/api/placeholder/800/450",
   },
-} as const;
-
-type WebcamId = keyof typeof WEBCAMS;
-const LOCATIONS = Object.values(WEBCAMS);
+] as const;
 
 interface WebcamModalProps {
   lang: Lang;
@@ -50,28 +47,8 @@ function formatTimestamp() {
 }
 
 export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
-  const [activeCam, setActiveCam] = useState<WebcamId>("tulum");
   const [timestamp, setTimestamp] = useState(formatTimestamp);
-  const [isMobile, setIsMobile] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
   const t = translations[lang] as Record<string, string>;
-  const cam = WEBCAMS[activeCam];
-  const location =
-    lang === "es" ? cam.locationEs : lang === "fr" ? cam.locationFr : cam.locationEn;
-
-  useEffect(() => {
-    if (!isOpen) return;
-    setActiveCam("tulum");
-  }, [isOpen]);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 768px)");
-    const handler = () => setIsMobile(mq.matches);
-    handler();
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -79,338 +56,241 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
     return () => clearInterval(timer);
   }, [isOpen]);
 
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", onKeyDown);
-    }
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [isOpen, onClose]);
-
-  const toggleFullscreen = () => {
-    const el = iframeRef.current?.parentElement;
-    if (!el) return;
-    if (!document.fullscreenElement) {
-      el.requestFullscreen?.();
-    } else {
-      document.exitFullscreen?.();
-    }
-  };
-
   if (!isOpen) return null;
 
-  const modalContent = (
-    <>
-      {/* Header */}
+  return (
+    <Modal isOpen onClose={onClose} size="lg" heavyBackdrop showCloseButton={false}>
       <div
+        className="spring-slide-up"
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: isMobile ? "16px" : "20px 24px",
-          background: "rgba(0, 0, 0, 0.5)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          padding: 0,
+          background: "linear-gradient(135deg, #1a1410 0%, #0a0604 100%)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "12px" : "16px" }}>
-          <div
+        {/* Header */}
+        <div
+          className="glass-heavy"
+          style={{
+            padding: spacing.lg,
+            borderBottom: "2px solid rgba(0, 206, 209, 0.2)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: spacing.md }}>
+            <div
+              className="glass shadow-glow"
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: radius.md,
+                background: "rgba(255, 255, 255, 0.1)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "24px",
+                border: "2px solid rgba(0, 206, 209, 0.3)",
+              }}
+            >
+              📹
+            </div>
+            <div>
+              <h2
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 700,
+                  color: "#FFF",
+                  margin: 0,
+                  marginBottom: spacing.xs,
+                }}
+              >
+                {t.liveWebcams ?? "Live Beach Webcams"}
+              </h2>
+              <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
+                <div
+                  style={{
+                    padding: `${spacing.xs}px ${spacing.sm}px`,
+                    background: "linear-gradient(135deg, #FF0000 0%, #CC0000 100%)",
+                    borderRadius: radius.sm,
+                    fontSize: "11px",
+                    fontWeight: 900,
+                    color: "#FFF",
+                    letterSpacing: "1px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: spacing.xs,
+                    boxShadow: "0 4px 16px rgba(255, 0, 0, 0.4)",
+                  }}
+                >
+                  <div
+                    className="quick-action-sos-pulse"
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      background: "#FFF",
+                    }}
+                  />
+                  LIVE
+                </div>
+                <span
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    color: "rgba(255, 255, 255, 0.6)",
+                    fontFamily: "monospace",
+                  }}
+                >
+                  {timestamp}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="interactive hover-scale"
             style={{
-              width: isMobile ? "40px" : "44px",
-              height: isMobile ? "40px" : "44px",
-              borderRadius: isMobile ? "10px" : "12px",
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
               background: "rgba(255, 255, 255, 0.1)",
+              border: "2px solid rgba(255, 255, 255, 0.15)",
+              color: "#FFF",
+              fontSize: "20px",
+              cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: isMobile ? "20px" : "24px",
-              border: "1px solid rgba(255, 255, 255, 0.15)",
+              transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
             }}
           >
-            📹
-          </div>
-          <div
-            style={{
-              padding: isMobile ? "6px 12px" : "8px 16px",
-              background: "linear-gradient(135deg, #FF0000 0%, #CC0000 100%)",
-              borderRadius: isMobile ? "6px" : "8px",
-              fontSize: isMobile ? "11px" : "13px",
-              fontWeight: "900",
-              color: "#FFF",
-              letterSpacing: "1px",
-              display: "flex",
-              alignItems: "center",
-              gap: isMobile ? "6px" : "8px",
-              boxShadow: "0 4px 16px rgba(255, 0, 0, 0.4)",
-            }}
-          >
-            <div
-              style={{
-                width: isMobile ? "6px" : "8px",
-                height: isMobile ? "6px" : "8px",
-                borderRadius: "50%",
-                background: "#FFF",
-                animation: "webcam-pulse 2s infinite",
-              }}
-            />
-            LIVE
-          </div>
+            ✕
+          </button>
         </div>
 
-        <button
-          type="button"
-          onClick={onClose}
-          style={{
-            width: isMobile ? "36px" : "40px",
-            height: isMobile ? "36px" : "40px",
-            borderRadius: "50%",
-            background: "rgba(255, 255, 255, 0.1)",
-            border: "2px solid rgba(255, 255, 255, 0.15)",
-            color: "#FFF",
-            fontSize: isMobile ? "18px" : "20px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transition: "all 0.3s",
-          }}
-        >
-          ✕
-        </button>
-      </div>
-
-      {/* Location selector */}
-      <div
-        style={{
-          padding: isMobile ? "12px 16px" : "16px 24px",
-          background: "rgba(0, 0, 0, 0.3)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
-        }}
-      >
+        {/* Webcam Feeds */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: isMobile ? "8px" : "12px",
+            padding: spacing.lg,
+            display: "flex",
+            flexDirection: "column",
+            gap: spacing.lg,
+            maxHeight: "70vh",
+            overflowY: "auto",
           }}
         >
-          {LOCATIONS.map((loc) => {
-            const selected = activeCam === loc.id;
+          {WEBCAMS.map((cam, index) => {
+            const location = lang === "es" ? cam.locationEs : lang === "fr" ? cam.locationFr : cam.locationEn;
             return (
-              <button
-                key={loc.id}
-                type="button"
-                onClick={() => setActiveCam(loc.id as WebcamId)}
+              <div
+                key={cam.id}
+                className="glass hover-lift spring-slide-up"
                 style={{
-                  padding: isMobile ? "12px" : "16px 20px",
-                  background: selected
-                    ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
-                    : "rgba(255, 255, 255, 0.05)",
-                  border: selected
-                    ? "2px solid #00CED1"
-                    : "2px solid rgba(255, 255, 255, 0.08)",
-                  borderRadius: isMobile ? "12px" : "16px",
-                  color: "#FFF",
-                  fontSize: isMobile ? "15px" : "16px",
-                  fontWeight: "700",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: isMobile ? "8px" : "10px",
-                  transition: "all 0.3s",
-                  boxShadow: selected ? "0 8px 24px rgba(0, 206, 209, 0.3)" : "none",
+                  borderRadius: radius.lg,
+                  overflow: "hidden",
+                  border: "2px solid rgba(0, 206, 209, 0.2)",
+                  background: "rgba(255, 255, 255, 0.03)",
+                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                  animation: `spring-slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.1}s both`,
+                  transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                 }}
               >
-                <span style={{ fontSize: isMobile ? "20px" : "24px" }}>{loc.icon}</span>
-                <span>{loc.name}</span>
-              </button>
+                {/* Webcam Header */}
+                <div
+                  className="glass-heavy"
+                  style={{
+                    padding: spacing.md,
+                    background: "rgba(0, 206, 209, 0.1)",
+                    borderBottom: "1px solid rgba(0, 206, 209, 0.2)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: spacing.sm,
+                  }}
+                >
+                  <span style={{ fontSize: "24px" }}>{cam.icon}</span>
+                  <div>
+                    <div style={{ fontSize: "16px", fontWeight: 700, color: "#FFF", marginBottom: 2 }}>
+                      {cam.name}
+                    </div>
+                    <div style={{ fontSize: "12px", color: "rgba(255, 255, 255, 0.6)", fontWeight: 500 }}>
+                      {location}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Webcam Player */}
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    paddingBottom: "56.25%", // 16:9 aspect ratio
+                    background: "#000",
+                  }}
+                >
+                  <iframe
+                    src={cam.url}
+                    title={location}
+                    allowFullScreen
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      border: 0,
+                    }}
+                  />
+
+                  {/* Beach Cam Badge */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: spacing.sm,
+                      right: spacing.sm,
+                      padding: `${spacing.xs}px ${spacing.sm}px`,
+                      background: "rgba(0, 0, 0, 0.8)",
+                      borderRadius: radius.sm,
+                      fontSize: "10px",
+                      fontWeight: 700,
+                      color: "rgba(255, 255, 255, 0.7)",
+                      textTransform: "uppercase",
+                      letterSpacing: "1px",
+                      border: "1px solid rgba(255, 255, 255, 0.15)",
+                      pointerEvents: "none",
+                    }}
+                  >
+                    BEACH CAM
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>
-      </div>
 
-      {/* Video player */}
-      <div
-        style={{
-          position: "relative",
-          ...(isMobile
-            ? { flex: 1, minHeight: 0, background: "#000" }
-            : { aspectRatio: "16/9", background: "#000" }),
-          overflow: "hidden",
-        }}
-      >
-        <iframe
-          ref={iframeRef}
-          src={cam.url}
-          title={location}
-          allowFullScreen
-          style={{
-            width: "100%",
-            height: "100%",
-            border: 0,
-            display: "block",
-          }}
-        />
-
-        {/* Timestamp overlay */}
+        {/* Footer Info */}
         <div
+          className="glass-heavy"
           style={{
-            position: "absolute",
-            top: isMobile ? "12px" : "16px",
-            left: isMobile ? "12px" : "16px",
-            padding: isMobile ? "6px 12px" : "8px 16px",
-            background: "rgba(0, 0, 0, 0.8)",
-            borderRadius: isMobile ? "6px" : "8px",
-            fontSize: isMobile ? "11px" : "13px",
-            fontWeight: "600",
-            color: "#FFF",
-            fontFamily: "monospace",
-            border: "1px solid rgba(255, 255, 255, 0.2)",
-            pointerEvents: "none",
+            padding: spacing.md,
+            borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+            textAlign: "center",
           }}
         >
-          {timestamp}
-        </div>
-
-        {/* Beach cam label */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: isMobile ? "12px" : "16px",
-            right: isMobile ? "12px" : "16px",
-            padding: isMobile ? "4px 10px" : "6px 12px",
-            background: "rgba(0, 0, 0, 0.8)",
-            borderRadius: isMobile ? "4px" : "6px",
-            fontSize: isMobile ? "9px" : "11px",
-            fontWeight: "700",
-            color: "rgba(255, 255, 255, 0.7)",
-            textTransform: "uppercase",
-            letterSpacing: "1px",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-            pointerEvents: "none",
-          }}
-        >
-          BEACH CAM
-        </div>
-
-        {/* Fullscreen button */}
-        <button
-          type="button"
-          onClick={toggleFullscreen}
-          style={{
-            position: "absolute",
-            bottom: isMobile ? "12px" : "16px",
-            left: isMobile ? "12px" : "16px",
-            width: "36px",
-            height: "36px",
-            borderRadius: "50%",
-            background: "rgba(255, 255, 255, 0.25)",
-            border: "none",
-            color: "#FFF",
-            fontSize: "16px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          ⛶
-        </button>
-      </div>
-
-      {/* Footer */}
-      <div
-        style={{
-          padding: isMobile ? "16px" : "20px 24px",
-          background: "rgba(0, 0, 0, 0.3)",
-          borderTop: "1px solid rgba(255, 255, 255, 0.05)",
-        }}
-      >
-        <div
-          style={{
-            fontSize: isMobile ? "14px" : "16px",
-            fontWeight: "600",
-            color: "rgba(255, 255, 255, 0.7)",
-          }}
-        >
-          {location}
+          <p
+            style={{
+              margin: 0,
+              fontSize: "12px",
+              color: "rgba(255, 255, 255, 0.5)",
+              fontWeight: 500,
+            }}
+          >
+            {t.webcamDisclaimer ?? "Live feeds may experience delays. Check conditions before visiting."}
+          </p>
         </div>
       </div>
-    </>
-  );
-
-  if (isMobile) {
-    return (
-      <>
-        <div
-          role="presentation"
-          onClick={onClose}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "#000",
-            zIndex: 9998,
-            animation: "fadeIn 0.3s ease-out",
-          }}
-        />
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "linear-gradient(135deg, #1a1410 0%, #0a0604 100%)",
-            zIndex: 9999,
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-            animation: "slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {modalContent}
-        </div>
-      </>
-    );
-  }
-
-  return (
-    <>
-      <div
-        role="presentation"
-        onClick={onClose}
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(0, 0, 0, 0.85)",
-          zIndex: 9998,
-          animation: "fadeIn 0.3s ease-out",
-        }}
-      />
-      <div
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "90%",
-          maxWidth: "900px",
-          background: "linear-gradient(135deg, #1a1410 0%, #0a0604 100%)",
-          borderRadius: "24px",
-          border: "2px solid rgba(0, 206, 209, 0.3)",
-          boxShadow: "0 24px 80px rgba(0, 206, 209, 0.2)",
-          zIndex: 9999,
-          overflow: "hidden",
-          animation: "slideUpFade 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {modalContent}
-      </div>
-    </>
+    </Modal>
   );
 }
