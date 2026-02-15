@@ -7,7 +7,7 @@ import type { Lang } from "@/lib/weather";
 const FORECAST_BASE =
   "https://sargassummonitoring.com/wp-content/uploads";
 const FALLBACK_FORECAST =
-  "https://sargassummonitoring.com/wp-content/uploads/2026/02/mexico-sargazo-monitoreo-sargassum-monitoring-pronosticos-12-02-2026.gif";
+  "https://sargassummonitoring.com/wp-content/uploads/2026/02/mexico-sargazo-monitoreo-sargassum-monitoring-pronosticos-10-02-2026.gif";
 
 interface SargassumForecastModalProps {
   lang: Lang;
@@ -31,8 +31,8 @@ export function SargassumForecastModal({ lang, isOpen, onClose }: SargassumForec
     if (!isOpen) return;
     const today = new Date();
     const urls: string[] = [];
-    // Try last 14 days (forecasts aren't published daily)
-    for (let i = 0; i < 14; i++) {
+    // Try last 30 days (forecasts are published irregularly, sometimes weekly)
+    for (let i = 0; i < 30; i++) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
       urls.push(getForecastUrlForDate(d));
@@ -45,6 +45,7 @@ export function SargassumForecastModal({ lang, isOpen, onClose }: SargassumForec
         if (!loaded) {
           loaded = true;
           setImgSrc(urls[index]);
+          console.log(`Loaded forecast from: ${urls[index]}`);
         }
       };
       img.onerror = () => tryLoad(index + 1);
@@ -52,8 +53,11 @@ export function SargassumForecastModal({ lang, isOpen, onClose }: SargassumForec
     }
     tryLoad(0);
     const timeoutId = setTimeout(() => {
-      if (!loaded) setImgSrc(FALLBACK_FORECAST);
-    }, 5000);
+      if (!loaded) {
+        console.log(`No forecast found in last 30 days, using fallback`);
+        setImgSrc(FALLBACK_FORECAST);
+      }
+    }, 10000);
     return () => clearTimeout(timeoutId);
   }, [isOpen]);
 
