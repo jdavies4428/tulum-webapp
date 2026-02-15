@@ -1,0 +1,11 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow sensitive routes
+Disallow: /api/
+Disallow: /signin
+Disallow: /users/
+
+# Sitemap
+Sitemap: https://tulum-webapp.vercel.app/sitemap.xml
