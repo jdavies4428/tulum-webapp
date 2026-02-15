@@ -25,7 +25,19 @@ function saveFavorites(set: Set<string>) {
   }
 }
 
-export function useFavorites() {
+async function syncInsiderPick(placeId: string, action: "add" | "remove") {
+  try {
+    await fetch("/api/insider-picks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ placeId, action }),
+    });
+  } catch (error) {
+    console.error("Error syncing insider pick:", error);
+  }
+}
+
+export function useFavorites(isAdmin = false) {
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(() => new Set());
 
   // Hydrate from localStorage after mount (SSR-safe; initial state is empty)
@@ -54,12 +66,19 @@ export function useFavorites() {
     if (!id) return;
     setFavoriteIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
+      const wasInSet = next.has(id);
+      if (wasInSet) next.delete(id);
       else next.add(id);
       saveFavorites(next);
+
+      // If admin, sync to backend as insider pick
+      if (isAdmin) {
+        syncInsiderPick(id, wasInSet ? "remove" : "add");
+      }
+
       return next;
     });
-  }, []);
+  }, [isAdmin]);
 
   const isFavorite = useCallback(
     (id: string | undefined) => (id ? favoriteIds.has(id) : false),

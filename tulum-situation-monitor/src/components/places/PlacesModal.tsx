@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { useVenues } from "@/hooks/useVenues";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useInsiderPicks } from "@/hooks/useInsiderPicks";
 import { useAuthOptional } from "@/contexts/AuthContext";
 import { AuthPromptModal } from "@/components/auth/AuthPromptModal";
 import { useLists } from "@/hooks/useLists";
@@ -253,25 +254,21 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
               width: "40px",
               height: "40px",
               borderRadius: "50%",
-              background: isLocked
-                ? "rgba(0, 0, 0, 0.08)"
-                : isFavorite
-                  ? "linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
-                  : "rgba(255, 255, 255, 0.9)",
-              border: isFavorite && !isLocked ? "none" : "2px solid rgba(0, 0, 0, 0.1)",
+              background: isFavorite
+                ? "#FF5252"
+                : "rgba(255, 255, 255, 0.9)",
+              border: isFavorite ? "none" : "2px solid rgba(0, 0, 0, 0.1)",
               fontSize: "20px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: isFavorite && !isLocked
-                ? "0 4px 16px rgba(255, 107, 107, 0.3)"
-                : "0 2px 8px rgba(0, 0, 0, 0.08)",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
               transition: "all 0.3s",
             }}
-            aria-label={isLocked ? "Sign in to save" : isFavorite ? "Remove from favorites" : "Add to favorites"}
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           >
-            {isLocked ? "🔒" : isFavorite ? "❤️" : "🤍"}
+            {isFavorite ? "❤️" : "🤍"}
           </button>
           <div
             style={{
@@ -442,26 +439,21 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
             onToggleFavorite?.();
           }}
           style={{
-            padding: "14px 20px",
-            background: isLocked
-              ? "rgba(0, 0, 0, 0.06)"
-              : isFavorite
-                ? "linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
-                : "rgba(0, 0, 0, 0.06)",
+            padding: "12px",
+            background: isFavorite
+              ? "#FF5252"
+              : "rgba(0, 0, 0, 0.06)",
             border: "none",
-            borderRadius: "14px",
-            fontSize: "15px",
-            fontWeight: "700",
-            color: isLocked ? "#999" : isFavorite ? "#FFF" : "#333",
+            borderRadius: "12px",
+            fontSize: "20px",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "8px",
             transition: "all 0.2s",
           }}
         >
-          {isLocked ? "🔒" : isFavorite ? "❤️" : "🤍"} {isLocked ? "Sign in to save" : isFavorite ? "Saved" : "Save"}
+          {isFavorite ? "❤️" : "🤍"}
         </button>
         {!isLocked && isFavorite && onAddToList && (place.id ?? place.sourcePlace?.id ?? place.sourcePlace?.place_id) && (
           <button
@@ -593,10 +585,16 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   const panelRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { clubs, restaurants, cafes, cultural, isLoading, error, source } = useVenues();
-  const { isFavorite, toggleFavorite } = useFavorites();
-  const { lists, addPlaceToLists, removePlaceFromList } = useLists();
   const auth = useAuthOptional();
   const isAuthenticated = auth?.isAuthenticated ?? false;
+
+  // Check if user is admin
+  const isAdmin = auth?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
+                  auth?.user?.user_metadata?.role === "admin";
+
+  const { isFavorite, toggleFavorite } = useFavorites(isAdmin);
+  const { insiderPickIds } = useInsiderPicks();
+  const { lists, addPlaceToLists, removePlaceFromList } = useLists();
 
   // Debounce search to reduce filtering operations (300ms delay)
   const debouncedSearch = useDebounce(searchInput, 300);
@@ -675,7 +673,10 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
       else if (activeTab === "coffeeShops") list = allItems.filter((p) => p.categoryLabel === "Coffee");
       else if (activeTab === "cultural") list = allItems.filter((p) => p.categoryLabel === "Cultural");
       else if (activeTab === "local")
-        list = allItems.filter((p) => p.categoryLabel === "Club" || p.categoryLabel === "Restaurant");
+        list = allItems.filter((p) => {
+          const placeId = p.id ?? p.sourcePlace?.id ?? p.sourcePlace?.place_id;
+          return placeId && insiderPickIds.has(placeId);
+        });
       else list = [...allItems];
     }
 
@@ -685,7 +686,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
       list.sort((a, b) => b.rating - a.rating);
     }
     return list;
-  }, [allItems, activeTab, searchQuery, sortBy]);
+  }, [allItems, activeTab, searchQuery, sortBy, insiderPickIds]);
 
   const totalCount = clubs.length + restaurants.length + cafes.length + cultural.length;
   const tabCounts: Record<TabId, number> = {
@@ -750,213 +751,262 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header - Beachy gradient with wave */}
+        {/* Clean header */}
         <div
           style={{
-            background: "linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%)",
-            padding: isMobile ? "8px 12px 10px" : "10px 16px 12px",
-            position: "relative",
-            overflow: "hidden",
+            padding: isMobile ? "16px" : "20px 24px",
+            borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
+            background: "#FFFFFF",
             flexShrink: 0,
           }}
         >
-          <svg
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              width: "100%",
-              height: isMobile ? "16px" : "20px",
-              opacity: 0.2,
-            }}
-            viewBox="0 0 1200 120"
-            preserveAspectRatio="none"
-          >
-            <path d="M0,50 Q300,10 600,50 T1200,50 L1200,120 L0,120 Z" fill="#00CED1" />
-          </svg>
-
-          <button
-            ref={closeButtonRef}
-            type="button"
-            onClick={onClose}
-            style={{
-              position: "absolute",
-              top: isMobile ? "8px" : "10px",
-              right: isMobile ? "8px" : "12px",
-              width: isMobile ? "32px" : "36px",
-              height: isMobile ? "32px" : "36px",
-              borderRadius: "50%",
-              background: "rgba(255, 255, 255, 0.95)",
-              border: "2px solid rgba(0, 206, 209, 0.2)",
-              fontSize: "20px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-              transition: "all 0.2s",
-            }}
-          >
-            ✕
-          </button>
-
-          <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "8px" : "10px", flexWrap: "wrap" }}>
-            <div style={{ fontSize: isMobile ? "20px" : "24px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.1))" }}>📍</div>
-            <div style={{ display: "flex", alignItems: "center", gap: isMobile ? "6px" : "8px", flexWrap: "wrap" }}>
-              <h2
-                style={{
-                  fontSize: isMobile ? "18px" : "22px",
-                  fontWeight: "800",
-                  margin: 0,
-                  background: "linear-gradient(135deg, #0099CC 0%, #00CED1 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >
-                {t.places ?? "Places"}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <h2 style={{ fontSize: isMobile ? "18px" : "20px", fontWeight: "700", margin: 0, color: "#1A1A1A", display: "flex", alignItems: "center", gap: "8px" }}>
+                <span>📍</span>
+                {t.places ?? "Explore Places"}
               </h2>
-              {source === "supabase" && (
-                <div
-                  style={{
-                    display: "inline-block",
-                    padding: "2px 8px",
-                    background: "#00CED1",
-                    borderRadius: "6px",
-                    fontSize: "10px",
-                    fontWeight: "700",
-                    color: "#FFF",
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  DB
-                </div>
-              )}
-              <span
+              <p style={{ fontSize: isMobile ? "13px" : "14px", color: "#666", margin: "4px 0 0 0" }}>
+                {t.discoverBeaches ?? "Find beaches, restaurants & more"}
+              </p>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <button
+                type="button"
+                onClick={() => setActiveTab("local")}
                 style={{
-                  fontSize: isMobile ? "11px" : "13px",
-                  color: "#00ACC1",
+                  padding: "8px 16px",
+                  background: activeTab === "local" ? "#00CED1" : "transparent",
+                  border: activeTab === "local" ? "none" : "1px solid rgba(0, 0, 0, 0.12)",
+                  borderRadius: "8px",
+                  fontSize: "13px",
                   fontWeight: "600",
-                  position: "relative",
-                  zIndex: 1,
+                  color: activeTab === "local" ? "#FFF" : "#666",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  transition: "all 0.2s",
+                  whiteSpace: "nowrap",
                 }}
               >
-                Discover the best spots in Tulum
-              </span>
+                ⭐ {t.localPicks ?? "Insider Picks"}
+              </button>
+              <button
+                ref={closeButtonRef}
+                type="button"
+                onClick={onClose}
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "8px",
+                  background: "rgba(0, 0, 0, 0.05)",
+                  border: "none",
+                  fontSize: "18px",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "all 0.2s",
+                }}
+              >
+                ✕
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Filter Buttons */}
-        <div
-          style={{
-            padding: isMobile ? "10px 16px 8px" : "14px 20px 10px",
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: isMobile ? "8px" : "12px",
-          }}
-        >
-          <FilterButton
-            icon="📋"
-            label="All"
-            active={activeTab === "all" && sortBy !== "popular"}
-            onClick={() => {
-              setActiveTab("all");
-              setSortBy("distance");
-            }}
-            gradient="linear-gradient(135deg, #FFE4CC 0%, #FFD4B8 100%)"
-            compact={isMobile}
-          />
-          <FilterButton
-            icon="🌟"
-            label="Local Picks"
-            active={activeTab === "local"}
-            onClick={() => setActiveTab("local")}
-            gradient="linear-gradient(135deg, #FFD4E5 0%, #FFC0D9 100%)"
-            compact={isMobile}
-          />
-          <FilterButton
-            icon="🔍"
-            label={t.searchPlaces ?? "Search all places"}
-            active={!!searchQuery.trim()}
-            onClick={() => searchInputRef.current?.focus()}
-            gradient="linear-gradient(135deg, #E8E8E8 0%, #D8D8D8 100%)"
-            wide
-            compact={isMobile}
-          />
-          <FilterButton
-            icon="🔥"
-            label="Popular"
-            active={sortBy === "popular"}
-            onClick={() => {
-              setActiveTab("all");
-              setSortBy("popular");
-            }}
-            gradient="linear-gradient(135deg, #FFB088 0%, #FF9966 100%)"
-            compact={isMobile}
-          />
-        </div>
-
-        {/* Search input */}
-        <div style={{ padding: isMobile ? "0 16px 10px" : "0 20px 12px", position: "relative" }}>
-          <input
-            ref={searchInputRef}
-            type="text"
-            placeholder={t.searchPlaces ?? "Search all places…"}
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "14px 44px 14px 44px",
-              background: "rgba(255, 255, 255, 0.9)",
-              border: "2px solid rgba(0, 206, 209, 0.2)",
-              borderRadius: "16px",
-              color: "#333",
-              fontSize: "15px",
-              outline: "none",
-              transition: "all 0.2s",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
-            }}
-          />
-          <span
-            style={{
+        {/* Prominent search bar */}
+        <div style={{ padding: isMobile ? "12px 16px" : "16px 24px", borderBottom: "1px solid rgba(0, 0, 0, 0.08)" }}>
+          <div style={{ position: "relative" }}>
+            <span style={{
               position: "absolute",
-              left: "20px",
+              left: "16px",
               top: "50%",
               transform: "translateY(-50%)",
               fontSize: "18px",
-              pointerEvents: "none",
+              color: "#999",
+            }}>
+              🔍
+            </span>
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder={t.searchPlaces ?? "Search all places…"}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              style={{
+                width: "100%",
+                padding: isMobile ? "10px 40px" : "12px 44px",
+                background: "#F5F5F5",
+                border: "2px solid transparent",
+                borderRadius: "12px",
+                fontSize: "15px",
+                outline: "none",
+                transition: "all 0.2s",
+                color: "#333",
+              }}
+            />
+            {searchInput && (
+              <button
+                type="button"
+                onClick={() => setSearchInput("")}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  width: "24px",
+                  height: "24px",
+                  borderRadius: "50%",
+                  background: "rgba(0, 0, 0, 0.1)",
+                  border: "none",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                ×
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Category tabs */}
+        <div style={{
+          padding: isMobile ? "6px 16px" : "8px 24px",
+          borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
+          overflowX: "auto",
+          whiteSpace: "nowrap",
+          display: "flex",
+          gap: "8px",
+        }}>
+          <button
+            type="button"
+            onClick={() => setActiveTab("all")}
+            style={{
+              padding: isMobile ? "6px 12px" : "8px 16px",
+              background: "transparent",
+              border: "none",
+              borderBottom: activeTab === "all" ? "2px solid #00CED1" : "2px solid transparent",
+              fontSize: isMobile ? "13px" : "14px",
+              fontWeight: activeTab === "all" ? "600" : "500",
+              color: activeTab === "all" ? "#00CED1" : "#666",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              whiteSpace: "nowrap",
             }}
           >
-            🔍
-          </span>
-          {searchQuery.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery("")}
-              aria-label="Clear search"
+            🌎 {t.all ?? "All"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("beachClubs")}
+            style={{
+              padding: isMobile ? "6px 12px" : "8px 16px",
+              background: "transparent",
+              border: "none",
+              borderBottom: activeTab === "beachClubs" ? "2px solid #00CED1" : "2px solid transparent",
+              fontSize: isMobile ? "13px" : "14px",
+              fontWeight: activeTab === "beachClubs" ? "600" : "500",
+              color: activeTab === "beachClubs" ? "#00CED1" : "#666",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              whiteSpace: "nowrap",
+            }}
+          >
+            🏖️ {t.beachClubs ?? "Beach Clubs"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("restaurants")}
+            style={{
+              padding: isMobile ? "6px 12px" : "8px 16px",
+              background: "transparent",
+              border: "none",
+              borderBottom: activeTab === "restaurants" ? "2px solid #00CED1" : "2px solid transparent",
+              fontSize: isMobile ? "13px" : "14px",
+              fontWeight: activeTab === "restaurants" ? "600" : "500",
+              color: activeTab === "restaurants" ? "#00CED1" : "#666",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              whiteSpace: "nowrap",
+            }}
+          >
+            🍽️ {t.restaurants ?? "Restaurants"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("coffeeShops")}
+            style={{
+              padding: isMobile ? "6px 12px" : "8px 16px",
+              background: "transparent",
+              border: "none",
+              borderBottom: activeTab === "coffeeShops" ? "2px solid #00CED1" : "2px solid transparent",
+              fontSize: isMobile ? "13px" : "14px",
+              fontWeight: activeTab === "coffeeShops" ? "600" : "500",
+              color: activeTab === "coffeeShops" ? "#00CED1" : "#666",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              whiteSpace: "nowrap",
+            }}
+          >
+            ☕ {t.coffeeShops ?? "Coffee"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("cultural")}
+            style={{
+              padding: isMobile ? "6px 12px" : "8px 16px",
+              background: "transparent",
+              border: "none",
+              borderBottom: activeTab === "cultural" ? "2px solid #00CED1" : "2px solid transparent",
+              fontSize: isMobile ? "13px" : "14px",
+              fontWeight: activeTab === "cultural" ? "600" : "500",
+              color: activeTab === "cultural" ? "#00CED1" : "#666",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              whiteSpace: "nowrap",
+            }}
+          >
+            🎭 {t.cultural ?? "Cultural"}
+          </button>
+        </div>
+
+        {/* Results count + sort */}
+        <div style={{
+          padding: isMobile ? "10px 16px" : "12px 24px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          background: "#FAFAFA",
+        }}>
+          <div style={{ fontSize: isMobile ? "13px" : "14px", color: "#666", fontWeight: "500" }}>
+            {items.length} {items.length === 1 ? 'place' : 'places'}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "13px", color: "#999" }}>Sort:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortBy)}
               style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                width: "28px",
-                height: "28px",
-                borderRadius: "50%",
-                background: "rgba(0, 0, 0, 0.08)",
-                border: "none",
-                fontSize: "16px",
-                fontWeight: "700",
+                padding: "6px 12px",
+                border: "1px solid rgba(0, 0, 0, 0.12)",
+                borderRadius: "8px",
+                fontSize: "13px",
+                background: "#FFFFFF",
                 cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                lineHeight: 1,
+                outline: "none",
+                color: "#333",
               }}
             >
-              ×
-            </button>
-          )}
+              <option value="popular">{t.popular ?? "Popular"}</option>
+              <option value="distance">{t.distance ?? "Distance"}</option>
+              <option value="rating">{t.rating ?? "Rating"}</option>
+            </select>
+          </div>
         </div>
 
         <div
