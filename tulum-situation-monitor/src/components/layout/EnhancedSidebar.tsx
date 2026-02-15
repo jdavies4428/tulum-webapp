@@ -234,7 +234,7 @@ export function EnhancedSidebar({
             <div
               style={{
                 position: "absolute",
-                top: isMobile ? `${spacing.sm}px` : `${spacing.md}px`,
+                top: isMobile ? `${spacing.sm}px` : `${spacing.lg}px`,
                 right: isMobile ? `${spacing.sm}px` : `${spacing.md}px`,
                 zIndex: 20,
                 transform: isMobile ? "scale(0.8)" : "scale(1)",
