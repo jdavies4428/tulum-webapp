@@ -198,6 +198,42 @@ export const button = {
   },
 } as const;
 
+// Backward compatibility: buttonVariants (for existing components)
+export const buttonVariants = {
+  primary: {
+    background: `linear-gradient(135deg, ${colors.primary.base} 0%, ${colors.primary.dark} 100%)`,
+    color: colors.neutral.white,
+    border: 'none',
+    boxShadow: shadows.md,
+  },
+  secondary: {
+    background: glass.light.background,
+    backdropFilter: glass.light.backdropFilter,
+    color: colors.primary.base,
+    border: `2px solid ${colors.primary.base}`,
+    boxShadow: shadows.sm,
+  },
+  ghost: {
+    background: 'transparent',
+    color: colors.neutral.gray[600],
+    border: 'none',
+    boxShadow: shadows.none,
+  },
+  danger: {
+    background: `linear-gradient(135deg, ${colors.error} 0%, #DC2626 100%)`,
+    color: colors.neutral.white,
+    border: 'none',
+    boxShadow: '0 4px 16px rgba(239, 68, 68, 0.3)',
+  },
+  glass: {
+    background: glass.light.background,
+    backdropFilter: glass.light.backdropFilter,
+    color: colors.neutral.gray[700],
+    border: `1px solid ${colors.neutral.gray[200]}`,
+    boxShadow: shadows.sm,
+  },
+} as const;
+
 // ============================================================================
 // CARD STYLES - Simplified variants
 // ============================================================================
