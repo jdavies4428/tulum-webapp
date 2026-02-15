@@ -206,7 +206,7 @@ export function EnhancedSidebar({
             position: "sticky",
             top: 0,
             zIndex: 10,
-            borderRadius: `0 0 ${radius.xl}px ${radius.xl}px`,
+            borderRadius: `0 0 ${radius.lg} ${radius.lg}`,
             border: "none",
             borderBottom: "1px solid rgba(0, 206, 209, 0.15)",
           }}

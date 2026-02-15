@@ -128,7 +128,7 @@ export const Modal: React.FC<ModalProps> = ({
             backdropFilter: glass ? "blur(24px)" : undefined,
             WebkitBackdropFilter: glass ? "blur(24px)" : undefined,
             border: glass ? "1px solid rgba(255, 255, 255, 0.4)" : "none",
-            borderRadius: radius.xl,
+            borderRadius: radius.lg,
             boxShadow: "0 8px 32px rgba(0, 206, 209, 0.2)",
             display: "flex",
             flexDirection: "column",

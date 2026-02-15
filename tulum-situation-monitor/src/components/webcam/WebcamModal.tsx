@@ -99,7 +99,7 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
           maxWidth: "1000px",
           maxHeight: "90vh",
           background: "linear-gradient(135deg, #2d1a1a 0%, #3d2121 100%)",
-          borderRadius: radius.xl,
+          borderRadius: radius.lg,
           border: "2px solid rgba(255, 107, 107, 0.3)",
           boxShadow: "0 0 40px rgba(255, 107, 107, 0.2)",
           zIndex: 9999,

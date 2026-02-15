@@ -102,7 +102,7 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
           background: "rgba(255, 255, 255, 0.95)",
           backdropFilter: "blur(24px)",
           WebkitBackdropFilter: "blur(24px)",
-          borderRadius: radius.xl,
+          borderRadius: radius.lg,
           border: "1px solid rgba(0, 206, 209, 0.2)",
           width: "90%",
           maxWidth: "700px",
