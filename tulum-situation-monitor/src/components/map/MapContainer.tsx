@@ -413,7 +413,8 @@ export function MapContainer({
       (marker as { addTo: (t: unknown) => unknown }).addTo(group);
     };
 
-    const createVenueIcon = (
+    // Memoized icon creator to prevent recreation during loop iterations
+    const createVenueIcon = useCallback((
       type: "beachClub" | "restaurant" | "cafe" | "cultural" | "favorites",
       place: { id?: string; name: string; lat: number; lng: number; rating?: number | null }
     ) =>
@@ -426,7 +427,7 @@ export function MapContainer({
         iconSize: [36, 36],
         iconAnchor: [18, 36],
         popupAnchor: [0, -30],
-      });
+      }), [userLat, userLng]);
 
     if (layers.clubs) {
       clubs.forEach((club) => {

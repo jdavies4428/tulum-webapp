@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   formatTemp,
   formatTempFull,
@@ -24,7 +24,8 @@ interface WeatherSectionProps {
   onRefresh: () => void;
 }
 
-function WeatherMetric({
+// Memoized WeatherMetric to prevent unnecessary re-renders
+const WeatherMetric = React.memo(function WeatherMetric({
   icon,
   label,
   value,
@@ -60,9 +61,10 @@ function WeatherMetric({
       </div>
     </div>
   );
-}
+});
 
-function HourlyCard({
+// Memoized HourlyCard to prevent unnecessary re-renders in loops
+const HourlyCard = React.memo(function HourlyCard({
   time,
   temp,
   icon,
@@ -111,7 +113,7 @@ function HourlyCard({
       <div style={{ fontSize: "11px", color: "var(--tulum-turquoise)" }}>💧 {precip}</div>
     </div>
   );
-}
+});
 
 export function WeatherSection({
   lang,
@@ -139,51 +141,54 @@ export function WeatherSection({
   const daily = data?.daily;
   const weather = current ? getWeatherDescription(current.weather_code, lang) : null;
 
-  // Build hourly items from API – start from current hour
-  const hourlyItems: { time: string; temp: string; icon: string; precip: string; isCurrent: boolean }[] = [];
-  if (hourly?.time) {
-    const now = new Date();
-    let startIdx = 0;
-    for (let i = 0; i < hourly.time.length; i++) {
-      const slotTime = new Date(hourly.time[i]);
-      if (slotTime.getTime() >= now.getTime() - 3600000) {
-        startIdx = i;
-        break;
+  // Memoize hourly items construction to prevent rebuilding on every render
+  const hourlyItems = useMemo(() => {
+    const items: { time: string; temp: string; icon: string; precip: string; isCurrent: boolean }[] = [];
+    if (hourly?.time) {
+      const now = new Date();
+      let startIdx = 0;
+      for (let i = 0; i < hourly.time.length; i++) {
+        const slotTime = new Date(hourly.time[i]);
+        if (slotTime.getTime() >= now.getTime() - 3600000) {
+          startIdx = i;
+          break;
+        }
+      }
+      for (let i = startIdx; i < Math.min(startIdx + 8, hourly.time.length); i++) {
+        const time = new Date(hourly.time[i]);
+        const hour = time.getHours();
+        const hourStr =
+          hour === 0 ? "12am" : hour < 12 ? `${hour}am` : hour === 12 ? "12pm" : `${hour - 12}pm`;
+        const temp = formatTemp(hourly.temperature_2m[i] ?? 0, lang);
+        const rainProb = hourly.precipitation_probability?.[i] ?? 0;
+        const code = hourly.weather_code?.[i] ?? 0;
+        const icon = getWeatherIcon(code);
+        const isCurrent = i === startIdx;
+        items.push({
+          time: hourStr,
+          temp,
+          icon,
+          precip: `${rainProb}%`,
+          isCurrent,
+        });
+      }
+      if (items.length === 0 && hourly.time.length > 0) {
+        const i = 0;
+        const time = new Date(hourly.time[i]);
+        const hour = time.getHours();
+        const hourStr =
+          hour === 0 ? "12am" : hour < 12 ? `${hour}am` : hour === 12 ? "12pm" : `${hour - 12}pm`;
+        items.push({
+          time: hourStr,
+          temp: formatTemp(hourly.temperature_2m[i] ?? 0, lang),
+          icon: getWeatherIcon(hourly.weather_code?.[i] ?? 0),
+          precip: `${hourly.precipitation_probability?.[i] ?? 0}%`,
+          isCurrent: true,
+        });
       }
     }
-    for (let i = startIdx; i < Math.min(startIdx + 8, hourly.time.length); i++) {
-      const time = new Date(hourly.time[i]);
-      const hour = time.getHours();
-      const hourStr =
-        hour === 0 ? "12am" : hour < 12 ? `${hour}am` : hour === 12 ? "12pm" : `${hour - 12}pm`;
-      const temp = formatTemp(hourly.temperature_2m[i] ?? 0, lang);
-      const rainProb = hourly.precipitation_probability?.[i] ?? 0;
-      const code = hourly.weather_code?.[i] ?? 0;
-      const icon = getWeatherIcon(code);
-      const isCurrent = i === startIdx;
-      hourlyItems.push({
-        time: hourStr,
-        temp,
-        icon,
-        precip: `${rainProb}%`,
-        isCurrent,
-      });
-    }
-    if (hourlyItems.length === 0 && hourly.time.length > 0) {
-      const i = 0;
-      const time = new Date(hourly.time[i]);
-      const hour = time.getHours();
-      const hourStr =
-        hour === 0 ? "12am" : hour < 12 ? `${hour}am` : hour === 12 ? "12pm" : `${hour - 12}pm`;
-      hourlyItems.push({
-        time: hourStr,
-        temp: formatTemp(hourly.temperature_2m[i] ?? 0, lang),
-        icon: getWeatherIcon(hourly.weather_code?.[i] ?? 0),
-        precip: `${hourly.precipitation_probability?.[i] ?? 0}%`,
-        isCurrent: true,
-      });
-    }
-  }
+    return items;
+  }, [hourly, lang]);
 
   const uvVal = daily?.uv_index_max?.[0];
   const uvColor = uvVal != null && uvVal >= 8 ? "#FF6B6B" : undefined;
