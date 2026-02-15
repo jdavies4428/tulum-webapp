@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useAuthOptional } from "@/contexts/AuthContext";
 import { SignInButton } from "@/components/auth/SignInButton";
@@ -17,6 +17,7 @@ import { generateAlerts } from "@/lib/alerts";
 import type { Lang } from "@/lib/weather";
 import type { OpenMeteoResponse } from "@/types/weather";
 import type { TideState } from "@/hooks/useTides";
+import { useThrottle } from "@/hooks/useThrottle";
 
 export interface SharePayload {
   temp: string;
@@ -69,11 +70,13 @@ export function EnhancedSidebar({
   const auth = useAuthOptional();
   const t = translations[lang];
 
+  // Throttle resize handler to reduce unnecessary re-renders (250ms delay)
   useEffect(() => {
     const check = () => setIsMobile(typeof window !== "undefined" && window.innerWidth < 768);
     check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
+    const throttledCheck = useThrottle(check, 250);
+    window.addEventListener("resize", throttledCheck);
+    return () => window.removeEventListener("resize", throttledCheck);
   }, []);
 
   const sidebarWidth = isMobile && !isCollapsed ? "100vw" : isCollapsed ? 0 : "400px";
@@ -97,18 +100,24 @@ export function EnhancedSidebar({
     };
   }, []);
   const tAny = t as Record<string, string>;
-  const alerts = weatherData
-    ? generateAlerts(weatherData, lang, {
-        highWindWarning: t.highWindWarning,
-        windAdvisory: t.windAdvisory,
-        thunderstormWarning: t.thunderstormWarning,
-        rainLikely: t.rainLikely,
-        highUV: t.highUV,
-        basedOnCurrent: t.basedOnCurrent,
-        basedOnForecast: t.basedOnForecast,
-        dailyForecast: t.dailyForecast,
-      })
-    : [];
+
+  // Memoize alerts to prevent expensive recalculation on every render
+  const alerts = useMemo(
+    () =>
+      weatherData
+        ? generateAlerts(weatherData, lang, {
+            highWindWarning: t.highWindWarning,
+            windAdvisory: t.windAdvisory,
+            thunderstormWarning: t.thunderstormWarning,
+            rainLikely: t.rainLikely,
+            highUV: t.highUV,
+            basedOnCurrent: t.basedOnCurrent,
+            basedOnForecast: t.basedOnForecast,
+            dailyForecast: t.dailyForecast,
+          })
+        : [],
+    [weatherData, lang, t]
+  );
 
   return (
     <>

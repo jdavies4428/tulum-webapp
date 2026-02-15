@@ -13,6 +13,7 @@ import { TULUM_LAT, TULUM_LNG } from "@/data/constants";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
+import { useDebounce } from "@/hooks/useDebounce";
 
 type TabId = "all" | "local" | "beachClubs" | "restaurants" | "coffeeShops" | "cultural";
 type SortBy = "distance" | "rating" | "popular";
@@ -581,6 +582,7 @@ const TABS: { id: TabId; labelKey: keyof typeof import("@/lib/i18n").translation
 
 export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>("all");
+  const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortBy>("popular");
   const [isMobile, setIsMobile] = useState(false);
@@ -595,6 +597,14 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   const { lists, addPlaceToLists, removePlaceFromList } = useLists();
   const auth = useAuthOptional();
   const isAuthenticated = auth?.isAuthenticated ?? false;
+
+  // Debounce search to reduce filtering operations (300ms delay)
+  const debouncedSearch = useDebounce(searchInput, 300);
+
+  // Update searchQuery when debounced value changes
+  useEffect(() => {
+    setSearchQuery(debouncedSearch);
+  }, [debouncedSearch]);
 
   const handleFavoriteClick = (placeId: string | undefined, placeName?: string) => {
     if (!placeId) return;
@@ -893,8 +903,8 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             ref={searchInputRef}
             type="text"
             placeholder={t.searchPlaces ?? "Search all places…"}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             style={{
               width: "100%",
               padding: "14px 44px 14px 44px",

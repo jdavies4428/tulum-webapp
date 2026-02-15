@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useVenues } from "@/hooks/useVenues";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface SharePlaceModalProps {
   lang: Lang;
@@ -24,9 +25,18 @@ export function SharePlaceModal({
   onClose,
   onSelectPlace,
 }: SharePlaceModalProps) {
+  const [inputValue, setInputValue] = useState("");
   const [query, setQuery] = useState("");
   const { clubs, restaurants, cafes, cultural, isLoading } = useVenues();
   const t = translations[lang] as Record<string, string>;
+
+  // Debounce search query to reduce filtering operations (200ms delay)
+  const debouncedQuery = useDebounce(inputValue, 200);
+
+  // Update query when debounced value changes
+  useEffect(() => {
+    setQuery(debouncedQuery);
+  }, [debouncedQuery]);
 
   const allPlaces = [
     ...clubs.map((p) => ({ ...p, category: "Beach Club" })),
@@ -80,8 +90,8 @@ export function SharePlaceModal({
           </h3>
           <input
             type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
             placeholder={t.searchPlaces ?? "Search places…"}
             style={{
               width: "100%",

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 import type { Lang } from "@/lib/weather";
 import { translations } from "@/lib/i18n";
+import { useDebounce } from "@/hooks/useDebounce";
 
 type PlaceForSelect = BeachClub | Restaurant | CulturalPlace | CafePlace;
 
@@ -188,12 +189,16 @@ function PopularSearchItem({
 }
 
 export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, topOffset = 16, fullWidth = false }: MapSearchBarProps) {
+  const [inputValue, setInputValue] = useState("");
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<SearchablePlace[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [focused, setFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  // Debounce the search query to reduce filtering operations
+  const debouncedQuery = useDebounce(inputValue, 250);
 
   const t = translations[lang];
   const tAny = t as Record<string, string>;
@@ -205,7 +210,12 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
     cultural: t.cultural ?? "Cultural",
   };
 
-  // Search logic
+  // Update query when debounced value changes
+  useEffect(() => {
+    setQuery(debouncedQuery);
+  }, [debouncedQuery]);
+
+  // Search logic - now triggers on debounced query
   useEffect(() => {
     if (query.trim().length < 2) {
       setSuggestions([]);
@@ -238,6 +248,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
   };
 
   const handleSelectPlace = (place: SearchablePlace) => {
+    setInputValue(place.name);
     setQuery(place.name);
     setShowSuggestions(false);
     onSelectPlace(place);
@@ -326,9 +337,9 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
           <span style={{ fontSize: 20 }}>🔍</span>
           <input
             type="text"
-            value={query}
+            value={inputValue}
             onChange={(e) => {
-              setQuery(e.target.value);
+              setInputValue(e.target.value);
               setShowSuggestions(true);
             }}
             onFocus={() => { setShowSuggestions(true); setFocused(true); }}
@@ -346,10 +357,11 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
             }}
             aria-label={t.mapSearchPlaceholder ?? "Search places"}
           />
-          {query && (
+          {inputValue && (
             <button
               type="button"
               onClick={() => {
+                setInputValue("");
                 setQuery("");
                 setSuggestions([]);
               }}

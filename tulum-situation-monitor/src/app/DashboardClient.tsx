@@ -21,6 +21,7 @@ import { useTides } from "@/hooks/useTides";
 import type { Lang } from "@/lib/weather";
 import { formatTempFull, getWeatherDescription } from "@/lib/weather";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { useThrottle } from "@/hooks/useThrottle";
 
 const MOBILE_BREAKPOINT = 768;
 
@@ -59,10 +60,12 @@ export function DashboardClient() {
     () => typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT
   );
 
+  // Throttle resize handler to reduce unnecessary re-renders (250ms delay)
   useEffect(() => {
     const check = () => setIsMobile(typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT);
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
+    const throttledCheck = useThrottle(check, 250);
+    window.addEventListener("resize", throttledCheck);
+    return () => window.removeEventListener("resize", throttledCheck);
   }, []);
 
   // Ensure Favorites and Restaurants are visible on mobile (match default venue layers)

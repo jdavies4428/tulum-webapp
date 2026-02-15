@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 import { WeatherPanel } from "@/components/weather/WeatherPanel";
@@ -45,18 +45,24 @@ export function RightPanels({
   const [sargassumForecastOpen, setSargassumForecastOpen] = useState(false);
   const [webcamOpen, setWebcamOpen] = useState(false);
   const t = translations[lang];
-  const alerts = weatherData
-    ? generateAlerts(weatherData, lang, {
-        highWindWarning: t.highWindWarning,
-        windAdvisory: t.windAdvisory,
-        thunderstormWarning: t.thunderstormWarning,
-        rainLikely: t.rainLikely,
-        highUV: t.highUV,
-        basedOnCurrent: t.basedOnCurrent,
-        basedOnForecast: t.basedOnForecast,
-        dailyForecast: t.dailyForecast,
-      })
-    : [];
+
+  // Memoize alerts to prevent expensive recalculation on every render
+  const alerts = useMemo(
+    () =>
+      weatherData
+        ? generateAlerts(weatherData, lang, {
+            highWindWarning: t.highWindWarning,
+            windAdvisory: t.windAdvisory,
+            thunderstormWarning: t.thunderstormWarning,
+            rainLikely: t.rainLikely,
+            highUV: t.highUV,
+            basedOnCurrent: t.basedOnCurrent,
+            basedOnForecast: t.basedOnForecast,
+            dailyForecast: t.dailyForecast,
+          })
+        : [],
+    [weatherData, lang, t]
+  );
 
   const tAny = t as Record<string, string>;
   const currentSatelliteLabel = tAny.currentSatellite ?? "Current Satellite";
