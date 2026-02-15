@@ -50,7 +50,7 @@ export function MapTopBar({ lang }: MapTopBarProps) {
           justifyContent: "center",
           fontSize: "20px",
           cursor: "pointer",
-          boxShadow: shadows.float,
+          boxShadow: shadows.lg,
           textDecoration: "none",
           color: "#333",
           transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
