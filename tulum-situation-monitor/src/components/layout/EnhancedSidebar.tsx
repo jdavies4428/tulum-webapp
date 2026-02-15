@@ -156,6 +156,21 @@ export function EnhancedSidebar({
         </button>
       )}
 
+      {/* Mobile backdrop overlay */}
+      {isMobile && !isCollapsed && (
+        <div
+          onClick={onToggle}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0, 0, 0, 0.5)",
+            zIndex: 99,
+            cursor: "pointer",
+          }}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Sidebar outer container – fully hidden when collapsed */}
       <div
         className={`sidebar ${!isCollapsed ? "glass-medium" : ""}`}
