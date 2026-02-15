@@ -155,11 +155,12 @@ export function QuickActionsFAB() {
         style={{
           position: "fixed",
           bottom,
-          right: spacing.lg,
+          left: isMobile ? spacing.lg : "auto",
+          right: isMobile ? "auto" : spacing.lg,
           zIndex: 999,
           display: "flex",
           flexDirection: "column-reverse",
-          alignItems: "flex-end",
+          alignItems: isMobile ? "flex-start" : "flex-end",
           gap: spacing.md,
         }}
       >
@@ -172,10 +173,10 @@ export function QuickActionsFAB() {
               className="quick-action-fab-item hover-scale"
               data-index={index}
               style={{
-                width: 56,
-                minWidth: 56,
-                height: 56,
-                minHeight: 56,
+                width: isMobile ? 50 : 56,
+                minWidth: isMobile ? 50 : 56,
+                height: isMobile ? 50 : 56,
+                minHeight: isMobile ? 50 : 56,
                 borderRadius: "50%",
                 background:
                   action.priority === "critical"
@@ -196,7 +197,7 @@ export function QuickActionsFAB() {
                 transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
               }}
             >
-              <span style={{ fontSize: 24 }}>{action.icon}</span>
+              <span style={{ fontSize: isMobile ? 20 : 24 }}>{action.icon}</span>
               <span
                 style={{
                   fontSize: 9,
@@ -230,8 +231,8 @@ export function QuickActionsFAB() {
           aria-label={isExpanded ? "Close quick actions" : "Open quick actions"}
           className="quick-action-fab-main shadow-glow"
           style={{
-            width: 64,
-            height: 64,
+            width: isMobile ? 56 : 64,
+            height: isMobile ? 56 : 64,
             borderRadius: "50%",
             background: isExpanded
               ? "linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
@@ -241,7 +242,7 @@ export function QuickActionsFAB() {
               ? "0 8px 32px rgba(255, 107, 107, 0.5)"
               : "0 8px 32px rgba(0, 206, 209, 0.5)",
             cursor: "pointer",
-            fontSize: 28,
+            fontSize: isMobile ? 24 : 28,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

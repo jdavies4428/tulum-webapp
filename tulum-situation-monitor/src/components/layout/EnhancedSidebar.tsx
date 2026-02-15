@@ -230,13 +230,15 @@ export function EnhancedSidebar({
           }}
         >
           <CardContent style={{ position: "relative" }}>
-            {/* User Profile Button - Upper Right */}
+            {/* User Profile Button - Upper Right (smaller on mobile) */}
             <div
               style={{
                 position: "absolute",
-                top: `${spacing.md}px`,
-                right: `${spacing.md}px`,
+                top: isMobile ? `${spacing.sm}px` : `${spacing.md}px`,
+                right: isMobile ? `${spacing.sm}px` : `${spacing.md}px`,
                 zIndex: 20,
+                transform: isMobile ? "scale(0.8)" : "scale(1)",
+                transformOrigin: "top right",
               }}
             >
               {auth?.isAuthenticated && auth.user ? (
@@ -248,14 +250,14 @@ export function EnhancedSidebar({
 
             <h1
               style={{
-                fontSize: "22px",
+                fontSize: isMobile ? "20px" : "22px",
                 fontWeight: "800",
                 display: "flex",
                 alignItems: "center",
                 gap: `${spacing.sm}px`,
                 margin: `0 0 ${spacing.xs}px 0`,
                 color: "var(--tulum-ocean)",
-                paddingRight: "60px", // Space for user button
+                paddingRight: isMobile ? "50px" : "60px", // Space for user button
               }}
             >
               🌴 <span>{t.title}</span>
