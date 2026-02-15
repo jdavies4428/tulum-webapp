@@ -229,7 +229,23 @@ export function EnhancedSidebar({
             borderBottom: "1px solid rgba(0, 206, 209, 0.15)",
           }}
         >
-          <CardContent>
+          <CardContent style={{ position: "relative" }}>
+            {/* User Profile Button - Upper Right */}
+            <div
+              style={{
+                position: "absolute",
+                top: `${spacing.md}px`,
+                right: `${spacing.md}px`,
+                zIndex: 20,
+              }}
+            >
+              {auth?.isAuthenticated && auth.user ? (
+                <SignedInMenu user={auth.user} lang={lang} />
+              ) : (
+                <SignInButton lang={lang} />
+              )}
+            </div>
+
             <h1
               style={{
                 fontSize: "22px",
@@ -239,6 +255,7 @@ export function EnhancedSidebar({
                 gap: `${spacing.sm}px`,
                 margin: `0 0 ${spacing.xs}px 0`,
                 color: "var(--tulum-ocean)",
+                paddingRight: "60px", // Space for user button
               }}
             >
               🌴 <span>{t.title}</span>
@@ -247,7 +264,7 @@ export function EnhancedSidebar({
               {t.subtitle}
             </p>
 
-          {/* Language, Share, User circle row */}
+          {/* Language & Share buttons row */}
           <div
             style={{
               display: "flex",
@@ -318,13 +335,6 @@ export function EnhancedSidebar({
                 📤
               </button>
             )}
-            <div>
-              {auth?.isAuthenticated && auth.user ? (
-                <SignedInMenu user={auth.user} lang={lang} />
-              ) : (
-                <SignInButton lang={lang} />
-              )}
-            </div>
           </div>
           </CardContent>
         </Card>

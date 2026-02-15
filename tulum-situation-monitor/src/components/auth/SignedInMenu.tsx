@@ -246,6 +246,14 @@ export function SignedInMenu({ user, lang = "en" }: SignedInMenuProps) {
                 }}
               />
               <MenuItem
+                icon="⚙️"
+                label={t.settings ?? "Settings"}
+                onClick={() => {
+                  setShowMenu(false);
+                  router.push(`/settings?lang=${lang}`);
+                }}
+              />
+              <MenuItem
                 icon="🚪"
                 label={t.signOut ?? "Sign Out"}
                 onClick={() => {

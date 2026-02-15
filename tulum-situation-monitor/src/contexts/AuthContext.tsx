@@ -16,6 +16,7 @@ interface AuthContextValue {
   loading: boolean;
   isAuthenticated: boolean;
   signOut: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -64,12 +65,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setSession(null);
   }, [supabase.auth]);
 
+  const refreshUser = useCallback(async () => {
+    const { data: { user: refreshedUser } } = await supabase.auth.getUser();
+    if (refreshedUser) {
+      setUser(refreshedUser);
+    }
+  }, [supabase.auth]);
+
   const value: AuthContextValue = {
     user,
     session,
     loading,
     isAuthenticated: !!user,
     signOut,
+    refreshUser,
   };
 
   return (
