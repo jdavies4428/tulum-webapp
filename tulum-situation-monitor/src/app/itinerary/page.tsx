@@ -142,7 +142,7 @@ export default function ItineraryPage() {
         }}
       >
         <Link
-          href={`/discover?lang=${lang}`}
+          href={`/?lang=${lang}`}
           style={{
             display: "flex",
             alignItems: "center",

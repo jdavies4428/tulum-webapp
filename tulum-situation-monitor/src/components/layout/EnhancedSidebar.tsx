@@ -452,12 +452,36 @@ export function EnhancedSidebar({
           }}
         />
 
-        {/* Local Events – full-width button above Discover/Places/Map */}
+        {/* AI Concierge & Local Events – full-width buttons */}
         <div
           style={{
             padding: `0 ${spacing.lg}px 0`,
           }}
         >
+          <Link
+            href={`/itinerary?lang=${lang}`}
+            className="hover-lift"
+            style={{
+              width: "100%",
+              padding: `${spacing.md}px ${spacing.md}px`,
+              borderRadius: radius.xl,
+              background: "linear-gradient(135deg, #9333EA 0%, #7C3AED 100%)",
+              color: "#FFF",
+              fontWeight: "700",
+              fontSize: "14px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: `${spacing.sm}px`,
+              marginBottom: `${spacing.md}px`,
+              textDecoration: "none",
+              border: "none",
+              cursor: "pointer",
+              boxShadow: "0 6px 20px rgba(147, 51, 234, 0.35)",
+            }}
+          >
+            🤖 {tAny.aiConcierge ?? "AI Concierge"}
+          </Link>
           <Link
             href={`/discover/events?lang=${lang}`}
             className="btn btn-primary hover-lift"
