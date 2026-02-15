@@ -133,9 +133,9 @@ export function QuickActionsFAB() {
   const isIOS =
     typeof window !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-  // Mobile: position in lower right of header. Desktop: bottom right of screen
+  // Mobile: position inside header card. Desktop: bottom right of screen
   const positionStyles = isMobile
-    ? { top: 120, bottom: "auto", right: spacing.lg, left: "auto" }
+    ? { top: 10, bottom: "auto", right: spacing.md, left: "auto" }
     : {
         bottom: isIOS ? "calc(60px + env(safe-area-inset-bottom, 0px))" : 60,
         top: "auto",
