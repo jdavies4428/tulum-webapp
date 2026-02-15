@@ -24,6 +24,7 @@ interface MapViewProps {
   onUserLocationChange?: (loc: UserLocation | null) => void;
   onMapReady?: (api: { resetView: () => void; locateUser: () => void; invalidateSize: () => void; flyTo: (lat: number, lng: number, zoom?: number) => void; zoomIn: () => void; zoomOut: () => void }) => void;
   onPlaceSelect?: (place: PlaceForSelect) => void;
+  userAvatarUrl?: string;
 }
 
 export function MapView({
@@ -34,6 +35,7 @@ export function MapView({
   onUserLocationChange,
   onMapReady,
   onPlaceSelect,
+  userAvatarUrl,
 }: MapViewProps) {
   return (
     <div className="relative h-full w-full">
@@ -45,6 +47,7 @@ export function MapView({
         onUserLocationChange={onUserLocationChange}
         onMapReady={onMapReady}
         onPlaceSelect={onPlaceSelect}
+        userAvatarUrl={userAvatarUrl}
       />
       <div className="map-overlay" aria-hidden />
     </div>

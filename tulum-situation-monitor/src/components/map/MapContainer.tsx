@@ -51,6 +51,7 @@ interface MapContainerProps {
   onUserLocationChange?: (loc: UserLocation | null) => void;
   onMapReady?: (api: { resetView: () => void; locateUser: () => void; invalidateSize: () => void; flyTo: (lat: number, lng: number, zoom?: number) => void; zoomIn: () => void; zoomOut: () => void }) => void;
   onPlaceSelect?: (place: PlaceForSelect) => void;
+  userAvatarUrl?: string;
   className?: string;
 }
 
@@ -62,6 +63,7 @@ export function MapContainer({
   onUserLocationChange,
   onMapReady,
   onPlaceSelect,
+  userAvatarUrl,
   className = "",
 }: MapContainerProps) {
   const { clubs, restaurants, cafes, cultural } = useVenues();
@@ -266,7 +268,7 @@ export function MapContainer({
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const L = require("leaflet") as typeof import("leaflet");
     const removeUserLayers = () => {
-      const marker = userMarkerRef.current as L.CircleMarker | undefined;
+      const marker = userMarkerRef.current as L.Marker | L.CircleMarker | undefined;
       const circle = accuracyCircleRef.current as L.Circle | undefined;
       if (marker?.remove) marker.remove();
       if (circle?.remove) circle.remove();
@@ -280,13 +282,45 @@ export function MapContainer({
     const loc = effectiveUserLocation;
     const m = map as L.Map;
     if (!userMarkerRef.current) {
-      const marker = L.circleMarker([loc.lat, loc.lng], {
-        radius: 10,
-        fillColor: "#00D4D4",
-        fillOpacity: 1,
-        color: "#ffffff",
-        weight: 2,
-      }).addTo(m);
+      let marker: L.Marker | L.CircleMarker;
+
+      if (userAvatarUrl) {
+        // Use profile photo as marker
+        const icon = L.divIcon({
+          className: "user-avatar-marker",
+          html: `
+            <div style="
+              width: 36px;
+              height: 36px;
+              border-radius: 50%;
+              border: 3px solid #fff;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+              overflow: hidden;
+              background: #00D4D4;
+            ">
+              <img
+                src="${userAvatarUrl}"
+                alt="You"
+                style="width: 100%; height: 100%; object-fit: cover;"
+                onerror="this.style.display='none'"
+              />
+            </div>
+          `,
+          iconSize: [36, 36],
+          iconAnchor: [18, 18],
+        });
+        marker = L.marker([loc.lat, loc.lng], { icon }).addTo(m);
+      } else {
+        // Use blue circle marker
+        marker = L.circleMarker([loc.lat, loc.lng], {
+          radius: 10,
+          fillColor: "#00D4D4",
+          fillOpacity: 1,
+          color: "#ffffff",
+          weight: 2,
+        }).addTo(m);
+      }
+
       const radiusM = Math.min(Math.max(loc.accuracy, 10), 500);
       const circle = L.circle([loc.lat, loc.lng], {
         radius: radiusM,
@@ -299,7 +333,7 @@ export function MapContainer({
       accuracyCircleRef.current = circle;
       m.setView([loc.lat, loc.lng], 14);
     } else {
-      (userMarkerRef.current as L.CircleMarker).setLatLng([loc.lat, loc.lng]);
+      (userMarkerRef.current as L.Marker | L.CircleMarker).setLatLng([loc.lat, loc.lng]);
       const acc = accuracyCircleRef.current as L.Circle | undefined;
       if (acc) {
         acc.setLatLng([loc.lat, loc.lng]);
@@ -307,7 +341,7 @@ export function MapContainer({
       }
     }
     return removeUserLayers;
-  }, [effectiveUserLocation]);
+  }, [effectiveUserLocation, userAvatarUrl]);
 
   // Base layer toggles (only one of osm/carto/satellite; radar is overlay)
   useEffect(() => {

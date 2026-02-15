@@ -19,6 +19,7 @@ import { useVenues } from "@/hooks/useVenues";
 import { markerConfig } from "@/lib/marker-config";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { useAuthOptional } from "@/contexts/AuthContext";
 
 function getDefaultLayers(): MapLayersState {
   return {
@@ -38,6 +39,7 @@ export default function MapPage() {
   const searchParams = useSearchParams();
   const langParam = searchParams.get("lang");
   const [lang] = usePersistedLang(langParam);
+  const auth = useAuthOptional();
   const [layers, setLayers] = useState<MapLayersState>(getDefaultLayers);
   const [selectedPlace, setSelectedPlace] = useState<(BeachClub | Restaurant | CulturalPlace | CafePlace) | null>(null);
   const [showDetailsForPlaceId, setShowDetailsForPlaceId] = useState<string | null>(null);
@@ -53,6 +55,7 @@ export default function MapPage() {
 
   const { clubs, restaurants, cafes, cultural } = useVenues();
   const t = translations[lang];
+  const userAvatarUrl = auth?.user?.user_metadata?.avatar_url as string | undefined;
   const searchablePlaces: SearchablePlace[] = [
     ...clubs.map((p) => ({
       ...p,
@@ -158,6 +161,7 @@ export default function MapPage() {
           onUserLocationChange={setUserLocation}
           onMapReady={setMapApi}
           onPlaceSelect={setSelectedPlace}
+          userAvatarUrl={userAvatarUrl}
         />
         <div className="hidden md:block">
           <MapLegend lang={lang} />
