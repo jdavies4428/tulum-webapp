@@ -7,7 +7,7 @@ import { MapView } from "@/components/map/MapView";
 import { MapSearchBar, type SearchablePlace } from "@/components/map/MapSearchBar";
 import { MapTopBar } from "@/components/map/MapTopBar";
 import { MapControls } from "@/components/map/MapControls";
-import { MapBottomNav } from "@/components/map/MapBottomNav";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { MapLayersSheet } from "@/components/map/MapLayersSheet";
 import { LayerControls } from "@/components/layout/LayerControls";
 import { OPEN_MAP_LAYERS_EVENT } from "@/components/quick-actions/QuickActionsFAB";
@@ -159,7 +159,9 @@ export default function MapPage() {
           onMapReady={setMapApi}
           onPlaceSelect={setSelectedPlace}
         />
-        <MapLegend lang={lang} />
+        <div className="hidden md:block">
+          <MapLegend lang={lang} />
+        </div>
         <div className="hidden md:block">
           <LayerControls lang={lang} layers={layers} onLayersChange={setLayers} />
         </div>
@@ -170,13 +172,15 @@ export default function MapPage() {
           isOpen={showLayersSheet}
           onClose={() => setShowLayersSheet(false)}
         />
-        <MapControls
-          lang={lang}
-          onRecenter={() => mapApi?.resetView()}
-          onZoomIn={() => mapApi?.zoomIn?.()}
-          onZoomOut={() => mapApi?.zoomOut?.()}
-        />
-        <MapBottomNav lang={lang} />
+        <div className="hidden sm:flex">
+          <MapControls
+            lang={lang}
+            onRecenter={() => mapApi?.resetView()}
+            onZoomIn={() => mapApi?.zoomIn?.()}
+            onZoomOut={() => mapApi?.zoomOut?.()}
+          />
+        </div>
+        <BottomNav lang={lang} />
       </div>
 
       {showDetailsForPlaceId && selectedPlace && selectedPlace.place_id === showDetailsForPlaceId ? (

@@ -8,6 +8,7 @@ import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { useAuthOptional } from "@/contexts/AuthContext";
 import { SignInButton } from "@/components/auth/SignInButton";
 import { SignedInMenu } from "@/components/auth/SignedInMenu";
+import { BottomNav } from "@/components/layout/BottomNav";
 import type { Lang } from "@/lib/weather";
 
 type CardSize = "large" | "medium" | "small";
@@ -311,6 +312,8 @@ export default function DiscoverPage() {
           ))}
         </div>
       </div>
+
+      <BottomNav lang={lang} fixed />
     </div>
   );
 }

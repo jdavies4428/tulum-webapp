@@ -14,6 +14,7 @@ import { haversineKm } from "@/data/constants";
 import { CreateListModal } from "@/components/favorites/CreateListModal";
 import { AddToListModal } from "@/components/favorites/AddToListModal";
 import { ListDetailModal } from "@/components/favorites/ListDetailModal";
+import { BottomNav } from "@/components/layout/BottomNav";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 import type { Lang } from "@/lib/weather";
 
@@ -289,6 +290,7 @@ export default function FavoritesPage() {
       style={{
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
+        paddingBottom: "100px",
         background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
         minHeight: "100vh",
       }}
@@ -508,6 +510,8 @@ export default function FavoritesPage() {
           lang={lang}
         />
       )}
+
+      <BottomNav lang={lang} fixed />
     </div>
   );
 }

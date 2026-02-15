@@ -6,7 +6,7 @@ import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 import { spacing, radius, shadows } from "@/lib/design-tokens";
 
-interface MapBottomNavProps {
+interface BottomNavProps {
   lang: Lang;
 }
 
@@ -100,7 +100,7 @@ function NavButton({
   );
 }
 
-export function MapBottomNav({ lang }: MapBottomNavProps) {
+export function BottomNav({ lang, fixed = false }: BottomNavProps & { fixed?: boolean }) {
   const pathname = usePathname();
   const t = translations[lang] as Record<string, string>;
 
@@ -108,7 +108,7 @@ export function MapBottomNav({ lang }: MapBottomNavProps) {
     <div
       className="glass-heavy"
       style={{
-        position: "absolute",
+        position: fixed ? "fixed" : "absolute",
         bottom: 0,
         left: 0,
         right: 0,

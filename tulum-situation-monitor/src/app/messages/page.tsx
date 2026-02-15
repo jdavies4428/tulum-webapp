@@ -9,6 +9,7 @@ import { useConversations } from "@/hooks/useConversations";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { translations } from "@/lib/i18n";
 import { formatChatTimestamp } from "@/lib/chat-helpers";
+import { BottomNav } from "@/components/layout/BottomNav";
 import type { Lang } from "@/lib/weather";
 
 // Code-split NewChatModal for better bundle size (~15KB savings)
@@ -172,6 +173,8 @@ export default function MessagesPage() {
         }}
         preselectedUserId={newUserId ?? undefined}
       />
+
+      <BottomNav lang={lang} fixed />
     </div>
   );
 }
