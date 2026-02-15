@@ -11,7 +11,6 @@ import { StatusBar } from "@/components/layout/StatusBar";
 import { LayerControls } from "@/components/layout/LayerControls";
 import { MapLegend } from "@/components/layout/MapLegend";
 import { PlacePopup } from "@/components/places/PlacePopup";
-import { ContextualGrid } from "@/components/dashboard/ContextualGrid";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 import { useVenues } from "@/hooks/useVenues";
 import { useWeather } from "@/hooks/useWeather";
@@ -154,10 +153,10 @@ export function DashboardClient() {
         tide={tide}
         onWeatherRefresh={refetchWeather}
       />
-      {/* On mobile, map is on /map page to avoid black box from sliding layout; desktop shows contextual dashboard */}
+      {/* On mobile, map is on /map page to avoid black box from sliding layout; desktop keeps map here */}
       {!isMobile && (
         <div
-          className="dashboard-container transition-all duration-300 ease-out overflow-hidden"
+          className="map-container transition-all duration-300 ease-out overflow-hidden"
           style={
             sidebarOpen
               ? {
@@ -166,7 +165,7 @@ export function DashboardClient() {
                   left: 400,
                   right: 0,
                   bottom: 0,
-                  background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+                  background: "#000000",
                   zIndex: 0,
                 }
               : {
@@ -174,23 +173,38 @@ export function DashboardClient() {
                   inset: 0,
                   width: "100vw",
                   height: "100vh",
-                  background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+                  background: "#000000",
                   zIndex: 50,
                 }
           }
         >
-          {weatherData?.current && (
-            <ContextualGrid
-              weather={{
-                temperature: weatherData.current.temperature_2m,
-                condition: getWeatherDescription(weatherData.current.weather_code, lang).desc as any,
-                uvIndex: weatherData.daily?.uv_index_max?.[0] ?? 0,
-                sunrise: weatherData.daily?.sunrise?.[0],
-                sunset: weatherData.daily?.sunset?.[0],
-              }}
-              lang={lang}
-            />
-          )}
+          <MapSearchBar
+            places={searchablePlaces}
+            lang={lang}
+            onSelectPlace={setSelectedPlace}
+            flyTo={mapApi?.flyTo}
+          />
+          <MapView
+            lang={lang}
+            layers={layers}
+            onLayersChange={setLayers}
+            userLocation={userLocation}
+            onUserLocationChange={setUserLocation}
+            onMapReady={setMapApi}
+            onPlaceSelect={setSelectedPlace}
+          />
+          <MapLegend lang={lang} />
+          <LayerControls lang={lang} layers={layers} onLayersChange={setLayers} />
+          <StatusBar
+            lang={lang}
+            userLocation={userLocation}
+            onReset={() => mapApi?.resetView()}
+            lastUpdated={
+              weatherData?.current?.time
+                ? `Updated ${new Date(weatherData.current.time).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}`
+                : undefined
+            }
+          />
         </div>
       )}
       <PlacesModal

@@ -5,6 +5,7 @@ import { useTimeContext } from '@/hooks/useTimeContext';
 import { getSuggestions, type WeatherData } from '@/lib/contextual-suggestions';
 import { ContextCard } from './ContextCard';
 import { LivePulse } from './LivePulse';
+import { BeachCamModal } from '@/components/quick-actions/BeachCamModal';
 import type { Lang } from '@/lib/weather';
 
 interface ContextualGridProps {
@@ -14,6 +15,7 @@ interface ContextualGridProps {
 
 export function ContextualGrid({ weather, lang }: ContextualGridProps) {
   const [lastUpdateTime, setLastUpdateTime] = useState(Date.now());
+  const [activeModal, setActiveModal] = useState<'beachCam' | null>(null);
 
   // Extract sunrise/sunset hours from weather data
   const sunriseHour = weather.sunrise ? new Date(weather.sunrise).getHours() : undefined;
@@ -99,9 +101,18 @@ export function ContextualGrid({ weather, lang }: ContextualGridProps) {
         }}
       >
         {suggestions.map((suggestion, index) => (
-          <ContextCard key={suggestion.id} suggestion={suggestion} index={index} />
+          <ContextCard
+            key={suggestion.id}
+            suggestion={suggestion}
+            index={index}
+            onModalOpen={setActiveModal}
+          />
         ))}
       </div>
+
+      {activeModal === 'beachCam' && (
+        <BeachCamModal lang={lang} onClose={() => setActiveModal(null)} />
+      )}
     </div>
   );
 }

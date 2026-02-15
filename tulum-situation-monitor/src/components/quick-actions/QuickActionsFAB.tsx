@@ -26,6 +26,11 @@ const DailyUpdatesModal = dynamic(
   { ssr: false, loading: () => null }
 );
 
+const TulumRightNowModal = dynamic(
+  () => import("./TulumRightNowModal").then((mod) => ({ default: mod.TulumRightNowModal })),
+  { ssr: false, loading: () => null }
+);
+
 export const OPEN_MAP_LAYERS_EVENT = "open-map-layers";
 
 const ACTIONS = [
@@ -35,6 +40,13 @@ const ACTIONS = [
     labelKey: "sos",
     color: "#FF0000",
     priority: "critical" as const,
+  },
+  {
+    id: "tulumNow",
+    icon: "✨",
+    labelKey: "tulumRightNow",
+    color: "#FF6B9D",
+    priority: null as string | null,
   },
   {
     id: "settings",
@@ -86,7 +98,7 @@ export function QuickActionsFAB() {
   const [lang] = usePersistedLang(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [modal, setModal] = useState<"emergency" | "translate" | "taxi" | "currency" | "dailyUpdates" | null>(null);
+  const [modal, setModal] = useState<"emergency" | "translate" | "taxi" | "currency" | "dailyUpdates" | "tulumNow" | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -126,6 +138,7 @@ export function QuickActionsFAB() {
     else if (actionId === "taxi") setModal("taxi");
     else if (actionId === "currency") setModal("currency");
     else if (actionId === "dailyUpdates") setModal("dailyUpdates");
+    else if (actionId === "tulumNow") setModal("tulumNow");
   };
 
   const closeModal = () => setModal(null);
@@ -152,6 +165,7 @@ export function QuickActionsFAB() {
       {modal === "taxi" && <TaxiModal lang={lang} onClose={closeModal} />}
       {modal === "currency" && <CurrencyModal lang={lang} onClose={closeModal} />}
       {modal === "dailyUpdates" && <DailyUpdatesModal lang={lang} onClose={closeModal} />}
+      {modal === "tulumNow" && <TulumRightNowModal lang={lang} onClose={closeModal} />}
 
       {isExpanded && (
         <div
@@ -190,38 +204,40 @@ export function QuickActionsFAB() {
               className="quick-action-fab-item hover-scale"
               data-index={index}
               style={{
-                width: isMobile ? 50 : 56,
-                minWidth: isMobile ? 50 : 56,
-                height: isMobile ? 50 : 56,
-                minHeight: isMobile ? 50 : 56,
+                width: isMobile ? 54 : 60,
+                minWidth: isMobile ? 54 : 60,
+                height: isMobile ? 54 : 60,
+                minHeight: isMobile ? 54 : 60,
                 borderRadius: "50%",
                 background:
                   action.priority === "critical"
                     ? "linear-gradient(135deg, #FF0000 0%, #CC0000 100%)"
-                    : `linear-gradient(135deg, ${action.color} 0%, ${action.color}DD 100%)`,
-                border: "none",
+                    : `linear-gradient(135deg, ${action.color}F0 0%, ${action.color}CC 100%)`,
+                border: `2px solid ${action.priority === "critical" ? "rgba(255, 0, 0, 0.3)" : `${action.color}40`}`,
                 boxShadow: action.priority === "critical"
-                  ? "0 8px 32px rgba(255, 0, 0, 0.5)"
-                  : `0 8px 24px ${action.color}60`,
+                  ? "0 6px 20px rgba(255, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2)"
+                  : `0 6px 20px ${action.color}40, 0 2px 8px rgba(0, 0, 0, 0.15)`,
                 cursor: "pointer",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: `${spacing.xs}px`,
+                gap: "2px",
                 position: "relative",
                 animation: `spring-slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.05}s both`,
                 transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
               }}
             >
-              <span style={{ fontSize: isMobile ? 20 : 24 }}>{action.icon}</span>
+              <span style={{ fontSize: isMobile ? 22 : 26, filter: "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2))" }}>{action.icon}</span>
               <span
                 style={{
-                  fontSize: 9,
-                  fontWeight: 700,
+                  fontSize: isMobile ? 8 : 9,
+                  fontWeight: 800,
                   color: "#FFF",
                   textTransform: "uppercase",
-                  letterSpacing: "0.5px",
+                  letterSpacing: "0.3px",
+                  textShadow: "0 1px 3px rgba(0, 0, 0, 0.3)",
+                  lineHeight: 1,
                 }}
               >
                 {t[action.labelKey] ?? action.labelKey}
@@ -248,23 +264,26 @@ export function QuickActionsFAB() {
           aria-label={isExpanded ? "Close quick actions" : "Open quick actions"}
           className="quick-action-fab-main shadow-glow"
           style={{
-            width: isMobile ? 56 : 64,
-            height: isMobile ? 56 : 64,
+            width: isMobile ? 60 : 68,
+            height: isMobile ? 60 : 68,
             borderRadius: "50%",
             background: isExpanded
-              ? "linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
-              : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
-            border: "none",
+              ? "linear-gradient(135deg, #FF6B6BF0 0%, #FF5252CC 100%)"
+              : "linear-gradient(135deg, #00CED1F0 0%, #00BABACC 100%)",
+            border: isExpanded
+              ? "2px solid rgba(255, 107, 107, 0.3)"
+              : "2px solid rgba(0, 206, 209, 0.3)",
             boxShadow: isExpanded
-              ? "0 8px 32px rgba(255, 107, 107, 0.5)"
-              : "0 8px 32px rgba(0, 206, 209, 0.5)",
+              ? "0 8px 32px rgba(255, 107, 107, 0.4), 0 3px 12px rgba(0, 0, 0, 0.2)"
+              : "0 8px 32px rgba(0, 206, 209, 0.4), 0 3px 12px rgba(0, 0, 0, 0.2)",
             cursor: "pointer",
-            fontSize: isMobile ? 24 : 28,
+            fontSize: isMobile ? 26 : 32,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            transform: isExpanded ? "rotate(45deg) scale(1.1)" : "rotate(0deg) scale(1)",
+            transform: isExpanded ? "rotate(45deg) scale(1.05)" : "rotate(0deg) scale(1)",
             transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))",
           }}
         >
           ⚡

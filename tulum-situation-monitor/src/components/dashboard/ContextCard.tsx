@@ -7,10 +7,17 @@ import type { ContextualSuggestion } from '@/lib/contextual-suggestions';
 interface ContextCardProps {
   suggestion: ContextualSuggestion;
   index: number;
+  onModalOpen?: (modalType: 'beachCam') => void;
 }
 
-export function ContextCard({ suggestion, index }: ContextCardProps) {
+export function ContextCard({ suggestion, index, onModalOpen }: ContextCardProps) {
   const [hovered, setHovered] = useState(false);
+
+  const handleClick = () => {
+    if (suggestion.action?.modal && onModalOpen) {
+      onModalOpen(suggestion.action.modal);
+    }
+  };
 
   const cardContent = (
     <div
@@ -111,7 +118,15 @@ export function ContextCard({ suggestion, index }: ContextCardProps) {
     </div>
   );
 
-  if (suggestion.action) {
+  if (suggestion.action?.modal) {
+    return (
+      <div onClick={handleClick} style={{ cursor: 'pointer' }}>
+        {cardContent}
+      </div>
+    );
+  }
+
+  if (suggestion.action?.href) {
     return (
       <Link
         href={suggestion.action.href}

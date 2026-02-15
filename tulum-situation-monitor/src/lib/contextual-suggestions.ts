@@ -16,7 +16,8 @@ export interface ContextualSuggestion {
   description: string;
   action?: {
     label: string;
-    href: string;
+    href?: string;
+    modal?: 'beachCam';
   };
   priority: number;
   matchedConditions: string[];
@@ -29,7 +30,8 @@ interface SuggestionTemplate {
   description: string | ((ctx: ContextData) => string);
   action?: {
     label: string;
-    href: string;
+    href?: string;
+    modal?: 'beachCam';
   };
   basePriority: number;
   conditions: {
@@ -75,7 +77,7 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
     icon: '🏖️',
     title: 'Perfect Beach Morning',
     description: (ctx) => `Clear skies, ${Math.round(ctx.weather.temperature)}°C - ideal beach conditions`,
-    action: { label: 'Check Beach Conditions', href: '/' },
+    action: { label: 'View Beach Cam', modal: 'beachCam' },
     basePriority: 60,
     conditions: {
       timeOfDay: ['earlyMorning', 'morning'],
