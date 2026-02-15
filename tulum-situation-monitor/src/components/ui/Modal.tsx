@@ -106,7 +106,7 @@ export const Modal: React.FC<ModalProps> = ({
           background: heavyBackdrop ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0.6)",
           backdropFilter: heavyBackdrop ? "blur(10px)" : "blur(4px)",
           WebkitBackdropFilter: heavyBackdrop ? "blur(10px)" : "blur(4px)",
-          zIndex: zIndex.modalBackdrop,
+          zIndex: zIndex.overlay,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
