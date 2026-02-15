@@ -67,7 +67,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       outline: "none",
       WebkitTapHighlightColor: "transparent",
       userSelect: "none",
-      transition: transition("all", "normal", "easeOut"),
+      transition: transition("all", "fast"),
       opacity: isDisabled ? 0.5 : 1,
       width: fullWidth ? "100%" : "auto",
       ...sizeStyle,

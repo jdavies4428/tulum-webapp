@@ -179,7 +179,7 @@ export const Modal: React.FC<ModalProps> = ({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    transition: transition("all", "fast", "easeOut"),
+                    transition: transition("all", "fast"),
                     color: "#666",
                   }}
                   aria-label="Close modal"

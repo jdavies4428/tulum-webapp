@@ -29,7 +29,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     const baseStyles: React.CSSProperties = {
       borderRadius: radius.lg,
       padding: `${paddingValue}px`,
-      transition: transition("all", "normal", "easeOut"),
+      transition: transition("all", "fast"),
       background: variantStyle.background,
       border: variantStyle.border,
       boxShadow: variantStyle.shadow,
