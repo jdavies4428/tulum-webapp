@@ -106,9 +106,9 @@ export function TaxiModal({ lang, onClose }: TaxiModalProps) {
               className="glass hover-lift spring-slide-up"
               style={{
                 padding: spacing.md,
-                background: "linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.05) 100%)",
+                background: "rgba(0, 0, 0, 0.4)",
                 borderRadius: radius.md,
-                border: "2px solid rgba(255, 215, 0, 0.3)",
+                border: "2px solid rgba(255, 215, 0, 0.4)",
                 animation: `spring-slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.05}s both`,
                 transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
               }}
@@ -135,8 +135,8 @@ export function TaxiModal({ lang, onClose }: TaxiModalProps) {
                   <div
                     style={{
                       fontSize: "13px",
-                      color: "rgba(255, 255, 255, 0.7)",
-                      fontWeight: 500,
+                      color: "rgba(255, 255, 255, 0.85)",
+                      fontWeight: 600,
                     }}
                   >
                     {opt.type}
