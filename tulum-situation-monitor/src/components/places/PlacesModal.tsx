@@ -726,7 +726,13 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         style={{
           position: "fixed",
           ...(isMobile
-            ? { inset: "12px 8px 8px" }
+            ? {
+                bottom: 0,
+                left: 0,
+                right: 0,
+                top: "5vh",
+                borderRadius: "20px 20px 0 0",
+              }
             : {
                 top: "50%",
                 left: "50%",
@@ -734,27 +740,51 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                 width: "90%",
                 maxWidth: "800px",
                 height: "92vh",
+                borderRadius: "16px",
               }),
-          background: "linear-gradient(180deg, #FFF8E7 0%, #FFFFFF 100%)",
-          borderRadius: "24px",
-          border: "1px solid var(--border-emphasis)",
-          boxShadow: "0 24px 64px rgba(0, 0, 0, 0.8)",
+          background: "#FFFFFF",
+          border: isMobile ? "none" : "1px solid rgba(0, 0, 0, 0.1)",
+          boxShadow: isMobile
+            ? "0 -4px 24px rgba(0, 0, 0, 0.15)"
+            : "0 24px 64px rgba(0, 0, 0, 0.2)",
           zIndex: 9999,
           WebkitOverflowScrolling: "touch",
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
           animation: isMobile
-            ? "slideUpMobile 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards"
-            : "slideUp 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards",
+            ? "slideUpMobile 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards"
+            : "slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards",
           outline: "none",
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Mobile drag handle */}
+        {isMobile && (
+          <div
+            style={{
+              padding: "12px 0 8px",
+              display: "flex",
+              justifyContent: "center",
+              background: "#FFFFFF",
+              borderRadius: "20px 20px 0 0",
+            }}
+          >
+            <div
+              style={{
+                width: "36px",
+                height: "4px",
+                borderRadius: "2px",
+                background: "rgba(0, 0, 0, 0.15)",
+              }}
+            />
+          </div>
+        )}
+
         {/* Clean header */}
         <div
           style={{
-            padding: isMobile ? "16px" : "20px 24px",
+            padding: isMobile ? "12px 16px 16px" : "20px 24px",
             borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
             background: "#FFFFFF",
             flexShrink: 0,
@@ -775,11 +805,12 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                 type="button"
                 onClick={() => setActiveTab("local")}
                 style={{
-                  padding: "8px 16px",
+                  padding: isMobile ? "10px 16px" : "8px 16px",
+                  minHeight: isMobile ? "44px" : "auto",
                   background: activeTab === "local" ? "#00CED1" : "transparent",
                   border: activeTab === "local" ? "none" : "1px solid rgba(0, 0, 0, 0.12)",
                   borderRadius: "8px",
-                  fontSize: "13px",
+                  fontSize: isMobile ? "14px" : "13px",
                   fontWeight: "600",
                   color: activeTab === "local" ? "#FFF" : "#666",
                   cursor: "pointer",
@@ -790,19 +821,22 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                   whiteSpace: "nowrap",
                 }}
               >
-                ⭐ {t.localPicks ?? "Insider Picks"}
+                ⭐ {isMobile ? "" : (t.localPicks ?? "Insider Picks")}
+                {isMobile && (t.localPicks ?? "Insider")}
               </button>
               <button
                 ref={closeButtonRef}
                 type="button"
                 onClick={onClose}
                 style={{
-                  width: "32px",
-                  height: "32px",
+                  width: isMobile ? "44px" : "36px",
+                  height: isMobile ? "44px" : "36px",
+                  minWidth: isMobile ? "44px" : "auto",
+                  minHeight: isMobile ? "44px" : "auto",
                   borderRadius: "8px",
                   background: "rgba(0, 0, 0, 0.05)",
                   border: "none",
-                  fontSize: "18px",
+                  fontSize: "20px",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -876,22 +910,24 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
 
         {/* Category tabs */}
         <div style={{
-          padding: isMobile ? "6px 16px" : "8px 24px",
+          padding: isMobile ? "8px 16px" : "8px 24px",
           borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
           overflowX: "auto",
           whiteSpace: "nowrap",
           display: "flex",
-          gap: "8px",
+          gap: isMobile ? "4px" : "8px",
+          WebkitOverflowScrolling: "touch",
         }}>
           <button
             type="button"
             onClick={() => setActiveTab("all")}
             style={{
-              padding: isMobile ? "6px 12px" : "8px 16px",
+              padding: isMobile ? "10px 16px" : "8px 16px",
+              minHeight: isMobile ? "44px" : "auto",
               background: "transparent",
               border: "none",
               borderBottom: activeTab === "all" ? "2px solid #00CED1" : "2px solid transparent",
-              fontSize: isMobile ? "13px" : "14px",
+              fontSize: isMobile ? "14px" : "14px",
               fontWeight: activeTab === "all" ? "600" : "500",
               color: activeTab === "all" ? "#00CED1" : "#666",
               cursor: "pointer",
@@ -905,11 +941,12 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             type="button"
             onClick={() => setActiveTab("beachClubs")}
             style={{
-              padding: isMobile ? "6px 12px" : "8px 16px",
+              padding: isMobile ? "10px 16px" : "8px 16px",
+              minHeight: isMobile ? "44px" : "auto",
               background: "transparent",
               border: "none",
               borderBottom: activeTab === "beachClubs" ? "2px solid #00CED1" : "2px solid transparent",
-              fontSize: isMobile ? "13px" : "14px",
+              fontSize: isMobile ? "14px" : "14px",
               fontWeight: activeTab === "beachClubs" ? "600" : "500",
               color: activeTab === "beachClubs" ? "#00CED1" : "#666",
               cursor: "pointer",
@@ -923,11 +960,12 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             type="button"
             onClick={() => setActiveTab("restaurants")}
             style={{
-              padding: isMobile ? "6px 12px" : "8px 16px",
+              padding: isMobile ? "10px 16px" : "8px 16px",
+              minHeight: isMobile ? "44px" : "auto",
               background: "transparent",
               border: "none",
               borderBottom: activeTab === "restaurants" ? "2px solid #00CED1" : "2px solid transparent",
-              fontSize: isMobile ? "13px" : "14px",
+              fontSize: isMobile ? "14px" : "14px",
               fontWeight: activeTab === "restaurants" ? "600" : "500",
               color: activeTab === "restaurants" ? "#00CED1" : "#666",
               cursor: "pointer",
@@ -941,11 +979,12 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             type="button"
             onClick={() => setActiveTab("coffeeShops")}
             style={{
-              padding: isMobile ? "6px 12px" : "8px 16px",
+              padding: isMobile ? "10px 16px" : "8px 16px",
+              minHeight: isMobile ? "44px" : "auto",
               background: "transparent",
               border: "none",
               borderBottom: activeTab === "coffeeShops" ? "2px solid #00CED1" : "2px solid transparent",
-              fontSize: isMobile ? "13px" : "14px",
+              fontSize: isMobile ? "14px" : "14px",
               fontWeight: activeTab === "coffeeShops" ? "600" : "500",
               color: activeTab === "coffeeShops" ? "#00CED1" : "#666",
               cursor: "pointer",
@@ -959,11 +998,12 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             type="button"
             onClick={() => setActiveTab("cultural")}
             style={{
-              padding: isMobile ? "6px 12px" : "8px 16px",
+              padding: isMobile ? "10px 16px" : "8px 16px",
+              minHeight: isMobile ? "44px" : "auto",
               background: "transparent",
               border: "none",
               borderBottom: activeTab === "cultural" ? "2px solid #00CED1" : "2px solid transparent",
-              fontSize: isMobile ? "13px" : "14px",
+              fontSize: isMobile ? "14px" : "14px",
               fontWeight: activeTab === "cultural" ? "600" : "500",
               color: activeTab === "cultural" ? "#00CED1" : "#666",
               cursor: "pointer",
