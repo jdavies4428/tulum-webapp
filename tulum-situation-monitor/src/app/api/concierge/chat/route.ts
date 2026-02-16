@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { buildSystemPrompt } from '@/lib/concierge-prompts';
 import type { ConciergeContext } from '@/lib/concierge-prompts';
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || '');
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!process.env.GOOGLE_AI_API_KEY) {
-      console.error('GOOGLE_AI_API_KEY is not configured');
+    if (!process.env.GEMINI_API_KEY) {
+      console.error('GEMINI_API_KEY is not configured');
       return NextResponse.json(
         { error: 'AI service not configured' },
         { status: 500 }
