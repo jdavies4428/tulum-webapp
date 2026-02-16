@@ -108,6 +108,11 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('Concierge chat error:', error);
+    console.error('Error details:', {
+      message: error?.message,
+      status: error?.status,
+      response: error?.response?.data,
+    });
 
     // Handle rate limiting
     if (error?.status === 429 || error?.message?.includes('429')) {
@@ -117,8 +122,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Handle API key errors
+    if (error?.status === 400 || error?.message?.includes('API key')) {
+      console.error('API key error - check GEMINI_API_KEY configuration');
+      return NextResponse.json(
+        { error: 'AI service configuration error. Please contact support.' },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
-      { error: 'Failed to process message. Please try again.' },
+      { error: `Failed to process message: ${error?.message || 'Unknown error'}` },
       { status: 500 }
     );
   }

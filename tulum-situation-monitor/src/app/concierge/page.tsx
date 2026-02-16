@@ -125,7 +125,7 @@ export default function ConciergePage() {
           overflowY: "auto",
           WebkitOverflowScrolling: "touch",
           padding: "20px",
-          paddingBottom: "100px",
+          paddingBottom: "220px",
         }}
       >
         {messages.length === 0 ? (
