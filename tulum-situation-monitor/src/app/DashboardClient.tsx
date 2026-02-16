@@ -213,8 +213,8 @@ export function DashboardClient() {
         onClose={() => setPlacesOpen(false)}
         onPlaceSelect={(p) => {
           setSelectedPlace(p);
-          setPlacesOpen(false);
         }}
+        dimmed={!!selectedPlace}
       />
       {showDetailsForPlaceId && selectedPlace && selectedPlace.place_id === showDetailsForPlaceId ? (
         <PlaceDetailsModal

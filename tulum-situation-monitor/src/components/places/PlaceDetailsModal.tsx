@@ -86,7 +86,7 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
           background: "rgba(0, 0, 0, 0.7)",
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
-          zIndex: 9998,
+          zIndex: 10998,
           animation: "fadeIn 0.3s ease-out",
         }}
         aria-hidden
@@ -109,7 +109,7 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
           maxHeight: "90vh",
           overflow: "hidden",
           boxShadow: "0 20px 60px rgba(0, 206, 209, 0.3)",
-          zIndex: 9999,
+          zIndex: 10999,
           display: "flex",
           flexDirection: "column",
         }}

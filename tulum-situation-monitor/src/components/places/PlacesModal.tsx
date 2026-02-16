@@ -15,6 +15,7 @@ import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 import { useDebounce } from "@/hooks/useDebounce";
+import { CuisineFilter, filterByCuisine, calculateCuisineCounts, type CuisineTag } from "@/components/filters/CuisineFilter";
 
 type TabId = "all" | "local" | "beachClubs" | "restaurants" | "coffeeShops" | "cultural";
 type SortBy = "distance" | "rating" | "popular";
@@ -563,6 +564,7 @@ interface PlacesModalProps {
   isOpen: boolean;
   onClose: () => void;
   onPlaceSelect?: (place: BeachClub | Restaurant | CulturalPlace | CafePlace) => void;
+  dimmed?: boolean;
 }
 
 const TABS: { id: TabId; labelKey: keyof typeof import("@/lib/i18n").translations.en; icon: string }[] = [
@@ -572,11 +574,12 @@ const TABS: { id: TabId; labelKey: keyof typeof import("@/lib/i18n").translation
   { id: "cultural", labelKey: "cultural", icon: "🎭" },
 ];
 
-export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModalProps) {
+export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = false }: PlacesModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>("all");
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortBy>("popular");
+  const [selectedCuisine, setSelectedCuisine] = useState<CuisineTag>("all");
   const [isMobile, setIsMobile] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [pendingPlaceId, setPendingPlaceId] = useState<string | undefined>(undefined);
@@ -603,6 +606,14 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
   useEffect(() => {
     setSearchQuery(debouncedSearch);
   }, [debouncedSearch]);
+
+  const handleTabChange = (newTab: TabId) => {
+    setActiveTab(newTab);
+    // Reset cuisine filter when switching away from restaurants
+    if (newTab !== "restaurants") {
+      setSelectedCuisine("all");
+    }
+  };
 
   const handleFavoriteClick = (placeId: string | undefined, placeName?: string) => {
     if (!placeId) return;
@@ -680,13 +691,28 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
       else list = [...allItems];
     }
 
+    // Apply cuisine filter for restaurants
+    if (activeTab === "restaurants" && selectedCuisine !== "all") {
+      list = list.filter((place) => {
+        const cuisines = place.sourcePlace?.cuisines;
+        if (!cuisines || cuisines.length === 0) return false;
+        return cuisines.some((c) => c.includes(selectedCuisine));
+      });
+    }
+
     if (sortBy === "distance") {
       list.sort((a, b) => a.distance - b.distance);
     } else if (sortBy === "rating") {
       list.sort((a, b) => b.rating - a.rating);
     }
     return list;
-  }, [allItems, activeTab, searchQuery, sortBy, insiderPickIds]);
+  }, [allItems, activeTab, searchQuery, sortBy, selectedCuisine, insiderPickIds]);
+
+  // Calculate cuisine counts for restaurants
+  const cuisineCounts = useMemo(
+    () => calculateCuisineCounts(restaurants),
+    [restaurants]
+  );
 
   const totalCount = clubs.length + restaurants.length + cafes.length + cultural.length;
   const tabCounts: Record<TabId, number> = {
@@ -730,7 +756,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
                 bottom: 0,
                 left: 0,
                 right: 0,
-                top: "5vh",
+                top: 0,
                 borderRadius: "20px 20px 0 0",
               }
             : {
@@ -756,6 +782,9 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             ? "slideUpMobile 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards"
             : "slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards",
           outline: "none",
+          opacity: dimmed ? 0.3 : 1,
+          pointerEvents: dimmed ? "none" : "auto",
+          transition: "opacity 0.2s ease-out",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -803,7 +832,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button
                 type="button"
-                onClick={() => setActiveTab("local")}
+                onClick={() => handleTabChange("local")}
                 style={{
                   padding: isMobile ? "10px 16px" : "8px 16px",
                   minHeight: isMobile ? "44px" : "auto",
@@ -920,7 +949,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
         }}>
           <button
             type="button"
-            onClick={() => setActiveTab("all")}
+            onClick={() => handleTabChange("all")}
             style={{
               padding: isMobile ? "10px 16px" : "8px 16px",
               minHeight: isMobile ? "44px" : "auto",
@@ -939,7 +968,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("beachClubs")}
+            onClick={() => handleTabChange("beachClubs")}
             style={{
               padding: isMobile ? "10px 16px" : "8px 16px",
               minHeight: isMobile ? "44px" : "auto",
@@ -958,7 +987,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("restaurants")}
+            onClick={() => handleTabChange("restaurants")}
             style={{
               padding: isMobile ? "10px 16px" : "8px 16px",
               minHeight: isMobile ? "44px" : "auto",
@@ -977,7 +1006,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("coffeeShops")}
+            onClick={() => handleTabChange("coffeeShops")}
             style={{
               padding: isMobile ? "10px 16px" : "8px 16px",
               minHeight: isMobile ? "44px" : "auto",
@@ -996,7 +1025,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab("cultural")}
+            onClick={() => handleTabChange("cultural")}
             style={{
               padding: isMobile ? "10px 16px" : "8px 16px",
               minHeight: isMobile ? "44px" : "auto",
@@ -1015,6 +1044,23 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           </button>
         </div>
 
+        {/* Cuisine Filter - only show for restaurants */}
+        {activeTab === "restaurants" && (
+          <div
+            style={{
+              borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
+              background: "#FFFFFF",
+              flexShrink: 0,
+            }}
+          >
+            <CuisineFilter
+              selectedCuisine={selectedCuisine}
+              onCuisineChange={setSelectedCuisine}
+              counts={cuisineCounts}
+            />
+          </div>
+        )}
+
         {/* Results count + sort */}
         <div style={{
           padding: isMobile ? "10px 16px" : "12px 24px",
@@ -1022,6 +1068,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect }: PlacesModa
           justifyContent: "space-between",
           alignItems: "center",
           background: "#FAFAFA",
+          flexShrink: 0,
         }}>
           <div style={{ fontSize: isMobile ? "13px" : "14px", color: "#666", fontWeight: "500" }}>
             {items.length} {items.length === 1 ? 'place' : 'places'}

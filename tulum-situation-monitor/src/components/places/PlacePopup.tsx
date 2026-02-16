@@ -85,7 +85,7 @@ export function PlacePopup({ place, lang, onClose, onMoreInfo }: PlacePopupProps
           bottom: 0,
           background: "rgba(0, 0, 0, 0.4)",
           backdropFilter: "blur(2px)",
-          zIndex: 9998,
+          zIndex: 10998,
           animation: "placePopupFadeIn 0.2s ease-out",
         }}
         aria-hidden
@@ -106,7 +106,7 @@ export function PlacePopup({ place, lang, onClose, onMoreInfo }: PlacePopupProps
           minWidth: "320px",
           maxWidth: "400px",
           boxShadow: "0 12px 40px rgba(0, 0, 0, 0.6)",
-          zIndex: 9999,
+          zIndex: 10999,
           animation: "placePopupSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
         onClick={(e) => e.stopPropagation()}
