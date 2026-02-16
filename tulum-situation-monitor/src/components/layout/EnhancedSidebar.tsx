@@ -478,7 +478,7 @@ export function EnhancedSidebar({
           }}
         >
           <Link
-            href={`/itinerary?lang=${lang}`}
+            href={`/concierge?lang=${lang}`}
             className="hover-lift"
             style={{
               width: "100%",
@@ -499,7 +499,7 @@ export function EnhancedSidebar({
               boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
             }}
           >
-            🤖 {tAny.aiConcierge ?? "AI Concierge"}
+            🤖 {tAny.conciergeTitle ?? "AI Concierge"}
           </Link>
           <Link
             href={`/discover/events?lang=${lang}`}
