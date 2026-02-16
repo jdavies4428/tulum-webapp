@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -23,6 +23,16 @@ export default function EventsPage() {
   const [editingEvent, setEditingEvent] = useState<LocalEvent | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile viewport
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const handler = () => setIsMobile(mq.matches);
+    handler();
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   // Admin check (same pattern as PlacesModal.tsx line 592-593)
   const isAdmin =
@@ -40,26 +50,57 @@ export default function EventsPage() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background:
-          "linear-gradient(180deg, #E0F7FA 0%, #FFF8E7 50%, #FFFFFF 100%)",
-        color: "var(--text-primary)",
-        paddingTop: "max(24px, env(safe-area-inset-top))",
-      }}
-    >
+    <>
+      {/* Backdrop */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0, 0, 0, 0.7)",
+          zIndex: 9998,
+        }}
+      />
+
+      {/* Modal Container */}
+      <div
+        style={{
+          position: "fixed",
+          ...(isMobile
+            ? {
+                bottom: 0,
+                left: 0,
+                right: 0,
+                top: 0,
+                borderRadius: "0",
+              }
+            : {
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "90%",
+                maxWidth: "700px",
+                maxHeight: "92vh",
+                borderRadius: "16px",
+              }),
+          background: "#FFFFFF",
+          boxShadow: "0 24px 64px rgba(0, 0, 0, 0.2)",
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
       {/* Header */}
       <header
         style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          background: "rgba(255, 248, 231, 0.95)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(0, 206, 209, 0.2)",
-          padding: "16px 20px",
+          flexShrink: 0,
+          background: "#FFFFFF",
+          borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
+          padding: isMobile ? "16px" : "20px 24px",
+          paddingTop: isMobile ? "max(16px, env(safe-area-inset-top))" : "20px",
           display: "flex",
           alignItems: "center",
           gap: "12px",
@@ -86,7 +127,7 @@ export default function EventsPage() {
         </Link>
         <h1
           style={{
-            fontSize: "22px",
+            fontSize: isMobile ? "18px" : "22px",
             fontWeight: "800",
             margin: 0,
             color: "var(--tulum-ocean)",
@@ -125,10 +166,9 @@ export default function EventsPage() {
       {/* Feed */}
       <div
         style={{
-          padding: "16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "0",
+          flex: 1,
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
         }}
       >
         {loading ? (
@@ -366,9 +406,21 @@ export default function EventsPage() {
                   <div
                     style={{
                       marginTop: "12px",
-                      borderRadius: "16px",
+                      borderRadius: "12px",
                       overflow: "hidden",
                       border: "1px solid rgba(0, 206, 209, 0.2)",
+                      cursor: "pointer",
+                      transition: "transform 0.2s",
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open(event.image_url, "_blank");
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.01)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
                     }}
                   >
                     <img
@@ -376,9 +428,10 @@ export default function EventsPage() {
                       alt="Event"
                       style={{
                         width: "100%",
-                        maxHeight: "500px",
-                        objectFit: "cover",
+                        maxHeight: "400px",
+                        objectFit: "contain",
                         display: "block",
+                        background: "rgba(0, 0, 0, 0.02)",
                       }}
                     />
                   </div>
@@ -446,6 +499,7 @@ export default function EventsPage() {
           danger
         />
       )}
-    </div>
+      </div>
+    </>
   );
 }
