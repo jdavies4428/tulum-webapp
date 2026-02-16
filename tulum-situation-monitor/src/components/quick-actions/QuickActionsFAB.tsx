@@ -49,6 +49,13 @@ const ACTIONS = [
     priority: null as string | null,
   },
   {
+    id: "concierge",
+    icon: "🤖",
+    labelKey: "conciergeTitle",
+    color: "#9370DB",
+    priority: null as string | null,
+  },
+  {
     id: "settings",
     icon: "⚙️",
     labelKey: "settings",
@@ -131,6 +138,10 @@ export function QuickActionsFAB() {
     }
     if (actionId === "settings") {
       router.push(`/settings?lang=${lang}`);
+      return;
+    }
+    if (actionId === "concierge") {
+      router.push(`/concierge?lang=${lang}`);
       return;
     }
     if (actionId === "emergency") setModal("emergency");
