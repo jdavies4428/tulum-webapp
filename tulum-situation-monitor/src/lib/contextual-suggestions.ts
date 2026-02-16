@@ -277,11 +277,7 @@ export function getSuggestions(contextData: ContextData, lang: Lang): Contextual
     description: typeof item.template.description === 'function'
       ? item.template.description(contextData)
       : item.template.description,
-    action: item.template.action
-      ? (typeof item.template.action.label === 'string'
-          ? item.template.action
-          : { ...item.template.action, label: item.template.action.label })
-      : undefined,
+    action: item.template.action,
     priority: item.score,
     matchedConditions: item.matched,
   }));

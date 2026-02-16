@@ -112,7 +112,7 @@ export function TulumRightNowModal({ lang, onClose }: TulumRightNowModalProps) {
               <ContextualGrid
                 weather={{
                   temperature: weatherData.current.temperature_2m,
-                  condition: getWeatherDescription(weatherData.current.weather_code, lang).desc as any,
+                  condition: getWeatherDescription(weatherData.current.weather_code, lang).desc,
                   uvIndex: weatherData.daily?.uv_index_max?.[0] ?? 0,
                   sunrise: weatherData.daily?.sunrise?.[0],
                   sunset: weatherData.daily?.sunset?.[0],
