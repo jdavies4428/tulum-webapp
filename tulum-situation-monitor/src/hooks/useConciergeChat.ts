@@ -9,12 +9,12 @@ export interface ChatMessage {
   timestamp: Date;
 }
 
-interface UseConciergeChat Options {
+interface UseConciergeChatorOptions {
   lang: Lang;
   context?: ConciergeContext;
 }
 
-interface UseConciergeChat Return {
+interface UseConciergeChatorReturn {
   messages: ChatMessage[];
   isLoading: boolean;
   error: string | null;
@@ -22,7 +22,7 @@ interface UseConciergeChat Return {
   clearChat: () => void;
 }
 
-export function useConciergeChat({ lang, context }: UseConciergeChat Options): UseConciergeChat Return {
+export function useConciergeChat({ lang, context }: UseConciergeChatorOptions): UseConciergeChatorReturn {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
