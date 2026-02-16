@@ -250,71 +250,94 @@ export default function ConciergePage() {
           bottom: 0,
           left: 0,
           right: 0,
-          padding: "16px 20px",
-          paddingBottom: "max(16px, env(safe-area-inset-bottom))",
+          padding: "20px",
+          paddingBottom: "max(20px, env(safe-area-inset-bottom))",
           background: "var(--card-bg)",
           borderTop: "1px solid var(--border-subtle)",
         }}
       >
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            maxWidth: "800px",
-            margin: "0 auto",
-            display: "flex",
-            gap: "12px",
-            alignItems: "flex-end",
-          }}
-        >
-          <textarea
-            ref={inputRef}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={t.conciergePlaceholder ?? "Ask a question or request an itinerary..."}
-            disabled={isLoading}
+        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+          <form
+            onSubmit={handleSubmit}
             style={{
-              flex: 1,
-              padding: "12px 16px",
-              borderRadius: "24px",
-              background: "var(--bg-primary)",
-              border: "1px solid var(--border-emphasis)",
-              color: "var(--text-primary)",
-              fontSize: "15px",
-              fontFamily: "inherit",
-              resize: "none",
-              minHeight: "48px",
-              maxHeight: "120px",
-              outline: "none",
+              display: "flex",
+              gap: "12px",
+              alignItems: "flex-end",
+              marginBottom: "12px",
             }}
-            rows={1}
-          />
-          <VoiceInput lang={lang} onTranscript={handleVoiceTranscript} disabled={isLoading} />
-          <button
-            type="submit"
-            disabled={!inputValue.trim() || isLoading}
+          >
+            <textarea
+              ref={inputRef}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={t.conciergePlaceholder ?? "Ask a question or request an itinerary..."}
+              disabled={isLoading}
+              style={{
+                flex: 1,
+                padding: "16px 20px",
+                borderRadius: "24px",
+                background: "var(--bg-primary)",
+                border: "1px solid var(--border-emphasis)",
+                color: "var(--text-primary)",
+                fontSize: "16px",
+                fontFamily: "inherit",
+                resize: "none",
+                minHeight: "64px",
+                maxHeight: "140px",
+                outline: "none",
+              }}
+              rows={2}
+            />
+            <VoiceInput lang={lang} onTranscript={handleVoiceTranscript} disabled={isLoading} />
+            <button
+              type="submit"
+              disabled={!inputValue.trim() || isLoading}
+              style={{
+                width: "48px",
+                height: "48px",
+                borderRadius: "50%",
+                background:
+                  !inputValue.trim() || isLoading
+                    ? "var(--button-secondary)"
+                    : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
+                border: "none",
+                color: "#FFF",
+                fontSize: "20px",
+                cursor: !inputValue.trim() || isLoading ? "not-allowed" : "pointer",
+                opacity: !inputValue.trim() || isLoading ? 0.5 : 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all 0.2s",
+              }}
+            >
+              {isLoading ? "⏳" : "➤"}
+            </button>
+          </form>
+
+          {/* Create AI Itinerary Button */}
+          <Link
+            href={`/itinerary?lang=${lang}`}
             style={{
-              width: "48px",
-              height: "48px",
-              borderRadius: "50%",
-              background:
-                !inputValue.trim() || isLoading
-                  ? "var(--button-secondary)"
-                  : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
+              display: "block",
+              width: "100%",
+              padding: "14px 20px",
+              borderRadius: "16px",
+              background: "linear-gradient(135deg, #9370DB 0%, #8A5FC7 100%)",
               border: "none",
               color: "#FFF",
-              fontSize: "20px",
-              cursor: !inputValue.trim() || isLoading ? "not-allowed" : "pointer",
-              opacity: !inputValue.trim() || isLoading ? 0.5 : 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              fontSize: "15px",
+              fontWeight: "600",
+              textAlign: "center",
+              textDecoration: "none",
+              cursor: "pointer",
               transition: "all 0.2s",
             }}
           >
-            {isLoading ? "⏳" : "➤"}
-          </button>
-        </form>
+            ✨ {t.createItinerary ?? "Create AI Itinerary"}
+          </Link>
+        </div>
       </div>
 
       <style>{`
