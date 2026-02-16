@@ -47,7 +47,13 @@ interface ContextData {
   weather: WeatherData;
 }
 
-const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
+/**
+ * Score and rank suggestions based on current context
+ */
+export function getSuggestions(contextData: ContextData, lang: Lang): ContextualSuggestion[] {
+  const t = translations[lang];
+
+  const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   // Sunrise/Sunset
   {
     id: 'sunrise-soon',
@@ -215,11 +221,6 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   },
 ];
 
-/**
- * Score and rank suggestions based on current context
- */
-export function getSuggestions(contextData: ContextData, lang: Lang): ContextualSuggestion[] {
-  const t = translations[lang];
   const scored = SUGGESTION_TEMPLATES.map((template) => {
     let score = template.basePriority;
     const matched: string[] = [];
