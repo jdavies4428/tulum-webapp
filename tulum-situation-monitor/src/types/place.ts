@@ -14,6 +14,8 @@ export interface PlaceBase {
   photo_reference?: string | null;
   /** Cached thumbnail URL (Supabase Storage); preferred over photo_reference to save API cost. */
   photo_url?: string | null;
+  /** Cuisine tags for restaurants/cafes: ["mexican", "tacos", "seafood", "italian", etc.] */
+  cuisines?: string[];
 }
 
 export interface BeachClub extends PlaceBase {

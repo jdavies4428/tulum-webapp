@@ -21,6 +21,7 @@ type VenueRow = {
   rating?: number | null;
   photo_reference?: string | null;
   photo_url?: string | null;
+  cuisines?: string[] | null;
 };
 
 type VenuePlace = BeachClub | Restaurant | CulturalPlace | CafePlace;
@@ -40,6 +41,7 @@ function venueToPlace(venue: VenueRow): VenuePlace {
     rating: venue.rating ?? undefined,
     photo_reference: venue.photo_reference ?? undefined,
     photo_url: venue.photo_url ?? undefined,
+    cuisines: venue.cuisines ?? undefined,
   };
   if (venue.category === "club") {
     return { ...base, hasWebcam: venue.has_webcam } as BeachClub;
