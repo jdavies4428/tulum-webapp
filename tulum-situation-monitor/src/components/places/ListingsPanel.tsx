@@ -1,10 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useVenues } from "@/hooks/useVenues";
 import type { BeachClub, Restaurant, CulturalPlace } from "@/types/place";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
+import {
+  CuisineFilter,
+  filterByCuisine,
+  calculateCuisineCounts,
+  type CuisineTag,
+} from "@/components/filters/CuisineFilter";
 
 // Match original: iOS → Apple Maps, else → Google Maps
 function openNavigation(lat: number, lng: number, name: string) {
@@ -30,15 +36,36 @@ type Tab = "clubs" | "restaurants" | "cultural";
 
 export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
   const [tab, setTab] = useState<Tab>("clubs");
+  const [selectedCuisine, setSelectedCuisine] = useState<CuisineTag>("all");
   const { clubs, restaurants, cultural, isLoading, error, source } = useVenues();
   const t = translations[lang] as Record<string, string>;
   const navigateLabel = t.navigate ?? "Go";
+
+  // Filter restaurants by cuisine
+  const filteredRestaurants = useMemo(
+    () => filterByCuisine(restaurants, selectedCuisine),
+    [restaurants, selectedCuisine]
+  );
+
+  // Calculate cuisine counts
+  const cuisineCounts = useMemo(
+    () => calculateCuisineCounts(restaurants),
+    [restaurants]
+  );
+
+  // Reset cuisine filter when switching tabs
+  const handleTabChange = (newTab: Tab) => {
+    setTab(newTab);
+    if (newTab !== "restaurants") {
+      setSelectedCuisine("all");
+    }
+  };
 
   const items =
     tab === "clubs"
       ? clubs
       : tab === "restaurants"
-        ? restaurants
+        ? filteredRestaurants
         : cultural;
   const desc = (item: BeachClub | Restaurant | CulturalPlace) =>
     lang === "es" ? item.descEs ?? item.desc : lang === "fr" ? ("descFr" in item ? (item as { descFr?: string }).descFr : item.desc) : item.desc;
@@ -107,7 +134,7 @@ export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
               <button
                 type="button"
-                onClick={() => setTab("clubs")}
+                onClick={() => handleTabChange("clubs")}
                 className="flex shrink-0 items-center justify-center gap-1.5 rounded-[10px] border-2 px-3.5 py-2.5 text-xs font-semibold transition-all"
                 style={
                   tab === "clubs"
@@ -122,7 +149,7 @@ export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
               </button>
               <button
                 type="button"
-                onClick={() => setTab("restaurants")}
+                onClick={() => handleTabChange("restaurants")}
                 className="flex shrink-0 items-center justify-center gap-1.5 rounded-[10px] border-2 px-3.5 py-2.5 text-xs font-semibold transition-all"
                 style={
                   tab === "restaurants"
@@ -137,7 +164,7 @@ export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
               </button>
               <button
                 type="button"
-                onClick={() => setTab("cultural")}
+                onClick={() => handleTabChange("cultural")}
                 className="flex shrink-0 items-center justify-center gap-1.5 rounded-[10px] border-2 px-3.5 py-2.5 text-xs font-semibold transition-all"
                 style={
                   tab === "cultural"
@@ -151,6 +178,17 @@ export function ListingsPanel({ lang, isOpen, onClose }: ListingsPanelProps) {
                 </span>
               </button>
             </div>
+
+            {/* Cuisine Filter - only show for restaurants */}
+            {tab === "restaurants" && (
+              <div style={{ marginTop: "12px" }}>
+                <CuisineFilter
+                  selectedCuisine={selectedCuisine}
+                  onCuisineChange={setSelectedCuisine}
+                  counts={cuisineCounts}
+                />
+              </div>
+            )}
           </div>
           <div className="min-h-[300px] flex-1 overflow-y-auto p-4">
             {error && (
