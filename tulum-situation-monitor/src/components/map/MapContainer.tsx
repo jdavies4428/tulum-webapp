@@ -410,7 +410,16 @@ export function MapContainer({
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
     const navigateLabel = t.navigate ?? "Go";
-    const popup = (name: string, d: string, url: string, whatsapp: string, lat: number, lng: number) => {
+    const popup = (
+      name: string,
+      d: string,
+      url: string,
+      whatsapp: string,
+      lat: number,
+      lng: number,
+      photoUrl?: string | null,
+      photoReference?: string | null
+    ) => {
       const displayName = (name ?? "").trim() || "Venue";
       const safeName = escapeHtml(displayName);
       const safeDesc = escapeHtml(d ?? "");
@@ -422,6 +431,13 @@ export function MapContainer({
       const mapsUrl = isIOS
         ? `https://maps.apple.com/?daddr=${lat},${lng}&q=${encodedName}`
         : `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+
+      // Build photo HTML
+      const photoSrc = photoUrl ?? (photoReference ? `/api/places/photo?photo_reference=${encodeURIComponent(photoReference)}&maxwidth=400` : null);
+      const photoHtml = photoSrc
+        ? `<img src="${escapeHtml(photoSrc)}" alt="${safeName}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;" />`
+        : "";
+
       const webLink = url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="club-link website">🌐 ${escapeHtml(t.website ?? "Website")}</a>` : "";
       const callLink = whatsapp
         ? `<a href="tel:${whatsapp.replace(/\D/g, "")}" class="club-link call">📞</a>`
@@ -431,6 +447,7 @@ export function MapContainer({
         : "";
       return `
         <div class="club-popup">
+          ${photoHtml}
           <h3>${safeName}</h3>
           <p class="club-desc">${safeDesc}</p>
           <div class="club-links">
@@ -466,7 +483,10 @@ export function MapContainer({
       clubs.forEach((club) => {
         const icon = createVenueIcon("beachClub", club);
         const m = L.marker([club.lat, club.lng], { icon });
-        m.bindPopup(popup(club.name, desc(club), club.url ?? "", club.whatsapp ?? "", club.lat, club.lng), { maxWidth: 260 });
+        m.bindPopup(
+          popup(club.name, desc(club), club.url ?? "", club.whatsapp ?? "", club.lat, club.lng, club.photo_url, club.photo_reference),
+          { maxWidth: 260 }
+        );
         m.on("click", () => onPlaceSelect?.(club));
         addToGroup(m);
       });
@@ -475,7 +495,10 @@ export function MapContainer({
       restaurants.forEach((r) => {
         const icon = createVenueIcon("restaurant", r);
         const m = L.marker([r.lat, r.lng], { icon });
-        m.bindPopup(popup(r.name, desc(r), r.url ?? "", r.whatsapp ?? "", r.lat, r.lng), { maxWidth: 260 });
+        m.bindPopup(
+          popup(r.name, desc(r), r.url ?? "", r.whatsapp ?? "", r.lat, r.lng, r.photo_url, r.photo_reference),
+          { maxWidth: 260 }
+        );
         m.on("click", () => onPlaceSelect?.(r));
         addToGroup(m);
       });
@@ -484,7 +507,10 @@ export function MapContainer({
       cafes.forEach((c) => {
         const icon = createVenueIcon("cafe", c);
         const m = L.marker([c.lat, c.lng], { icon });
-        m.bindPopup(popup(c.name, desc(c), c.url ?? "", c.whatsapp ?? "", c.lat, c.lng), { maxWidth: 260 });
+        m.bindPopup(
+          popup(c.name, desc(c), c.url ?? "", c.whatsapp ?? "", c.lat, c.lng, c.photo_url, c.photo_reference),
+          { maxWidth: 260 }
+        );
         m.on("click", () => onPlaceSelect?.(c));
         addToGroup(m);
       });
@@ -493,7 +519,10 @@ export function MapContainer({
       cultural.forEach((c) => {
         const icon = createVenueIcon("cultural", c);
         const m = L.marker([c.lat, c.lng], { icon });
-        m.bindPopup(popup(c.name, desc(c), c.url ?? "", c.whatsapp ?? "", c.lat, c.lng), { maxWidth: 260 });
+        m.bindPopup(
+          popup(c.name, desc(c), c.url ?? "", c.whatsapp ?? "", c.lat, c.lng, c.photo_url, c.photo_reference),
+          { maxWidth: 260 }
+        );
         m.on("click", () => onPlaceSelect?.(c));
         addToGroup(m);
       });
@@ -506,7 +535,10 @@ export function MapContainer({
         if (!isFav) return;
         const icon = createVenueIcon("favorites", place);
         const m = L.marker([place.lat, place.lng], { icon });
-        m.bindPopup(popup(place.name, desc(place), place.url ?? "", place.whatsapp ?? "", place.lat, place.lng), { maxWidth: 260 });
+        m.bindPopup(
+          popup(place.name, desc(place), place.url ?? "", place.whatsapp ?? "", place.lat, place.lng, place.photo_url, place.photo_reference),
+          { maxWidth: 260 }
+        );
         m.on("click", () => onPlaceSelect?.(place));
         addToGroup(m);
       });
