@@ -414,7 +414,7 @@ export default function EventsPage() {
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      window.open(event.image_url, "_blank");
+                      if (event.image_url) window.open(event.image_url, "_blank");
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = "scale(1.01)";
