@@ -1,5 +1,6 @@
 import type { TimeContext } from './time-context';
 import { formatTimeUntil } from './time-context';
+import { translations, type Lang } from './i18n';
 
 export interface WeatherData {
   temperature: number;
@@ -51,9 +52,12 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'sunrise-soon',
     icon: '🌅',
-    title: (ctx) => `Sunrise in ${formatTimeUntil(ctx.timeContext.minutesUntilSunrise || 0)}`,
-    description: 'Perfect time for a peaceful beach walk',
-    action: { label: 'View Map', href: '/map' },
+    title: (ctx) => {
+      const time = formatTimeUntil(ctx.timeContext.minutesUntilSunrise || 0, lang);
+      return t.ctxSunriseSoon.replace('{time}', time);
+    },
+    description: () => t.ctxSunriseSoonDesc,
+    action: { label: t.ctxViewMap, href: '/map' },
     basePriority: 70,
     conditions: {
       urgent: (ctx) => (ctx.timeContext.minutesUntilSunrise || 999) < 30,
@@ -62,9 +66,12 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'sunset-soon',
     icon: '🌅',
-    title: (ctx) => `Sunset in ${formatTimeUntil(ctx.timeContext.minutesUntilSunset || 0)}`,
-    description: 'Golden hour - perfect for photos and beach clubs',
-    action: { label: 'Find Beach Clubs', href: '/map' },
+    title: (ctx) => {
+      const time = formatTimeUntil(ctx.timeContext.minutesUntilSunset || 0, lang);
+      return t.ctxSunsetSoon.replace('{time}', time);
+    },
+    description: () => t.ctxSunsetSoonDesc,
+    action: { label: t.ctxFindBeachClubs, href: '/map' },
     basePriority: 80,
     conditions: {
       urgent: (ctx) => (ctx.timeContext.minutesUntilSunset || 999) < 30,
@@ -75,9 +82,12 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'morning-beach',
     icon: '🏖️',
-    title: 'Perfect Beach Morning',
-    description: (ctx) => `Clear skies, ${Math.round(ctx.weather.temperature)}°C - ideal beach conditions`,
-    action: { label: 'View Beach Cam', modal: 'beachCam' },
+    title: () => t.ctxPerfectBeachMorning,
+    description: (ctx) => {
+      const temp = Math.round(ctx.weather.temperature);
+      return t.ctxBeachMorningDesc.replace('{temp}', String(temp));
+    },
+    action: { label: t.ctxViewBeachCam, modal: 'beachCam' },
     basePriority: 60,
     conditions: {
       timeOfDay: ['earlyMorning', 'morning'],
@@ -87,9 +97,9 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'morning-coffee',
     icon: '☕',
-    title: 'Morning Coffee Spots',
-    description: 'Start your day at a local cafe',
-    action: { label: 'Find Cafes', href: '/map' },
+    title: () => t.ctxMorningCoffee,
+    description: () => t.ctxMorningCoffeeDesc,
+    action: { label: t.ctxFindCafes, href: '/map' },
     basePriority: 50,
     conditions: {
       timeOfDay: ['earlyMorning', 'morning'],
@@ -100,8 +110,8 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'uv-warning',
     icon: '☀️',
-    title: (ctx) => `High UV Alert (${ctx.weather.uvIndex})`,
-    description: 'Seek shade, wear sunscreen SPF 50+',
+    title: (ctx) => t.ctxHighUvAlert.replace('{uv}', String(ctx.weather.uvIndex)),
+    description: () => t.ctxHighUvDesc,
     basePriority: 90,
     conditions: {
       timeOfDay: ['midday', 'afternoon'],
@@ -111,9 +121,9 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'indoor-lunch',
     icon: '🍽️',
-    title: 'Lunch Time',
-    description: 'Escape the midday heat at a local restaurant',
-    action: { label: 'Find Restaurants', href: '/map' },
+    title: () => t.ctxLunchTime,
+    description: () => t.ctxLunchTimeDesc,
+    action: { label: t.ctxFindRestaurants, href: '/map' },
     basePriority: 55,
     conditions: {
       timeOfDay: ['midday'],
@@ -124,9 +134,9 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'rain-alert',
     icon: '🌧️',
-    title: 'Rain Detected',
-    description: 'Indoor activities recommended',
-    action: { label: 'Discover Indoor Spots', href: '/discover' },
+    title: () => t.ctxRainAlert,
+    description: () => t.ctxRainAlertDesc,
+    action: { label: t.ctxDiscoverIndoor, href: '/discover' },
     basePriority: 85,
     conditions: {
       weather: (w) => w.condition === 'rainy',
@@ -137,9 +147,9 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'afternoon-explore',
     icon: '🗺️',
-    title: 'Explore Tulum',
-    description: 'Visit cultural sites and local shops',
-    action: { label: 'Discover', href: '/discover' },
+    title: () => t.ctxExploreTulum,
+    description: () => t.ctxExploreTulumDesc,
+    action: { label: t.ctxDiscover, href: '/discover' },
     basePriority: 50,
     conditions: {
       timeOfDay: ['afternoon'],
@@ -150,9 +160,9 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'evening-dining',
     icon: '🌮',
-    title: 'Dinner Time',
-    description: 'Discover the best restaurants in Tulum',
-    action: { label: 'Find Restaurants', href: '/map' },
+    title: () => t.ctxDinnerTime,
+    description: () => t.ctxDinnerTimeDesc,
+    action: { label: t.ctxFindRestaurants, href: '/map' },
     basePriority: 60,
     conditions: {
       timeOfDay: ['evening'],
@@ -161,9 +171,9 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'beach-clubs-evening',
     icon: '🍹',
-    title: 'Beach Club Evening',
-    description: 'Sunset cocktails and live music',
-    action: { label: 'Find Beach Clubs', href: '/map' },
+    title: () => t.ctxBeachClubEvening,
+    description: () => t.ctxBeachClubEveningDesc,
+    action: { label: t.ctxFindBeachClubs, href: '/map' },
     basePriority: 65,
     conditions: {
       timeOfDay: ['evening'],
@@ -175,9 +185,9 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'night-rest',
     icon: '🌙',
-    title: 'Plan Tomorrow',
-    description: 'Check weather and tide forecast',
-    action: { label: 'View Forecast', href: '/' },
+    title: () => t.ctxPlanTomorrow,
+    description: () => t.ctxPlanTomorrowDesc,
+    action: { label: t.ctxViewForecast, href: '/' },
     basePriority: 40,
     conditions: {
       timeOfDay: ['night'],
@@ -188,18 +198,18 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
   {
     id: 'local-events',
     icon: '📅',
-    title: 'Local Events',
-    description: 'See what\'s happening in Tulum today',
-    action: { label: 'View Events', href: '/discover/events' },
+    title: () => t.ctxLocalEvents,
+    description: () => t.ctxLocalEventsDesc,
+    action: { label: t.ctxViewEvents, href: '/discover/events' },
     basePriority: 45,
     conditions: {},
   },
   {
     id: 'transportation',
     icon: '🚗',
-    title: 'Getting Around',
-    description: 'Bikes, scooters, taxis, and colectivos',
-    action: { label: 'Transportation Guide', href: '/discover/transportation' },
+    title: () => t.ctxGettingAround,
+    description: () => t.ctxGettingAroundDesc,
+    action: { label: t.ctxTransportGuide, href: '/discover/transportation' },
     basePriority: 35,
     conditions: {},
   },
@@ -208,7 +218,8 @@ const SUGGESTION_TEMPLATES: SuggestionTemplate[] = [
 /**
  * Score and rank suggestions based on current context
  */
-export function getSuggestions(contextData: ContextData): ContextualSuggestion[] {
+export function getSuggestions(contextData: ContextData, lang: Lang): ContextualSuggestion[] {
+  const t = translations[lang];
   const scored = SUGGESTION_TEMPLATES.map((template) => {
     let score = template.basePriority;
     const matched: string[] = [];
@@ -265,7 +276,11 @@ export function getSuggestions(contextData: ContextData): ContextualSuggestion[]
     description: typeof item.template.description === 'function'
       ? item.template.description(contextData)
       : item.template.description,
-    action: item.template.action,
+    action: item.template.action
+      ? (typeof item.template.action.label === 'string'
+          ? item.template.action
+          : { ...item.template.action, label: item.template.action.label })
+      : undefined,
     priority: item.score,
     matchedConditions: item.matched,
   }));

@@ -7,6 +7,7 @@ import { ContextCard } from './ContextCard';
 import { LivePulse } from './LivePulse';
 import { BeachCamModal } from '@/components/quick-actions/BeachCamModal';
 import type { Lang } from '@/lib/weather';
+import { translations } from '@/lib/i18n';
 
 interface ContextualGridProps {
   weather: WeatherData;
@@ -26,7 +27,7 @@ export function ContextualGrid({ weather, lang }: ContextualGridProps) {
   const suggestions = getSuggestions({
     timeContext,
     weather,
-  });
+  }, lang);
 
   // Auto-refresh suggestions every 30 seconds
   useEffect(() => {
@@ -76,7 +77,7 @@ export function ContextualGrid({ weather, lang }: ContextualGridProps) {
             backgroundClip: 'text',
           }}
         >
-          ✨ Tulum Right Now
+          ✨ {translations[lang].tulumRightNow}
         </h2>
         <p
           style={{

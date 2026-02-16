@@ -10,17 +10,17 @@ interface EmergencyModalProps {
   onClose: () => void;
 }
 
-const EMERGENCY_CONTACTS = [
-  { icon: "🚓", label: "Police", number: "911", href: "tel:911" },
-  { icon: "🚑", label: "Ambulance", number: "065", href: "tel:065" },
-  { icon: "🔥", label: "Fire Department", number: "068", href: "tel:068" },
-  { icon: "🏥", label: "Hospital", number: "+52 984 871 2000", href: "tel:+529848712000" },
-  { icon: "🇺🇸", label: "US Embassy", number: "+52 55 5080 2000", href: "tel:+525550802000" },
-];
-
 export function EmergencyModal({ lang, onClose }: EmergencyModalProps) {
   const t = translations[lang] as Record<string, string>;
   const title = t.emergencyServices ?? "Emergency Services";
+
+  const EMERGENCY_CONTACTS = [
+    { icon: "🚓", label: t.emergencyPolice, number: "911", href: "tel:911" },
+    { icon: "🚑", label: t.emergencyAmbulance, number: "065", href: "tel:065" },
+    { icon: "🔥", label: t.emergencyFire, number: "068", href: "tel:068" },
+    { icon: "🏥", label: t.emergencyHospital, number: "+52 984 871 2000", href: "tel:+529848712000" },
+    { icon: "🇺🇸", label: t.emergencyUsEmbassy, number: "+52 55 5080 2000", href: "tel:+525550802000" },
+  ];
 
   return (
     <Modal isOpen onClose={onClose} size="sm">

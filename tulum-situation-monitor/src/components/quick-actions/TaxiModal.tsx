@@ -40,44 +40,44 @@ interface TaxiModalProps {
   onClose: () => void;
 }
 
-const TAXI_OPTIONS = [
-  {
-    name: "Local Taxi Stand",
-    number: "+52 984 871 2345",
-    type: "Regular",
-    estimatedWait: "5-10 min",
-    note: null,
-    action: null,
-  },
-  {
-    name: "InDrive",
-    type: "App-based",
-    estimatedWait: null,
-    note: null,
-    action: () => openAppOrStore(INDRIVE.scheme, INDRIVE.ios, INDRIVE.android),
-    number: null,
-  },
-  {
-    name: "Eiby",
-    type: "App-based",
-    estimatedWait: null,
-    note: null,
-    action: () => openAppOrStore(EIBY.scheme, EIBY.ios, EIBY.android),
-    number: null,
-  },
-  {
-    name: "Private Driver (Mario)",
-    number: "+52 984 123 4567",
-    type: "Private",
-    estimatedWait: "15-20 min",
-    note: "Recommended by locals",
-    action: null,
-  },
-];
-
 export function TaxiModal({ lang, onClose }: TaxiModalProps) {
   const t = translations[lang] as Record<string, string>;
   const title = t.callTaxi ?? "Call a Taxi";
+
+  const TAXI_OPTIONS = [
+    {
+      name: t.taxiLocalStand,
+      number: "+52 984 871 2345",
+      type: t.taxiTypeRegular,
+      estimatedWait: t.taxiWait5to10,
+      note: null,
+      action: null,
+    },
+    {
+      name: "InDrive",
+      type: t.taxiTypeAppBased,
+      estimatedWait: null,
+      note: null,
+      action: () => openAppOrStore(INDRIVE.scheme, INDRIVE.ios, INDRIVE.android),
+      number: null,
+    },
+    {
+      name: "Eiby",
+      type: t.taxiTypeAppBased,
+      estimatedWait: null,
+      note: null,
+      action: () => openAppOrStore(EIBY.scheme, EIBY.ios, EIBY.android),
+      number: null,
+    },
+    {
+      name: "Private Driver (Mario)",
+      number: "+52 984 123 4567",
+      type: t.taxiTypePrivate,
+      estimatedWait: "15-20 min",
+      note: t.taxiRecommendedByLocals,
+      action: null,
+    },
+  ];
 
   return (
     <Modal isOpen onClose={onClose} size="sm">
@@ -181,7 +181,7 @@ export function TaxiModal({ lang, onClose }: TaxiModalProps) {
                   transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                 }}
               >
-                {opt.action ? "📱 Open App" : `📞 Call ${opt.number}`}
+                {opt.action ? `📱 ${t.taxiOpenApp}` : `📞 ${t.taxiCall} ${opt.number}`}
               </button>
             </div>
           ))}

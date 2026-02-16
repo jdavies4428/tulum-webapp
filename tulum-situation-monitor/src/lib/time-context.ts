@@ -1,3 +1,5 @@
+import { translations, type Lang } from './i18n';
+
 export type TimeOfDay = 'earlyMorning' | 'morning' | 'midday' | 'afternoon' | 'evening' | 'night';
 
 export interface TimeContext {
@@ -78,20 +80,21 @@ export function getTimeContext(sunriseHour?: number, sunsetHour?: number): TimeC
 /**
  * Format time until a future event
  */
-export function formatTimeUntil(minutes: number): string {
-  if (minutes < 1) return 'now';
-  if (minutes < 60) return `${Math.round(minutes)}min`;
+export function formatTimeUntil(minutes: number, lang: Lang = 'en'): string {
+  const t = translations[lang];
+  if (minutes < 1) return t.timeNow;
+  if (minutes < 60) return t.timeMinutes.replace('{min}', String(Math.round(minutes)));
 
   const hours = Math.floor(minutes / 60);
   const mins = Math.round(minutes % 60);
 
   if (hours < 24) {
-    if (mins === 0) return `${hours}h`;
-    return `${hours}h ${mins}m`;
+    if (mins === 0) return t.timeHours.replace('{h}', String(hours));
+    return t.timeHoursMinutes.replace('{h}', String(hours)).replace('{m}', String(mins));
   }
 
   const days = Math.floor(hours / 24);
-  return `${days}d`;
+  return t.timeDays.replace('{d}', String(days));
 }
 
 /**
