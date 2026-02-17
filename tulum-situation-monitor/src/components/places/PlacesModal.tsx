@@ -119,7 +119,6 @@ interface PlaceForCard {
   rating: number;
   reviews: number;
   distance: number;
-  isOpen: boolean;
   lat: number;
   lng: number;
   phone: string;
@@ -136,10 +135,12 @@ interface PlaceForCard {
 function placeToCard(
   p: BeachClub | Restaurant | CulturalPlace | CafePlace,
   lang: Lang,
-  categoryLabel: string
+  categoryLabel: string,
+  userLat?: number,
+  userLng?: number
 ): PlaceForCard {
   const desc = lang === "es" ? p.descEs ?? p.desc : "descFr" in p ? (p as { descFr?: string }).descFr ?? p.desc : p.desc;
-  const dist = haversineKm(TULUM_LAT, TULUM_LNG, p.lat, p.lng);
+  const dist = haversineKm(userLat ?? TULUM_LAT, userLng ?? TULUM_LNG, p.lat, p.lng);
   const tags =
     categoryLabel === "Club"
       ? ["Beachfront", "Sunset Views"]
@@ -156,7 +157,6 @@ function placeToCard(
     rating: p.rating ?? 4.5,
     reviews: 0,
     distance: dist,
-    isOpen: true,
     lat: p.lat,
     lng: p.lng,
     phone: p.whatsapp ?? "",
@@ -183,12 +183,35 @@ interface PlaceCardProps {
   addToListLabel?: string;
 }
 
+const CATEGORY_PLACEHOLDER: Record<string, { bg: string; emoji: string }> = {
+  Club: { bg: "rgba(0, 206, 209, 0.12)", emoji: "🏖️" },
+  Restaurant: { bg: "rgba(80, 200, 120, 0.12)", emoji: "🍽️" },
+  Coffee: { bg: "rgba(139, 69, 19, 0.1)", emoji: "☕" },
+  Cultural: { bg: "rgba(155, 89, 182, 0.1)", emoji: "🎭" },
+};
+
 function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggleFavorite, isLocked = false, onAddToList, addToListLabel = "Add to List" }: PlaceCardProps) {
-  const photoSrc = place.photo_url ?? (place.photo_reference ? `/api/places/photo?photo_reference=${encodeURIComponent(place.photo_reference)}&maxwidth=400` : null);
+  const photoSrc = place.photo_url ?? (place.photo_reference ? `/api/places/photo?photo_reference=${encodeURIComponent(place.photo_reference)}&maxwidth=200` : null);
   const distanceStr =
     place.distance < 1
       ? `${(place.distance * 1000).toFixed(0)}m`
       : `${place.distance.toFixed(1)}km`;
+  const placeholder = CATEGORY_PLACEHOLDER[place.categoryLabel] ?? { bg: "rgba(0,0,0,0.06)", emoji: "📍" };
+
+  const actionBtnStyle: React.CSSProperties = {
+    width: "36px",
+    height: "36px",
+    borderRadius: "10px",
+    border: "none",
+    fontSize: "17px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+    transition: "all 0.2s",
+    textDecoration: "none",
+  };
 
   return (
     <div
@@ -198,362 +221,140 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
       onClick={() => place.sourcePlace && onSelect?.(place.sourcePlace)}
       onKeyDown={(e) => e.key === "Enter" && place.sourcePlace && onSelect?.(place.sourcePlace)}
       style={{
-        background: "var(--card-bg)",
-        borderRadius: "24px",
-        padding: "20px",
-        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
-        border: "2px solid rgba(0, 206, 209, 0.15)",
+        background: "#FFFFFF",
+        borderRadius: "16px",
+        padding: "12px",
+        boxShadow: "0 2px 12px rgba(0, 0, 0, 0.06)",
+        border: "1px solid rgba(0, 0, 0, 0.07)",
         cursor: "pointer",
-        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-        position: "relative",
-        overflow: "hidden",
+        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        display: "flex",
+        flexDirection: "row",
+        gap: "12px",
+        alignItems: "flex-start",
       }}
     >
-      {/* Gradient accent bar */}
+      {/* Left: photo thumbnail or placeholder */}
       <div
         style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "4px",
-          background: "linear-gradient(90deg, #00CED1 0%, #0099CC 100%)",
-        }}
-      />
-
-      {/* Header Row */}
-      <div
-        style={{
+          width: "80px",
+          height: "80px",
+          borderRadius: "12px",
+          overflow: "hidden",
+          flexShrink: 0,
+          background: placeholder.bg,
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          marginBottom: "12px",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "28px",
         }}
       >
-        <div
+        {photoSrc ? (
+          <img
+            src={photoSrc}
+            alt=""
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        ) : (
+          placeholder.emoji
+        )}
+      </div>
+
+      {/* Right: content column */}
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "3px" }}>
+        {/* Name */}
+        <h3
           style={{
-            padding: "6px 12px",
-            background: "#1A1A1A",
-            borderRadius: "10px",
-            fontSize: "12px",
+            fontSize: "15px",
             fontWeight: "700",
-            color: "#FFF",
-            letterSpacing: "0.5px",
+            margin: 0,
+            color: "#1A1A1A",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
-          {place.categoryLabel}
+          {place.name}
           {place.hasWebcam ? " 📹" : ""}
+        </h3>
+
+        {/* Description */}
+        <p
+          style={{
+            fontSize: "12px",
+            color: "#888",
+            margin: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {place.address}
+        </p>
+
+        {/* Info pills */}
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", marginTop: "2px" }}>
+          <span style={{ fontSize: "12px", fontWeight: "600", color: "#D4AF37", background: "rgba(255,215,0,0.12)", padding: "2px 7px", borderRadius: "7px" }}>
+            ⭐ {place.rating.toFixed(1)}
+          </span>
+          <span style={{ fontSize: "12px", fontWeight: "600", color: "#00AABB", background: "rgba(0,206,209,0.1)", padding: "2px 7px", borderRadius: "7px" }}>
+            📍 {distanceStr}
+          </span>
+          {place.priceLevel && (
+            <span style={{ fontSize: "12px", fontWeight: "600", color: "#CC7744", background: "rgba(255,153,102,0.1)", padding: "2px 7px", borderRadius: "7px" }}>
+              {place.priceLevel}
+            </span>
+          )}
         </div>
-        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+
+        {/* Action buttons */}
+        <div style={{ display: "flex", gap: "6px", marginTop: "6px" }} onClick={(e) => e.stopPropagation()}>
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleFavorite?.();
-            }}
-            style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "50%",
-              background: isFavorite
-                ? "#FF5252"
-                : "rgba(255, 255, 255, 0.9)",
-              border: isFavorite ? "none" : "2px solid rgba(0, 0, 0, 0.1)",
-              fontSize: "20px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-              transition: "all 0.3s",
-            }}
+            onClick={onToggleFavorite}
+            style={{ ...actionBtnStyle, background: isFavorite ? "#FF5252" : "rgba(0,0,0,0.06)" }}
             aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           >
             {isFavorite ? "❤️" : "🤍"}
           </button>
-          <div
-            style={{
-              padding: "8px 16px",
-              background: place.isOpen
-                ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
-                : "rgba(0, 0, 0, 0.2)",
-              borderRadius: "12px",
-              fontSize: "13px",
-              fontWeight: "800",
-              color: "#FFF",
-              letterSpacing: "0.5px",
-              boxShadow: place.isOpen ? "0 4px 12px rgba(0, 206, 209, 0.3)" : "none",
-            }}
-          >
-            • {place.isOpen ? "OPEN" : "CLOSED"}
-          </div>
-        </div>
-      </div>
-
-      {/* Photo (optional) */}
-      {photoSrc && (
-        <div
-          style={{
-            margin: "0 -20px 16px",
-            height: "140px",
-            overflow: "hidden",
-            borderRadius: "12px",
-          }}
-        >
-          <img
-            src={photoSrc}
-            alt=""
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-            }}
-          />
-        </div>
-      )}
-
-      {/* Place name */}
-      <h3
-        style={{
-          fontSize: "22px",
-          fontWeight: "800",
-          margin: "0 0 6px 0",
-          color: "#1A1A1A",
-          letterSpacing: "-0.5px",
-        }}
-      >
-        {place.name}
-      </h3>
-
-      {/* Description */}
-      <p
-        style={{
-          fontSize: "15px",
-          color: "#666",
-          margin: "0 0 16px 0",
-          lineHeight: 1.5,
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-        } as React.CSSProperties}
-      >
-        {place.address}
-      </p>
-
-      {/* Info row pills */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "12px",
-          marginBottom: "16px",
-          flexWrap: "wrap",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            padding: "6px 12px",
-            background: "rgba(255, 215, 0, 0.15)",
-            borderRadius: "10px",
-          }}
-        >
-          <span style={{ fontSize: "16px" }}>⭐</span>
-          <span style={{ fontSize: "15px", fontWeight: "700", color: "#D4AF37" }}>
-            {place.rating.toFixed(1)}
-          </span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            padding: "6px 12px",
-            background: "rgba(0, 206, 209, 0.1)",
-            borderRadius: "10px",
-          }}
-        >
-          <span style={{ fontSize: "16px" }}>📍</span>
-          <span style={{ fontSize: "15px", fontWeight: "700", color: "#00CED1" }}>{distanceStr}</span>
-        </div>
-        {place.priceLevel && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              padding: "6px 12px",
-              background: "rgba(255, 153, 102, 0.1)",
-              borderRadius: "10px",
-            }}
-          >
-            <span style={{ fontSize: "16px" }}>💰</span>
-            <span style={{ fontSize: "15px", fontWeight: "700", color: "#FF9966" }}>{place.priceLevel}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Tags */}
-      {place.tags.length > 0 && (
-        <div
-          style={{
-            display: "flex",
-            gap: "8px",
-            marginBottom: "16px",
-            flexWrap: "wrap",
-          }}
-        >
-          {place.tags.map((tag) => (
-            <div
-              key={tag}
-              style={{
-                padding: "6px 14px",
-                background: "rgba(0, 0, 0, 0.06)",
-                borderRadius: "20px",
-                fontSize: "13px",
-                fontWeight: "600",
-                color: "#333",
+          {!isLocked && isFavorite && onAddToList && (place.id ?? place.sourcePlace?.id ?? place.sourcePlace?.place_id) && (
+            <button
+              type="button"
+              onClick={() => {
+                const id = place.id ?? place.sourcePlace?.id ?? place.sourcePlace?.place_id;
+                if (id) onAddToList(id, place.name);
               }}
+              style={{ ...actionBtnStyle, width: "auto", padding: "0 10px", background: "rgba(0,206,209,0.1)", color: "#00CED1", fontSize: "12px", fontWeight: "700", gap: "4px" }}
             >
-              {tag}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Action buttons */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "8px",
-        }}
-      >
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleFavorite?.();
-          }}
-          style={{
-            padding: "12px",
-            background: isFavorite
-              ? "#FF5252"
-              : "rgba(0, 0, 0, 0.06)",
-            border: "none",
-            borderRadius: "12px",
-            fontSize: "20px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transition: "all 0.2s",
-          }}
-        >
-          {isFavorite ? "❤️" : "🤍"}
-        </button>
-        {!isLocked && isFavorite && onAddToList && (place.id ?? place.sourcePlace?.id ?? place.sourcePlace?.place_id) && (
+              📋 {addToListLabel}
+            </button>
+          )}
+          {place.phone ? (
+            <a
+              href={`tel:${place.phone.replace(/\D/g, "")}`}
+              style={{ ...actionBtnStyle, background: "#0099FF" }}
+            >
+              📞
+            </a>
+          ) : null}
+          {place.phone ? (
+            <a
+              href={`https://wa.me/${place.phone.replace(/\D/g, "")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ ...actionBtnStyle, background: "#25D366" }}
+            >
+              💬
+            </a>
+          ) : null}
           <button
             type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              const id = place.id ?? place.sourcePlace?.id ?? place.sourcePlace?.place_id;
-              if (id) onAddToList(id, place.name);
-            }}
-            style={{
-              padding: "14px 20px",
-              background: "rgba(0, 206, 209, 0.1)",
-              border: "2px solid rgba(0, 206, 209, 0.3)",
-              borderRadius: "14px",
-              fontSize: "15px",
-              fontWeight: "700",
-              color: "#00CED1",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              transition: "all 0.2s",
-            }}
+            onClick={() => openNavigation(place.lat, place.lng, place.name)}
+            style={{ ...actionBtnStyle, background: "#FF9500" }}
           >
-            📋 {addToListLabel}
+            🗺️
           </button>
-        )}
-        {place.phone ? (
-          <a
-            href={`tel:${place.phone.replace(/\D/g, "")}`}
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: "56px",
-              height: "56px",
-              borderRadius: "14px",
-              background: "#0099FF",
-              border: "none",
-              fontSize: "24px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 4px 16px rgba(0, 153, 255, 0.4)",
-              transition: "all 0.2s",
-              textDecoration: "none",
-            }}
-          >
-            📞
-          </a>
-        ) : null}
-        {place.phone ? (
-          <a
-            href={`https://wa.me/${place.phone.replace(/\D/g, "")}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              width: "56px",
-              height: "56px",
-              borderRadius: "14px",
-              background: "#25D366",
-              border: "none",
-              fontSize: "24px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 4px 16px rgba(37, 211, 102, 0.4)",
-              transition: "all 0.2s",
-              textDecoration: "none",
-            }}
-          >
-            💬
-          </a>
-        ) : null}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            openNavigation(place.lat, place.lng, place.name);
-          }}
-          style={{
-            width: "56px",
-            height: "56px",
-            borderRadius: "14px",
-            background: "#FF9500",
-            border: "none",
-            fontSize: "24px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "0 4px 16px rgba(255, 149, 0, 0.4)",
-            transition: "all 0.2s",
-          }}
-        >
-          🗺️
-        </button>
+        </div>
       </div>
     </div>
   );
@@ -565,6 +366,7 @@ interface PlacesModalProps {
   onClose: () => void;
   onPlaceSelect?: (place: BeachClub | Restaurant | CulturalPlace | CafePlace) => void;
   dimmed?: boolean;
+  userLocation?: { lat: number; lng: number; accuracy: number } | null;
 }
 
 const TABS: { id: TabId; labelKey: keyof typeof import("@/lib/i18n").translations.en; icon: string }[] = [
@@ -574,7 +376,7 @@ const TABS: { id: TabId; labelKey: keyof typeof import("@/lib/i18n").translation
   { id: "cultural", labelKey: "cultural", icon: "🎭" },
 ];
 
-export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = false }: PlacesModalProps) {
+export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = false, userLocation }: PlacesModalProps) {
   const [activeTab, setActiveTab] = useState<TabId>("all");
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -660,12 +462,14 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
   const navigateLabel = t.navigate ?? "Go";
 
   const allItems = useMemo(() => {
-    const clubCards = clubs.map((p) => placeToCard(p, lang, "Club"));
-    const restCards = restaurants.map((p) => placeToCard(p, lang, "Restaurant"));
-    const cafeCards = cafes.map((p) => placeToCard(p, lang, "Coffee"));
-    const culturalCards = cultural.map((p) => placeToCard(p, lang, "Cultural"));
+    const uLat = userLocation?.lat;
+    const uLng = userLocation?.lng;
+    const clubCards = clubs.map((p) => placeToCard(p, lang, "Club", uLat, uLng));
+    const restCards = restaurants.map((p) => placeToCard(p, lang, "Restaurant", uLat, uLng));
+    const cafeCards = cafes.map((p) => placeToCard(p, lang, "Coffee", uLat, uLng));
+    const culturalCards = cultural.map((p) => placeToCard(p, lang, "Cultural", uLat, uLng));
     return [...clubCards, ...restCards, ...cafeCards, ...culturalCards];
-  }, [clubs, restaurants, cafes, cultural, lang]);
+  }, [clubs, restaurants, cafes, cultural, lang, userLocation]);
 
   const items = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
@@ -939,109 +743,57 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
 
         {/* Category tabs */}
         <div style={{
-          padding: isMobile ? "8px 16px" : "8px 24px",
+          padding: isMobile ? "0 16px" : "0 24px",
           borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
           overflowX: "auto",
-          whiteSpace: "nowrap",
           display: "flex",
-          gap: isMobile ? "4px" : "8px",
+          gap: "0",
           WebkitOverflowScrolling: "touch",
         }}>
-          <button
-            type="button"
-            onClick={() => handleTabChange("all")}
-            style={{
-              padding: isMobile ? "10px 16px" : "8px 16px",
-              minHeight: isMobile ? "44px" : "auto",
-              background: "transparent",
-              border: "none",
-              borderBottom: activeTab === "all" ? "2px solid #00CED1" : "2px solid transparent",
-              fontSize: isMobile ? "14px" : "14px",
-              fontWeight: activeTab === "all" ? "600" : "500",
-              color: activeTab === "all" ? "#00CED1" : "#666",
-              cursor: "pointer",
-              transition: "all 0.2s",
-              whiteSpace: "nowrap",
-            }}
-          >
-            🌎 {t.all ?? "All"}
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange("beachClubs")}
-            style={{
-              padding: isMobile ? "10px 16px" : "8px 16px",
-              minHeight: isMobile ? "44px" : "auto",
-              background: "transparent",
-              border: "none",
-              borderBottom: activeTab === "beachClubs" ? "2px solid #00CED1" : "2px solid transparent",
-              fontSize: isMobile ? "14px" : "14px",
-              fontWeight: activeTab === "beachClubs" ? "600" : "500",
-              color: activeTab === "beachClubs" ? "#00CED1" : "#666",
-              cursor: "pointer",
-              transition: "all 0.2s",
-              whiteSpace: "nowrap",
-            }}
-          >
-            🏖️ {t.beachClubs ?? "Beach Clubs"}
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange("restaurants")}
-            style={{
-              padding: isMobile ? "10px 16px" : "8px 16px",
-              minHeight: isMobile ? "44px" : "auto",
-              background: "transparent",
-              border: "none",
-              borderBottom: activeTab === "restaurants" ? "2px solid #00CED1" : "2px solid transparent",
-              fontSize: isMobile ? "14px" : "14px",
-              fontWeight: activeTab === "restaurants" ? "600" : "500",
-              color: activeTab === "restaurants" ? "#00CED1" : "#666",
-              cursor: "pointer",
-              transition: "all 0.2s",
-              whiteSpace: "nowrap",
-            }}
-          >
-            🍽️ {t.restaurants ?? "Restaurants"}
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange("coffeeShops")}
-            style={{
-              padding: isMobile ? "10px 16px" : "8px 16px",
-              minHeight: isMobile ? "44px" : "auto",
-              background: "transparent",
-              border: "none",
-              borderBottom: activeTab === "coffeeShops" ? "2px solid #00CED1" : "2px solid transparent",
-              fontSize: isMobile ? "14px" : "14px",
-              fontWeight: activeTab === "coffeeShops" ? "600" : "500",
-              color: activeTab === "coffeeShops" ? "#00CED1" : "#666",
-              cursor: "pointer",
-              transition: "all 0.2s",
-              whiteSpace: "nowrap",
-            }}
-          >
-            ☕ {t.coffeeShops ?? "Coffee"}
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange("cultural")}
-            style={{
-              padding: isMobile ? "10px 16px" : "8px 16px",
-              minHeight: isMobile ? "44px" : "auto",
-              background: "transparent",
-              border: "none",
-              borderBottom: activeTab === "cultural" ? "2px solid #00CED1" : "2px solid transparent",
-              fontSize: isMobile ? "14px" : "14px",
-              fontWeight: activeTab === "cultural" ? "600" : "500",
-              color: activeTab === "cultural" ? "#00CED1" : "#666",
-              cursor: "pointer",
-              transition: "all 0.2s",
-              whiteSpace: "nowrap",
-            }}
-          >
-            🎭 {t.cultural ?? "Cultural"}
-          </button>
+          {([
+            { id: "all" as TabId, icon: "🌎", label: t.all ?? "All", count: tabCounts.all },
+            { id: "beachClubs" as TabId, icon: "🏖️", label: t.beachClubs ?? "Beach Clubs", count: tabCounts.beachClubs },
+            { id: "restaurants" as TabId, icon: "🍽️", label: t.restaurants ?? "Restaurants", count: tabCounts.restaurants },
+            { id: "coffeeShops" as TabId, icon: "☕", label: t.coffeeShops ?? "Coffee", count: tabCounts.coffeeShops },
+            { id: "cultural" as TabId, icon: "🎭", label: t.cultural ?? "Cultural", count: tabCounts.cultural },
+          ]).map(({ id, icon, label, count }) => {
+            const isActive = activeTab === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => handleTabChange(id)}
+                style={{
+                  padding: isMobile ? "12px 12px" : "10px 14px",
+                  minHeight: isMobile ? "44px" : "auto",
+                  background: "transparent",
+                  border: "none",
+                  borderBottom: isActive ? "2px solid #00CED1" : "2px solid transparent",
+                  fontSize: "13px",
+                  fontWeight: isActive ? "600" : "500",
+                  color: isActive ? "#00CED1" : "#666",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  whiteSpace: "nowrap",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                }}
+              >
+                {icon} {label}
+                <span style={{
+                  fontSize: "11px",
+                  fontWeight: "600",
+                  padding: "1px 5px",
+                  borderRadius: "8px",
+                  background: isActive ? "rgba(0,206,209,0.15)" : "rgba(0,0,0,0.07)",
+                  color: isActive ? "#00CED1" : "#999",
+                }}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Cuisine Filter - only show for restaurants */}
@@ -1063,36 +815,40 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
 
         {/* Results count + sort */}
         <div style={{
-          padding: isMobile ? "10px 16px" : "12px 24px",
+          padding: isMobile ? "8px 16px" : "10px 24px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          background: "#FAFAFA",
+          background: "#FFFFFF",
           flexShrink: 0,
+          borderBottom: "1px solid rgba(0,0,0,0.06)",
         }}>
-          <div style={{ fontSize: isMobile ? "13px" : "14px", color: "#666", fontWeight: "500" }}>
-            {items.length} {items.length === 1 ? 'place' : 'places'}
+          <div style={{ fontSize: "13px", color: "#999", fontWeight: "500" }}>
+            {items.length} {items.length === 1 ? "place" : "places"}
+            {userLocation ? " · 📍 near you" : ""}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ fontSize: "13px", color: "#999" }}>Sort:</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortBy)}
-              style={{
-                padding: "6px 12px",
-                border: "1px solid rgba(0, 0, 0, 0.12)",
-                borderRadius: "8px",
-                fontSize: "13px",
-                background: "#FFFFFF",
-                cursor: "pointer",
-                outline: "none",
-                color: "#333",
-              }}
-            >
-              <option value="popular">{t.popular ?? "Popular"}</option>
-              <option value="distance">{t.distance ?? "Distance"}</option>
-              <option value="rating">{t.rating ?? "Rating"}</option>
-            </select>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+            {(["popular", "distance", "rating"] as SortBy[]).map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setSortBy(s)}
+                style={{
+                  padding: "5px 11px",
+                  background: sortBy === s ? "#00CED1" : "rgba(0,0,0,0.06)",
+                  color: sortBy === s ? "#fff" : "#666",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                  fontWeight: sortBy === s ? "700" : "500",
+                  cursor: "pointer",
+                  transition: "all 0.15s",
+                  textTransform: "capitalize",
+                }}
+              >
+                {s === "popular" ? (t.popular ?? "Popular") : s === "distance" ? (t.distance ?? "Distance") : (t.rating ?? "Rating")}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -1140,9 +896,9 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
           ) : (
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                gap: "16px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
               }}
             >
               {items.map((place) => {

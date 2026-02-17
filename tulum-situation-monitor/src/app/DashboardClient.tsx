@@ -215,6 +215,7 @@ export function DashboardClient() {
           setSelectedPlace(p);
         }}
         dimmed={!!selectedPlace}
+        userLocation={userLocation}
       />
       {showDetailsForPlaceId && selectedPlace && selectedPlace.place_id === showDetailsForPlaceId ? (
         <PlaceDetailsModal
