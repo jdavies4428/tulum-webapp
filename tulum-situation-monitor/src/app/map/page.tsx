@@ -150,7 +150,7 @@ export default function MapPage() {
           lang={lang}
           onSelectPlace={setSelectedPlace}
           flyTo={mapApi?.flyTo}
-          topOffset={72}
+          topOffset={80}
           fullWidth
         />
         <MapView

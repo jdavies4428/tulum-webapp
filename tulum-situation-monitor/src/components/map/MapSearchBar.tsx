@@ -195,7 +195,16 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [focused, setFocused] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const fn = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", fn);
+    return () => mq.removeEventListener("change", fn);
+  }, []);
 
   // Debounce the search query to reduce filtering operations
   const debouncedQuery = useDebounce(inputValue, 250);
@@ -330,7 +339,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
           style={{
             display: "flex",
             alignItems: "center",
-            padding: "14px 16px",
+            padding: isMobile ? "10px 14px" : "14px 16px",
             gap: 12,
           }}
         >
@@ -391,8 +400,8 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
           )}
         </div>
 
-        {/* Category Quick Filters - wrap so labels are never cut off */}
-        <div
+        {/* Category Quick Filters - hidden on mobile for compact layout */}
+        {!isMobile && <div
           style={{
             display: "flex",
             flexWrap: "wrap",
@@ -442,7 +451,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
               </button>
             );
           })}
-        </div>
+        </div>}
       </div>
 
       {/* Suggestions Dropdown */}

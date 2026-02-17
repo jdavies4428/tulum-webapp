@@ -157,15 +157,22 @@ export function QuickActionsFAB() {
   const isIOS =
     typeof window !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-  // Mobile: positioned left of user button. Desktop: bottom right of screen
-  const positionStyles = isMobile
-    ? { top: 80, bottom: "auto", right: 72, left: "auto" }
-    : {
-        bottom: isIOS ? "calc(60px + env(safe-area-inset-bottom, 0px))" : 60,
-        top: "auto",
-        right: spacing.lg,
-        left: "auto"
-      };
+  const isMapPage = pathname === "/map";
+
+  // Map + mobile: inline with user circle in top bar
+  // MapTopBar: padding 16px top, 44px user circle → center at 38px. FAB 48px → top = 38 - 24 = 14px
+  // Right: 24px (MapTopBar padding) + 44px (user circle) + 8px gap = 76px from right
+  const positionStyles =
+    isMobile && isMapPage
+      ? { top: 14, bottom: "auto", right: 76, left: "auto" }
+      : isMobile
+      ? { top: 80, bottom: "auto", right: 72, left: "auto" }
+      : {
+          bottom: isIOS ? "calc(60px + env(safe-area-inset-bottom, 0px))" : 60,
+          top: "auto",
+          right: spacing.lg,
+          left: "auto",
+        };
 
   return (
     <>
@@ -188,7 +195,7 @@ export function QuickActionsFAB() {
             background: "rgba(0, 0, 0, 0.6)",
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
-            zIndex: 998,
+            zIndex: isMobile && isMapPage ? 10001 : 998,
             animation: "fadeIn 0.3s ease-out",
           }}
           aria-hidden
@@ -199,10 +206,10 @@ export function QuickActionsFAB() {
         style={{
           position: "fixed",
           ...positionStyles,
-          zIndex: 999,
+          zIndex: isMobile && isMapPage ? 10002 : 999,
           display: "flex",
           flexDirection: "column-reverse",
-          alignItems: isMobile ? "flex-start" : "flex-end",
+          alignItems: isMobile && !isMapPage ? "flex-start" : "flex-end",
           gap: spacing.md,
         }}
       >
@@ -215,10 +222,10 @@ export function QuickActionsFAB() {
               className="quick-action-fab-item hover-scale"
               data-index={index}
               style={{
-                width: isMobile ? 54 : 60,
-                minWidth: isMobile ? 54 : 60,
-                height: isMobile ? 54 : 60,
-                minHeight: isMobile ? 54 : 60,
+                width: isMobile && isMapPage ? 46 : isMobile ? 54 : 60,
+                minWidth: isMobile && isMapPage ? 46 : isMobile ? 54 : 60,
+                height: isMobile && isMapPage ? 46 : isMobile ? 54 : 60,
+                minHeight: isMobile && isMapPage ? 46 : isMobile ? 54 : 60,
                 borderRadius: "50%",
                 background:
                   action.priority === "critical"
@@ -239,7 +246,7 @@ export function QuickActionsFAB() {
                 transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
               }}
             >
-              <span style={{ fontSize: isMobile ? 22 : 26, filter: "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2))" }}>{action.icon}</span>
+              <span style={{ fontSize: isMobile && isMapPage ? 18 : isMobile ? 22 : 26, filter: "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2))" }}>{action.icon}</span>
               <span
                 style={{
                   fontSize: isMobile ? 8 : 9,
@@ -275,8 +282,8 @@ export function QuickActionsFAB() {
           aria-label={isExpanded ? "Close quick actions" : "Open quick actions"}
           className="quick-action-fab-main shadow-glow"
           style={{
-            width: isMobile ? 60 : 68,
-            height: isMobile ? 60 : 68,
+            width: isMobile && isMapPage ? 48 : isMobile ? 60 : 68,
+            height: isMobile && isMapPage ? 48 : isMobile ? 60 : 68,
             borderRadius: "50%",
             background: isExpanded
               ? "linear-gradient(135deg, #FF6B6BF0 0%, #FF5252CC 100%)"
@@ -288,7 +295,7 @@ export function QuickActionsFAB() {
               ? "0 8px 32px rgba(255, 107, 107, 0.4), 0 3px 12px rgba(0, 0, 0, 0.2)"
               : "0 8px 32px rgba(0, 206, 209, 0.4), 0 3px 12px rgba(0, 0, 0, 0.2)",
             cursor: "pointer",
-            fontSize: isMobile ? 26 : 32,
+            fontSize: isMobile && isMapPage ? 22 : isMobile ? 26 : 32,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
