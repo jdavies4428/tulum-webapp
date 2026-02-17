@@ -516,7 +516,7 @@ export function EnhancedSidebar({
               textTransform: "uppercase",
             }}
           >
-            📡 Monitoring
+            🛰️ Sargassum Monitoring
           </div>
           <button
             type="button"
