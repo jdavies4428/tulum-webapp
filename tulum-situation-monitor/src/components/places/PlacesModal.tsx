@@ -429,14 +429,14 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
 
     // Show toast notification
     if (wasFavorite) {
-      toast.success('Removed from favorites', {
-        description: placeName || 'Place removed from your favorites',
+      toast.success(t.removedFromFavorites ?? 'Removed from favorites', {
+        description: placeName || (t.placeRemovedFromFavorites ?? 'Place removed from your favorites'),
       });
     } else {
-      toast.success('Added to favorites!', {
-        description: placeName || 'Place saved to your favorites',
+      toast.success(t.addedToFavorites ?? 'Added to favorites!', {
+        description: placeName || (t.placeSavedToFavorites ?? 'Place saved to your favorites'),
         action: {
-          label: 'View',
+          label: t.view ?? 'View',
           onClick: () => window.location.href = '/favorites'
         }
       });
@@ -824,8 +824,8 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
           borderBottom: "1px solid rgba(0,0,0,0.06)",
         }}>
           <div style={{ fontSize: "13px", color: "#999", fontWeight: "500" }}>
-            {items.length} {items.length === 1 ? "place" : "places"}
-            {userLocation ? " · 📍 near you" : ""}
+            {items.length} {items.length === 1 ? (t.place ?? "place") : (t.placePlural ?? "places")}
+            {userLocation ? ` · 📍 ${t.nearYou ?? "near you"}` : ""}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
             {(["popular", "distance", "rating"] as SortBy[]).map((s) => (
@@ -891,7 +891,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                 fontSize: "14px",
               }}
             >
-              No places found.
+              {t.noPlacesFound ?? "No places found."}
             </div>
           ) : (
             <div

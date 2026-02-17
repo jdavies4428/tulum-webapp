@@ -157,7 +157,7 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
                   letterSpacing: "0.3px",
                 }}
               >
-                Live Beach Cams
+                {t.liveCams ?? "Live Beach Cams"}
               </h2>
               <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
                 {/* Fix 2: Subtle LIVE badge (no red gradient, no glow) */}
@@ -339,7 +339,7 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
                   }}
                 >
                   <span style={{ fontSize: "28px" }}>📡</span>
-                  Connecting to live feed...
+                  {t.connectingToFeed ?? "Connecting to live feed..."}
                 </div>
               )}
               <iframe

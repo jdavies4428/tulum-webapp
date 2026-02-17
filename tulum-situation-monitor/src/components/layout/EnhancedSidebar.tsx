@@ -412,7 +412,7 @@ export function EnhancedSidebar({
               textTransform: "uppercase",
             }}
           >
-            🧭 Explore
+            🧭 {tAny.explore ?? "Explore"}
           </div>
           <div
             style={{
@@ -516,7 +516,7 @@ export function EnhancedSidebar({
               textTransform: "uppercase",
             }}
           >
-            🛰️ Sargassum Monitoring
+            🛰️ {tAny.sargassumMonitoring ?? "Sargassum Monitoring"}
           </div>
           <button
             type="button"
@@ -571,7 +571,7 @@ export function EnhancedSidebar({
               }}
             >
               <span style={{ flexShrink: 0, fontSize: "18px" }}>🛰️</span>
-              <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>Current</span>
+              <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>{tAny.sargassumCurrent ?? "Current"}</span>
             </button>
             <button
               type="button"
@@ -595,7 +595,7 @@ export function EnhancedSidebar({
               }}
             >
               <span style={{ flexShrink: 0, fontSize: "18px" }}>🗺️</span>
-              <span style={{ textAlign: "center", lineHeight: "1.2" }}>7-Day Forecast</span>
+              <span style={{ textAlign: "center", lineHeight: "1.2" }}>{tAny.sargassum7Day ?? "7-Day Forecast"}</span>
             </button>
             <button
               type="button"
@@ -619,7 +619,7 @@ export function EnhancedSidebar({
               }}
             >
               <span style={{ flexShrink: 0, fontSize: "18px" }}>📊</span>
-              <span style={{ textAlign: "center", lineHeight: "1.2" }}>7-Day Historical</span>
+              <span style={{ textAlign: "center", lineHeight: "1.2" }}>{tAny.sargassum7DayHistorical ?? "7-Day Historical"}</span>
             </button>
           </div>
         </div>

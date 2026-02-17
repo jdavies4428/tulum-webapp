@@ -68,11 +68,11 @@ export function CurrenciesPanel({ lang }: CurrenciesPanelProps) {
         <div style={{ display: "flex", alignItems: "center", gap: spacing.sm, marginBottom: "4px" }}>
           <span style={{ fontSize: "18px" }}>💵</span>
           <span style={{ fontSize: "14px", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.8px", color: "#FFF" }}>
-            Exchange Rates
+            {t.exchangeRates ?? "Exchange Rates"}
           </span>
         </div>
         <div style={{ fontSize: "11px", color: "rgba(255, 255, 255, 0.6)", fontWeight: 600, paddingLeft: "26px" }}>
-          to Mexican Peso (MXN) 🇲🇽
+          {t.toMexicanPeso ?? "to Mexican Peso (MXN)"} 🇲🇽
         </div>
       </div>
 
@@ -88,7 +88,7 @@ export function CurrenciesPanel({ lang }: CurrenciesPanelProps) {
               padding: spacing.md,
             }}
           >
-            Loading…
+            {t.loading ?? "Loading…"}
           </div>
         )}
 
