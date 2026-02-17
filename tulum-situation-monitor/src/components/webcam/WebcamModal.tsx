@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
-import { spacing, radius, shadows } from "@/lib/design-tokens";
+import { spacing, radius } from "@/lib/design-tokens";
 
 const WEBCAMS = [
   {
@@ -32,12 +32,11 @@ interface WebcamModalProps {
   onClose: () => void;
 }
 
+// Fix 3: Remove year + weekday from timestamp
 function formatTimestamp() {
   return new Date().toLocaleString("en-US", {
     month: "short",
     day: "numeric",
-    year: "numeric",
-    weekday: "short",
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
@@ -46,6 +45,10 @@ function formatTimestamp() {
 
 export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
   const [timestamp, setTimestamp] = useState(formatTimestamp);
+  // Fix 6: Tab-based camera switching
+  const [activeCam, setActiveCam] = useState(0);
+  // Fix 9: Loading placeholder state
+  const [loaded, setLoaded] = useState<Record<string, boolean>>({});
   const t = translations[lang] as Record<string, string>;
 
   useEffect(() => {
@@ -70,6 +73,9 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
 
   if (!isOpen) return null;
 
+  const cam = WEBCAMS[activeCam];
+  const location = lang === "es" ? cam.locationEs : lang === "fr" ? cam.locationFr : cam.locationEn;
+
   return (
     <>
       {/* Backdrop */}
@@ -87,7 +93,7 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
         }}
       />
 
-      {/* Modal */}
+      {/* Modal — Fix 1: teal theme replacing red/maroon */}
       <div
         className="spring-slide-up scrollbar-hide"
         style={{
@@ -96,12 +102,12 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
           left: "50%",
           transform: "translateX(-50%)",
           width: "95%",
-          maxWidth: "1000px",
+          maxWidth: "900px",
           maxHeight: "90vh",
-          background: "linear-gradient(135deg, #2d1a1a 0%, #3d2121 100%)",
+          background: "linear-gradient(135deg, #071a1a 0%, #0d2626 100%)",
           borderRadius: radius.lg,
-          border: "2px solid rgba(255, 107, 107, 0.3)",
-          boxShadow: "0 0 40px rgba(255, 107, 107, 0.2)",
+          border: "1px solid rgba(0, 206, 209, 0.25)",
+          boxShadow: "0 0 40px rgba(0, 206, 209, 0.12)",
           zIndex: 9999,
           overflowY: "auto",
           display: "flex",
@@ -110,13 +116,13 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+        {/* Header — Fix 4: smaller icon */}
         <div
           className="glass-heavy"
           style={{
-            padding: `${spacing.lg}px ${spacing.xl}px`,
+            padding: `${spacing.md}px ${spacing.xl}px`,
             background: "rgba(0, 0, 0, 0.4)",
-            borderBottom: "2px solid rgba(255, 107, 107, 0.2)",
+            borderBottom: "1px solid rgba(0, 206, 209, 0.15)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -124,18 +130,18 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: spacing.md }}>
+            {/* Fix 4: 40×40 icon (down from 56×56) */}
             <div
-              className="shadow-glow"
               style={{
-                width: 56,
-                height: 56,
-                borderRadius: radius.lg,
-                background: "linear-gradient(135deg, rgba(255, 107, 107, 0.3) 0%, rgba(255, 142, 83, 0.2) 100%)",
-                border: "2px solid rgba(255, 107, 107, 0.5)",
+                width: 40,
+                height: 40,
+                borderRadius: radius.md,
+                background: "rgba(0, 206, 209, 0.12)",
+                border: "1px solid rgba(0, 206, 209, 0.3)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "28px",
+                fontSize: "22px",
               }}
             >
               📹
@@ -143,49 +149,49 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
             <div>
               <h2
                 style={{
-                  fontSize: "24px",
-                  fontWeight: 800,
+                  fontSize: "20px",
+                  fontWeight: 700,
                   color: "#FFF",
                   margin: 0,
-                  marginBottom: spacing.xs,
-                  letterSpacing: "0.5px",
+                  marginBottom: 4,
+                  letterSpacing: "0.3px",
                 }}
               >
                 Live Beach Cams
               </h2>
-              <div style={{ display: "flex", alignItems: "center", gap: spacing.md }}>
+              <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
+                {/* Fix 2: Subtle LIVE badge (no red gradient, no glow) */}
                 <div
                   style={{
-                    padding: `${spacing.xs}px ${spacing.md}px`,
-                    background: "linear-gradient(135deg, #FF0000 0%, #CC0000 100%)",
-                    borderRadius: radius.md,
-                    fontSize: "12px",
-                    fontWeight: 900,
-                    color: "#FFF",
-                    letterSpacing: "1.5px",
+                    padding: `2px ${spacing.sm}px`,
+                    background: "rgba(0, 0, 0, 0.5)",
+                    border: "1px solid rgba(255, 80, 80, 0.5)",
+                    borderRadius: radius.sm,
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    color: "#FF6B6B",
+                    letterSpacing: "1px",
                     display: "flex",
                     alignItems: "center",
-                    gap: spacing.sm,
-                    boxShadow: "0 4px 20px rgba(255, 0, 0, 0.5)",
+                    gap: 5,
                   }}
                 >
                   <div
                     className="quick-action-sos-pulse"
                     style={{
-                      width: 8,
-                      height: 8,
+                      width: 6,
+                      height: 6,
                       borderRadius: "50%",
-                      background: "#FFF",
+                      background: "#FF6B6B",
                     }}
                   />
                   LIVE
                 </div>
                 <span
                   style={{
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    color: "rgba(255, 255, 255, 0.7)",
-                    letterSpacing: "0.3px",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    color: "rgba(255, 255, 255, 0.5)",
                   }}
                 >
                   {timestamp}
@@ -199,113 +205,162 @@ export function WebcamModal({ lang, isOpen, onClose }: WebcamModalProps) {
             onClick={onClose}
             className="interactive hover-scale"
             style={{
-              width: 48,
-              height: 48,
+              width: 40,
+              height: 40,
               borderRadius: "50%",
-              background: "rgba(255, 255, 255, 0.08)",
-              border: "2px solid rgba(255, 255, 255, 0.2)",
-              color: "#FFF",
-              fontSize: "24px",
+              background: "rgba(255, 255, 255, 0.06)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              color: "rgba(255,255,255,0.7)",
+              fontSize: "18px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
             }}
           >
             ✕
           </button>
         </div>
 
-        {/* Webcam Feeds */}
+        {/* Fix 6: Tab-based camera switching */}
         <div
           style={{
-            padding: spacing.xl,
             display: "flex",
-            flexDirection: "column",
-            gap: spacing.xl,
+            borderBottom: "1px solid rgba(0, 206, 209, 0.15)",
+            flexShrink: 0,
           }}
         >
-          {WEBCAMS.map((cam, index) => {
-            const location = lang === "es" ? cam.locationEs : lang === "fr" ? cam.locationFr : cam.locationEn;
-            return (
-              <div
-                key={cam.id}
-                className="glass hover-lift spring-slide-up"
-                style={{
-                  borderRadius: radius.lg,
-                  overflow: "hidden",
-                  border: "2px solid rgba(255, 107, 107, 0.25)",
-                  background: "rgba(0, 0, 0, 0.3)",
-                  boxShadow: "0 12px 40px rgba(255, 107, 107, 0.15)",
-                  animation: `spring-slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.15}s both`,
-                  transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                }}
-              >
-                {/* Camera Header */}
-                <div
-                  style={{
-                    padding: `${spacing.md}px ${spacing.lg}px`,
-                    background: "linear-gradient(135deg, rgba(255, 107, 107, 0.15) 0%, rgba(255, 142, 83, 0.05) 100%)",
-                    borderBottom: "2px solid rgba(255, 107, 107, 0.2)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: spacing.md,
-                  }}
-                >
-                  <span style={{ fontSize: "32px" }}>{cam.icon}</span>
-                  <div style={{ flex: 1 }}>
-                    <div
-                      style={{
-                        fontSize: "20px",
-                        fontWeight: 800,
-                        color: "#FFF",
-                        marginBottom: 4,
-                        letterSpacing: "0.5px",
-                      }}
-                    >
-                      {cam.name}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "13px",
-                        color: "rgba(255, 255, 255, 0.6)",
-                        fontWeight: 600,
-                        letterSpacing: "0.3px",
-                      }}
-                    >
-                      {location}
-                    </div>
-                  </div>
-                </div>
+          {WEBCAMS.map((c, i) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => setActiveCam(i)}
+              style={{
+                flex: 1,
+                padding: "12px",
+                fontSize: "14px",
+                fontWeight: activeCam === i ? 700 : 500,
+                color: activeCam === i ? "#00CED1" : "rgba(255,255,255,0.45)",
+                background: activeCam === i ? "rgba(0, 206, 209, 0.08)" : "transparent",
+                border: "none",
+                borderBottom: activeCam === i ? "2px solid #00CED1" : "2px solid transparent",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                transition: "all 0.2s ease",
+              }}
+            >
+              <span style={{ fontSize: "16px" }}>{c.icon}</span>
+              {c.name}
+            </button>
+          ))}
+        </div>
 
-                {/* Video Player */}
-                <div
+        {/* Fix 10: Tightened padding; Fix 8: no staggered animation; Fix 7: no hover-lift */}
+        <div
+          style={{
+            padding: spacing.md,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          {/* Fix 1 + 7 + 8: teal card, no hover-lift, no staggered animation */}
+          <div
+            className="glass"
+            style={{
+              borderRadius: radius.md,
+              overflow: "hidden",
+              border: "1px solid rgba(0, 206, 209, 0.2)",
+              background: "rgba(0, 0, 0, 0.3)",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
+            }}
+          >
+            {/* Fix 5: Slim card header — inline name + location, smaller type */}
+            <div
+              style={{
+                padding: "10px 16px",
+                background: "rgba(0, 206, 209, 0.06)",
+                borderBottom: "1px solid rgba(0, 206, 209, 0.12)",
+                display: "flex",
+                alignItems: "center",
+                gap: spacing.sm,
+              }}
+            >
+              <span style={{ fontSize: "20px" }}>{cam.icon}</span>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                <span
                   style={{
-                    position: "relative",
-                    width: "100%",
-                    paddingBottom: "56.25%",
-                    background: "#000",
+                    fontSize: "15px",
+                    fontWeight: 700,
+                    color: "#FFF",
                   }}
                 >
-                  <iframe
-                    src={cam.url}
-                    title={`${cam.name} - ${location}`}
-                    allow="autoplay; fullscreen"
-                    allowFullScreen
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      border: 0,
-                    }}
-                  />
-                </div>
+                  {cam.name}
+                </span>
+                <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px" }}>·</span>
+                <span
+                  style={{
+                    fontSize: "12px",
+                    color: "rgba(255, 255, 255, 0.5)",
+                    fontWeight: 500,
+                  }}
+                >
+                  {location}
+                </span>
               </div>
-            );
-          })}
+            </div>
+
+            {/* Video Player with Fix 9: loading placeholder */}
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                paddingBottom: "56.25%",
+                background: "#000",
+              }}
+            >
+              {/* Fix 9: loading overlay (shown until iframe fires onLoad) */}
+              {!loaded[cam.id] && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    color: "rgba(255, 255, 255, 0.35)",
+                    fontSize: "13px",
+                    background: "#000",
+                    zIndex: 1,
+                  }}
+                >
+                  <span style={{ fontSize: "28px" }}>📡</span>
+                  Connecting to live feed...
+                </div>
+              )}
+              <iframe
+                key={cam.id}
+                src={cam.url}
+                title={`${cam.name} - ${location}`}
+                allow="autoplay; fullscreen"
+                allowFullScreen
+                onLoad={() => setLoaded((prev) => ({ ...prev, [cam.id]: true }))}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  border: 0,
+                  zIndex: 2,
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>
