@@ -337,216 +337,60 @@ export function EnhancedSidebar({
           </CardContent>
         </Card>
 
-        {/* BEACH CAM section */}
+        {/* Primary CTAs — no section label needed */}
         <div
           style={{
-            padding: `${spacing.lg}px ${spacing.lg}px 0`,
+            padding: `${spacing.md}px ${spacing.lg}px`,
+            display: "flex",
+            flexDirection: "column",
+            gap: `${spacing.sm}px`,
           }}
         >
-          <div
-            style={{
-              fontSize: "11px",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              marginBottom: "10px",
-              letterSpacing: "0.8px",
-              textTransform: "uppercase",
-            }}
-          >
-            📹 Beach Cam
-          </div>
-          <button
-            type="button"
-            onClick={() => setWebcamOpen(true)}
+          <Link
+            href={`/discover/events?lang=${lang}`}
             className="hover-lift"
             style={{
               width: "100%",
-              padding: `${spacing.sm}px ${spacing.md}px`,
+              padding: "12px 16px",
               borderRadius: radius.md,
-              background: "rgba(0, 206, 209, 0.08)",
-              color: "var(--tulum-ocean)",
-              fontWeight: "600",
+              background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
+              color: "#FFF",
+              fontWeight: "700",
               fontSize: "14px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: `${spacing.sm}px`,
-              marginBottom: `${spacing.md}px`,
-              border: "1.5px solid rgba(0, 206, 209, 0.35)",
-              cursor: "pointer",
-              boxShadow: "none",
-            }}
-          >
-            📹 {tAny.tulumBeachLive ?? "Tulum Beach Live"}
-          </button>
-        </div>
-
-        {/* Sargassum Monitoring – label + quick links */}
-        <div
-          style={{
-            padding: `0 ${spacing.lg}px ${spacing.md}px`,
-          }}
-        >
-          <div
-            style={{
-              fontSize: "11px",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              marginBottom: "10px",
-              letterSpacing: "0.8px",
-              textTransform: "uppercase",
-            }}
-          >
-            {tAny.sargassumMonitoring ?? "Sargassum Monitoring"}
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gap: `${spacing.sm}px`,
-            }}
-          >
-          <button
-            type="button"
-            onClick={() => setSargassumCurrentOpen(true)}
-            className="glass-heavy hover-lift interactive"
-            style={{
-              padding: `${spacing.sm}px ${spacing.sm}px`,
-              border: "2px solid rgba(0, 206, 209, 0.3)",
-              borderRadius: radius.md,
-              color: "var(--tulum-ocean)",
-              fontSize: "13px",
-              fontWeight: "600",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: `${spacing.xs}px`,
-              minWidth: 0,
-              minHeight: "56px",
-            }}
-          >
-            <span style={{ flexShrink: 0, fontSize: "18px" }}>🛰️</span>
-            <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>Current</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setSargassumForecastOpen(true)}
-            className="glass-heavy hover-lift interactive"
-            style={{
-              padding: `${spacing.sm}px ${spacing.sm}px`,
-              border: "2px solid rgba(0, 206, 209, 0.3)",
-              borderRadius: radius.md,
-              color: "var(--tulum-ocean)",
-              fontSize: "13px",
-              fontWeight: "600",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: `${spacing.xs}px`,
-              minWidth: 0,
-              minHeight: "56px",
-            }}
-          >
-            <span style={{ flexShrink: 0, fontSize: "18px" }}>🗺️</span>
-            <span style={{ textAlign: "center", lineHeight: "1.2" }}>7-Day Forecast</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setSargassum7DayOpen(true)}
-            className="glass-heavy hover-lift interactive"
-            style={{
-              padding: `${spacing.sm}px ${spacing.sm}px`,
-              border: "2px solid rgba(0, 206, 209, 0.3)",
-              borderRadius: radius.md,
-              color: "var(--tulum-ocean)",
-              fontSize: "13px",
-              fontWeight: "600",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: `${spacing.xs}px`,
-              minWidth: 0,
-              minHeight: "56px",
-            }}
-          >
-            <span style={{ flexShrink: 0, fontSize: "18px" }}>📊</span>
-            <span style={{ textAlign: "center", lineHeight: "1.2" }}>7-Day Historical</span>
-          </button>
-          </div>
-        </div>
-
-        {/* SERVICES section – divider + label + AI Concierge (primary) + Events (secondary) */}
-        <div
-          style={{
-            padding: `${spacing.lg}px ${spacing.lg}px ${spacing.md}px`,
-            borderTop: "1px solid rgba(0, 206, 209, 0.1)",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "11px",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              marginBottom: "10px",
-              letterSpacing: "0.8px",
-              textTransform: "uppercase",
-            }}
-          >
-            🔧 Services
-          </div>
-          <Link
-            href={`/concierge?lang=${lang}`}
-            className="hover-lift"
-            style={{
-              width: "100%",
-              padding: "18px 16px",
-              borderRadius: radius.md,
-              background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
-              color: "#FFF",
-              fontWeight: "700",
-              fontSize: "15px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: `${spacing.sm}px`,
-              marginBottom: `${spacing.sm}px`,
               textDecoration: "none",
               border: "none",
               cursor: "pointer",
               boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
             }}
           >
-            🤖 {tAny.conciergeTitle ?? "AI Concierge"}
+            📅 {tAny.localEvents ?? "Local Events"}
           </Link>
           <Link
-            href={`/discover/events?lang=${lang}`}
+            href={`/concierge?lang=${lang}`}
             className="hover-lift"
             style={{
               width: "100%",
-              padding: `${spacing.sm}px ${spacing.md}px`,
+              padding: "12px 16px",
               borderRadius: radius.md,
               background: "rgba(0, 206, 209, 0.08)",
               color: "var(--tulum-ocean)",
-              fontWeight: "600",
+              fontWeight: "700",
               fontSize: "14px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: `${spacing.sm}px`,
-              marginBottom: `${spacing.sm}px`,
               textDecoration: "none",
               border: "1.5px solid rgba(0, 206, 209, 0.35)",
               cursor: "pointer",
               boxShadow: "none",
             }}
           >
-            📅 {tAny.localEvents ?? "Local Events"}
+            🤖 {tAny.conciergeTitle ?? "AI Concierge"}
           </Link>
         </div>
 
@@ -555,7 +399,7 @@ export function EnhancedSidebar({
           style={{
             padding: `0 ${spacing.lg}px ${spacing.md}px`,
             borderTop: "1px solid rgba(0, 206, 209, 0.1)",
-            paddingTop: `${spacing.lg}px`,
+            paddingTop: `${spacing.md}px`,
           }}
         >
           <div
@@ -563,7 +407,7 @@ export function EnhancedSidebar({
               fontSize: "11px",
               fontWeight: "700",
               color: "var(--text-secondary)",
-              marginBottom: "10px",
+              marginBottom: "8px",
               letterSpacing: "0.8px",
               textTransform: "uppercase",
             }}
@@ -593,7 +437,7 @@ export function EnhancedSidebar({
                 justifyContent: "center",
                 gap: `${spacing.xs}px`,
                 minWidth: 0,
-                minHeight: "64px",
+                minHeight: "56px",
                 textDecoration: "none",
                 color: "#D97706",
               }}
@@ -618,7 +462,7 @@ export function EnhancedSidebar({
                 justifyContent: "center",
                 gap: `${spacing.xs}px`,
                 minWidth: 0,
-                minHeight: "64px",
+                minHeight: "56px",
                 color: "#DC2626",
               }}
             >
@@ -643,7 +487,7 @@ export function EnhancedSidebar({
                   justifyContent: "center",
                   gap: `${spacing.xs}px`,
                   minWidth: 0,
-                  minHeight: "64px",
+                  minHeight: "56px",
                   color: "var(--tulum-ocean)",
                 }}
               >
@@ -651,6 +495,132 @@ export function EnhancedSidebar({
                 <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>{tAny.map ?? "Map"}</span>
               </button>
             )}
+          </div>
+        </div>
+
+        {/* MONITORING — Beach Cam + Sargassum unified */}
+        <div
+          style={{
+            padding: `0 ${spacing.lg}px ${spacing.md}px`,
+            borderTop: "1px solid rgba(0, 206, 209, 0.1)",
+            paddingTop: `${spacing.md}px`,
+          }}
+        >
+          <div
+            style={{
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "var(--text-secondary)",
+              marginBottom: "8px",
+              letterSpacing: "0.8px",
+              textTransform: "uppercase",
+            }}
+          >
+            📡 Monitoring
+          </div>
+          <button
+            type="button"
+            onClick={() => setWebcamOpen(true)}
+            className="hover-lift"
+            style={{
+              width: "100%",
+              padding: `${spacing.sm}px ${spacing.md}px`,
+              borderRadius: radius.md,
+              background: "rgba(0, 206, 209, 0.08)",
+              color: "var(--tulum-ocean)",
+              fontWeight: "600",
+              fontSize: "14px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: `${spacing.sm}px`,
+              marginBottom: `${spacing.sm}px`,
+              border: "1.5px solid rgba(0, 206, 209, 0.35)",
+              cursor: "pointer",
+              boxShadow: "none",
+            }}
+          >
+            📹 {tAny.tulumBeachLive ?? "Tulum Beach Live"}
+          </button>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gap: `${spacing.sm}px`,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => setSargassumCurrentOpen(true)}
+              className="glass-heavy hover-lift interactive"
+              style={{
+                padding: `${spacing.sm}px ${spacing.sm}px`,
+                border: "2px solid rgba(0, 206, 209, 0.3)",
+                borderRadius: radius.md,
+                color: "var(--tulum-ocean)",
+                fontSize: "13px",
+                fontWeight: "600",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: `${spacing.xs}px`,
+                minWidth: 0,
+                minHeight: "56px",
+              }}
+            >
+              <span style={{ flexShrink: 0, fontSize: "18px" }}>🛰️</span>
+              <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>Current</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSargassumForecastOpen(true)}
+              className="glass-heavy hover-lift interactive"
+              style={{
+                padding: `${spacing.sm}px ${spacing.sm}px`,
+                border: "2px solid rgba(0, 206, 209, 0.3)",
+                borderRadius: radius.md,
+                color: "var(--tulum-ocean)",
+                fontSize: "13px",
+                fontWeight: "600",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: `${spacing.xs}px`,
+                minWidth: 0,
+                minHeight: "56px",
+              }}
+            >
+              <span style={{ flexShrink: 0, fontSize: "18px" }}>🗺️</span>
+              <span style={{ textAlign: "center", lineHeight: "1.2" }}>7-Day Forecast</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSargassum7DayOpen(true)}
+              className="glass-heavy hover-lift interactive"
+              style={{
+                padding: `${spacing.sm}px ${spacing.sm}px`,
+                border: "2px solid rgba(0, 206, 209, 0.3)",
+                borderRadius: radius.md,
+                color: "var(--tulum-ocean)",
+                fontSize: "13px",
+                fontWeight: "600",
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: `${spacing.xs}px`,
+                minWidth: 0,
+                minHeight: "56px",
+              }}
+            >
+              <span style={{ flexShrink: 0, fontSize: "18px" }}>📊</span>
+              <span style={{ textAlign: "center", lineHeight: "1.2" }}>7-Day Historical</span>
+            </button>
           </div>
         </div>
 
