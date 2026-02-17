@@ -636,7 +636,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <button
                 type="button"
-                onClick={() => handleTabChange("local")}
+                onClick={() => handleTabChange(activeTab === "local" ? "all" : "local")}
                 style={{
                   padding: isMobile ? "10px 16px" : "8px 16px",
                   minHeight: isMobile ? "44px" : "auto",
