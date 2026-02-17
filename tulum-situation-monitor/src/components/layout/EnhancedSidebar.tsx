@@ -340,10 +340,10 @@ export function EnhancedSidebar({
         {/* Primary CTAs — no section label needed */}
         <div
           style={{
-            padding: `${spacing.md}px ${spacing.lg}px`,
+            padding: `10px ${spacing.lg}px 8px`,
             display: "flex",
             flexDirection: "column",
-            gap: `${spacing.sm}px`,
+            gap: `6px`,
           }}
         >
           <Link
@@ -351,7 +351,7 @@ export function EnhancedSidebar({
             className="hover-lift"
             style={{
               width: "100%",
-              padding: "12px 16px",
+              padding: "10px 16px",
               borderRadius: radius.md,
               background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
               color: "#FFF",
@@ -374,7 +374,7 @@ export function EnhancedSidebar({
             className="hover-lift"
             style={{
               width: "100%",
-              padding: "12px 16px",
+              padding: "10px 16px",
               borderRadius: radius.md,
               background: "rgba(0, 206, 209, 0.08)",
               color: "var(--tulum-ocean)",
@@ -397,9 +397,9 @@ export function EnhancedSidebar({
         {/* EXPLORE grid – Discover, Places, Map */}
         <div
           style={{
-            padding: `0 ${spacing.lg}px ${spacing.md}px`,
+            padding: `0 ${spacing.lg}px 8px`,
             borderTop: "1px solid rgba(0, 206, 209, 0.1)",
-            paddingTop: `${spacing.md}px`,
+            paddingTop: `10px`,
           }}
         >
           <div
@@ -407,7 +407,7 @@ export function EnhancedSidebar({
               fontSize: "11px",
               fontWeight: "700",
               color: "var(--text-secondary)",
-              marginBottom: "8px",
+              marginBottom: "6px",
               letterSpacing: "0.8px",
               textTransform: "uppercase",
             }}
@@ -437,7 +437,7 @@ export function EnhancedSidebar({
                 justifyContent: "center",
                 gap: `${spacing.xs}px`,
                 minWidth: 0,
-                minHeight: "56px",
+                minHeight: "48px",
                 textDecoration: "none",
                 color: "#D97706",
               }}
@@ -462,7 +462,7 @@ export function EnhancedSidebar({
                 justifyContent: "center",
                 gap: `${spacing.xs}px`,
                 minWidth: 0,
-                minHeight: "56px",
+                minHeight: "48px",
                 color: "#DC2626",
               }}
             >
@@ -487,7 +487,7 @@ export function EnhancedSidebar({
                   justifyContent: "center",
                   gap: `${spacing.xs}px`,
                   minWidth: 0,
-                  minHeight: "56px",
+                  minHeight: "48px",
                   color: "var(--tulum-ocean)",
                 }}
               >
@@ -501,9 +501,9 @@ export function EnhancedSidebar({
         {/* MONITORING — Beach Cam + Sargassum unified */}
         <div
           style={{
-            padding: `0 ${spacing.lg}px ${spacing.md}px`,
+            padding: `0 ${spacing.lg}px 8px`,
             borderTop: "1px solid rgba(0, 206, 209, 0.1)",
-            paddingTop: `${spacing.md}px`,
+            paddingTop: `10px`,
           }}
         >
           <div
@@ -511,7 +511,7 @@ export function EnhancedSidebar({
               fontSize: "11px",
               fontWeight: "700",
               color: "var(--text-secondary)",
-              marginBottom: "8px",
+              marginBottom: "6px",
               letterSpacing: "0.8px",
               textTransform: "uppercase",
             }}
@@ -567,7 +567,7 @@ export function EnhancedSidebar({
                 justifyContent: "center",
                 gap: `${spacing.xs}px`,
                 minWidth: 0,
-                minHeight: "56px",
+                minHeight: "48px",
               }}
             >
               <span style={{ flexShrink: 0, fontSize: "18px" }}>🛰️</span>
@@ -591,7 +591,7 @@ export function EnhancedSidebar({
                 justifyContent: "center",
                 gap: `${spacing.xs}px`,
                 minWidth: 0,
-                minHeight: "56px",
+                minHeight: "48px",
               }}
             >
               <span style={{ flexShrink: 0, fontSize: "18px" }}>🗺️</span>
@@ -615,7 +615,7 @@ export function EnhancedSidebar({
                 justifyContent: "center",
                 gap: `${spacing.xs}px`,
                 minWidth: 0,
-                minHeight: "56px",
+                minHeight: "48px",
               }}
             >
               <span style={{ flexShrink: 0, fontSize: "18px" }}>📊</span>
@@ -628,7 +628,7 @@ export function EnhancedSidebar({
         <div
           style={{
             flex: 1,
-            padding: `${spacing.lg}px ${spacing.lg}px ${spacing.md}px`,
+            padding: `10px ${spacing.lg}px ${spacing.md}px`,
             display: "flex",
             flexDirection: "column",
             gap: `${spacing.md}px`,
