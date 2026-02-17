@@ -207,11 +207,11 @@ export function WeatherSection({
           <span style={{ fontSize: "18px" }}>🌤️</span>
           <h2
             style={{
-              fontSize: "16px",
+              fontSize: "12px",
               fontWeight: "700",
-              color: "var(--text-primary)",
+              color: "var(--text-secondary)",
               textTransform: "uppercase",
-              letterSpacing: "0.5px",
+              letterSpacing: "0.8px",
               margin: 0,
             }}
           >
@@ -272,14 +272,14 @@ export function WeatherSection({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "22px" }}>🌤️</span>
+          <span style={{ fontSize: "18px" }}>🌤️</span>
           <h2
             style={{
-              fontSize: "18px",
-              fontWeight: "800",
-              color: "var(--tulum-ocean)",
+              fontSize: "12px",
+              fontWeight: "700",
+              color: "var(--text-secondary)",
               textTransform: "uppercase",
-              letterSpacing: "1px",
+              letterSpacing: "0.8px",
               margin: 0,
             }}
           >

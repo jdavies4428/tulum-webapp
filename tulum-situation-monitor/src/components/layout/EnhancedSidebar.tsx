@@ -226,7 +226,8 @@ export function EnhancedSidebar({
             zIndex: 10,
             borderRadius: `0 0 ${radius.lg} ${radius.lg}`,
             border: "none",
-            borderBottom: "1px solid rgba(0, 206, 209, 0.15)",
+            borderBottom: "none",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.04)",
           }}
         >
           <CardContent style={{ position: "relative" }}>
@@ -257,14 +258,10 @@ export function EnhancedSidebar({
             }}
           >
             <div
-              className="glass-heavy hover-lift"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: `${spacing.xs}px`,
-                borderRadius: radius.md,
-                padding: `${spacing.xs}px`,
-                border: "2px solid rgba(0, 206, 209, 0.3)",
+                gap: "2px",
               }}
             >
               {LANG_FLAGS.map(({ lang: l, flag }) => (
@@ -282,6 +279,7 @@ export function EnhancedSidebar({
                     borderRadius: radius.sm,
                     transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                     boxShadow: lang === l ? "0 2px 8px rgba(0, 206, 209, 0.3)" : "none",
+                    opacity: lang === l ? 1 : 0.55,
                   }}
                 >
                   {flag}
@@ -339,32 +337,44 @@ export function EnhancedSidebar({
           </CardContent>
         </Card>
 
-        {/* See the Beach – prominent button */}
+        {/* BEACH CAM section */}
         <div
           style={{
             padding: `${spacing.lg}px ${spacing.lg}px 0`,
           }}
         >
+          <div
+            style={{
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "var(--text-secondary)",
+              marginBottom: "10px",
+              letterSpacing: "0.8px",
+              textTransform: "uppercase",
+            }}
+          >
+            📹 Beach Cam
+          </div>
           <button
             type="button"
             onClick={() => setWebcamOpen(true)}
             className="hover-lift"
             style={{
               width: "100%",
-              padding: `${spacing.md}px ${spacing.md}px`,
+              padding: `${spacing.sm}px ${spacing.md}px`,
               borderRadius: radius.md,
-              background: `linear-gradient(135deg, #00CED1 0%, #00BABA 100%)`,
-              color: "#FFF",
-              fontWeight: "700",
+              background: "rgba(0, 206, 209, 0.08)",
+              color: "var(--tulum-ocean)",
+              fontWeight: "600",
               fontSize: "14px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               gap: `${spacing.sm}px`,
               marginBottom: `${spacing.md}px`,
-              border: "none",
+              border: "1.5px solid rgba(0, 206, 209, 0.35)",
               cursor: "pointer",
-              boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
+              boxShadow: "none",
             }}
           >
             📹 {tAny.tulumBeachLive ?? "Tulum Beach Live"}
@@ -379,11 +389,11 @@ export function EnhancedSidebar({
         >
           <div
             style={{
-              fontSize: "12px",
+              fontSize: "11px",
               fontWeight: "700",
               color: "var(--text-secondary)",
-              marginBottom: `${spacing.md}px`,
-              letterSpacing: "0.5px",
+              marginBottom: "10px",
+              letterSpacing: "0.8px",
               textTransform: "uppercase",
             }}
           >
@@ -405,7 +415,7 @@ export function EnhancedSidebar({
               border: "2px solid rgba(0, 206, 209, 0.3)",
               borderRadius: radius.md,
               color: "var(--tulum-ocean)",
-              fontSize: "10px",
+              fontSize: "13px",
               fontWeight: "600",
               cursor: "pointer",
               display: "flex",
@@ -429,7 +439,7 @@ export function EnhancedSidebar({
               border: "2px solid rgba(0, 206, 209, 0.3)",
               borderRadius: radius.md,
               color: "var(--tulum-ocean)",
-              fontSize: "10px",
+              fontSize: "13px",
               fontWeight: "600",
               cursor: "pointer",
               display: "flex",
@@ -453,7 +463,7 @@ export function EnhancedSidebar({
               border: "2px solid rgba(0, 206, 209, 0.3)",
               borderRadius: radius.md,
               color: "var(--tulum-ocean)",
-              fontSize: "10px",
+              fontSize: "13px",
               fontWeight: "600",
               cursor: "pointer",
               display: "flex",
@@ -471,23 +481,36 @@ export function EnhancedSidebar({
           </div>
         </div>
 
-        {/* AI Concierge & Local Events – unified turquoise */}
+        {/* SERVICES section – divider + label + AI Concierge (primary) + Events (secondary) */}
         <div
           style={{
-            padding: `0 ${spacing.lg}px ${spacing.md}px`,
+            padding: `${spacing.lg}px ${spacing.lg}px ${spacing.md}px`,
+            borderTop: "1px solid rgba(0, 206, 209, 0.1)",
           }}
         >
+          <div
+            style={{
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "var(--text-secondary)",
+              marginBottom: "10px",
+              letterSpacing: "0.8px",
+              textTransform: "uppercase",
+            }}
+          >
+            🔧 Services
+          </div>
           <Link
             href={`/concierge?lang=${lang}`}
             className="hover-lift"
             style={{
               width: "100%",
-              padding: `${spacing.md}px ${spacing.md}px`,
+              padding: "18px 16px",
               borderRadius: radius.md,
               background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
               color: "#FFF",
               fontWeight: "700",
-              fontSize: "14px",
+              fontSize: "15px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -506,11 +529,11 @@ export function EnhancedSidebar({
             className="hover-lift"
             style={{
               width: "100%",
-              padding: `${spacing.md}px ${spacing.md}px`,
+              padding: `${spacing.sm}px ${spacing.md}px`,
               borderRadius: radius.md,
-              background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
-              color: "#FFF",
-              fontWeight: "700",
+              background: "rgba(0, 206, 209, 0.08)",
+              color: "var(--tulum-ocean)",
+              fontWeight: "600",
               fontSize: "14px",
               display: "flex",
               alignItems: "center",
@@ -518,21 +541,35 @@ export function EnhancedSidebar({
               gap: `${spacing.sm}px`,
               marginBottom: `${spacing.sm}px`,
               textDecoration: "none",
-              border: "none",
+              border: "1.5px solid rgba(0, 206, 209, 0.35)",
               cursor: "pointer",
-              boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
+              boxShadow: "none",
             }}
           >
             📅 {tAny.localEvents ?? "Local Events"}
           </Link>
         </div>
 
-        {/* Action buttons - Discover, Places, Map */}
+        {/* EXPLORE grid – Discover, Places, Map */}
         <div
           style={{
             padding: `0 ${spacing.lg}px ${spacing.md}px`,
+            borderTop: "1px solid rgba(0, 206, 209, 0.1)",
+            paddingTop: `${spacing.lg}px`,
           }}
         >
+          <div
+            style={{
+              fontSize: "11px",
+              fontWeight: "700",
+              color: "var(--text-secondary)",
+              marginBottom: "10px",
+              letterSpacing: "0.8px",
+              textTransform: "uppercase",
+            }}
+          >
+            🧭 Explore
+          </div>
           <div
             style={{
               display: "grid",
@@ -545,10 +582,9 @@ export function EnhancedSidebar({
               className="glass-heavy hover-lift interactive"
               style={{
                 padding: `${spacing.sm}px ${spacing.sm}px`,
-                border: "2px solid rgba(0, 206, 209, 0.3)",
+                border: "2px solid rgba(0, 206, 209, 0.15)",
                 borderRadius: radius.md,
-                color: "var(--tulum-ocean)",
-                fontSize: "10px",
+                fontSize: "13px",
                 fontWeight: "600",
                 cursor: "pointer",
                 display: "flex",
@@ -557,11 +593,12 @@ export function EnhancedSidebar({
                 justifyContent: "center",
                 gap: `${spacing.xs}px`,
                 minWidth: 0,
-                minHeight: "56px",
+                minHeight: "64px",
                 textDecoration: "none",
+                color: "#D97706",
               }}
             >
-              <span style={{ flexShrink: 0, fontSize: "18px" }}>✨</span>
+              <span style={{ flexShrink: 0, fontSize: "20px" }}>✨</span>
               <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>{tAny.discover ?? "Discover"}</span>
             </Link>
             <button
@@ -570,10 +607,9 @@ export function EnhancedSidebar({
               className="glass-heavy hover-lift interactive"
               style={{
                 padding: `${spacing.sm}px ${spacing.sm}px`,
-                border: "2px solid rgba(0, 206, 209, 0.3)",
+                border: "2px solid rgba(0, 206, 209, 0.15)",
                 borderRadius: radius.md,
-                color: "var(--tulum-ocean)",
-                fontSize: "10px",
+                fontSize: "13px",
                 fontWeight: "600",
                 cursor: "pointer",
                 display: "flex",
@@ -582,10 +618,11 @@ export function EnhancedSidebar({
                 justifyContent: "center",
                 gap: `${spacing.xs}px`,
                 minWidth: 0,
-                minHeight: "56px",
+                minHeight: "64px",
+                color: "#DC2626",
               }}
             >
-              <span style={{ flexShrink: 0, fontSize: "18px" }}>📍</span>
+              <span style={{ flexShrink: 0, fontSize: "20px" }}>📍</span>
               <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>{t.places}</span>
             </button>
             {onOpenMap && (
@@ -595,10 +632,9 @@ export function EnhancedSidebar({
                 className="glass-heavy hover-lift interactive"
                 style={{
                   padding: `${spacing.sm}px ${spacing.sm}px`,
-                  border: "2px solid rgba(0, 206, 209, 0.3)",
+                  border: "2px solid rgba(0, 206, 209, 0.15)",
                   borderRadius: radius.md,
-                  color: "var(--tulum-ocean)",
-                  fontSize: "10px",
+                  fontSize: "13px",
                   fontWeight: "600",
                   cursor: "pointer",
                   display: "flex",
@@ -607,10 +643,11 @@ export function EnhancedSidebar({
                   justifyContent: "center",
                   gap: `${spacing.xs}px`,
                   minWidth: 0,
-                  minHeight: "56px",
+                  minHeight: "64px",
+                  color: "var(--tulum-ocean)",
                 }}
               >
-                <span style={{ flexShrink: 0, fontSize: "18px" }}>🗺️</span>
+                <span style={{ flexShrink: 0, fontSize: "20px" }}>🗺️</span>
                 <span style={{ textAlign: "center", lineHeight: "1.2", whiteSpace: "nowrap" }}>{tAny.map ?? "Map"}</span>
               </button>
             )}
@@ -621,10 +658,11 @@ export function EnhancedSidebar({
         <div
           style={{
             flex: 1,
-            padding: `${spacing.md}px ${spacing.lg}px ${spacing.md}px`,
+            padding: `${spacing.lg}px ${spacing.lg}px ${spacing.md}px`,
             display: "flex",
             flexDirection: "column",
             gap: `${spacing.md}px`,
+            borderTop: "1px solid rgba(0, 206, 209, 0.1)",
           }}
         >
           <WeatherSection
