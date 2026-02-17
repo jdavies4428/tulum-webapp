@@ -412,7 +412,7 @@ export const translations: Record<
     conciergeExample3Day: "Plan a 3-day itinerary for me",
   },
   es: {
-    title: "Discover Tulum",
+    title: "Descubre Tulum",
     subtitle: "Condiciones de playa, clima y lugares en tiempo real",
     mapLayers: "Capas",
     darkBaseMap: "Mapa Oscuro",
@@ -792,7 +792,7 @@ export const translations: Record<
     conciergeExample3Day: "Planifica un itinerario de 3 días",
   },
   fr: {
-    title: "Discover Tulum",
+    title: "Découvrir Tulum",
     subtitle: "Conditions de plage, météo et lieux en temps réel",
     mapLayers: "Couches",
     darkBaseMap: "Carte sombre",
