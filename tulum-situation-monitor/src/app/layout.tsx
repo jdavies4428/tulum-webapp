@@ -3,6 +3,7 @@ import { ErrorBoundaryWrapper } from "@/components/ErrorBoundaryWrapper";
 import { QuickActionsFAB } from "@/components/quick-actions/QuickActionsFAB";
 import { Providers } from "@/components/Providers";
 import { Toaster } from "@/components/ui/toaster";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://tulum-webapp.vercel.app";
@@ -156,6 +157,7 @@ export default function RootLayout({
           <ErrorBoundaryWrapper>{children}</ErrorBoundaryWrapper>
           <QuickActionsFAB />
           <Toaster />
+          <Analytics />
         </Providers>
       </body>
     </html>
