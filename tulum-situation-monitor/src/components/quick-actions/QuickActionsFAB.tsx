@@ -166,7 +166,7 @@ export function QuickActionsFAB() {
     isMobile && isMapPage
       ? { top: 14, bottom: "auto", right: 76, left: "auto" }
       : isMobile
-      ? { top: 80, bottom: "auto", left: 24, right: "auto" }
+      ? { top: 80, bottom: "auto", right: 140, left: "auto" }
       : {
           bottom: isIOS ? "calc(60px + env(safe-area-inset-bottom, 0px))" : 60,
           top: "auto",
@@ -209,7 +209,7 @@ export function QuickActionsFAB() {
           zIndex: isMobile && isMapPage ? 10002 : 999,
           display: "flex",
           flexDirection: "column-reverse",
-          alignItems: isMobile && !isMapPage ? "flex-start" : "flex-end",
+          alignItems: "flex-end",
           gap: spacing.md,
         }}
       >
