@@ -413,6 +413,11 @@ export function EnhancedSidebar({
                 value={conciergeQuery}
                 onChange={(e) => setConciergeQuery(e.target.value)}
                 placeholder={tAny.conciergePlaceholder ?? "Ask your Tulum concierge"}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+                enterKeyHint="send"
                 style={{
                   flex: 1,
                   padding: "10px 14px",
@@ -420,7 +425,7 @@ export function EnhancedSidebar({
                   border: "1px solid rgba(0, 206, 209, 0.15)",
                   background: "rgba(15, 20, 25, 0.8)",
                   color: "#E8ECEF",
-                  fontSize: "13px",
+                  fontSize: "16px",
                   outline: "none",
                 }}
               />

@@ -135,7 +135,7 @@ export default function ConciergePage() {
           overflowY: "auto",
           WebkitOverflowScrolling: "touch",
           padding: "20px",
-          paddingBottom: "220px",
+          paddingBottom: "20px",
         }}
       >
         {messages.length === 0 ? (
@@ -256,12 +256,9 @@ export default function ConciergePage() {
       {/* Input */}
       <div
         style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: "20px",
-          paddingBottom: "max(20px, env(safe-area-inset-bottom))",
+          flexShrink: 0,
+          padding: "12px 20px",
+          paddingBottom: "max(12px, env(safe-area-inset-bottom))",
           background: "var(--card-bg)",
           borderTop: "1px solid var(--border-subtle)",
         }}
@@ -283,21 +280,26 @@ export default function ConciergePage() {
               onKeyDown={handleKeyDown}
               placeholder={t.conciergePlaceholder ?? "Ask a question or request an itinerary..."}
               disabled={isLoading}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="sentences"
+              spellCheck={false}
+              enterKeyHint="send"
               style={{
                 flex: 1,
-                padding: "16px 20px",
-                borderRadius: "24px",
+                padding: "12px 16px",
+                borderRadius: "20px",
                 background: "var(--bg-primary)",
                 border: "1px solid var(--border-emphasis)",
                 color: "var(--text-primary)",
                 fontSize: "16px",
                 fontFamily: "inherit",
                 resize: "none",
-                minHeight: "64px",
-                maxHeight: "140px",
+                minHeight: "48px",
+                maxHeight: "100px",
                 outline: "none",
               }}
-              rows={2}
+              rows={1}
             />
             <VoiceInput lang={lang} onTranscript={handleVoiceTranscript} disabled={isLoading} />
             <button
@@ -332,12 +334,12 @@ export default function ConciergePage() {
             style={{
               display: "block",
               width: "100%",
-              padding: "14px 20px",
-              borderRadius: "16px",
+              padding: "10px 16px",
+              borderRadius: "12px",
               background: "linear-gradient(135deg, #9370DB 0%, #8A5FC7 100%)",
               border: "none",
               color: "#FFF",
-              fontSize: "15px",
+              fontSize: "14px",
               fontWeight: "600",
               textAlign: "center",
               textDecoration: "none",
