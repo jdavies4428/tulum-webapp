@@ -78,7 +78,7 @@ export function EnhancedSidebar({
   const [translationOpen, setTranslationOpen] = useState(false);
   const [localEventsOpen, setLocalEventsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [conciergeQuery, setConciergeQuery] = useState("");
+  
   const { events: localEvents, loading: eventsLoading } = useLocalEvents();
   const eventsScrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -395,51 +395,34 @@ export function EnhancedSidebar({
                 {tAny.conciergeTitle ?? "AI Concierge"}
               </div>
             </div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                const q = conciergeQuery.trim();
-                if (!q) {
-                  router.push(`/concierge?lang=${lang}`);
-                } else {
-                  router.push(`/concierge?lang=${lang}&q=${encodeURIComponent(q)}`);
-                }
-                setConciergeQuery("");
-              }}
-              style={{ display: "flex", gap: "8px", marginTop: "8px" }}
+            <div
+              onClick={() => router.push(`/concierge?lang=${lang}`)}
+              role="button"
+              tabIndex={0}
+              style={{ display: "flex", gap: "8px", marginTop: "8px", cursor: "pointer" }}
             >
-              <input
-                type="text"
-                value={conciergeQuery}
-                onChange={(e) => setConciergeQuery(e.target.value)}
-                placeholder={tAny.conciergePlaceholder ?? "Ask your Tulum concierge"}
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-                spellCheck={false}
-                enterKeyHint="send"
+              <div
                 style={{
                   flex: 1,
                   padding: "10px 14px",
                   borderRadius: "9999px",
                   border: "1px solid rgba(0, 206, 209, 0.15)",
                   background: "rgba(15, 20, 25, 0.8)",
-                  color: "#E8ECEF",
+                  color: "#7C8490",
                   fontSize: "16px",
-                  outline: "none",
+                  userSelect: "none",
                 }}
-              />
-              <button
-                type="submit"
+              >
+                {tAny.conciergePlaceholder ?? "Ask your Tulum concierge"}
+              </div>
+              <div
                 style={{
                   width: "38px",
                   height: "38px",
                   borderRadius: "9999px",
                   background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
-                  border: "none",
                   color: "#FFF",
                   fontSize: "16px",
-                  cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -447,8 +430,8 @@ export function EnhancedSidebar({
                 }}
               >
                 ➤
-              </button>
-            </form>
+              </div>
+            </div>
           </div>
         </div>
 
