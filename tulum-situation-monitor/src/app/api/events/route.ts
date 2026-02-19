@@ -14,8 +14,9 @@ export async function GET() {
 
     const { data, error } = await supabase
       .from("local_events")
-      .select("*")
-      .order("created_at", { ascending: false });
+      .select("id, author_id, author_name, author_handle, author_avatar, content, image_url, metadata, created_at, updated_at")
+      .order("created_at", { ascending: false })
+      .limit(50);
 
     if (error) throw error;
 

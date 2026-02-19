@@ -52,10 +52,11 @@ export async function POST(request: Request) {
     // Check if subscription already exists for this phone number and overlapping dates
     const { data: existing, error: existingError } = await supabase
       .from("daily_updates_subscriptions")
-      .select("*")
+      .select("id")
       .eq("phone_number", phoneNumber)
       .eq("status", "active")
-      .or(`and(start_date.lte.${endDate},end_date.gte.${startDate})`);
+      .or(`and(start_date.lte.${endDate},end_date.gte.${startDate})`)
+      .limit(1);
 
     if (existingError) {
       console.error("Error checking existing subscriptions:", existingError);

@@ -31,14 +31,14 @@ export function useChatMessages(conversationId: string | null) {
     try {
       const { data, error } = await supabase
         .from("chat_messages")
-        .select("*")
+        .select("id, conversation_id, sender_id, type, content, metadata, read_at, created_at")
         .eq("conversation_id", conversationId)
-        .order("created_at", { ascending: true });
+        .order("created_at", { ascending: true })
+        .limit(100);
 
       if (error) throw error;
       setMessages((data ?? []) as ChatMessage[]);
 
-      // Mark as read
       await fetch("/api/chat/messages/read", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -49,13 +49,13 @@ export function useChatMessages(conversationId: string | null) {
     } finally {
       setLoading(false);
     }
-  }, [conversationId, user, supabase]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationId, user?.id]);
 
   useEffect(() => {
     fetchMessages();
   }, [fetchMessages]);
 
-  // Realtime subscription
   useEffect(() => {
     if (!conversationId || !user) return;
 
@@ -69,8 +69,8 @@ export function useChatMessages(conversationId: string | null) {
           table: "chat_messages",
           filter: `conversation_id=eq.${conversationId}`,
         },
-        (payload) => {
-          const newMsg = payload.new as ChatMessage;
+        (payload: { new: Record<string, unknown> }) => {
+          const newMsg = payload.new as unknown as ChatMessage;
           setMessages((prev) => [...prev, newMsg]);
           if (newMsg.sender_id !== user.id) {
             fetch("/api/chat/messages/read", {
@@ -86,7 +86,8 @@ export function useChatMessages(conversationId: string | null) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [conversationId, user, supabase]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationId, user?.id]);
 
   const sendMessage = useCallback(
     async (
@@ -109,7 +110,6 @@ export function useChatMessages(conversationId: string | null) {
 
       if (error) throw error;
 
-      // Update conversation last message
       const preview =
         type === "text" && content
           ? content.slice(0, 100)
@@ -133,7 +133,8 @@ export function useChatMessages(conversationId: string | null) {
 
       return data?.id;
     },
-    [conversationId, user, supabase]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [conversationId, user?.id]
   );
 
   return { messages, loading, sendMessage, refetch: fetchMessages };

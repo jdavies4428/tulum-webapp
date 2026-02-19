@@ -19,7 +19,7 @@ export async function GET(
 
   const { data, error } = await supabase
     .from("saved_itineraries")
-    .select("*")
+    .select("id, title, summary, days, tips, estimated_total_cost, raw_data, created_at")
     .eq("id", id)
     .eq("user_id", user.id)
     .single();

@@ -15,9 +15,10 @@ export async function GET() {
 
   const { data: conversations, error } = await supabase
     .from("conversations")
-    .select("*")
+    .select("id, participant_1, participant_2, last_message_at, last_message_sender_id, last_message_preview, updated_at")
     .or(`participant_1.eq.${user.id},participant_2.eq.${user.id}`)
-    .order("last_message_at", { ascending: false, nullsFirst: false });
+    .order("last_message_at", { ascending: false, nullsFirst: false })
+    .limit(50);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -36,7 +37,7 @@ export async function GET() {
 
       const { count } = await supabase
         .from("chat_messages")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("conversation_id", c.id)
         .neq("sender_id", user.id)
         .is("read_at", null);

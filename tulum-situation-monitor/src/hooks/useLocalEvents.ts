@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { createClient } from "@/lib/supabase/client";
 
 export interface LocalEvent {
   id: string;
@@ -22,7 +21,6 @@ export interface LocalEvent {
 export function useLocalEvents() {
   const [events, setEvents] = useState<LocalEvent[]>([]);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
 
   const fetchEvents = useCallback(async () => {
     setLoading(true);
@@ -42,10 +40,8 @@ export function useLocalEvents() {
     fetchEvents();
   }, [fetchEvents]);
 
-  // Delete event
   const deleteEvent = useCallback(
     async (eventId: string) => {
-      // Optimistic update
       setEvents((prev) => prev.filter((e) => e.id !== eventId));
 
       try {
@@ -54,7 +50,6 @@ export function useLocalEvents() {
         });
 
         if (!response.ok) {
-          // Revert on failure
           await fetchEvents();
           throw new Error("Failed to delete event");
         }
@@ -66,7 +61,6 @@ export function useLocalEvents() {
     [fetchEvents]
   );
 
-  // Update event
   const updateEvent = useCallback(
     async (
       eventId: string,
@@ -78,7 +72,6 @@ export function useLocalEvents() {
         imageUrl?: string | null;
       }
     ) => {
-      // Optimistic update
       setEvents((prev) =>
         prev.map((e) =>
           e.id === eventId
@@ -103,13 +96,11 @@ export function useLocalEvents() {
         });
 
         if (!response.ok) {
-          // Revert on failure
           await fetchEvents();
           throw new Error("Failed to update event");
         }
 
         const updatedEvent = await response.json();
-        // Update with server response
         setEvents((prev) =>
           prev.map((e) => (e.id === eventId ? updatedEvent : e))
         );
@@ -120,55 +111,6 @@ export function useLocalEvents() {
     },
     [fetchEvents]
   );
-
-  // Real-time subscription (pattern from useChatMessages.ts)
-  useEffect(() => {
-    const channel = supabase
-      .channel("local_events_feed")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "local_events",
-        },
-        (payload) => {
-          const newEvent = payload.new as LocalEvent;
-          setEvents((prev) => [newEvent, ...prev]);
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "local_events",
-        },
-        (payload) => {
-          const updatedEvent = payload.new as LocalEvent;
-          setEvents((prev) =>
-            prev.map((e) => (e.id === updatedEvent.id ? updatedEvent : e))
-          );
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "local_events",
-        },
-        (payload) => {
-          const deletedId = payload.old.id as string;
-          setEvents((prev) => prev.filter((e) => e.id !== deletedId));
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [supabase]);
 
   return { events, loading, refetch: fetchEvents, deleteEvent, updateEvent };
 }

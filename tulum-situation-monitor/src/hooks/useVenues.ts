@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { cachedQuery } from "@/lib/supabase-cache";
 import { isInBeachZone } from "@/data/constants";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
 
@@ -65,11 +66,11 @@ export function useVenues() {
     async function fetchVenues() {
       try {
         const supabase = createClient();
-        const { data, error: fetchError } = await supabase.rpc("get_venues");
-
-        if (fetchError) throw fetchError;
-
-        const rows = (data ?? []) as VenueRow[];
+        const rows = await cachedQuery<VenueRow[]>(
+          "venues-all",
+          () => supabase.rpc("get_venues"),
+          30 * 60 * 1000 // 30 min — venue data rarely changes
+        ) as VenueRow[];
         setClubs(
           rows
             .filter((r) => r.category === "club" && isInBeachZone(r.lat, r.lng))
