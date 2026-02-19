@@ -48,10 +48,10 @@ export const metadata: Metadata = {
     siteName: "Discover Tulum",
     images: [
       {
-        url: `${BASE_URL}/data/webcam/latest.jpg?v=${Date.now()}`,
+        url: `${BASE_URL}/images/tulum-header.jpg`,
         width: 1280,
         height: 720,
-        alt: "Casa Malca Tulum Beach - Live View",
+        alt: "Tulum Beach - Discover Tulum",
       }
     ],
   },
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Discover Tulum - Real-Time Beach & Local Guide",
     description: "Real-time beach conditions, weather, and insider picks for Tulum, Mexico",
-    images: [`${BASE_URL}/data/webcam/latest.jpg?v=${Date.now()}`],
+    images: [`${BASE_URL}/images/tulum-header.jpg`],
     creator: "@discovertulum",
   },
   robots: {
