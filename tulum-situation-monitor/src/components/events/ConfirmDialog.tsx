@@ -40,7 +40,7 @@ export function ConfirmDialog({
         style={{
           width: "100%",
           maxWidth: "400px",
-          background: colors.neutral.white,
+          background: "rgba(20, 30, 45, 0.85)",
           borderRadius: radius.lg,
           boxShadow: shadows.lg,
           padding: spacing.xl,
@@ -52,7 +52,7 @@ export function ConfirmDialog({
             marginBottom: spacing.md,
             fontSize: "20px",
             fontWeight: "700",
-            color: danger ? "#FF6B6B" : colors.neutral.gray[800],
+            color: danger ? "#FF6B6B" : "#E8ECEF",
           }}
         >
           {title}
@@ -63,7 +63,7 @@ export function ConfirmDialog({
             marginBottom: spacing.xl,
             fontSize: "15px",
             lineHeight: "1.5",
-            color: colors.neutral.gray[600],
+            color: "rgba(232, 236, 239, 0.6)",
           }}
         >
           {message}
@@ -75,12 +75,12 @@ export function ConfirmDialog({
             style={{
               flex: 1,
               padding: spacing.md,
-              background: colors.neutral.gray[100],
+              background: "rgba(255, 255, 255, 0.05)",
               border: "none",
               borderRadius: radius.md,
               fontSize: "15px",
               fontWeight: "600",
-              color: colors.neutral.gray[700],
+              color: "#E8ECEF",
               cursor: "pointer",
             }}
           >
@@ -99,7 +99,7 @@ export function ConfirmDialog({
               borderRadius: radius.md,
               fontSize: "15px",
               fontWeight: "700",
-              color: colors.neutral.white,
+              color: "#FFF",
               cursor: "pointer",
               boxShadow: shadows.md,
             }}

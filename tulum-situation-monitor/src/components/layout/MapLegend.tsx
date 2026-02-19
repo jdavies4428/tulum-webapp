@@ -18,7 +18,7 @@ function LegendItem({ color, label }: { color: string; label: string }) {
         marginBottom: 8,
         fontSize: 13,
         fontWeight: 600,
-        color: "#333",
+        color: "#E8ECEF",
       }}
     >
       <div
@@ -27,7 +27,7 @@ function LegendItem({ color, label }: { color: string; label: string }) {
           height: 12,
           borderRadius: "50%",
           background: color,
-          border: "2px solid #FFF",
+          border: "2px solid rgba(232, 236, 239, 0.9)",
           boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
         }}
       />
@@ -56,7 +56,7 @@ export function MapLegend({ lang }: MapLegendProps) {
           width: 48,
           height: 48,
           borderRadius: 12,
-          background: "rgba(255, 255, 255, 0.95)",
+          background: "rgba(20, 30, 45, 0.85)",
           backdropFilter: "blur(20px)",
           border: "none",
           boxShadow: "0 4px 16px rgba(0, 0, 0, 0.15)",
@@ -81,7 +81,7 @@ export function MapLegend({ lang }: MapLegendProps) {
             position: "absolute",
             left: 16,
             bottom: 160,
-            background: "rgba(255, 255, 255, 0.98)",
+            background: "rgba(20, 30, 45, 0.85)",
             backdropFilter: "blur(20px)",
             borderRadius: 16,
             padding: 16,
@@ -96,7 +96,7 @@ export function MapLegend({ lang }: MapLegendProps) {
               fontSize: 14,
               fontWeight: 800,
               marginBottom: 12,
-              color: "#333",
+              color: "#E8ECEF",
               textTransform: "uppercase",
               letterSpacing: "0.5px",
             }}

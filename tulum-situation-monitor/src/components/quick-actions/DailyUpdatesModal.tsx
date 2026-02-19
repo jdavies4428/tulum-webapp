@@ -3,13 +3,34 @@
 import { useState } from "react";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
-import { spacing, radius, colors, typography } from "@/lib/design-tokens";
+import { spacing, radius, typography } from "@/lib/design-tokens";
 import { Modal } from "@/components/ui/Modal";
 
 interface DailyUpdatesModalProps {
   lang: Lang;
   onClose: () => void;
 }
+
+const INPUT_STYLE: React.CSSProperties = {
+  width: "100%",
+  padding: `${spacing.sm}px ${spacing.md}px`,
+  fontSize: "16px",
+  borderRadius: radius.sm,
+  border: "1px solid rgba(0, 206, 209, 0.2)",
+  background: "rgba(0, 0, 0, 0.3)",
+  color: "#E8ECEF",
+  outline: "none",
+  transition: "border-color 0.2s",
+  boxSizing: "border-box" as const,
+};
+
+const LABEL_STYLE: React.CSSProperties = {
+  display: "block",
+  fontSize: typography.size.sm,
+  fontWeight: 600,
+  color: "rgba(232, 236, 239, 0.7)",
+  marginBottom: spacing.xs,
+};
 
 export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -24,13 +45,11 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
   const title = t.dailyBeachUpdates ?? "Daily Beach Updates";
 
   const handleSubscribe = async () => {
-    // Validate inputs
     if (!phoneNumber || !startDate || !endDate) {
       setError("Please fill in all fields");
       return;
     }
 
-    // Basic phone validation (should start with + for international)
     if (!phoneNumber.startsWith("+")) {
       setError("Phone number must include country code (e.g., +1 for US, +52 for Mexico)");
       return;
@@ -77,14 +96,14 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
           <h2
             style={{
               fontSize: typography.size.lg,
-              fontWeight: typography.weight.bold,
-              color: colors.success,
+              fontWeight: 700,
+              color: "#00CED1",
               marginBottom: spacing.sm,
             }}
           >
             {t.subscribed ?? "You're Subscribed!"}
           </h2>
-          <p style={{ color: colors.neutral.gray[600], fontSize: typography.size.sm }}>
+          <p style={{ color: "rgba(232, 236, 239, 0.6)", fontSize: typography.size.sm }}>
             {t.dailyUpdatesConfirmation ??
               `You'll receive daily beach updates at ${sendTime} Cancun time from ${startDate} to ${endDate}.`}
           </p>
@@ -100,9 +119,9 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
         <h2
           style={{
             fontSize: typography.size.lg,
-            fontWeight: typography.weight.bold,
+            fontWeight: 700,
             margin: `0 0 ${spacing.xs}px 0`,
-            color: colors.primary.base,
+            color: "#00CED1",
             display: "flex",
             alignItems: "center",
             gap: spacing.sm,
@@ -113,7 +132,7 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
         <p
           style={{
             fontSize: typography.size.sm,
-            color: colors.neutral.gray[600],
+            color: "rgba(232, 236, 239, 0.6)",
             marginBottom: spacing.lg,
           }}
         >
@@ -123,15 +142,7 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
 
         {/* Phone Number */}
         <div style={{ marginBottom: spacing.md }}>
-          <label
-            style={{
-              display: "block",
-              fontSize: typography.size.sm,
-              fontWeight: typography.weight.semibold,
-              color: colors.neutral.gray[700],
-              marginBottom: spacing.xs,
-            }}
-          >
+          <label style={LABEL_STYLE}>
             {t.phoneNumber ?? "Phone Number"}
           </label>
           <input
@@ -142,20 +153,12 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
-            spellCheck="false"
-            style={{
-              width: "100%",
-              padding: `${spacing.sm}px ${spacing.md}px`,
-              fontSize: typography.size.sm,
-              borderRadius: radius.sm,
-              border: `2px solid ${colors.neutral.gray[300]}`,
-              outline: "none",
-              transition: "border-color 0.2s",
-            }}
-            onFocus={(e) => (e.target.style.borderColor = colors.primary.base)}
-            onBlur={(e) => (e.target.style.borderColor = colors.neutral.gray[300])}
+            spellCheck={false}
+            style={INPUT_STYLE}
+            onFocus={(e) => (e.target.style.borderColor = "#00CED1")}
+            onBlur={(e) => (e.target.style.borderColor = "rgba(0, 206, 209, 0.2)")}
           />
-          <small style={{ fontSize: typography.size.xs, color: colors.neutral.gray[500] }}>
+          <small style={{ fontSize: typography.size.xs, color: "rgba(232, 236, 239, 0.45)" }}>
             Include country code (e.g., +1 for US, +52 for Mexico)
           </small>
         </div>
@@ -163,15 +166,7 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
         {/* Date Range */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: spacing.md, marginBottom: spacing.md }}>
           <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: typography.size.sm,
-                fontWeight: typography.weight.semibold,
-                color: colors.neutral.gray[700],
-                marginBottom: spacing.xs,
-              }}
-            >
+            <label style={LABEL_STYLE}>
               {t.startDate ?? "Start Date"}
             </label>
             <input
@@ -179,26 +174,11 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               min={new Date().toISOString().split("T")[0]}
-              style={{
-                width: "100%",
-                padding: `${spacing.sm}px ${spacing.md}px`,
-                fontSize: typography.size.sm,
-                borderRadius: radius.sm,
-                border: `2px solid ${colors.neutral.gray[300]}`,
-                outline: "none",
-              }}
+              style={INPUT_STYLE}
             />
           </div>
           <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: typography.size.sm,
-                fontWeight: typography.weight.semibold,
-                color: colors.neutral.gray[700],
-                marginBottom: spacing.xs,
-              }}
-            >
+            <label style={LABEL_STYLE}>
               {t.endDate ?? "End Date"}
             </label>
             <input
@@ -206,48 +186,28 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               min={startDate || new Date().toISOString().split("T")[0]}
-              style={{
-                width: "100%",
-                padding: `${spacing.sm}px ${spacing.md}px`,
-                fontSize: typography.size.sm,
-                borderRadius: radius.sm,
-                border: `2px solid ${colors.neutral.gray[300]}`,
-                outline: "none",
-              }}
+              style={INPUT_STYLE}
             />
           </div>
         </div>
 
         {/* Send Time */}
         <div style={{ marginBottom: spacing.lg }}>
-          <label
-            style={{
-              display: "block",
-              fontSize: typography.size.sm,
-              fontWeight: typography.weight.semibold,
-              color: colors.neutral.gray[700],
-              marginBottom: spacing.xs,
-            }}
-          >
+          <label style={LABEL_STYLE}>
             {t.sendTime ?? "Send Time (Cancun Time)"}
           </label>
           <select
             value={sendTime}
             onChange={(e) => setSendTime(e.target.value)}
             style={{
-              width: "100%",
-              padding: `${spacing.sm}px ${spacing.md}px`,
-              fontSize: typography.size.sm,
-              borderRadius: radius.sm,
-              border: `2px solid ${colors.neutral.gray[300]}`,
-              outline: "none",
-              background: colors.neutral.white,
+              ...INPUT_STYLE,
+              cursor: "pointer",
             }}
           >
-            <option value="06:00">6:00 AM</option>
-            <option value="07:00">7:00 AM (Recommended)</option>
-            <option value="08:00">8:00 AM</option>
-            <option value="09:00">9:00 AM</option>
+            <option value="06:00" style={{ background: "#0F1419" }}>6:00 AM</option>
+            <option value="07:00" style={{ background: "#0F1419" }}>7:00 AM (Recommended)</option>
+            <option value="08:00" style={{ background: "#0F1419" }}>8:00 AM</option>
+            <option value="09:00" style={{ background: "#0F1419" }}>9:00 AM</option>
           </select>
         </div>
 
@@ -257,10 +217,10 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
             style={{
               padding: spacing.md,
               marginBottom: spacing.md,
-              background: colors.accent.subtle,
-              border: `1px solid ${colors.error}`,
+              background: "rgba(239, 68, 68, 0.15)",
+              border: "1px solid rgba(239, 68, 68, 0.4)",
               borderRadius: radius.sm,
-              color: colors.error,
+              color: "#F87171",
               fontSize: typography.size.sm,
             }}
           >
@@ -272,21 +232,22 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
         <div
           style={{
             padding: spacing.md,
-            background: colors.primary.subtle,
+            background: "rgba(0, 206, 209, 0.08)",
+            border: "1px solid rgba(0, 206, 209, 0.15)",
             borderRadius: radius.sm,
             marginBottom: spacing.lg,
             fontSize: typography.size.xs,
-            color: colors.neutral.gray[600],
+            color: "rgba(232, 236, 239, 0.7)",
           }}
         >
-          <strong>📊 What you'll receive:</strong>
+          <strong style={{ color: "#E8ECEF" }}>📊 What you&apos;ll receive:</strong>
           <ul style={{ margin: `${spacing.xs}px 0`, paddingLeft: spacing.lg }}>
             <li>Daily beach webcam photos (Casa Malca, Akumal)</li>
             <li>7-day weather forecast</li>
             <li>Sargassum conditions</li>
             <li>Water temperature & tide info</li>
           </ul>
-          <small style={{ color: colors.neutral.gray[500] }}>
+          <small style={{ color: "rgba(232, 236, 239, 0.45)" }}>
             Standard messaging rates apply. You can unsubscribe anytime by replying STOP.
           </small>
         </div>
@@ -302,14 +263,15 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
               padding: `${spacing.md}px ${spacing.lg}px`,
               borderRadius: radius.md,
               background: loading
-                ? colors.neutral.gray[300]
-                : `linear-gradient(135deg, ${colors.primary.base} 0%, ${colors.primary.dark} 100%)`,
-              color: colors.neutral.white,
+                ? "rgba(255, 255, 255, 0.1)"
+                : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
+              color: "#FFF",
               fontSize: typography.size.sm,
-              fontWeight: typography.weight.bold,
+              fontWeight: 700,
               border: "none",
               cursor: loading ? "not-allowed" : "pointer",
               transition: "all 0.2s",
+              boxShadow: loading ? "none" : "0 4px 16px rgba(0, 206, 209, 0.3)",
             }}
           >
             {loading ? "⏳ Subscribing..." : `📱 ${t.subscribe ?? "Subscribe"}`}
@@ -321,11 +283,11 @@ export function DailyUpdatesModal({ lang, onClose }: DailyUpdatesModalProps) {
             style={{
               padding: `${spacing.md}px ${spacing.lg}px`,
               borderRadius: radius.md,
-              background: colors.neutral.white,
-              border: `2px solid ${colors.neutral.gray[300]}`,
-              color: colors.neutral.gray[700],
+              background: "rgba(255, 255, 255, 0.06)",
+              border: "1px solid rgba(255, 255, 255, 0.15)",
+              color: "#E8ECEF",
               fontSize: typography.size.sm,
-              fontWeight: typography.weight.semibold,
+              fontWeight: 600,
               cursor: loading ? "not-allowed" : "pointer",
             }}
           >

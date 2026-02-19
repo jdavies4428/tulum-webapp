@@ -123,17 +123,18 @@ export const Modal: React.FC<ModalProps> = ({
             ...sizeStyle,
             maxHeight: size === "full" ? "90vh" : "90vh",
             background: glass
-              ? "rgba(255, 255, 255, 0.9)"
-              : "#FFFFFF",
-            backdropFilter: glass ? "blur(24px)" : undefined,
-            WebkitBackdropFilter: glass ? "blur(24px)" : undefined,
-            border: glass ? "1px solid rgba(255, 255, 255, 0.4)" : "none",
+              ? "rgba(20, 30, 45, 0.95)"
+              : "#0F1419",
+            backdropFilter: glass ? "blur(24px)" : "blur(20px)",
+            WebkitBackdropFilter: glass ? "blur(24px)" : "blur(20px)",
+            border: "1px solid rgba(0, 206, 209, 0.15)",
             borderRadius: radius.lg,
-            boxShadow: "0 8px 32px rgba(0, 206, 209, 0.2)",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.5)",
             display: "flex",
             flexDirection: "column",
             overflow: "hidden",
             zIndex: zIndex.modal,
+            color: "#E8ECEF",
             ...style,
           }}
           onClick={(e) => e.stopPropagation()}
@@ -143,7 +144,7 @@ export const Modal: React.FC<ModalProps> = ({
             <div
               style={{
                 padding: `${spacing.lg}px ${spacing.xl}px`,
-                borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
+                borderBottom: "1px solid rgba(0, 206, 209, 0.12)",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
@@ -155,7 +156,7 @@ export const Modal: React.FC<ModalProps> = ({
                   style={{
                     fontSize: "20px",
                     fontWeight: 700,
-                    color: "#1A1A1A",
+                    color: "#E8ECEF",
                     margin: 0,
                   }}
                 >
@@ -172,27 +173,27 @@ export const Modal: React.FC<ModalProps> = ({
                     width: "36px",
                     height: "36px",
                     borderRadius: radius.md,
-                    background: "rgba(0, 0, 0, 0.05)",
-                    border: "none",
+                    background: "rgba(255, 255, 255, 0.08)",
+                    border: "1px solid rgba(255, 255, 255, 0.15)",
                     fontSize: "20px",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     transition: transition("all", "fast"),
-                    color: "#666",
+                    color: "#E8ECEF",
                   }}
                   aria-label="Close modal"
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(0, 0, 0, 0.1)";
+                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
                     e.currentTarget.style.transform = "scale(1.1)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(0, 0, 0, 0.05)";
+                    e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
                     e.currentTarget.style.transform = "scale(1)";
                   }}
                 >
-                  ×
+                  ✕
                 </button>
               )}
             </div>

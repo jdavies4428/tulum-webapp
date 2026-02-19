@@ -71,7 +71,7 @@ export function SharePlaceModal({
           left: 0,
           right: 0,
           maxHeight: "70vh",
-          background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+          background: "#0A0F14",
           borderRadius: "24px 24px 0 0",
           zIndex: 9999,
           overflow: "hidden",
@@ -105,11 +105,11 @@ export function SharePlaceModal({
         </div>
         <div style={{ flex: 1, overflowY: "auto", padding: 12 }}>
           {isLoading ? (
-            <div style={{ padding: 24, textAlign: "center", color: "#666" }}>
+            <div style={{ padding: 24, textAlign: "center", color: "rgba(232, 236, 239, 0.6)" }}>
               {t.loading ?? "Loading…"}
             </div>
           ) : filtered.length === 0 ? (
-            <div style={{ padding: 24, textAlign: "center", color: "#666" }}>
+            <div style={{ padding: 24, textAlign: "center", color: "rgba(232, 236, 239, 0.6)" }}>
               {t.noPlacesFound ?? "No places found"}
             </div>
           ) : (
@@ -133,7 +133,7 @@ export function SharePlaceModal({
                   gap: 12,
                   padding: 12,
                   marginBottom: 8,
-                  background: "rgba(255,255,255,0.9)",
+                  background: "rgba(20, 30, 45, 0.85)",
                   border: "2px solid rgba(0, 206, 209, 0.2)",
                   borderRadius: 12,
                   cursor: "pointer",
@@ -142,10 +142,10 @@ export function SharePlaceModal({
               >
                 <span style={{ fontSize: 24 }}>📍</span>
                 <div>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#333" }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#E8ECEF" }}>
                     {p.name}
                   </div>
-                  <div style={{ fontSize: 12, color: "#666" }}>
+                  <div style={{ fontSize: 12, color: "rgba(232, 236, 239, 0.6)" }}>
                     {(p as { category?: string }).category}
                     {p.rating != null && ` • ⭐ ${p.rating}`}
                   </div>

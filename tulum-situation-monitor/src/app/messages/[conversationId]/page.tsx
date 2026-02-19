@@ -116,7 +116,7 @@ export default function ChatPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+          background: "#0A0F14",
         }}
       >
         <Link
@@ -144,10 +144,10 @@ export default function ChatPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+          background: "#0A0F14",
         }}
       >
-        <div style={{ color: "#666" }}>{t.loading ?? "Loading…"}</div>
+        <div style={{ color: "rgba(232, 236, 239, 0.6)" }}>{t.loading ?? "Loading…"}</div>
       </div>
     );
   }
@@ -158,15 +158,15 @@ export default function ChatPage() {
         display: "flex",
         flexDirection: "column",
         height: "100vh",
-        background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+        background: "#0A0F14",
       }}
     >
       <header
         style={{
           padding: 16,
-          background: "rgba(255, 255, 255, 0.95)",
+          background: "rgba(15, 20, 25, 0.9)",
           backdropFilter: "blur(20px)",
-          borderBottom: "2px solid rgba(0, 206, 209, 0.2)",
+          borderBottom: "1px solid rgba(0, 206, 209, 0.12)",
           display: "flex",
           alignItems: "center",
           gap: 12,
@@ -186,7 +186,7 @@ export default function ChatPage() {
             alignItems: "center",
             justifyContent: "center",
             textDecoration: "none",
-            color: "#333",
+            color: "#E8ECEF",
           }}
         >
           ←
@@ -223,10 +223,10 @@ export default function ChatPage() {
           href={`/users/${otherUser.id}?lang=${lang}`}
           style={{ flex: 1, textDecoration: "none", color: "inherit" }}
         >
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#333" }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#E8ECEF" }}>
             {otherUser.display_name}
           </div>
-          <div style={{ fontSize: 13, color: "#999" }}>
+          <div style={{ fontSize: 13, color: "rgba(232, 236, 239, 0.5)" }}>
             {t.viewProfile ?? "View profile"}
           </div>
         </Link>
@@ -243,7 +243,7 @@ export default function ChatPage() {
         }}
       >
         {loading ? (
-          <div style={{ textAlign: "center", padding: 40, color: "#666" }}>
+          <div style={{ textAlign: "center", padding: 40, color: "rgba(232, 236, 239, 0.6)" }}>
             {t.loading ?? "Loading…"}
           </div>
         ) : (

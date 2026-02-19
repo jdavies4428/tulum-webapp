@@ -48,7 +48,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               marginBottom: `${spacing.sm}px`,
               fontSize: "14px",
               fontWeight: 500,
-              color: hasError ? "#EF4444" : "#1A1A1A",
+              color: hasError ? "#EF4444" : "#E8ECEF",
             }}
           >
             {label}
@@ -67,7 +67,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 transform: "translateY(-50%)",
                 display: "flex",
                 alignItems: "center",
-                color: hasError ? "#EF4444" : "#999",
+                color: hasError ? "#EF4444" : "rgba(232, 236, 239, 0.6)",
                 pointerEvents: "none",
               }}
             >
@@ -83,14 +83,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             style={{
               width: "100%",
               padding: `${spacing.md - 4}px ${rightIcon ? spacing.xxl + spacing.md : spacing.md}px ${spacing.md - 4}px ${leftIcon ? spacing.xxl + spacing.md : spacing.md}px`,
-              background: isFocused ? "#FFFFFF" : "#F5F5F5",
+              background: isFocused ? "rgba(20, 30, 45, 0.85)" : "rgba(20, 30, 45, 0.6)",
               border: `2px solid ${hasError ? "#EF4444" : isFocused ? "#00CED1" : "transparent"}`,
               borderRadius: radius.md,
               fontSize: "15px",
               outline: "none",
               transition: transition("all", "fast"),
               fontFamily: "inherit",
-              color: disabled ? "#999" : "#1A1A1A",
+              color: disabled ? "rgba(232, 236, 239, 0.5)" : "#E8ECEF",
               cursor: disabled ? "not-allowed" : "text",
               boxShadow: isFocused && !hasError
                 ? "0 0 0 4px rgba(0, 206, 209, 0.1)"
@@ -113,7 +113,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
                 transform: "translateY(-50%)",
                 display: "flex",
                 alignItems: "center",
-                color: hasError ? "#EF4444" : "#999",
+                color: hasError ? "#EF4444" : "rgba(232, 236, 239, 0.6)",
               }}
             >
               {rightIcon}
@@ -127,7 +127,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             style={{
               marginTop: `${spacing.sm}px`,
               fontSize: "13px",
-              color: error ? "#EF4444" : "#666",
+              color: error ? "#EF4444" : "rgba(232, 236, 239, 0.6)",
             }}
           >
             {error || helperText}
@@ -184,7 +184,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
               marginBottom: `${spacing.sm}px`,
               fontSize: "14px",
               fontWeight: 500,
-              color: hasError ? "#EF4444" : "#1A1A1A",
+              color: hasError ? "#EF4444" : "#E8ECEF",
             }}
           >
             {label}
@@ -199,14 +199,14 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           style={{
             width: "100%",
             padding: `${spacing.md}px`,
-            background: isFocused ? "#FFFFFF" : "#F5F5F5",
+            background: isFocused ? "rgba(20, 30, 45, 0.85)" : "rgba(20, 30, 45, 0.6)",
             border: `2px solid ${hasError ? "#EF4444" : isFocused ? "#00CED1" : "transparent"}`,
             borderRadius: radius.md,
             fontSize: "15px",
             outline: "none",
             transition: transition("all", "fast"),
             fontFamily: "inherit",
-            color: disabled ? "#999" : "#1A1A1A",
+            color: disabled ? "rgba(232, 236, 239, 0.5)" : "#E8ECEF",
             cursor: disabled ? "not-allowed" : "text",
             resize: "vertical",
             minHeight: "100px",
@@ -227,7 +227,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             style={{
               marginTop: `${spacing.sm}px`,
               fontSize: "13px",
-              color: error ? "#EF4444" : "#666",
+              color: error ? "#EF4444" : "rgba(232, 236, 239, 0.6)",
             }}
           >
             {error || helperText}

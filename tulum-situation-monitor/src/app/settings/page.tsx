@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
-import { spacing, colors, radius, shadows } from "@/lib/design-tokens";
+import { spacing, radius, shadows } from "@/lib/design-tokens";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -24,7 +24,6 @@ export default function SettingsPage() {
   const displayName =
     user.user_metadata?.full_name || user.email?.split("@")[0] || "User";
 
-  // Use user metadata directly, with cache buster for images
   const avatarUrl = user.user_metadata?.avatar_url
     ? `${user.user_metadata.avatar_url}?v=${cacheBuster}`
     : null;
@@ -35,14 +34,12 @@ export default function SettingsPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
     }
 
-    // Validate file size (max 5MB for profile photos)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
       toast.error(`Image is too large (${fileSizeMB}MB). Max size is 5MB`);
@@ -51,7 +48,6 @@ export default function SettingsPage() {
 
     setUploading(true);
     try {
-      // Upload to storage
       const fileExt = file.name.split(".").pop();
       const filePath = `${user.id}/${Date.now()}.${fileExt}`;
 
@@ -61,14 +57,12 @@ export default function SettingsPage() {
 
       if (uploadError) throw uploadError;
 
-      // Get public URL
       const {
         data: { publicUrl },
       } = supabase.storage
         .from("profile-photos")
         .getPublicUrl(uploadData.path);
 
-      // Update user metadata
       const { error: updateError } = await supabase.auth.updateUser({
         data: { avatar_url: publicUrl },
       });
@@ -77,7 +71,6 @@ export default function SettingsPage() {
 
       toast.success("Profile photo updated!");
 
-      // Refresh user data in auth context and update cache buster
       if (refreshUser) {
         await refreshUser();
       }
@@ -95,7 +88,6 @@ export default function SettingsPage() {
 
   const handleRemovePhoto = async () => {
     try {
-      // Update user metadata to remove avatar
       const { error } = await supabase.auth.updateUser({
         data: { avatar_url: null },
       });
@@ -104,7 +96,6 @@ export default function SettingsPage() {
 
       toast.success("Profile photo removed");
 
-      // Refresh user data and update cache buster
       if (refreshUser) {
         await refreshUser();
       }
@@ -120,8 +111,7 @@ export default function SettingsPage() {
       style={{
         minHeight: "100vh",
         height: "100%",
-        background:
-          "linear-gradient(180deg, #E0F7FA 0%, #FFF8E7 50%, #FFFFFF 100%)",
+        background: "#0A0F14",
         paddingTop: "max(24px, env(safe-area-inset-top))",
         paddingBottom: "max(24px, env(safe-area-inset-bottom))",
         overflowY: "auto",
@@ -134,10 +124,10 @@ export default function SettingsPage() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          background: "rgba(255, 248, 231, 0.95)",
+          background: "rgba(15, 20, 25, 0.9)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(0, 206, 209, 0.2)",
+          borderBottom: "1px solid rgba(0, 206, 209, 0.12)",
           padding: "16px 20px",
           display: "flex",
           alignItems: "center",
@@ -153,9 +143,9 @@ export default function SettingsPage() {
             width: "40px",
             height: "40px",
             borderRadius: "50%",
-            background: "rgba(0, 206, 209, 0.12)",
-            border: "2px solid rgba(0, 206, 209, 0.2)",
-            color: "var(--tulum-ocean)",
+            background: "rgba(0, 206, 209, 0.1)",
+            border: "1px solid rgba(0, 206, 209, 0.2)",
+            color: "#00CED1",
             fontSize: "18px",
             textDecoration: "none",
             flexShrink: 0,
@@ -168,7 +158,7 @@ export default function SettingsPage() {
             fontSize: "22px",
             fontWeight: "800",
             margin: 0,
-            color: "var(--tulum-ocean)",
+            color: "#E8ECEF",
             flex: 1,
           }}
         >
@@ -187,11 +177,11 @@ export default function SettingsPage() {
         {/* Profile Photo Section */}
         <div
           style={{
-            background: colors.neutral.white,
+            background: "rgba(20, 30, 45, 0.8)",
             borderRadius: radius.lg,
             padding: spacing.xl,
             boxShadow: shadows.md,
-            border: "1px solid rgba(0, 206, 209, 0.1)",
+            border: "1px solid rgba(0, 206, 209, 0.12)",
           }}
         >
           <h2
@@ -199,7 +189,7 @@ export default function SettingsPage() {
               fontSize: "18px",
               fontWeight: "700",
               margin: `0 0 ${spacing.lg}px 0`,
-              color: colors.primary.base,
+              color: "#00CED1",
             }}
           >
             Profile Photo
@@ -219,12 +209,12 @@ export default function SettingsPage() {
                 width: "120px",
                 height: "120px",
                 borderRadius: "50%",
-                border: "4px solid #00CED1",
+                border: "3px solid rgba(0, 206, 209, 0.4)",
                 overflow: "hidden",
                 background: avatarUrl
-                  ? colors.neutral.white
+                  ? "rgba(20, 30, 45, 0.5)"
                   : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
-                boxShadow: shadows.lg,
+                boxShadow: "0 8px 32px rgba(0, 206, 209, 0.2)",
               }}
             >
               {avatarUrl ? (
@@ -261,7 +251,7 @@ export default function SettingsPage() {
                 style={{
                   fontSize: "20px",
                   fontWeight: "700",
-                  color: colors.neutral.gray[800],
+                  color: "#E8ECEF",
                   marginBottom: spacing.xs,
                 }}
               >
@@ -270,7 +260,7 @@ export default function SettingsPage() {
               <div
                 style={{
                   fontSize: "14px",
-                  color: colors.neutral.gray[600],
+                  color: "rgba(232, 236, 239, 0.5)",
                 }}
               >
                 {user.email}
@@ -307,10 +297,10 @@ export default function SettingsPage() {
                   borderRadius: radius.md,
                   fontSize: "15px",
                   fontWeight: "700",
-                  color: colors.neutral.white,
+                  color: "#FFF",
                   cursor: uploading ? "not-allowed" : "pointer",
                   opacity: uploading ? 0.6 : 1,
-                  boxShadow: shadows.md,
+                  boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
                   display: "flex",
                   alignItems: "center",
                   gap: spacing.sm,
@@ -325,12 +315,12 @@ export default function SettingsPage() {
                   onClick={handleRemovePhoto}
                   style={{
                     padding: `${spacing.md}px ${spacing.lg}px`,
-                    background: colors.neutral.gray[100],
-                    border: "none",
+                    background: "rgba(255, 255, 255, 0.06)",
+                    border: "1px solid rgba(255, 255, 255, 0.15)",
                     borderRadius: radius.md,
                     fontSize: "15px",
                     fontWeight: "600",
-                    color: colors.neutral.gray[700],
+                    color: "#E8ECEF",
                     cursor: "pointer",
                   }}
                 >
@@ -343,7 +333,7 @@ export default function SettingsPage() {
             <p
               style={{
                 fontSize: "12px",
-                color: colors.neutral.gray[500],
+                color: "rgba(232, 236, 239, 0.4)",
                 textAlign: "center",
                 margin: 0,
               }}
@@ -356,11 +346,11 @@ export default function SettingsPage() {
         {/* Account Info Section */}
         <div
           style={{
-            background: colors.neutral.white,
+            background: "rgba(20, 30, 45, 0.8)",
             borderRadius: radius.lg,
             padding: spacing.xl,
             boxShadow: shadows.md,
-            border: "1px solid rgba(0, 206, 209, 0.1)",
+            border: "1px solid rgba(0, 206, 209, 0.12)",
             marginTop: spacing.lg,
           }}
         >
@@ -369,7 +359,7 @@ export default function SettingsPage() {
               fontSize: "18px",
               fontWeight: "700",
               margin: `0 0 ${spacing.lg}px 0`,
-              color: colors.primary.base,
+              color: "#00CED1",
             }}
           >
             Account Information
@@ -382,7 +372,7 @@ export default function SettingsPage() {
                   display: "block",
                   fontSize: "12px",
                   fontWeight: "600",
-                  color: colors.neutral.gray[600],
+                  color: "rgba(232, 236, 239, 0.5)",
                   marginBottom: spacing.xs,
                   textTransform: "uppercase",
                   letterSpacing: "0.5px",
@@ -393,7 +383,7 @@ export default function SettingsPage() {
               <div
                 style={{
                   fontSize: "15px",
-                  color: colors.neutral.gray[800],
+                  color: "#E8ECEF",
                 }}
               >
                 {user.email}
@@ -406,7 +396,7 @@ export default function SettingsPage() {
                   display: "block",
                   fontSize: "12px",
                   fontWeight: "600",
-                  color: colors.neutral.gray[600],
+                  color: "rgba(232, 236, 239, 0.5)",
                   marginBottom: spacing.xs,
                   textTransform: "uppercase",
                   letterSpacing: "0.5px",
@@ -418,7 +408,7 @@ export default function SettingsPage() {
                 style={{
                   fontSize: "12px",
                   fontFamily: "monospace",
-                  color: colors.neutral.gray[600],
+                  color: "rgba(232, 236, 239, 0.4)",
                 }}
               >
                 {user.id}

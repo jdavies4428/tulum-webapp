@@ -44,7 +44,7 @@ export default function MyItinerariesPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+          background: "#0A0F14",
           padding: "24px",
         }}
       >
@@ -65,11 +65,11 @@ export default function MyItinerariesPage() {
           alignItems: "center",
           justifyContent: "center",
           gap: "24px",
-          background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+          background: "#0A0F14",
           padding: "24px",
         }}
       >
-        <p style={{ color: "#666", fontSize: "18px", textAlign: "center" }}>
+        <p style={{ color: "rgba(232, 236, 239, 0.6)", fontSize: "18px", textAlign: "center" }}>
           {t.signInToViewItineraries ?? "Sign in to view your saved itineraries"}
         </p>
         <Link
@@ -93,7 +93,7 @@ export default function MyItinerariesPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+        background: "#0A0F14",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
       }}

@@ -66,7 +66,7 @@ export function WelcomeModal({ lang = "en" }: { lang?: Lang }) {
     >
       <div
         style={{
-          background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+          background: "rgba(20, 30, 45, 0.85)",
           borderRadius: "24px",
           padding: "40px",
           maxWidth: "500px",
@@ -82,7 +82,7 @@ export function WelcomeModal({ lang = "en" }: { lang?: Lang }) {
             fontSize: "28px",
             fontWeight: 800,
             marginBottom: "16px",
-            color: "#333",
+            color: "#E8ECEF",
           }}
         >
           {t.welcomeModalTitle ?? "Welcome to Tulum Discovery!"}
@@ -91,7 +91,7 @@ export function WelcomeModal({ lang = "en" }: { lang?: Lang }) {
         <p
           style={{
             fontSize: "16px",
-            color: "#666",
+            color: "rgba(232, 236, 239, 0.6)",
             marginBottom: "32px",
             lineHeight: 1.6,
           }}
@@ -103,7 +103,7 @@ export function WelcomeModal({ lang = "en" }: { lang?: Lang }) {
 
         <div
           style={{
-            background: "rgba(255, 255, 255, 0.7)",
+            background: "rgba(20, 30, 45, 0.85)",
             borderRadius: "16px",
             padding: "20px",
             marginBottom: "32px",
@@ -115,7 +115,7 @@ export function WelcomeModal({ lang = "en" }: { lang?: Lang }) {
               fontSize: "16px",
               fontWeight: 700,
               marginBottom: "12px",
-              color: "#333",
+              color: "#E8ECEF",
             }}
           >
             {t.welcomeModalWhatsNew ?? "What's new:"}
@@ -125,7 +125,7 @@ export function WelcomeModal({ lang = "en" }: { lang?: Lang }) {
               margin: 0,
               paddingLeft: "24px",
               fontSize: "14px",
-              color: "#666",
+              color: "rgba(232, 236, 239, 0.6)",
             }}
           >
             <li>❤️ {t.welcomeTipFavorites ?? "Save unlimited favorites"}</li>

@@ -107,7 +107,7 @@ function SuggestionItem({
           style={{
             fontSize: 15,
             fontWeight: 600,
-            color: "#333",
+            color: "#E8ECEF",
             marginBottom: 2,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -119,7 +119,7 @@ function SuggestionItem({
         <div
           style={{
             fontSize: 13,
-            color: "#666",
+            color: "rgba(232, 236, 239, 0.6)",
             display: "flex",
             alignItems: "center",
             gap: 8,
@@ -134,7 +134,7 @@ function SuggestionItem({
           )}
         </div>
       </div>
-      <div style={{ fontSize: 16, color: "#999" }}>→</div>
+      <div style={{ fontSize: 16, color: "rgba(232, 236, 239, 0.5)" }}>→</div>
     </button>
   );
 }
@@ -183,7 +183,7 @@ function PopularSearchItem({
       >
         {item.icon}
       </div>
-      <div style={{ fontSize: 14, fontWeight: 500, color: "#333" }}>{item.query}</div>
+      <div style={{ fontSize: 14, fontWeight: 500, color: "#E8ECEF" }}>{item.query}</div>
     </button>
   );
 }
@@ -327,7 +327,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
       <div
         style={{
           position: "relative",
-          background: "rgba(255, 255, 255, 0.98)",
+          background: "rgba(20, 30, 45, 0.85)",
           borderRadius: 16,
           boxShadow: focused ? "0 8px 32px rgba(0, 206, 209, 0.3)" : "0 4px 16px rgba(0, 0, 0, 0.15)",
           border: focused ? "2px solid #00CED1" : "2px solid transparent",
@@ -362,7 +362,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
               fontSize: 15,
               fontWeight: 500,
               background: "transparent",
-              color: "#333",
+              color: "#E8ECEF",
             }}
             aria-label={t.mapSearchPlaceholder ?? "Search places"}
           />
@@ -459,7 +459,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
         <div
           style={{
             marginTop: 8,
-            background: "rgba(255, 255, 255, 0.98)",
+            background: "rgba(20, 30, 45, 0.85)",
             borderRadius: 16,
             boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
             border: "2px solid rgba(0, 206, 209, 0.2)",
@@ -474,7 +474,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
                 style={{
                   fontSize: 12,
                   fontWeight: 700,
-                  color: "#666",
+                  color: "rgba(232, 236, 239, 0.6)",
                   textTransform: "uppercase",
                   letterSpacing: "0.5px",
                   padding: "8px 16px",
@@ -497,7 +497,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
               style={{
                 padding: "32px 16px",
                 textAlign: "center",
-                color: "#999",
+                color: "rgba(232, 236, 239, 0.5)",
               }}
             >
               <div style={{ fontSize: 32, marginBottom: 8 }}>🔍</div>
@@ -510,7 +510,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
                 style={{
                   fontSize: 12,
                   fontWeight: 700,
-                  color: "#666",
+                  color: "rgba(232, 236, 239, 0.6)",
                   textTransform: "uppercase",
                   letterSpacing: "0.5px",
                   padding: "8px 16px",

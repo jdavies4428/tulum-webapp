@@ -25,19 +25,19 @@ export function ContextCard({ suggestion, index, onModalOpen }: ContextCardProps
       onMouseLeave={() => setHovered(false)}
       style={{
         padding: '24px',
-        borderRadius: '24px',
-        background: 'rgba(255, 255, 255, 0.4)',
+        borderRadius: '20px',
+        background: 'rgba(20, 30, 45, 0.8)',
         backdropFilter: 'blur(20px)',
-        border: '2px solid rgba(255, 255, 255, 0.5)',
+        border: '1px solid rgba(0, 206, 209, 0.12)',
         boxShadow: hovered
-          ? '0 16px 48px rgba(0, 0, 0, 0.12)'
-          : '0 8px 32px rgba(0, 0, 0, 0.08)',
+          ? '0 16px 48px rgba(0, 0, 0, 0.3)'
+          : '0 4px 16px rgba(0, 0, 0, 0.2)',
         transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
         transform: hovered ? 'translateY(-4px) scale(1.02)' : 'translateY(0) scale(1)',
         cursor: suggestion.action ? 'pointer' : 'default',
         height: '100%',
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'column' as const,
         gap: '12px',
         animation: `slideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.1}s both`,
       }}
@@ -59,7 +59,7 @@ export function ContextCard({ suggestion, index, onModalOpen }: ContextCardProps
         style={{
           fontSize: '48px',
           lineHeight: 1,
-          filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1))',
+          filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2))',
           transition: 'transform 0.2s',
           transform: hovered ? 'scale(1.1) rotate(5deg)' : 'scale(1) rotate(0)',
         }}
@@ -72,7 +72,7 @@ export function ContextCard({ suggestion, index, onModalOpen }: ContextCardProps
           style={{
             fontSize: '20px',
             fontWeight: 800,
-            color: '#1a1a1a',
+            color: '#E8ECEF',
             margin: '0 0 8px 0',
             lineHeight: 1.3,
           }}
@@ -82,7 +82,7 @@ export function ContextCard({ suggestion, index, onModalOpen }: ContextCardProps
         <p
           style={{
             fontSize: '15px',
-            color: '#555',
+            color: 'rgba(232, 236, 239, 0.6)',
             margin: 0,
             lineHeight: 1.5,
             fontWeight: 500,

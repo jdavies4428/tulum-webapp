@@ -85,7 +85,7 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
         alignItems: "center",
         justifyContent: "center",
         padding: spacing.lg,
-        background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 50%, #FFE4CC 100%)",
+        background: "linear-gradient(135deg, rgba(20, 30, 45, 0.98) 0%, rgba(25, 38, 55, 0.95) 50%, rgba(30, 45, 60, 0.95) 100%)",
         backgroundSize: "200% 200%",
         animation: "gradient-shift 15s ease infinite",
       }}
@@ -111,7 +111,7 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
         >
           Tulum Discovery
         </h1>
-        <p style={{ fontSize: "16px", color: "#666", margin: 0 }}>
+        <p style={{ fontSize: "16px", color: "rgba(232, 236, 239, 0.6)", margin: 0 }}>
           Your real-time guide to paradise
         </p>
       </div>
@@ -143,8 +143,8 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
             width: "100%",
             padding: `${spacing.md}px ${spacing.lg}px`,
             borderRadius: radius.md,
-            background: "#FFFFFF",
-            border: "2px solid rgba(0, 0, 0, 0.1)",
+            background: "rgba(20, 30, 45, 0.85)",
+            border: "2px solid rgba(0, 206, 209, 0.12)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -152,7 +152,7 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
             cursor: loading ? "not-allowed" : "pointer",
             fontSize: "16px",
             fontWeight: "600",
-            color: "#333",
+            color: "#E8ECEF",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
             opacity: loading ? 0.6 : 1,
             transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
@@ -223,7 +223,7 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
         style={{
           marginTop: spacing.xl,
           fontSize: "13px",
-          color: "#999",
+          color: "rgba(232, 236, 239, 0.5)",
           textAlign: "center",
           maxWidth: "400px",
         }}
@@ -240,7 +240,7 @@ export function AuthScreen({ onSignInComplete }: AuthScreenProps) {
           padding: spacing.md,
           background: "transparent",
           border: "none",
-          color: "#999",
+          color: "rgba(232, 236, 239, 0.5)",
           fontSize: "14px",
           fontWeight: "600",
           cursor: "pointer",

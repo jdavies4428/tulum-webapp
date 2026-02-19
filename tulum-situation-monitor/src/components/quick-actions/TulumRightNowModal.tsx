@@ -29,7 +29,7 @@ export function TulumRightNowModal({ lang, onClose }: TulumRightNowModalProps) {
         style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(0, 0, 0, 0.6)',
+          background: 'rgba(0, 0, 0, 0.7)',
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
           zIndex: 1000,
@@ -52,14 +52,15 @@ export function TulumRightNowModal({ lang, onClose }: TulumRightNowModalProps) {
         <div
           onClick={(e) => e.stopPropagation()}
           style={{
-            background: 'linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)',
-            borderRadius: '32px',
+            background: '#0F1419',
+            border: '1px solid rgba(0, 206, 209, 0.15)',
+            borderRadius: '24px',
             maxWidth: '1000px',
             width: '100%',
             maxHeight: '90vh',
             display: 'flex',
             flexDirection: 'column',
-            boxShadow: '0 24px 80px rgba(0, 0, 0, 0.3)',
+            boxShadow: '0 24px 80px rgba(0, 0, 0, 0.5)',
             animation: 'spring-slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
             pointerEvents: 'auto',
             position: 'relative',
@@ -71,36 +72,35 @@ export function TulumRightNowModal({ lang, onClose }: TulumRightNowModalProps) {
             onClick={onClose}
             style={{
               position: 'absolute',
-              top: '20px',
-              right: '20px',
-              width: '44px',
-              height: '44px',
+              top: '16px',
+              right: '16px',
+              width: '40px',
+              height: '40px',
               borderRadius: '50%',
-              background: 'rgba(255, 255, 255, 0.9)',
+              background: 'rgba(255, 255, 255, 0.08)',
               backdropFilter: 'blur(20px)',
-              border: '2px solid rgba(0, 0, 0, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
               cursor: 'pointer',
-              fontSize: '28px',
+              fontSize: '20px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               zIndex: 100,
               transition: 'all 0.2s',
-              color: '#333',
+              color: '#E8ECEF',
               fontWeight: 300,
               lineHeight: 1,
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.1)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 1)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
             }}
           >
-            ×
+            ✕
           </button>
 
           <div style={{

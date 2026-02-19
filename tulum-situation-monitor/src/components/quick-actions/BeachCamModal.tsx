@@ -21,7 +21,6 @@ export function BeachCamModal({ lang, onClose }: BeachCamModalProps) {
     return () => window.removeEventListener('keydown', handleEscape);
   }, [onClose]);
 
-  // Auto-refresh image every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setImageKey(Date.now());
@@ -58,12 +57,13 @@ export function BeachCamModal({ lang, onClose }: BeachCamModalProps) {
         <div
           onClick={(e) => e.stopPropagation()}
           style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            borderRadius: '32px',
+            background: '#0F1419',
+            border: '1px solid rgba(0, 206, 209, 0.15)',
+            borderRadius: '24px',
             maxWidth: '1200px',
             width: '100%',
             overflow: 'hidden',
-            boxShadow: '0 24px 80px rgba(0, 0, 0, 0.4)',
+            boxShadow: '0 24px 80px rgba(0, 0, 0, 0.5)',
             animation: 'spring-slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
             pointerEvents: 'auto',
             position: 'relative',
@@ -72,7 +72,7 @@ export function BeachCamModal({ lang, onClose }: BeachCamModalProps) {
           <div
             style={{
               padding: '24px',
-              borderBottom: '2px solid rgba(0, 206, 209, 0.2)',
+              borderBottom: '1px solid rgba(0, 206, 209, 0.12)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -92,7 +92,7 @@ export function BeachCamModal({ lang, onClose }: BeachCamModalProps) {
               >
                 🏖️ {t.beachCam ?? 'Beach Cam'}
               </h2>
-              <p style={{ fontSize: '14px', color: '#666', margin: 0 }}>
+              <p style={{ fontSize: '14px', color: 'rgba(232, 236, 239, 0.6)', margin: 0 }}>
                 {t.beachCamSubtitle ?? 'Live view of Casa Malca Beach'}
               </p>
             </div>
@@ -100,28 +100,29 @@ export function BeachCamModal({ lang, onClose }: BeachCamModalProps) {
               type="button"
               onClick={onClose}
               style={{
-                width: '44px',
-                height: '44px',
+                width: '40px',
+                height: '40px',
                 borderRadius: '50%',
-                background: 'rgba(0, 0, 0, 0.05)',
-                border: '2px solid rgba(0, 0, 0, 0.1)',
+                background: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
                 cursor: 'pointer',
-                fontSize: '24px',
+                fontSize: '20px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 transition: 'all 0.2s',
+                color: '#E8ECEF',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'scale(1.1)';
-                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.1)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'scale(1)';
-                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.05)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
               }}
             >
-              ×
+              ✕
             </button>
           </div>
 
@@ -133,8 +134,8 @@ export function BeachCamModal({ lang, onClose }: BeachCamModalProps) {
               style={{
                 width: '100%',
                 height: 'auto',
-                borderRadius: '20px',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
+                borderRadius: '16px',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
                 animation: 'fadeIn 0.5s ease-out',
               }}
               onError={(e) => {
@@ -184,8 +185,8 @@ export function BeachCamModal({ lang, onClose }: BeachCamModalProps) {
           <div
             style={{
               padding: '20px 24px',
-              background: 'rgba(0, 206, 209, 0.05)',
-              borderTop: '2px solid rgba(0, 206, 209, 0.1)',
+              background: 'rgba(0, 206, 209, 0.04)',
+              borderTop: '1px solid rgba(0, 206, 209, 0.12)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -193,7 +194,7 @@ export function BeachCamModal({ lang, onClose }: BeachCamModalProps) {
               gap: '12px',
             }}
           >
-            <p style={{ fontSize: '13px', color: '#666', margin: 0 }}>
+            <p style={{ fontSize: '13px', color: 'rgba(232, 236, 239, 0.5)', margin: 0 }}>
               {t.autoRefresh ?? 'Auto-refreshes every 30 seconds'}
             </p>
             <button
@@ -212,14 +213,15 @@ export function BeachCamModal({ lang, onClose }: BeachCamModalProps) {
                 alignItems: 'center',
                 gap: '8px',
                 transition: 'all 0.2s',
+                boxShadow: '0 4px 16px rgba(0, 206, 209, 0.3)',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 206, 209, 0.3)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 206, 209, 0.4)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 206, 209, 0.3)';
               }}
             >
               🔄 {t.refresh ?? 'Refresh'}

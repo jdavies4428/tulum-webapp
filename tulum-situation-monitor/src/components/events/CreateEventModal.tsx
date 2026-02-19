@@ -160,7 +160,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
           width: "100%",
           maxWidth: "500px",
           maxHeight: "90vh",
-          background: colors.neutral.white,
+          background: "rgba(20, 30, 45, 0.85)",
           borderRadius: radius.lg,
           boxShadow: shadows.lg,
           overflow: "auto",
@@ -190,7 +190,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                 marginBottom: spacing.sm,
                 fontSize: "14px",
                 fontWeight: "600",
-                color: colors.neutral.gray[700],
+                color: "#E8ECEF",
               }}
             >
               Avatar
@@ -214,7 +214,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                         ? `3px solid ${colors.primary.base}`
                         : "2px solid rgba(0, 206, 209, 0.2)",
                     borderRadius: "50%",
-                    background: colors.neutral.white,
+                    background: "rgba(20, 30, 45, 0.85)",
                     cursor: "pointer",
                     padding: 0,
                     overflow: "hidden",
@@ -253,7 +253,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                     background:
                       !useProfilePhoto && authorAvatar === emoji
                         ? "rgba(0, 206, 209, 0.1)"
-                        : colors.neutral.white,
+                        : "rgba(20, 30, 45, 0.85)",
                     cursor: "pointer",
                     fontSize: "24px",
                     transition: "all 0.2s",
@@ -273,7 +273,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                 marginBottom: spacing.sm,
                 fontSize: "14px",
                 fontWeight: "600",
-                color: colors.neutral.gray[700],
+                color: "#E8ECEF",
               }}
             >
               Author Name
@@ -287,7 +287,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
               style={{
                 width: "100%",
                 padding: spacing.md,
-                border: `2px solid ${colors.neutral.gray[200]}`,
+                border: "2px solid rgba(0, 206, 209, 0.12)",
                 borderRadius: radius.md,
                 fontSize: "15px",
                 outline: "none",
@@ -296,7 +296,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                 e.target.style.borderColor = colors.primary.base;
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = colors.neutral.gray[200];
+                e.target.style.borderColor = "rgba(0, 206, 209, 0.12)";
               }}
             />
           </div>
@@ -309,7 +309,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                 marginBottom: spacing.sm,
                 fontSize: "14px",
                 fontWeight: "600",
-                color: colors.neutral.gray[700],
+                color: "#E8ECEF",
               }}
             >
               Handle
@@ -323,7 +323,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
               style={{
                 width: "100%",
                 padding: spacing.md,
-                border: `2px solid ${colors.neutral.gray[200]}`,
+                border: "2px solid rgba(0, 206, 209, 0.12)",
                 borderRadius: radius.md,
                 fontSize: "15px",
                 outline: "none",
@@ -332,7 +332,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                 e.target.style.borderColor = colors.primary.base;
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = colors.neutral.gray[200];
+                e.target.style.borderColor = "rgba(0, 206, 209, 0.12)";
               }}
             />
           </div>
@@ -345,7 +345,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                 marginBottom: spacing.sm,
                 fontSize: "14px",
                 fontWeight: "600",
-                color: colors.neutral.gray[700],
+                color: "#E8ECEF",
               }}
             >
               Event Content ({content.length}/2000)
@@ -359,7 +359,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
               style={{
                 width: "100%",
                 padding: spacing.md,
-                border: `2px solid ${colors.neutral.gray[200]}`,
+                border: "2px solid rgba(0, 206, 209, 0.12)",
                 borderRadius: radius.md,
                 fontSize: "15px",
                 lineHeight: "1.5",
@@ -371,7 +371,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                 e.target.style.borderColor = colors.primary.base;
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = colors.neutral.gray[200];
+                e.target.style.borderColor = "rgba(0, 206, 209, 0.12)";
               }}
             />
           </div>
@@ -384,7 +384,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                 marginBottom: spacing.sm,
                 fontSize: "14px",
                 fontWeight: "600",
-                color: colors.neutral.gray[700],
+                color: "#E8ECEF",
               }}
             >
               Event Image (Optional)
@@ -396,7 +396,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                   position: "relative",
                   borderRadius: radius.md,
                   overflow: "hidden",
-                  border: `2px solid ${colors.neutral.gray[200]}`,
+                  border: "2px solid rgba(0, 206, 209, 0.12)",
                 }}
               >
                 <img
@@ -447,15 +447,15 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                   style={{
                     width: "100%",
                     padding: spacing.lg,
-                    border: `2px dashed ${colors.neutral.gray[300]}`,
+                    border: "2px dashed rgba(0, 206, 209, 0.12)",
                     borderRadius: radius.md,
-                    background: colors.neutral.gray[50],
+                    background: "rgba(20, 30, 45, 0.5)",
                     cursor: uploading ? "not-allowed" : "pointer",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     gap: spacing.sm,
-                    color: colors.neutral.gray[600],
+                    color: "rgba(232, 236, 239, 0.6)",
                     fontSize: "14px",
                   }}
                 >
@@ -465,7 +465,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                   <span>
                     {uploading ? "Uploading..." : "Click to upload image"}
                   </span>
-                  <span style={{ fontSize: "12px", color: colors.neutral.gray[500] }}>
+                  <span style={{ fontSize: "12px", color: "rgba(232, 236, 239, 0.6)" }}>
                     Max 5MB • JPG, PNG, GIF
                   </span>
                 </button>
@@ -482,12 +482,12 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
               style={{
                 flex: 1,
                 padding: spacing.md,
-                background: colors.neutral.gray[100],
+                background: "rgba(255, 255, 255, 0.05)",
                 border: "none",
                 borderRadius: radius.md,
                 fontSize: "15px",
                 fontWeight: "600",
-                color: colors.neutral.gray[700],
+                color: "#E8ECEF",
                 cursor: loading ? "not-allowed" : "pointer",
                 opacity: loading ? 0.5 : 1,
               }}
@@ -511,7 +511,7 @@ export function CreateEventModal({ onClose }: CreateEventModalProps) {
                 borderRadius: radius.md,
                 fontSize: "15px",
                 fontWeight: "700",
-                color: colors.neutral.white,
+                color: "#FFF",
                 cursor:
                   loading || !content.trim() ? "not-allowed" : "pointer",
                 opacity: loading || !content.trim() ? 0.5 : 1,

@@ -28,14 +28,14 @@ function ConditionBadge({
     <div
       style={{
         padding: "10px 12px",
-        background: "rgba(255, 255, 255, 0.9)",
+        background: "rgba(20, 30, 45, 0.85)",
         borderRadius: "10px",
         display: "flex",
         alignItems: "center",
         gap: "8px",
         fontSize: "14px",
         fontWeight: "600",
-        color: "#333",
+        color: "#E8ECEF",
       }}
     >
       <span style={{ fontSize: "18px" }}>{icon}</span>
@@ -141,7 +141,7 @@ function BestBeachCard({ beach, t }: { beach: ScoredBeach; t: Record<string, str
           rel="noopener noreferrer"
           style={{
             padding: "14px",
-            background: "#FFF",
+            background: "rgba(20, 30, 45, 0.85)",
             border: "none",
             borderRadius: "12px",
             fontSize: "15px",
@@ -217,9 +217,9 @@ function BeachListItem({
         alignItems: "center",
         gap: "12px",
         padding: "12px",
-        background: "rgba(255, 255, 255, 0.6)",
+        background: "rgba(20, 30, 45, 0.6)",
         borderRadius: "12px",
-        border: "1px solid rgba(0, 0, 0, 0.05)",
+        border: "1px solid rgba(232, 236, 239, 0.15)",
         cursor: "pointer",
         transition: "all 0.2s",
         textDecoration: "none",
@@ -231,13 +231,13 @@ function BeachListItem({
           width: "32px",
           height: "32px",
           borderRadius: "50%",
-          background: rank === 1 ? "#FFD700" : "rgba(0, 0, 0, 0.1)",
+          background: rank === 1 ? "#FFD700" : "rgba(232, 236, 239, 0.15)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           fontSize: "14px",
           fontWeight: "700",
-          color: rank === 1 ? "#FFF" : "#666",
+          color: rank === 1 ? "#FFF" : "rgba(232, 236, 239, 0.6)",
         }}
       >
         {rank}
@@ -247,13 +247,13 @@ function BeachListItem({
           style={{
             fontSize: "16px",
             fontWeight: "700",
-            color: "#333",
+            color: "#E8ECEF",
             marginBottom: "4px",
           }}
         >
           {beach.name}
         </div>
-        <div style={{ fontSize: "13px", color: "#666" }}>
+        <div style={{ fontSize: "13px", color: "rgba(232, 236, 239, 0.6)" }}>
           🌊 {capitalize(beach.sargassumLevel)} • 📍 {beach.distance} km
         </div>
       </div>
@@ -283,7 +283,7 @@ function LoadingSkeleton() {
       <div
         style={{
           height: 200,
-          background: "rgba(255, 255, 255, 0.5)",
+          background: "rgba(20, 30, 45, 0.5)",
           borderRadius: "24px",
           animation: "pulse 1.5s ease-in-out infinite",
         }}
@@ -291,7 +291,7 @@ function LoadingSkeleton() {
       <div
         style={{
           height: 120,
-          background: "rgba(255, 255, 255, 0.5)",
+          background: "rgba(20, 30, 45, 0.5)",
           borderRadius: "16px",
           animation: "pulse 1.5s ease-in-out infinite",
         }}
@@ -332,7 +332,7 @@ export function BeachConditionsDashboard() {
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
         paddingBottom: "max(24px, env(safe-area-inset-bottom))",
-        background: "linear-gradient(180deg, #E0F7FA 0%, #FFF8E7 100%)",
+        background: "linear-gradient(180deg, #0F172A 0%, #141E2D 100%)",
         minHeight: "100vh",
       }}
     >
@@ -402,7 +402,7 @@ export function BeachConditionsDashboard() {
           )}
           <div
             style={{
-              background: "rgba(255, 255, 255, 0.9)",
+              background: "rgba(20, 30, 45, 0.85)",
               borderRadius: "24px",
               padding: "20px",
               marginBottom: "24px",
@@ -414,7 +414,7 @@ export function BeachConditionsDashboard() {
                 fontSize: "18px",
                 fontWeight: "700",
                 marginBottom: "16px",
-                color: "#333",
+                color: "#E8ECEF",
               }}
             >
               📊 {t.allBeaches ?? "All Beaches"}
@@ -439,7 +439,7 @@ export function BeachConditionsDashboard() {
           {data.forecast && data.forecast.length > 0 && (
             <div
               style={{
-                background: "rgba(255, 255, 255, 0.9)",
+                background: "rgba(20, 30, 45, 0.85)",
                 borderRadius: "24px",
                 padding: "20px",
                 border: "2px solid rgba(0, 206, 209, 0.2)",
@@ -450,7 +450,7 @@ export function BeachConditionsDashboard() {
                   fontSize: "18px",
                   fontWeight: "700",
                   marginBottom: "16px",
-                  color: "#333",
+                  color: "#E8ECEF",
                 }}
               >
                 📅 {t.threeDayForecast ?? "3-Day Forecast"}
@@ -472,7 +472,7 @@ export function BeachConditionsDashboard() {
                       textAlign: "center",
                     }}
                   >
-                    <div style={{ fontSize: 14, fontWeight: 600, color: "#666", marginBottom: 4 }}>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "rgba(232, 236, 239, 0.6)", marginBottom: 4 }}>
                       {f.day}
                     </div>
                     <div style={{ fontSize: 24, fontWeight: 800, color: "#0099CC" }}>

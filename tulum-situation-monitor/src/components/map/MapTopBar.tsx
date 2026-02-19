@@ -41,10 +41,10 @@ export function MapTopBar({ lang }: MapTopBarProps) {
           width: 44,
           height: 44,
           borderRadius: radius.md,
-          background: "rgba(255, 255, 255, 0.95)",
+          background: "rgba(20, 30, 45, 0.85)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(255, 255, 255, 0.3)",
+          border: "1px solid rgba(232, 236, 239, 0.2)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -52,7 +52,7 @@ export function MapTopBar({ lang }: MapTopBarProps) {
           cursor: "pointer",
           boxShadow: shadows.lg,
           textDecoration: "none",
-          color: "#333",
+          color: "#E8ECEF",
           transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
         }}
         aria-label="Back to Discover Tulum"

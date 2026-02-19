@@ -73,8 +73,8 @@ export function CuisineFilter({ selectedCuisine, onCuisineChange, counts }: Cuis
               borderColor: isSelected ? "#00CED1" : "rgba(0, 0, 0, 0.1)",
               background: isSelected
                 ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
-                : "#FFFFFF",
-              color: isSelected ? "#FFFFFF" : "#333",
+                : "rgba(20, 30, 45, 0.85)",
+              color: isSelected ? "#FFFFFF" : "#E8ECEF",
               fontSize: "14px",
               fontWeight: isSelected ? 700 : 600,
               cursor: "pointer",
@@ -93,7 +93,7 @@ export function CuisineFilter({ selectedCuisine, onCuisineChange, counts }: Cuis
             }}
             onMouseLeave={(e) => {
               if (!isSelected) {
-                e.currentTarget.style.borderColor = "rgba(0, 0, 0, 0.1)";
+                e.currentTarget.style.borderColor = "rgba(232, 236, 239, 0.2)";
                 e.currentTarget.style.transform = "translateY(0)";
                 e.currentTarget.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.05)";
               }

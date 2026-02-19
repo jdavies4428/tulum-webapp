@@ -83,8 +83,8 @@ export function MessageBubble({
               borderRadius: 18,
               background: isOwn
                 ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
-                : "rgba(255, 255, 255, 0.95)",
-              color: isOwn ? "#FFF" : "#333",
+                : "rgba(20, 30, 45, 0.85)",
+              color: isOwn ? "#FFF" : "#E8ECEF",
               fontSize: 15,
               lineHeight: 1.4,
               wordWrap: "break-word",
@@ -196,7 +196,7 @@ function PlaceMessage({
         overflow: "hidden",
         background: isOwn
           ? "rgba(255, 255, 255, 0.2)"
-          : "rgba(255, 255, 255, 0.95)",
+          : "rgba(20, 30, 45, 0.85)",
         border: isOwn
           ? "2px solid rgba(255, 255, 255, 0.3)"
           : "2px solid rgba(0, 206, 209, 0.2)",
@@ -222,7 +222,7 @@ function PlaceMessage({
           style={{
             fontSize: 15,
             fontWeight: 700,
-            color: isOwn ? "#FFF" : "#333",
+            color: isOwn ? "#FFF" : "#E8ECEF",
             marginBottom: 4,
           }}
         >
@@ -231,7 +231,7 @@ function PlaceMessage({
         <div
           style={{
             fontSize: 13,
-            color: isOwn ? "rgba(255,255,255,0.8)" : "#666",
+            color: isOwn ? "rgba(255,255,255,0.8)" : "rgba(232, 236, 239, 0.6)",
           }}
         >
           {place.category ?? ""}
@@ -268,7 +268,7 @@ function LocationMessage({
         borderRadius: 16,
         background: isOwn
           ? "rgba(255, 255, 255, 0.2)"
-          : "rgba(255, 255, 255, 0.95)",
+          : "rgba(20, 30, 45, 0.85)",
         border: isOwn
           ? "2px solid rgba(255, 255, 255, 0.3)"
           : "2px solid rgba(0, 206, 209, 0.2)",
@@ -286,7 +286,7 @@ function LocationMessage({
           style={{
             fontSize: 15,
             fontWeight: 700,
-            color: isOwn ? "#FFF" : "#333",
+            color: isOwn ? "#FFF" : "#E8ECEF",
           }}
         >
           Shared location
@@ -294,7 +294,7 @@ function LocationMessage({
         <div
           style={{
             fontSize: 12,
-            color: isOwn ? "rgba(255,255,255,0.8)" : "#666",
+            color: isOwn ? "rgba(255,255,255,0.8)" : "rgba(232, 236, 239, 0.6)",
           }}
         >
           {lat.toFixed(4)}, {lng.toFixed(4)}

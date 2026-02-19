@@ -142,7 +142,7 @@ export function NewChatModal({
           width: "90%",
           maxWidth: 400,
           maxHeight: "80vh",
-          background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+          background: "#0A0F14",
           borderRadius: 24,
           border: "3px solid rgba(0, 206, 209, 0.3)",
           boxShadow: "0 24px 80px rgba(0, 206, 209, 0.3)",
@@ -164,7 +164,7 @@ export function NewChatModal({
               fontSize: 22,
               fontWeight: 800,
               margin: "0 0 16px 0",
-              color: "#333",
+              color: "#E8ECEF",
             }}
           >
             {t.newConversation ?? "New conversation"}
@@ -199,7 +199,7 @@ export function NewChatModal({
                   activeTab === "following"
                     ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
                     : "rgba(0, 206, 209, 0.15)",
-                color: activeTab === "following" ? "#FFF" : "#333",
+                color: activeTab === "following" ? "#FFF" : "#E8ECEF",
                 fontSize: 14,
                 fontWeight: 700,
                 cursor: "pointer",
@@ -219,7 +219,7 @@ export function NewChatModal({
                   activeTab === "search"
                     ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
                     : "rgba(0, 206, 209, 0.15)",
-                color: activeTab === "search" ? "#FFF" : "#333",
+                color: activeTab === "search" ? "#FFF" : "#E8ECEF",
                 fontSize: 14,
                 fontWeight: 700,
                 cursor: "pointer",
@@ -238,11 +238,11 @@ export function NewChatModal({
           }}
         >
           {loading && activeTab === "following" ? (
-            <div style={{ textAlign: "center", padding: 24, color: "#666" }}>
+            <div style={{ textAlign: "center", padding: 24, color: "rgba(232, 236, 239, 0.6)" }}>
               {t.loading ?? "Loading…"}
             </div>
           ) : showList && displayList.length === 0 ? (
-            <div style={{ textAlign: "center", padding: 24, color: "#666" }}>
+            <div style={{ textAlign: "center", padding: 24, color: "rgba(232, 236, 239, 0.6)" }}>
               {activeTab === "search"
                 ? (t.noUsersFound ?? "No users found")
                 : (t.noFollowingYet ?? "You're not following anyone yet")}
@@ -260,7 +260,7 @@ export function NewChatModal({
                   gap: 12,
                   padding: 12,
                   marginBottom: 8,
-                  background: "rgba(255, 255, 255, 0.9)",
+                  background: "rgba(20, 30, 45, 0.85)",
                   border: "2px solid rgba(0, 206, 209, 0.2)",
                   borderRadius: 12,
                   cursor: "pointer",
@@ -296,7 +296,7 @@ export function NewChatModal({
                   style={{
                     fontSize: 15,
                     fontWeight: 600,
-                    color: "#333",
+                    color: "#E8ECEF",
                   }}
                 >
                   {u.display_name}

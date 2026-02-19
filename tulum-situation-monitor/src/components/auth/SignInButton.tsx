@@ -26,10 +26,10 @@ export function SignInButton({ lang = "en", compact = false, variant = "default"
         style={{
           padding: compact ? "8px 12px" : "10px 16px",
           borderRadius: compact ? "10px" : "12px",
-          background: frosted ? "rgba(255, 255, 255, 0.95)" : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
+          background: frosted ? "rgba(20, 30, 45, 0.85)" : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
           backdropFilter: frosted ? "blur(20px)" : undefined,
           border: "none",
-          color: frosted ? "#333" : "#FFF",
+          color: frosted ? "#E8ECEF" : "#FFF",
           fontSize: compact ? "12px" : "14px",
           fontWeight: "700",
           cursor: "pointer",

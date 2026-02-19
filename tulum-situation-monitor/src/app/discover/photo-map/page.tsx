@@ -123,7 +123,7 @@ function ScanningProgress({
         style={{
           fontSize: "28px",
           fontWeight: "700",
-          color: "#333",
+          color: "#E8ECEF",
           marginBottom: "8px",
           textAlign: "center",
         }}
@@ -178,9 +178,9 @@ function ScanningProgress({
       <div
         style={{
           padding: "16px 24px",
-          background: "rgba(255, 255, 255, 0.7)",
+          background: "rgba(20, 30, 45, 0.8)",
           borderRadius: "16px",
-          border: "2px solid rgba(0, 206, 209, 0.2)",
+          border: "1px solid rgba(0, 206, 209, 0.15)",
           maxWidth: "320px",
         }}
       >
@@ -209,14 +209,14 @@ function NoPhotosFound({ onRetry, t }: { onRetry: () => void; t: Record<string, 
         style={{
           textAlign: "center",
           padding: "48px",
-          background: "rgba(255, 255, 255, 0.95)",
+          background: "rgba(20, 30, 45, 0.9)",
           borderRadius: "32px",
           maxWidth: "500px",
-          boxShadow: "0 16px 64px rgba(0,0,0,0.08)",
+          boxShadow: "0 16px 64px rgba(0,0,0,0.4)",
         }}
       >
         <div style={{ fontSize: "80px", marginBottom: "24px" }}>📷</div>
-        <h2 style={{ fontSize: "24px", fontWeight: "700", marginBottom: "16px", color: "#333" }}>
+        <h2 style={{ fontSize: "24px", fontWeight: "700", marginBottom: "16px", color: "#E8ECEF" }}>
           {t.photoMapNoPhotos ?? "No Tulum photos found"}
         </h2>
         <p style={{ fontSize: "16px", color: "#666", marginBottom: "24px", lineHeight: 1.5 }}>
@@ -346,7 +346,7 @@ export default function PhotoMapPage() {
             padding: "16px 24px",
             paddingTop: "max(16px, env(safe-area-inset-top))",
             borderBottom: "1px solid var(--border-subtle)",
-            background: "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, transparent 100%)",
+            background: "linear-gradient(180deg, rgba(15,20,25,0.98) 0%, transparent 100%)",
           }}
         >
           <Link
@@ -452,8 +452,8 @@ export default function PhotoMapPage() {
           width: "44px",
           height: "44px",
           borderRadius: "12px",
-          background: "rgba(255, 255, 255, 0.9)",
-          border: "2px solid rgba(0, 206, 209, 0.2)",
+          background: "rgba(20, 30, 45, 0.85)",
+          border: "1px solid rgba(0, 206, 209, 0.15)",
           color: "var(--tulum-ocean)",
           fontSize: "20px",
           textDecoration: "none",
@@ -604,7 +604,7 @@ export default function PhotoMapPage() {
           marginTop: "24px",
           background: "transparent",
           border: "none",
-          color: "#999",
+          color: "rgba(232, 236, 239, 0.4)",
           fontSize: "15px",
           fontWeight: "600",
           cursor: "pointer",

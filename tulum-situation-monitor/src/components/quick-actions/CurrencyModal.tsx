@@ -90,22 +90,21 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
           autoCorrect="off"
           autoCapitalize="off"
           spellCheck="false"
-          className="glass hover-lift"
-          style={{
-            width: "100%",
-            padding: spacing.md,
-            fontSize: "24px",
-            fontWeight: 700,
-            borderRadius: radius.md,
-            border: "2px solid rgba(0, 206, 209, 0.3)",
-            background: "rgba(0, 0, 0, 0.3)",
-            color: "#FFF",
-            WebkitTextFillColor: "#FFF",
-            marginBottom: spacing.md,
-            textAlign: "center",
-            boxSizing: "border-box",
-            transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          }}
+            style={{
+              width: "100%",
+              padding: spacing.md,
+              fontSize: "24px",
+              fontWeight: 700,
+              borderRadius: radius.md,
+              border: "1px solid rgba(0, 206, 209, 0.2)",
+              background: "rgba(0, 0, 0, 0.3)",
+              color: "#E8ECEF",
+              WebkitTextFillColor: "#E8ECEF",
+              marginBottom: spacing.md,
+              textAlign: "center",
+              boxSizing: "border-box",
+              transition: "border-color 0.2s",
+            }}
         />
 
         {/* Currency Selection */}
@@ -121,15 +120,14 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
           <select
             value={fromCurrency}
             onChange={(e) => setFromCurrency(e.target.value)}
-            className="glass"
             style={{
               padding: spacing.sm,
               borderRadius: radius.sm,
-              border: "2px solid rgba(0, 206, 209, 0.3)",
+              border: "1px solid rgba(0, 206, 209, 0.2)",
               fontSize: "15px",
               fontWeight: 600,
-              background: "rgba(255, 255, 255, 0.1)",
-              color: "#FFF",
+              background: "rgba(0, 0, 0, 0.3)",
+              color: "#E8ECEF",
               cursor: "pointer",
             }}
           >
@@ -165,15 +163,14 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
           <select
             value={toCurrency}
             onChange={(e) => setToCurrency(e.target.value)}
-            className="glass"
             style={{
               padding: spacing.sm,
               borderRadius: radius.sm,
-              border: "2px solid rgba(0, 206, 209, 0.3)",
+              border: "1px solid rgba(0, 206, 209, 0.2)",
               fontSize: "15px",
               fontWeight: 600,
-              background: "rgba(255, 255, 255, 0.1)",
-              color: "#FFF",
+              background: "rgba(0, 0, 0, 0.3)",
+              color: "#E8ECEF",
               cursor: "pointer",
             }}
           >

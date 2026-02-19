@@ -82,7 +82,7 @@ export function ContextualGrid({ weather, lang }: ContextualGridProps) {
         <p
           style={{
             fontSize: '16px',
-            color: '#666',
+            color: 'rgba(232, 236, 239, 0.6)',
             margin: 0,
             fontWeight: 500,
           }}

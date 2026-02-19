@@ -124,7 +124,7 @@ export function ListDetailModal({
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "#FFF",
+          background: "rgba(20, 30, 45, 0.85)",
           borderRadius: "24px",
           padding: "24px",
           width: "100%",
@@ -152,12 +152,12 @@ export function ListDetailModal({
                   fontSize: "22px",
                   fontWeight: 800,
                   margin: 0,
-                  color: "#333",
+                  color: "#E8ECEF",
                 }}
               >
                 {list.name}
               </h2>
-              <p style={{ fontSize: "14px", color: "#666", margin: "4px 0 0 0" }}>
+              <p style={{ fontSize: "14px", color: "rgba(232, 236, 239, 0.6)", margin: "4px 0 0 0" }}>
                 {list.placeIds.length} {t.places ?? "places"}
               </p>
             </div>
@@ -169,7 +169,7 @@ export function ListDetailModal({
               width: "40px",
               height: "40px",
               borderRadius: "50%",
-              background: "rgba(0,0,0,0.06)",
+              background: "rgba(255, 255, 255, 0.06)",
               border: "none",
               fontSize: "20px",
               cursor: "pointer",
@@ -226,7 +226,7 @@ export function ListDetailModal({
 
         <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
           {placesWithDetails.length === 0 ? (
-            <p style={{ color: "#999", fontSize: "14px" }}>
+            <p style={{ color: "rgba(232, 236, 239, 0.6)", fontSize: "14px" }}>
               {t.noPlacesInList ?? "No places in this list yet."}
             </p>
           ) : (
@@ -239,16 +239,16 @@ export function ListDetailModal({
                     alignItems: "center",
                     justifyContent: "space-between",
                     padding: "12px 16px",
-                    background: "rgba(0,0,0,0.03)",
+                    background: "rgba(255, 255, 255, 0.03)",
                     borderRadius: "12px",
-                    border: "1px solid rgba(0,206,209,0.15)",
+                    border: "1px solid rgba(0, 206, 209, 0.12)",
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: "15px", fontWeight: 600, color: "#333" }}>
+                    <div style={{ fontSize: "15px", fontWeight: 600, color: "#E8ECEF" }}>
                       {name}
                     </div>
-                    <div style={{ fontSize: "13px", color: "#666" }}>
+                    <div style={{ fontSize: "13px", color: "rgba(232, 236, 239, 0.6)" }}>
                       {categoryLabel} • {distance < 1 ? `${(distance * 1000).toFixed(0)}m` : `${distance.toFixed(1)}km`}
                     </div>
                   </div>

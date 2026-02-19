@@ -38,7 +38,7 @@ function MenuItem({
         cursor: "pointer",
         fontSize: "15px",
         fontWeight: 600,
-        color: danger ? "#FF6B6B" : "#333",
+        color: danger ? "#FF6B6B" : "#E8ECEF",
         textAlign: "left",
         transition: "background 0.2s",
       }}
@@ -122,7 +122,7 @@ export function SignedInMenu({ user, lang = "en" }: SignedInMenuProps) {
           padding: 0,
           cursor: "pointer",
           overflow: "hidden",
-          background: "#FFF",
+          background: "rgba(20, 30, 45, 0.85)",
           boxShadow: "0 4px 12px rgba(0, 206, 209, 0.3)",
         }}
       >
@@ -173,7 +173,7 @@ export function SignedInMenu({ user, lang = "en" }: SignedInMenuProps) {
               left: menuPosition.left,
               width: "280px",
               maxHeight: "calc(100vh - 24px)",
-              background: "rgba(255, 255, 255, 0.98)",
+              background: "rgba(20, 30, 45, 0.85)",
               backdropFilter: "blur(20px)",
               borderRadius: "16px",
               boxShadow: "0 8px 32px rgba(0, 0, 0, 0.15)",
@@ -185,7 +185,7 @@ export function SignedInMenu({ user, lang = "en" }: SignedInMenuProps) {
             <div
               style={{
                 padding: "20px",
-                background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+                background: "rgba(20, 30, 45, 0.85)",
                 borderBottom: "2px solid rgba(0, 206, 209, 0.2)",
               }}
             >
@@ -193,7 +193,7 @@ export function SignedInMenu({ user, lang = "en" }: SignedInMenuProps) {
                 style={{
                   fontSize: "16px",
                   fontWeight: 700,
-                  color: "#333",
+                  color: "#E8ECEF",
                   marginBottom: "4px",
                 }}
               >
@@ -202,7 +202,7 @@ export function SignedInMenu({ user, lang = "en" }: SignedInMenuProps) {
               <div
                 style={{
                   fontSize: "13px",
-                  color: "#666",
+                  color: "rgba(232, 236, 239, 0.6)",
                 }}
               >
                 {user.email}
@@ -245,7 +245,7 @@ export function SignedInMenu({ user, lang = "en" }: SignedInMenuProps) {
               <div
                 style={{
                   height: "1px",
-                  background: "rgba(0, 0, 0, 0.1)",
+                  background: "rgba(0, 206, 209, 0.12)",
                   margin: "8px 0",
                 }}
               />

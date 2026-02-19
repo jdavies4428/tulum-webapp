@@ -56,9 +56,9 @@ export function IllustratedPhotoMap({ clusters, onClusterSelect }: IllustratedPh
         <div class="photo-cluster-marker" style="width:56px;height:56px;cursor:pointer;position:relative;transition:transform 0.2s;user-select:none">
           <div style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center">
             <svg width="56" height="56" viewBox="0 0 56 56" style="filter:drop-shadow(0 4px 12px rgba(0,0,0,0.25))">
-              <path d="M28 4 C 16 4, 8 12, 8 24 C 8 38, 28 52, 28 52 C 28 52, 48 38, 48 24 C 48 12, 40 4, 28 4 Z" fill="#00CED1" stroke="#FFF" stroke-width="2.5"/>
+              <path d="M28 4 C 16 4, 8 12, 8 24 C 8 38, 28 52, 28 52 C 28 52, 48 38, 48 24 C 48 12, 40 4, 28 4 Z" fill="#00CED1" stroke="rgba(232, 236, 239, 0.9)" stroke-width="2.5"/>
             </svg>
-            <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);background:#FFF;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#00CED1;border:2px solid #00CED1">📸${cluster.photos.length}</div>
+            <div style="position:absolute;top:6px;left:50%;transform:translateX(-50%);background:rgba(20, 30, 45, 0.9);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#00CED1;border:2px solid #00CED1">📸${cluster.photos.length}</div>
           </div>
         </div>
       `;
@@ -94,7 +94,7 @@ export function IllustratedPhotoMap({ clusters, onClusterSelect }: IllustratedPh
       style={{
         width: "100%",
         height: "100%",
-        background: "#E0F7FA",
+        background: "#141E2D",
       }}
     />
   );

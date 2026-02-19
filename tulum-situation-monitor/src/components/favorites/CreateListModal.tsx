@@ -59,7 +59,7 @@ export function CreateListModal({ onClose, onCreate, lang = "en" }: CreateListMo
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "#FFF",
+          background: "rgba(20, 30, 45, 0.85)",
           borderRadius: "24px",
           padding: "32px",
           maxWidth: "500px",
@@ -72,7 +72,7 @@ export function CreateListModal({ onClose, onCreate, lang = "en" }: CreateListMo
             fontSize: "24px",
             fontWeight: 800,
             marginBottom: "24px",
-            color: "#333",
+            color: "#E8ECEF",
           }}
         >
           {t.createNewList ?? "Create New List"}
@@ -83,7 +83,7 @@ export function CreateListModal({ onClose, onCreate, lang = "en" }: CreateListMo
             style={{
               fontSize: "14px",
               fontWeight: 600,
-              color: "#666",
+              color: "rgba(232, 236, 239, 0.6)",
               marginBottom: "8px",
               display: "block",
             }}
@@ -113,7 +113,7 @@ export function CreateListModal({ onClose, onCreate, lang = "en" }: CreateListMo
             style={{
               fontSize: "14px",
               fontWeight: 600,
-              color: "#666",
+              color: "rgba(232, 236, 239, 0.6)",
               marginBottom: "12px",
               display: "block",
             }}
@@ -139,7 +139,7 @@ export function CreateListModal({ onClose, onCreate, lang = "en" }: CreateListMo
                   background:
                     selectedIcon === icon
                       ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
-                      : "rgba(0, 0, 0, 0.05)",
+                      : "rgba(255, 255, 255, 0.05)",
                   border: "none",
                   fontSize: "24px",
                   cursor: "pointer",
@@ -165,11 +165,11 @@ export function CreateListModal({ onClose, onCreate, lang = "en" }: CreateListMo
             style={{
               padding: "14px",
               borderRadius: "12px",
-              background: "rgba(0, 0, 0, 0.05)",
+              background: "rgba(255, 255, 255, 0.05)",
               border: "none",
               fontSize: "16px",
               fontWeight: 600,
-              color: "#666",
+              color: "rgba(232, 236, 239, 0.6)",
               cursor: "pointer",
             }}
           >

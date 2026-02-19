@@ -66,7 +66,7 @@ export function AddToListModal({
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "#FFF",
+          background: "rgba(20, 30, 45, 0.85)",
           borderRadius: "24px 24px 0 0",
           padding: "24px",
           width: "100%",
@@ -80,7 +80,7 @@ export function AddToListModal({
             fontSize: "20px",
             fontWeight: 700,
             marginBottom: "8px",
-            color: "#333",
+            color: "#E8ECEF",
           }}
         >
           {t.addToList ?? "Add to List"}
@@ -88,7 +88,7 @@ export function AddToListModal({
         <p
           style={{
             fontSize: "14px",
-            color: "#666",
+            color: "rgba(232, 236, 239, 0.6)",
             marginBottom: "16px",
           }}
         >
@@ -113,7 +113,7 @@ export function AddToListModal({
                 borderRadius: "12px",
                 background: selectedLists.includes(list.id)
                   ? "rgba(0, 206, 209, 0.1)"
-                  : "rgba(0, 0, 0, 0.03)",
+                  : "rgba(255, 255, 255, 0.03)",
                 border: selectedLists.includes(list.id)
                   ? "2px solid #00CED1"
                   : "2px solid transparent",
@@ -130,7 +130,7 @@ export function AddToListModal({
                   style={{
                     fontSize: "16px",
                     fontWeight: 600,
-                    color: "#333",
+                    color: "#E8ECEF",
                   }}
                 >
                   {list.name}
@@ -138,7 +138,7 @@ export function AddToListModal({
                 <div
                   style={{
                     fontSize: "13px",
-                    color: "#666",
+                    color: "rgba(232, 236, 239, 0.6)",
                   }}
                 >
                   {list.placeIds.length} {t.places ?? "places"}

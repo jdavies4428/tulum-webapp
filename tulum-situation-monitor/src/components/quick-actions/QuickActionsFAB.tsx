@@ -166,7 +166,7 @@ export function QuickActionsFAB() {
     isMobile && isMapPage
       ? { top: 14, bottom: "auto", right: 76, left: "auto" }
       : isMobile
-      ? { top: 80, bottom: "auto", right: 140, left: "auto" }
+      ? { bottom: "calc(96px + env(safe-area-inset-bottom, 0px))", top: "auto", right: 20, left: "auto" }
       : {
           bottom: isIOS ? "calc(60px + env(safe-area-inset-bottom, 0px))" : 60,
           top: "auto",

@@ -179,7 +179,7 @@ export function AuthPromptModal({
           position: "relative",
           width: "100%",
           maxWidth: "100vw",
-          background: "#FFFFFF",
+          background: "rgba(20, 30, 45, 0.85)",
           borderTopLeftRadius: "20px",
           borderTopRightRadius: "20px",
           paddingTop: "max(20px, env(safe-area-inset-top))",
@@ -198,7 +198,7 @@ export function AuthPromptModal({
           style={{
             width: "36px",
             height: "5px",
-            background: "rgba(0, 0, 0, 0.1)",
+            background: "rgba(0, 206, 209, 0.12)",
             borderRadius: "100px",
             margin: "0 auto 24px",
           }}
@@ -212,7 +212,7 @@ export function AuthPromptModal({
               fontWeight: "700",
               textAlign: "center",
               marginBottom: "8px",
-              color: "#000",
+              color: "#E8ECEF",
               letterSpacing: "-0.5px",
             }}
           >
@@ -221,7 +221,7 @@ export function AuthPromptModal({
           <p
             style={{
               fontSize: "15px",
-              color: "#666",
+              color: "rgba(232, 236, 239, 0.6)",
               textAlign: "center",
               marginBottom: "32px",
               lineHeight: 1.5,
@@ -248,8 +248,8 @@ export function AuthPromptModal({
                 width: "100%",
                 padding: "15px 20px",
                 borderRadius: "12px",
-                background: "#FFFFFF",
-                border: "1px solid rgba(0, 0, 0, 0.12)",
+                background: "rgba(20, 30, 45, 0.85)",
+                border: "1px solid rgba(0, 206, 209, 0.12)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -257,7 +257,7 @@ export function AuthPromptModal({
                 cursor: loading ? "not-allowed" : "pointer",
                 fontSize: "16px",
                 fontWeight: "500",
-                color: "#000",
+                color: "#E8ECEF",
                 boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
                 transition: "all 0.2s ease",
                 opacity: loading ? 0.6 : 1,
@@ -387,17 +387,17 @@ export function AuthPromptModal({
               padding: "12px",
               background: "transparent",
               border: "none",
-              color: "#8E8E93",
+              color: "rgba(232, 236, 239, 0.5)",
               fontSize: "15px",
               fontWeight: "500",
               cursor: "pointer",
               transition: "color 0.2s ease",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = "#666";
+              e.currentTarget.style.color = "rgba(232, 236, 239, 0.6)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = "#8E8E93";
+              e.currentTarget.style.color = "rgba(232, 236, 239, 0.5)";
             }}
           >
             {t.authPromptMaybeLater ?? "Maybe later"}

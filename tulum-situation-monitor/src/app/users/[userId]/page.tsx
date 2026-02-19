@@ -74,7 +74,7 @@ export default function UserProfilePage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+          background: "#0A0F14",
           padding: "24px",
         }}
       >
@@ -95,11 +95,11 @@ export default function UserProfilePage() {
           alignItems: "center",
           justifyContent: "center",
           gap: "24px",
-          background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+          background: "#0A0F14",
           padding: "24px",
         }}
       >
-        <p style={{ color: "#666", fontSize: "18px" }}>
+        <p style={{ color: "rgba(232, 236, 239, 0.6)", fontSize: "18px" }}>
           {t.profileNotFound ?? "Profile not found"}
         </p>
         <Link
@@ -125,7 +125,7 @@ export default function UserProfilePage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+        background: "#0A0F14",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
       }}
@@ -147,8 +147,8 @@ export default function UserProfilePage() {
             width: "44px",
             height: "44px",
             borderRadius: "12px",
-            background: "rgba(0, 206, 209, 0.12)",
-            border: "2px solid rgba(0, 206, 209, 0.2)",
+            background: "rgba(0, 206, 209, 0.1)",
+            border: "1px solid rgba(0, 206, 209, 0.2)",
             color: "var(--tulum-ocean)",
             fontSize: "20px",
             textDecoration: "none",
@@ -156,19 +156,19 @@ export default function UserProfilePage() {
         >
           ←
         </Link>
-        <h1 style={{ fontSize: "20px", fontWeight: 800, margin: 0, color: "#333" }}>
+        <h1 style={{ fontSize: "20px", fontWeight: 800, margin: 0, color: "#E8ECEF" }}>
           {t.profile ?? "Profile"}
         </h1>
       </header>
 
       <div
         style={{
-          background: "rgba(255, 255, 255, 0.95)",
+          background: "rgba(20, 30, 45, 0.85)",
           borderRadius: "24px",
           padding: "100px 24px 24px",
           marginBottom: "24px",
-          border: "2px solid rgba(0, 206, 209, 0.2)",
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
+          border: "1px solid rgba(0, 206, 209, 0.15)",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
           position: "relative",
         }}
       >
@@ -181,7 +181,7 @@ export default function UserProfilePage() {
             width: "120px",
             height: "120px",
             borderRadius: "50%",
-            border: "6px solid #FFF",
+            border: "4px solid rgba(0, 206, 209, 0.3)",
             overflow: "hidden",
             boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
             background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
@@ -214,7 +214,7 @@ export default function UserProfilePage() {
               fontSize: "28px",
               fontWeight: 800,
               margin: "0 0 8px 0",
-              color: "#333",
+              color: "#E8ECEF",
             }}
           >
             {displayName}
@@ -223,7 +223,7 @@ export default function UserProfilePage() {
             <p
               style={{
                 fontSize: "15px",
-                color: "#666",
+                color: "rgba(232, 236, 239, 0.6)",
                 margin: "0 0 16px 0",
                 lineHeight: 1.5,
               }}
@@ -244,7 +244,7 @@ export default function UserProfilePage() {
           <div
             style={{
               padding: "12px",
-              background: "rgba(0, 206, 209, 0.05)",
+              background: "rgba(0, 206, 209, 0.08)",
               borderRadius: "12px",
               textAlign: "center",
             }}
@@ -259,14 +259,14 @@ export default function UserProfilePage() {
             >
               —
             </div>
-            <div style={{ fontSize: "13px", fontWeight: 600, color: "#666" }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: "rgba(232, 236, 239, 0.6)" }}>
               {t.favorites ?? "Favorites"}
             </div>
           </div>
           <div
             style={{
               padding: "12px",
-              background: "rgba(0, 206, 209, 0.05)",
+              background: "rgba(0, 206, 209, 0.08)",
               borderRadius: "12px",
               textAlign: "center",
             }}
@@ -281,14 +281,14 @@ export default function UserProfilePage() {
             >
               {profile.followers_count}
             </div>
-            <div style={{ fontSize: "13px", fontWeight: 600, color: "#666" }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: "rgba(232, 236, 239, 0.6)" }}>
               {t.followers ?? "Followers"}
             </div>
           </div>
           <div
             style={{
               padding: "12px",
-              background: "rgba(0, 206, 209, 0.05)",
+              background: "rgba(0, 206, 209, 0.08)",
               borderRadius: "12px",
               textAlign: "center",
             }}
@@ -303,7 +303,7 @@ export default function UserProfilePage() {
             >
               {profile.following_count}
             </div>
-            <div style={{ fontSize: "13px", fontWeight: 600, color: "#666" }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: "rgba(232, 236, 239, 0.6)" }}>
               {t.following ?? "Following"}
             </div>
           </div>
@@ -341,9 +341,9 @@ export default function UserProfilePage() {
                 ? "transparent"
                 : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
               border: profile.is_following
-                ? "2px solid rgba(0, 0, 0, 0.1)"
+                ? "2px solid rgba(255, 255, 255, 0.15)"
                 : "none",
-              color: profile.is_following ? "#333" : "#FFF",
+              color: profile.is_following ? "#E8ECEF" : "#FFF",
               fontSize: "15px",
               fontWeight: 700,
               cursor: followLoading ? "not-allowed" : "pointer",
