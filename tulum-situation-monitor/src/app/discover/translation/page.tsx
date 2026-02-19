@@ -17,8 +17,8 @@ export default function TranslationPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(180deg, #E0F7FA 0%, #FFF8E7 50%, #FFFFFF 100%)",
-        color: "var(--text-primary)",
+        background: "linear-gradient(180deg, #1A2332 0%, #0F1419 50%, #0A0E14 100%)",
+        color: "#E8ECEF",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
       }}
@@ -43,7 +43,7 @@ export default function TranslationPage() {
             borderRadius: "12px",
             background: "rgba(0, 206, 209, 0.12)",
             border: "2px solid rgba(0, 206, 209, 0.2)",
-            color: "var(--tulum-ocean)",
+            color: "#00CED1",
             fontSize: "20px",
             textDecoration: "none",
             flexShrink: 0,
@@ -56,7 +56,7 @@ export default function TranslationPage() {
             fontSize: "28px",
             fontWeight: "800",
             margin: 0,
-            color: "var(--tulum-ocean)",
+            color: "#00CED1",
           }}
         >
           🌐 {t.translation ?? "Translation"}
@@ -75,7 +75,7 @@ export default function TranslationPage() {
         <p
           style={{
             fontSize: "16px",
-            color: "#666",
+            color: "#9BA3AF",
             textAlign: "center",
             maxWidth: "400px",
           }}

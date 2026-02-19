@@ -44,7 +44,7 @@ function FilterButton({
       style={{
         gridColumn: wide ? "1 / -1" : "auto",
         padding: compact ? "10px 12px" : "12px 16px",
-        background: active ? gradient : "rgba(255, 255, 255, 0.8)",
+        background: active ? gradient : "rgba(20, 30, 45, 0.8)",
         border: active ? "2px solid transparent" : "2px solid rgba(0, 206, 209, 0.2)",
         borderRadius: compact ? "12px" : "16px",
         cursor: "pointer",
@@ -52,7 +52,7 @@ function FilterButton({
         display: "flex",
         alignItems: "center",
         gap: compact ? "8px" : "10px",
-        boxShadow: active ? "0 8px 24px rgba(0, 206, 209, 0.2)" : "0 2px 8px rgba(0, 0, 0, 0.05)",
+        boxShadow: active ? "0 8px 24px rgba(0, 206, 209, 0.2)" : "0 2px 8px rgba(0, 206, 209, 0.08)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -75,7 +75,7 @@ function FilterButton({
         style={{
           fontSize: compact ? "13px" : "15px",
           fontWeight: "700",
-          color: active ? "#333" : "#666",
+          color: active ? "#FFF" : "#9BA3AF",
           letterSpacing: "0.2px",
           position: "relative",
           zIndex: 1,
@@ -196,7 +196,7 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
     place.distance < 1
       ? `${(place.distance * 1000).toFixed(0)}m`
       : `${place.distance.toFixed(1)}km`;
-  const placeholder = CATEGORY_PLACEHOLDER[place.categoryLabel] ?? { bg: "rgba(0,0,0,0.06)", emoji: "📍" };
+  const placeholder = CATEGORY_PLACEHOLDER[place.categoryLabel] ?? { bg: "rgba(0, 206, 209, 0.08)", emoji: "📍" };
 
   const actionBtnStyle: React.CSSProperties = {
     width: "36px",
@@ -221,11 +221,11 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
       onClick={() => place.sourcePlace && onSelect?.(place.sourcePlace)}
       onKeyDown={(e) => e.key === "Enter" && place.sourcePlace && onSelect?.(place.sourcePlace)}
       style={{
-        background: "#FFFFFF",
+        background: "rgba(20, 30, 45, 0.7)",
         borderRadius: "16px",
-        padding: "12px",
-        boxShadow: "0 2px 12px rgba(0, 0, 0, 0.06)",
-        border: "1px solid rgba(0, 0, 0, 0.07)",
+        padding: "14px",
+        boxShadow: "0 2px 12px rgba(0, 0, 0, 0.15)",
+        border: "1px solid rgba(0, 206, 209, 0.2)",
         cursor: "pointer",
         transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
         display: "flex",
@@ -268,7 +268,7 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
             fontSize: "15px",
             fontWeight: "700",
             margin: 0,
-            color: "#1A1A1A",
+            color: "#E8ECEF",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -282,7 +282,7 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
         <p
           style={{
             fontSize: "12px",
-            color: "#888",
+            color: "#7C8490",
             margin: 0,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -312,7 +312,7 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
           <button
             type="button"
             onClick={onToggleFavorite}
-            style={{ ...actionBtnStyle, background: isFavorite ? "#FF5252" : "rgba(0,0,0,0.06)" }}
+            style={{ ...actionBtnStyle, background: isFavorite ? "#FF5252" : "rgba(0, 206, 209, 0.08)" }}
             aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           >
             {isFavorite ? "❤️" : "🤍"}
@@ -572,8 +572,8 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                 height: "92vh",
                 borderRadius: "16px",
               }),
-          background: "#FFFFFF",
-          border: isMobile ? "none" : "1px solid rgba(0, 0, 0, 0.1)",
+          background: "rgba(15, 20, 25, 0.98)",
+          border: isMobile ? "none" : "1px solid rgba(0, 206, 209, 0.15)",
           boxShadow: isMobile
             ? "0 -4px 24px rgba(0, 0, 0, 0.15)"
             : "0 24px 64px rgba(0, 0, 0, 0.2)",
@@ -599,7 +599,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
               padding: "12px 0 8px",
               display: "flex",
               justifyContent: "center",
-              background: "#FFFFFF",
+              background: "rgba(15, 20, 25, 0.98)",
               borderRadius: "20px 20px 0 0",
             }}
           >
@@ -608,7 +608,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                 width: "36px",
                 height: "4px",
                 borderRadius: "2px",
-                background: "rgba(0, 0, 0, 0.15)",
+                background: "rgba(255, 255, 255, 0.2)",
               }}
             />
           </div>
@@ -618,18 +618,18 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
         <div
           style={{
             padding: isMobile ? "12px 16px 16px" : "20px 24px",
-            borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
-            background: "#FFFFFF",
+            borderBottom: "1px solid rgba(0, 206, 209, 0.1)",
+            background: "rgba(15, 20, 25, 0.98)",
             flexShrink: 0,
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
-              <h2 style={{ fontSize: isMobile ? "18px" : "20px", fontWeight: "700", margin: 0, color: "#1A1A1A", display: "flex", alignItems: "center", gap: "8px" }}>
+              <h2 style={{ fontSize: isMobile ? "18px" : "20px", fontWeight: "700", margin: 0, color: "#E8ECEF", display: "flex", alignItems: "center", gap: "8px" }}>
                 <span>📍</span>
                 {t.places ?? "Explore Places"}
               </h2>
-              <p style={{ fontSize: isMobile ? "13px" : "14px", color: "#666", margin: "4px 0 0 0" }}>
+              <p style={{ fontSize: isMobile ? "13px" : "14px", color: "#9BA3AF", margin: "4px 0 0 0" }}>
                 {t.discoverBeaches ?? "Find beaches, restaurants & more"}
               </p>
             </div>
@@ -641,11 +641,11 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                   padding: isMobile ? "10px 16px" : "8px 16px",
                   minHeight: isMobile ? "44px" : "auto",
                   background: activeTab === "local" ? "#00CED1" : "transparent",
-                  border: activeTab === "local" ? "none" : "1px solid rgba(0, 0, 0, 0.12)",
+                  border: activeTab === "local" ? "none" : "1px solid rgba(0, 206, 209, 0.2)",
                   borderRadius: "8px",
                   fontSize: isMobile ? "14px" : "13px",
                   fontWeight: "600",
-                  color: activeTab === "local" ? "#FFF" : "#666",
+                  color: activeTab === "local" ? "#FFF" : "#9BA3AF",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -667,7 +667,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                   minWidth: isMobile ? "44px" : "auto",
                   minHeight: isMobile ? "44px" : "auto",
                   borderRadius: "8px",
-                  background: "rgba(0, 0, 0, 0.05)",
+                  background: "rgba(0, 206, 209, 0.08)",
                   border: "none",
                   fontSize: "20px",
                   cursor: "pointer",
@@ -684,7 +684,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
         </div>
 
         {/* Prominent search bar */}
-        <div style={{ padding: isMobile ? "12px 16px" : "16px 24px", borderBottom: "1px solid rgba(0, 0, 0, 0.08)" }}>
+        <div style={{ padding: isMobile ? "12px 16px" : "16px 24px", borderBottom: "1px solid rgba(0, 206, 209, 0.1)" }}>
           <div style={{ position: "relative" }}>
             <span style={{
               position: "absolute",
@@ -692,7 +692,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
               top: "50%",
               transform: "translateY(-50%)",
               fontSize: "18px",
-              color: "#999",
+              color: "#7C8490",
             }}>
               🔍
             </span>
@@ -705,13 +705,13 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
               style={{
                 width: "100%",
                 padding: isMobile ? "10px 40px" : "12px 44px",
-                background: "#F5F5F5",
+                background: "rgba(20, 30, 45, 0.8)",
                 border: "2px solid transparent",
                 borderRadius: "12px",
                 fontSize: "15px",
                 outline: "none",
                 transition: "all 0.2s",
-                color: "#333",
+                color: "#E8ECEF",
               }}
             />
             {searchInput && (
@@ -726,13 +726,14 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                   width: "24px",
                   height: "24px",
                   borderRadius: "50%",
-                  background: "rgba(0, 0, 0, 0.1)",
+                  background: "rgba(255, 255, 255, 0.1)",
                   border: "none",
                   fontSize: "14px",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  color: "#9BA3AF",
                 }}
               >
                 ×
@@ -744,7 +745,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
         {/* Category tabs */}
         <div style={{
           padding: isMobile ? "0 16px" : "0 24px",
-          borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
+          borderBottom: "1px solid rgba(0, 206, 209, 0.1)",
           overflowX: "auto",
           display: "flex",
           gap: "0",
@@ -771,7 +772,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                   borderBottom: isActive ? "2px solid #00CED1" : "2px solid transparent",
                   fontSize: "13px",
                   fontWeight: isActive ? "600" : "500",
-                  color: isActive ? "#00CED1" : "#666",
+                  color: isActive ? "#00CED1" : "#9BA3AF",
                   cursor: "pointer",
                   transition: "all 0.2s",
                   whiteSpace: "nowrap",
@@ -786,8 +787,8 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                   fontWeight: "600",
                   padding: "1px 5px",
                   borderRadius: "8px",
-                  background: isActive ? "rgba(0,206,209,0.15)" : "rgba(0,0,0,0.07)",
-                  color: isActive ? "#00CED1" : "#999",
+                  background: isActive ? "rgba(0,206,209,0.15)" : "rgba(0, 206, 209, 0.08)",
+                  color: isActive ? "#00CED1" : "#7C8490",
                 }}>
                   {count}
                 </span>
@@ -800,8 +801,8 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
         {activeTab === "restaurants" && (
           <div
             style={{
-              borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
-              background: "#FFFFFF",
+              borderBottom: "1px solid rgba(0, 206, 209, 0.1)",
+              background: "rgba(15, 20, 25, 0.98)",
               flexShrink: 0,
             }}
           >
@@ -819,11 +820,11 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          background: "#FFFFFF",
+          background: "rgba(15, 20, 25, 0.98)",
           flexShrink: 0,
-          borderBottom: "1px solid rgba(0,0,0,0.06)",
+          borderBottom: "1px solid rgba(0, 206, 209, 0.08)",
         }}>
-          <div style={{ fontSize: "13px", color: "#999", fontWeight: "500" }}>
+          <div style={{ fontSize: "13px", color: "#7C8490", fontWeight: "500" }}>
             {items.length} {items.length === 1 ? (t.place ?? "place") : (t.placePlural ?? "places")}
             {userLocation ? ` · 📍 ${t.nearYou ?? "near you"}` : ""}
           </div>
@@ -835,8 +836,8 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                 onClick={() => setSortBy(s)}
                 style={{
                   padding: "5px 11px",
-                  background: sortBy === s ? "#00CED1" : "rgba(0,0,0,0.06)",
-                  color: sortBy === s ? "#fff" : "#666",
+                  background: sortBy === s ? "#00CED1" : "rgba(0, 206, 209, 0.08)",
+                  color: sortBy === s ? "#FFF" : "#9BA3AF",
                   border: "none",
                   borderRadius: "8px",
                   fontSize: "12px",
@@ -898,7 +899,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "8px",
+                gap: "10px",
               }}
             >
               {items.map((place) => {

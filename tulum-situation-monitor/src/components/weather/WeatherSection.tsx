@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   formatTemp,
   formatTempFull,
@@ -122,7 +121,6 @@ export function WeatherSection({
   waterTemp,
   onRefresh,
 }: WeatherSectionProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
   const t = translations[lang] as Record<string, string>;
   const locale = lang === "es" ? "es-MX" : lang === "fr" ? "fr-FR" : "en-US";
 
@@ -256,78 +254,39 @@ export function WeatherSection({
 
   return (
     <div style={{ padding: "0 0 8px 0" }}>
-      <button
-        type="button"
-        onClick={() => setIsExpanded(!isExpanded)}
+      <div
         style={{
-          width: "100%",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          marginBottom: isExpanded ? "16px" : "0",
-          padding: "0 0 12px 0",
+          gap: "10px",
+          marginBottom: "8px",
+          padding: 0,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "18px" }}>🌤️</span>
-          <h2
-            style={{
-              fontSize: "12px",
-              fontWeight: "700",
-              color: "var(--text-secondary)",
-              textTransform: "uppercase",
-              letterSpacing: "0.8px",
-              margin: 0,
-            }}
-          >
-            {t.weatherConditions}
-          </h2>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onRefresh();
-            }}
-            style={{
-              background: "transparent",
-              border: "none",
-              color: loading ? "var(--tulum-turquoise)" : "var(--text-tertiary)",
-              fontSize: "12px",
-              cursor: "pointer",
-              animation: loading ? "spin 1s linear infinite" : "none",
-            }}
-            title="Refresh weather data"
-          >
-            🔄
-          </button>
-          <span
-            style={{
-              color: "var(--text-tertiary)",
-              fontSize: "18px",
-              transform: isExpanded ? "rotate(180deg)" : "rotate(0)",
-              transition: "transform 0.3s",
-            }}
-          >
-            ▼
-          </span>
-        </div>
-      </button>
+        <span style={{ fontSize: "18px" }}>🌤️</span>
+        <h2
+          style={{
+            fontSize: "12px",
+            fontWeight: "700",
+            color: "var(--text-secondary)",
+            textTransform: "uppercase",
+            letterSpacing: "0.8px",
+            margin: 0,
+          }}
+        >
+          {t.weatherConditions}
+        </h2>
+      </div>
 
-      {isExpanded && (
-        <div style={{ animation: "slideDown 0.3s ease-out" }}>
+      <div>
           <div
             style={{
-              background: "linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 100%)",
+              background: "linear-gradient(135deg, #1A2332 0%, #0F1419 100%)",
               borderRadius: "24px",
               padding: "24px",
-              border: "2px solid rgba(255, 255, 255, 0.8)",
+              border: "2px solid rgba(0, 206, 209, 0.2)",
               marginBottom: "16px",
-              boxShadow: "0 12px 40px rgba(0, 206, 209, 0.2)",
+              boxShadow: "0 12px 40px rgba(0, 0, 0, 0.4)",
             }}
           >
             <div
@@ -343,7 +302,7 @@ export function WeatherSection({
                   style={{
                     fontSize: "56px",
                     fontWeight: "300",
-                    color: "var(--tulum-ocean)",
+                    color: "#E8ECEF",
                     lineHeight: 1,
                     marginBottom: "8px",
                   }}
@@ -352,7 +311,7 @@ export function WeatherSection({
                 </div>
                 <div
                   style={{
-                    color: "var(--tulum-aqua)",
+                    color: "#00CED1",
                     fontSize: "14px",
                     fontWeight: "600",
                   }}
@@ -364,7 +323,7 @@ export function WeatherSection({
                 <div style={{ fontSize: "48px", marginBottom: "8px" }}>{weather!.icon}</div>
                 <div
                   style={{
-                    color: "var(--text-secondary)",
+                    color: "#9BA3AF",
                     fontSize: "13px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -381,9 +340,9 @@ export function WeatherSection({
                 gridTemplateColumns: "1fr 1fr",
                 gap: "16px",
                 padding: "20px",
-                background: "rgba(255, 255, 255, 0.6)",
+                background: "rgba(0, 206, 209, 0.06)",
                 borderRadius: "20px",
-                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(0, 206, 209, 0.1)",
               }}
             >
               <WeatherMetric icon="🌊" label={waveHeight} value="—" />
@@ -591,7 +550,6 @@ export function WeatherSection({
             </div>
           )}
         </div>
-      )}
     </div>
   );
 }

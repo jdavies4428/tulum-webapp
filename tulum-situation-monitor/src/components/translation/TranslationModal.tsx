@@ -81,7 +81,8 @@ function TextMode({
             padding: "14px",
             borderRadius: "12px",
             border: "2px solid rgba(0, 206, 209, 0.3)",
-            background: "rgba(255, 255, 255, 0.9)",
+            background: "rgba(20, 30, 45, 0.8)",
+            color: "#E8ECEF",
             fontSize: "15px",
             fontWeight: "600",
             cursor: "pointer",
@@ -108,6 +109,7 @@ function TextMode({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            color: "#00CED1",
           }}
         >
           ⇄
@@ -120,7 +122,8 @@ function TextMode({
             padding: "14px",
             borderRadius: "12px",
             border: "2px solid rgba(0, 206, 209, 0.3)",
-            background: "rgba(255, 255, 255, 0.9)",
+            background: "rgba(20, 30, 45, 0.8)",
+            color: "#E8ECEF",
             fontSize: "15px",
             fontWeight: "600",
             cursor: "pointer",
@@ -136,7 +139,7 @@ function TextMode({
 
       <div
         style={{
-          background: "rgba(255, 255, 255, 0.9)",
+          background: "rgba(20, 30, 45, 0.8)",
           borderRadius: "16px",
           padding: "20px",
           marginBottom: "16px",
@@ -156,6 +159,7 @@ function TextMode({
             resize: "vertical",
             outline: "none",
             fontFamily: "inherit",
+            color: "#E8ECEF",
           }}
         />
       </div>
@@ -187,7 +191,7 @@ function TextMode({
       {translatedText && (
         <div
           style={{
-            background: "rgba(80, 200, 120, 0.15)",
+            background: "rgba(80, 200, 120, 0.12)",
             borderRadius: "16px",
             padding: "20px",
             border: "2px solid rgba(80, 200, 120, 0.3)",
@@ -205,7 +209,7 @@ function TextMode({
           >
             {t.translation ?? "Translation"}:
           </div>
-          <div style={{ fontSize: "16px", color: "#333", lineHeight: "1.6" }}>
+          <div style={{ fontSize: "16px", color: "#E8ECEF", lineHeight: "1.6" }}>
             {translatedText}
           </div>
 
@@ -268,7 +272,7 @@ function PhrasesMode({
             style={{
               fontSize: "14px",
               fontWeight: "700",
-              color: "#666",
+              color: "#9BA3AF",
               marginBottom: "8px",
               display: "block",
             }}
@@ -283,7 +287,8 @@ function PhrasesMode({
               padding: "14px",
               borderRadius: "12px",
               border: "2px solid rgba(0, 206, 209, 0.3)",
-              background: "rgba(255, 255, 255, 0.9)",
+              background: "rgba(20, 30, 45, 0.8)",
+              color: "#E8ECEF",
               fontSize: "15px",
               fontWeight: "600",
               cursor: "pointer",
@@ -326,7 +331,7 @@ function PhrasesMode({
           style={{
             textAlign: "center",
             padding: "32px 16px",
-            color: "#666",
+            color: "#9BA3AF",
             fontSize: "15px",
           }}
         >
@@ -355,7 +360,7 @@ function PhrasesMode({
                     borderRadius: "14px",
                     background: isSelected
                       ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
-                      : "rgba(255, 255, 255, 0.9)",
+                      : "rgba(20, 30, 45, 0.8)",
                     border: isSelected ? "2px solid #00CED1" : "2px solid rgba(0, 206, 209, 0.2)",
                     cursor: "pointer",
                     display: "flex",
@@ -371,7 +376,7 @@ function PhrasesMode({
                     style={{
                       fontSize: 12,
                       fontWeight: 700,
-                      color: isSelected ? "#FFF" : "#333",
+                      color: isSelected ? "#FFF" : "#E8ECEF",
                       textAlign: "center",
                       lineHeight: 1.2,
                     }}
@@ -387,7 +392,7 @@ function PhrasesMode({
           {selectedCategory ? (
             <div
               style={{
-                background: "rgba(255, 255, 255, 0.9)",
+                background: "rgba(20, 30, 45, 0.6)",
                 borderRadius: "16px",
                 padding: "16px",
                 border: "2px solid rgba(0, 206, 209, 0.2)",
@@ -397,7 +402,7 @@ function PhrasesMode({
                 style={{
                   fontSize: "16px",
                   fontWeight: "700",
-                  color: "#333",
+                  color: "#E8ECEF",
                   marginBottom: "12px",
                   display: "flex",
                   alignItems: "center",
@@ -423,10 +428,10 @@ function PhrasesMode({
                     }}
                   >
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: "13px", color: "#666", marginBottom: "2px" }}>
+                      <div style={{ fontSize: "13px", color: "#9BA3AF", marginBottom: "2px" }}>
                         {p.english}
                       </div>
-                      <div style={{ fontSize: "15px", color: "#0099CC", fontWeight: "700" }}>
+                      <div style={{ fontSize: "15px", color: "#00CED1", fontWeight: "700" }}>
                         {p.translated}
                       </div>
                     </div>
@@ -456,7 +461,7 @@ function PhrasesMode({
               style={{
                 textAlign: "center",
                 padding: "24px 16px",
-                color: "#999",
+                color: "#7C8490",
                 fontSize: "14px",
                 fontWeight: 600,
               }}
@@ -569,10 +574,10 @@ export function TranslationModal({ lang, isOpen, onClose }: TranslationModalProp
           maxWidth: "700px",
           height: "min(90vh, 600px)",
           maxHeight: "90vh",
-          background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+          background: "linear-gradient(135deg, #1A2332 0%, #0F1419 100%)",
           borderRadius: "32px",
           border: "3px solid rgba(0, 206, 209, 0.3)",
-          boxShadow: "0 24px 80px rgba(0, 206, 209, 0.3)",
+          boxShadow: "0 24px 80px rgba(0, 0, 0, 0.5)",
           zIndex: 9999,
           overflow: "hidden",
           display: "flex",
@@ -583,7 +588,7 @@ export function TranslationModal({ lang, isOpen, onClose }: TranslationModalProp
         <div
           style={{
             padding: "24px",
-            background: "rgba(255, 255, 255, 0.9)",
+            background: "rgba(15, 20, 25, 0.95)",
             borderBottom: "2px solid rgba(0, 206, 209, 0.2)",
           }}
         >
@@ -619,11 +624,12 @@ export function TranslationModal({ lang, isOpen, onClose }: TranslationModalProp
                 width: "40px",
                 height: "40px",
                 borderRadius: "50%",
-                background: "rgba(0, 0, 0, 0.1)",
+                background: "rgba(255, 255, 255, 0.1)",
                 border: "none",
                 fontSize: "20px",
                 cursor: "pointer",
                 transition: "all 0.3s",
+                color: "#9BA3AF",
               }}
             >
               ✕
@@ -647,12 +653,12 @@ export function TranslationModal({ lang, isOpen, onClose }: TranslationModalProp
                   background:
                     mode === m.id
                       ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
-                      : "rgba(255, 255, 255, 0.6)",
-                  border: mode === m.id ? "2px solid #00CED1" : "2px solid transparent",
+                      : "rgba(20, 30, 45, 0.8)",
+                  border: mode === m.id ? "2px solid #00CED1" : "2px solid rgba(0, 206, 209, 0.15)",
                   borderRadius: "12px",
                   fontSize: "13px",
                   fontWeight: "700",
-                  color: mode === m.id ? "#FFF" : "#333",
+                  color: mode === m.id ? "#FFF" : "#9BA3AF",
                   cursor: "pointer",
                   display: "flex",
                   flexDirection: "column",
@@ -698,7 +704,7 @@ export function TranslationModal({ lang, isOpen, onClose }: TranslationModalProp
                 style={{
                   textAlign: "center",
                   padding: "40px",
-                  color: "#666",
+                  color: "#9BA3AF",
                   fontSize: "16px",
                 }}
               >
