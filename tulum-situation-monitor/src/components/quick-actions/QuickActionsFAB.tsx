@@ -185,128 +185,147 @@ export function QuickActionsFAB() {
       {modal === "dailyUpdates" && <DailyUpdatesModal lang={lang} onClose={closeModal} />}
       {modal === "tulumNow" && <TulumRightNowModal lang={lang} onClose={closeModal} />}
 
+      {/* Expanded grid overlay */}
       {isExpanded && (
         <div
           onClick={() => setIsExpanded(false)}
-          className="spring-slide-up"
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(0, 0, 0, 0.6)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
+            background: "rgba(0, 0, 0, 0.7)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
             zIndex: isMobile && isMapPage ? 10001 : 998,
-            animation: "fadeIn 0.3s ease-out",
-          }}
-          aria-hidden
-        />
-      )}
-
-      <div
-        style={{
-          position: "fixed",
-          ...positionStyles,
-          zIndex: isMobile && isMapPage ? 10002 : 999,
-          display: "flex",
-          flexDirection: "column-reverse",
-          alignItems: "flex-end",
-          gap: spacing.md,
-        }}
-      >
-        {isExpanded &&
-          visibleActions.map((action, index) => (
-            <button
-              key={action.id}
-              type="button"
-              onClick={() => handleAction(action.id)}
-              className="quick-action-fab-item hover-scale"
-              data-index={index}
-              style={{
-                width: isMobile && isMapPage ? 46 : isMobile ? 54 : 60,
-                minWidth: isMobile && isMapPage ? 46 : isMobile ? 54 : 60,
-                height: isMobile && isMapPage ? 46 : isMobile ? 54 : 60,
-                minHeight: isMobile && isMapPage ? 46 : isMobile ? 54 : 60,
-                borderRadius: "50%",
-                background:
-                  action.priority === "critical"
-                    ? "linear-gradient(135deg, #FF0000 0%, #CC0000 100%)"
-                    : `linear-gradient(135deg, ${action.color}F0 0%, ${action.color}CC 100%)`,
-                border: `2px solid ${action.priority === "critical" ? "rgba(255, 0, 0, 0.3)" : `${action.color}40`}`,
-                boxShadow: action.priority === "critical"
-                  ? "0 6px 20px rgba(255, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2)"
-                  : `0 6px 20px ${action.color}40, 0 2px 8px rgba(0, 0, 0, 0.15)`,
-                cursor: "pointer",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "2px",
-                position: "relative",
-                animation: `spring-slide-up 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.05}s both`,
-                transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-              }}
-            >
-              <span style={{ fontSize: isMobile && isMapPage ? 18 : isMobile ? 22 : 26, filter: "drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2))" }}>{action.icon}</span>
-              <span
-                style={{
-                  fontSize: isMobile ? 8 : 9,
-                  fontWeight: 800,
-                  color: "#FFF",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.3px",
-                  textShadow: "0 1px 3px rgba(0, 0, 0, 0.3)",
-                  lineHeight: 1,
-                }}
-              >
-                {t[action.labelKey] ?? action.labelKey}
-              </span>
-              {action.priority === "critical" && (
-                <span
-                  className="quick-action-sos-pulse"
-                  style={{
-                    position: "absolute",
-                    inset: -4,
-                    borderRadius: "50%",
-                    border: "2px solid #FF0000",
-                    pointerEvents: "none",
-                  }}
-                />
-              )}
-            </button>
-          ))}
-
-        <button
-          type="button"
-          onClick={() => setIsExpanded(!isExpanded)}
-          aria-expanded={isExpanded}
-          aria-label={isExpanded ? "Close quick actions" : "Open quick actions"}
-          className="quick-action-fab-main shadow-glow"
-          style={{
-            width: isMobile && isMapPage ? 48 : isMobile ? 60 : 68,
-            height: isMobile && isMapPage ? 48 : isMobile ? 60 : 68,
-            borderRadius: "50%",
-            background: isExpanded
-              ? "linear-gradient(135deg, #FF6B6BF0 0%, #FF5252CC 100%)"
-              : "linear-gradient(135deg, #00CED1F0 0%, #00BABACC 100%)",
-            border: isExpanded
-              ? "2px solid rgba(255, 107, 107, 0.3)"
-              : "2px solid rgba(0, 206, 209, 0.3)",
-            boxShadow: isExpanded
-              ? "0 8px 32px rgba(255, 107, 107, 0.4), 0 3px 12px rgba(0, 0, 0, 0.2)"
-              : "0 8px 32px rgba(0, 206, 209, 0.4), 0 3px 12px rgba(0, 0, 0, 0.2)",
-            cursor: "pointer",
-            fontSize: isMobile && isMapPage ? 22 : isMobile ? 26 : 32,
+            animation: "fadeIn 0.2s ease-out",
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            transform: isExpanded ? "rotate(45deg) scale(1.05)" : "rotate(0deg) scale(1)",
-            transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
-            filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))",
+            padding: "24px",
           }}
         >
-          ⚡
-        </button>
-      </div>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "12px",
+              width: "100%",
+              maxWidth: "320px",
+              animation: "springSlideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            }}
+          >
+            {visibleActions.map((action) => (
+              <button
+                key={action.id}
+                type="button"
+                onClick={() => handleAction(action.id)}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  padding: "20px 12px",
+                  borderRadius: "16px",
+                  background: action.priority === "critical"
+                    ? "rgba(255, 0, 0, 0.15)"
+                    : "rgba(20, 30, 45, 0.85)",
+                  border: action.priority === "critical"
+                    ? "1px solid rgba(255, 0, 0, 0.4)"
+                    : "1px solid rgba(0, 206, 209, 0.15)",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  position: "relative",
+                }}
+              >
+                <span style={{ fontSize: 32, lineHeight: 1 }}>{action.icon}</span>
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: action.priority === "critical" ? "#FF6B6B" : "#E8ECEF",
+                    textAlign: "center",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {t[action.labelKey] ?? action.labelKey}
+                </span>
+                {action.priority === "critical" && (
+                  <span
+                    className="quick-action-sos-pulse"
+                    style={{
+                      position: "absolute",
+                      inset: -3,
+                      borderRadius: "16px",
+                      border: "2px solid #FF0000",
+                      pointerEvents: "none",
+                    }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={() => setIsExpanded(false)}
+            style={{
+              marginTop: "20px",
+              width: "56px",
+              height: "56px",
+              borderRadius: "50%",
+              background: "rgba(255, 255, 255, 0.1)",
+              border: "2px solid rgba(255, 255, 255, 0.25)",
+              color: "#FFF",
+              fontSize: "24px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.2s ease",
+            }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      {/* FAB trigger button */}
+      {!isExpanded && (
+        <div
+          style={{
+            position: "fixed",
+            ...positionStyles,
+            zIndex: isMobile && isMapPage ? 10002 : 999,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setIsExpanded(true)}
+            aria-label="Open quick actions"
+            className="shadow-glow"
+            style={{
+              width: isMobile && isMapPage ? 48 : isMobile ? 56 : 68,
+              height: isMobile && isMapPage ? 48 : isMobile ? 56 : 68,
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, #00CED1F0 0%, #00BABACC 100%)",
+              border: "2px solid rgba(0, 206, 209, 0.3)",
+              boxShadow: "0 8px 32px rgba(0, 206, 209, 0.4), 0 3px 12px rgba(0, 0, 0, 0.2)",
+              cursor: "pointer",
+              fontSize: isMobile && isMapPage ? 22 : isMobile ? 24 : 32,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+              filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15))",
+            }}
+          >
+            ⚡
+          </button>
+        </div>
+      )}
     </>
   );
 }
