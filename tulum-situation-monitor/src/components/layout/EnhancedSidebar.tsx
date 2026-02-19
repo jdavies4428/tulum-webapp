@@ -78,7 +78,7 @@ export function EnhancedSidebar({
   const [translationOpen, setTranslationOpen] = useState(false);
   const [localEventsOpen, setLocalEventsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  
+  const conciergeRef = useRef<HTMLDivElement>(null);
   const { events: localEvents, loading: eventsLoading } = useLocalEvents();
   const eventsScrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -396,33 +396,62 @@ export function EnhancedSidebar({
               </div>
             </div>
             <div
-              onClick={() => router.push(`/concierge?lang=${lang}`)}
-              role="button"
-              tabIndex={0}
-              style={{ display: "flex", gap: "8px", marginTop: "8px", cursor: "pointer" }}
+              style={{ display: "flex", gap: "8px", marginTop: "8px" }}
             >
               <div
+                ref={conciergeRef}
+                contentEditable
+                suppressContentEditableWarning
+                role="textbox"
+                data-placeholder={tAny.conciergePlaceholder ?? "Ask your Tulum concierge"}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    const q = conciergeRef.current?.textContent?.trim() ?? "";
+                    if (q) {
+                      router.push(`/concierge?lang=${lang}&q=${encodeURIComponent(q)}`);
+                      if (conciergeRef.current) conciergeRef.current.textContent = "";
+                    } else {
+                      router.push(`/concierge?lang=${lang}`);
+                    }
+                  }
+                }}
                 style={{
                   flex: 1,
                   padding: "10px 14px",
                   borderRadius: "9999px",
                   border: "1px solid rgba(0, 206, 209, 0.15)",
                   background: "rgba(15, 20, 25, 0.8)",
-                  color: "#7C8490",
+                  color: "#E8ECEF",
                   fontSize: "16px",
-                  userSelect: "none",
+                  outline: "none",
+                  minHeight: "38px",
+                  maxHeight: "38px",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  lineHeight: "18px",
                 }}
-              >
-                {tAny.conciergePlaceholder ?? "Ask your Tulum concierge"}
-              </div>
-              <div
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const q = conciergeRef.current?.textContent?.trim() ?? "";
+                  if (q) {
+                    router.push(`/concierge?lang=${lang}&q=${encodeURIComponent(q)}`);
+                    if (conciergeRef.current) conciergeRef.current.textContent = "";
+                  } else {
+                    router.push(`/concierge?lang=${lang}`);
+                  }
+                }}
                 style={{
                   width: "38px",
                   height: "38px",
                   borderRadius: "9999px",
                   background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
+                  border: "none",
                   color: "#FFF",
                   fontSize: "16px",
+                  cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -430,7 +459,7 @@ export function EnhancedSidebar({
                 }}
               >
                 ➤
-              </div>
+              </button>
             </div>
           </div>
         </div>

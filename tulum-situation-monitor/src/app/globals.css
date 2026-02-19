@@ -1467,3 +1467,10 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* contentEditable placeholder */
+[contenteditable][data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: #7C8490;
+  pointer-events: none;
+}
