@@ -92,7 +92,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#FFFEF9" />
+        <meta name="theme-color" content="#0F1419" />
         <link rel="manifest" href="/manifest.json" />
         <link
           rel="stylesheet"

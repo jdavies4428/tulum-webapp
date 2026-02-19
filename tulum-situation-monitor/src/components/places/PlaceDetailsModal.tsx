@@ -127,12 +127,15 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
             width: "40px",
             height: "40px",
             borderRadius: "50%",
-            border: "2px solid rgba(0, 206, 209, 0.3)",
-            color: "var(--tulum-ocean)",
+            background: "rgba(0, 0, 0, 0.6)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            border: "2px solid rgba(255, 255, 255, 0.25)",
+            color: "#FFFFFF",
             fontSize: "20px",
             cursor: "pointer",
             zIndex: 10,
-            boxShadow: "0 4px 12px rgba(0, 206, 209, 0.2)",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.4)",
           }}
         >
           ✕

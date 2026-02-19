@@ -1,4 +1,9 @@
-   # Tulum Discovery - Web MVP
+---
+description: 
+alwaysApply: true
+---
+
+# Tulum Discovery - Web MVP
 
    This is a Next.js 14 Progressive Web App for Tulum tourism.
 
@@ -38,4 +43,3 @@
    /components - Reusable UI components
    /lib - Utilities, API clients, types
    /public - Static assets
-   

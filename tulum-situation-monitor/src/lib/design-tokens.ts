@@ -51,11 +51,11 @@ export const colors = {
   warning: '#FFD700',
   error: '#EF4444',
 
-  // Backgrounds (glass effects)
+  // Backgrounds (glass effects — dark theme)
   glass: {
-    light: 'rgba(255, 255, 255, 0.85)',
-    medium: 'rgba(255, 255, 255, 0.65)',
-    dark: 'rgba(0, 0, 0, 0.4)',
+    light: 'rgba(20, 30, 45, 0.85)',
+    medium: 'rgba(20, 30, 45, 0.65)',
+    dark: 'rgba(10, 15, 22, 0.7)',
   },
 } as const;
 
@@ -63,6 +63,12 @@ export const colors = {
 // TYPOGRAPHY - Strict Scale (only use these sizes)
 // ============================================================================
 export const typography = {
+  // Font families
+  fontFamily: {
+    sans: '"Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    serif: 'var(--font-serif)',
+  },
+
   // Font sizes: 12, 14, 16, 20, 24, 32, 48 (7 sizes max)
   size: {
     xs: '12px',    // Captions, labels
@@ -109,27 +115,27 @@ export const spacing = {
 // ============================================================================
 export const shadows = {
   none: 'none',
-  sm: '0 2px 8px rgba(0, 0, 0, 0.06)',      // Subtle depth
-  md: '0 4px 16px rgba(0, 0, 0, 0.08)',     // Card elevation
-  lg: '0 8px 32px rgba(0, 0, 0, 0.12)',     // Modal, floating elements
-  glow: '0 0 24px rgba(0, 206, 209, 0.25)', // Accent glow (use sparingly)
+  sm: '0 2px 8px rgba(0, 0, 0, 0.3)',       // Subtle depth
+  md: '0 4px 16px rgba(0, 0, 0, 0.4)',      // Card elevation
+  lg: '0 8px 32px rgba(0, 0, 0, 0.5)',      // Modal, floating elements
+  glow: '0 0 24px rgba(0, 206, 209, 0.3)',  // Accent glow (use sparingly)
 } as const;
 
 // ============================================================================
 // GLASSMORPHISM - Tulum's Signature Look
 // ============================================================================
 export const glass = {
-  // Light glass (primary choice)
+  // Primary glass (dark theme)
   light: {
-    background: 'rgba(255, 255, 255, 0.85)',
+    background: 'rgba(20, 30, 45, 0.85)',
     backdropFilter: 'blur(20px)',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
+    border: '1px solid rgba(0, 206, 209, 0.12)',
   },
-  // Dark glass (overlays, modals)
+  // Deep glass (overlays, modals)
   dark: {
-    background: 'rgba(0, 0, 0, 0.4)',
+    background: 'rgba(10, 15, 22, 0.7)',
     backdropFilter: 'blur(20px)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    border: '1px solid rgba(0, 206, 209, 0.1)',
   },
 } as const;
 
@@ -215,7 +221,7 @@ export const buttonVariants = {
   },
   ghost: {
     background: 'transparent',
-    color: colors.neutral.gray[600],
+    color: '#9BA3AF',
     border: 'none',
     boxShadow: shadows.none,
   },
@@ -228,8 +234,8 @@ export const buttonVariants = {
   glass: {
     background: glass.light.background,
     backdropFilter: glass.light.backdropFilter,
-    color: colors.neutral.gray[700],
-    border: `1px solid ${colors.neutral.gray[200]}`,
+    color: '#E8ECEF',
+    border: '1px solid rgba(0, 206, 209, 0.15)',
     boxShadow: shadows.sm,
   },
 } as const;
@@ -250,8 +256,8 @@ export const card = {
 
   // Solid: Alternative when glass doesn't work
   solid: {
-    background: colors.neutral.white,
-    border: `1px solid ${colors.neutral.gray[200]}`,
+    background: '#1A2332',
+    border: '1px solid rgba(0, 206, 209, 0.1)',
     shadow: shadows.md,
     borderRadius: radius.md,
     padding: spacing.lg,
@@ -261,13 +267,13 @@ export const card = {
 // Backward compatibility: cardVariants (for existing components)
 export const cardVariants = {
   flat: {
-    background: colors.neutral.white,
-    border: `1px solid ${colors.neutral.gray[200]}`,
+    background: '#1A2332',
+    border: '1px solid rgba(0, 206, 209, 0.1)',
     shadow: shadows.none,
     hoverShadow: shadows.sm,
   },
   elevated: {
-    background: colors.neutral.white,
+    background: '#1A2332',
     border: 'none',
     shadow: shadows.md,
     hoverShadow: shadows.lg,

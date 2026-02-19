@@ -35,19 +35,21 @@ const DISCOVER_ITEMS: {
 ];
 
 const CARD_GRADIENTS: Record<string, string> = {
-  transportation: "linear-gradient(135deg, #B3E5FC 0%, #81D4FA 100%)",
-  foodDelivery: "linear-gradient(135deg, #F8BBD0 0%, #F48FB1 100%)",
-  itinerary: "linear-gradient(135deg, #DCEDC8 0%, #C5E1A5 100%)",
-  translation: "linear-gradient(135deg, #E1BEE7 0%, #CE93D8 100%)",
-  shopLocal: "linear-gradient(135deg, #FFE0B2 0%, #FFCC80 100%)",
-  healing: "linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%)",
-  excursions: "linear-gradient(135deg, #B3E5FC 0%, #81D4FA 100%)",
-  marketplace: "linear-gradient(135deg, #E1BEE7 0%, #CE93D8 100%)",
-  yogaClasses: "linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)",
-  communityBoard: "linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%)",
-  photoMap: "linear-gradient(135deg, #B2DFDB 0%, #80CBC4 100%)",
-  events: "linear-gradient(135deg, #DCEDC8 0%, #C5E1A5 100%)",
+  transportation: "linear-gradient(135deg, rgba(0, 150, 200, 0.15) 0%, rgba(0, 206, 209, 0.06) 100%)",
+  foodDelivery: "linear-gradient(135deg, rgba(255, 107, 107, 0.15) 0%, rgba(255, 142, 83, 0.06) 100%)",
+  itinerary: "linear-gradient(135deg, rgba(80, 200, 120, 0.15) 0%, rgba(0, 206, 209, 0.06) 100%)",
+  translation: "linear-gradient(135deg, rgba(175, 82, 222, 0.15) 0%, rgba(175, 82, 222, 0.06) 100%)",
+  shopLocal: "linear-gradient(135deg, rgba(255, 214, 0, 0.15) 0%, rgba(255, 214, 0, 0.06) 100%)",
+  healing: "linear-gradient(135deg, rgba(80, 200, 120, 0.12) 0%, rgba(0, 212, 106, 0.06) 100%)",
+  excursions: "linear-gradient(135deg, rgba(0, 150, 200, 0.15) 0%, rgba(0, 206, 209, 0.06) 100%)",
+  marketplace: "linear-gradient(135deg, rgba(175, 82, 222, 0.15) 0%, rgba(175, 82, 222, 0.06) 100%)",
+  yogaClasses: "linear-gradient(135deg, rgba(80, 200, 120, 0.12) 0%, rgba(0, 212, 106, 0.06) 100%)",
+  communityBoard: "linear-gradient(135deg, rgba(255, 214, 0, 0.12) 0%, rgba(255, 214, 0, 0.06) 100%)",
+  photoMap: "linear-gradient(135deg, rgba(0, 206, 209, 0.15) 0%, rgba(0, 206, 209, 0.06) 100%)",
+  events: "linear-gradient(135deg, rgba(80, 200, 120, 0.15) 0%, rgba(0, 206, 209, 0.06) 100%)",
 };
+
+const CARD_BG = "rgba(20, 30, 45, 0.85)";
 
 function getHref(id: string, lang: Lang): string | undefined {
   const base = (path: string) => `${path}?lang=${lang}`;
@@ -94,15 +96,16 @@ function DiscoverCard({
       style={{
         aspectRatio: item.size === "large" ? "2/1" : "1/1",
         borderRadius: "24px",
-        background: gradient,
+        backgroundColor: CARD_BG,
+        backgroundImage: gradient,
         padding: 16,
         cursor: href ? "pointer" : "default",
         position: "relative",
         overflow: "hidden",
-        border: "2px solid rgba(255, 255, 255, 0.5)",
+        border: "1px solid rgba(0, 206, 209, 0.12)",
         boxShadow: hovered
-          ? "0 12px 40px rgba(0, 0, 0, 0.12)"
-          : "0 4px 20px rgba(0, 0, 0, 0.08)",
+          ? "0 12px 40px rgba(0, 0, 0, 0.4)"
+          : "0 4px 20px rgba(0, 0, 0, 0.2)",
         transition: "all 0.3s ease",
         transform: hovered ? "translateY(-4px)" : "translateY(0)",
         display: "flex",
@@ -119,7 +122,7 @@ function DiscoverCard({
           width: "50%",
           height: "50%",
           borderRadius: "50%",
-          background: "rgba(255, 255, 255, 0.15)",
+          background: "rgba(0, 206, 209, 0.05)",
           filter: "blur(30px)",
           pointerEvents: "none",
         }}
@@ -142,9 +145,9 @@ function DiscoverCard({
           style={{
             fontSize: 18,
             fontWeight: 800,
-            color: "#1a1a1a",
+            color: "#E8ECEF",
             margin: 0,
-            textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)",
+            textShadow: "none",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -156,7 +159,7 @@ function DiscoverCard({
           className="discover-card-desc"
           style={{
             fontSize: 13,
-            color: "#333",
+            color: "#9BA3AF",
             margin: 0,
             fontWeight: 600,
             opacity: 0.9,
@@ -177,7 +180,7 @@ function DiscoverCard({
             width: 36,
             height: 36,
             borderRadius: "50%",
-            background: "rgba(255, 255, 255, 0.4)",
+            background: "rgba(0, 206, 209, 0.15)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -220,11 +223,11 @@ export default function DiscoverPage() {
   return (
     <div
       style={{
-        height: "100dvh",
+        minHeight: "100dvh",
         overflowY: "auto",
-        overflowX: "auto",
+        overflowX: "hidden",
         WebkitOverflowScrolling: "touch",
-        background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+        background: "#0F1419",
         color: "var(--text-primary)",
       }}
     >
@@ -256,13 +259,13 @@ export default function DiscoverPage() {
               width: "48px",
               height: "48px",
               borderRadius: "50%",
-              background: "rgba(255, 255, 255, 0.9)",
-              border: "2px solid rgba(0, 206, 209, 0.2)",
-              color: "var(--tulum-ocean)",
+              background: "rgba(0, 206, 209, 0.08)",
+              border: "1px solid rgba(0, 206, 209, 0.15)",
+              color: "#9BA3AF",
               fontSize: "20px",
               textDecoration: "none",
               flexShrink: 0,
-              boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
+              boxShadow: "none",
             }}
           >
             ←
@@ -284,7 +287,7 @@ export default function DiscoverPage() {
             <p
               style={{
                 fontSize: "clamp(14px, 2vw, 18px)",
-                color: "#666",
+                color: "#7C8490",
                 margin: 0,
               }}
             >

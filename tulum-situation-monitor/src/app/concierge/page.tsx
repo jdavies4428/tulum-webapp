@@ -18,6 +18,16 @@ export default function ConciergePage() {
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const hasAutoSent = useRef(false);
+
+  // Auto-send query from ?q= param (from sidebar chat input)
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q && !hasAutoSent.current && messages.length === 0) {
+      hasAutoSent.current = true;
+      sendMessage(q);
+    }
+  }, [searchParams, messages.length, sendMessage]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {

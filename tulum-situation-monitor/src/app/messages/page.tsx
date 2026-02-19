@@ -38,12 +38,12 @@ export default function MessagesPage() {
           alignItems: "center",
           justifyContent: "center",
           gap: 24,
-          background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+          background: "#0F1419",
           padding: 24,
         }}
       >
         <div style={{ fontSize: 64 }}>💬</div>
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: "#333" }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: "#E8ECEF" }}>
           {t.signInToChat ?? "Sign in to view messages"}
         </h2>
         <Link
@@ -68,15 +68,16 @@ export default function MessagesPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
+        background: "#0F1419",
         paddingBottom: 80,
       }}
     >
       <header
         style={{
           padding: 24,
-          background: "rgba(255, 255, 255, 0.9)",
-          borderBottom: "2px solid rgba(0, 206, 209, 0.2)",
+          background: "rgba(15, 20, 25, 0.95)",
+          backdropFilter: "blur(24px)",
+          borderBottom: "1px solid rgba(0, 206, 209, 0.1)",
         }}
       >
         <h1
@@ -92,7 +93,7 @@ export default function MessagesPage() {
         >
           {t.messages ?? "Messages"}
         </h1>
-        <p style={{ fontSize: 15, color: "#666", margin: 0 }}>
+        <p style={{ fontSize: 15, color: "#7C8490", margin: 0 }}>
           {conversations.length}{" "}
           {conversations.length === 1
             ? (t.conversation ?? "conversation")
@@ -106,7 +107,7 @@ export default function MessagesPage() {
             style={{
               textAlign: "center",
               padding: 60,
-              color: "#666",
+              color: "#7C8490",
               fontSize: 16,
             }}
           >
@@ -117,7 +118,7 @@ export default function MessagesPage() {
             style={{
               textAlign: "center",
               padding: 60,
-              color: "#666",
+              color: "#7C8490",
               fontSize: 16,
             }}
           >
@@ -207,10 +208,10 @@ function ConversationCard({
         gap: 12,
         padding: 16,
         marginBottom: 12,
-        background: "rgba(255, 255, 255, 0.95)",
-        borderRadius: 20,
-        border: "2px solid rgba(0, 206, 209, 0.1)",
-        boxShadow: "0 4px 16px rgba(0, 0, 0, 0.05)",
+        background: "rgba(20, 30, 45, 0.6)",
+        borderRadius: 16,
+        border: "1px solid rgba(0, 206, 209, 0.12)",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
         textDecoration: "none",
         color: "inherit",
       }}
@@ -257,12 +258,12 @@ function ConversationCard({
             style={{
               fontSize: 16,
               fontWeight: 700,
-              color: "#333",
+              color: "#E8ECEF",
             }}
           >
             {other.display_name}
           </span>
-          <span style={{ fontSize: 12, color: "#999" }}>
+          <span style={{ fontSize: 12, color: "#7C8490" }}>
             {formatChatTimestamp(ts)}
           </span>
         </div>
@@ -276,7 +277,7 @@ function ConversationCard({
           <span
             style={{
               fontSize: 14,
-              color: unread > 0 ? "#333" : "#999",
+              color: unread > 0 ? "#E8ECEF" : "#7C8490",
               fontWeight: unread > 0 ? 600 : 400,
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -327,7 +328,7 @@ function EmptyChats({
         style={{
           fontSize: 20,
           fontWeight: 700,
-          color: "#333",
+          color: "#E8ECEF",
           marginBottom: 8,
         }}
       >
@@ -336,7 +337,7 @@ function EmptyChats({
       <p
         style={{
           fontSize: 15,
-          color: "#666",
+          color: "#7C8490",
           marginBottom: 24,
         }}
       >

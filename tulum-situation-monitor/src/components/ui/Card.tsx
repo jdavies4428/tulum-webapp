@@ -94,7 +94,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
             style={{
               fontSize: "18px",
               fontWeight: 700,
-              color: "#1A1A1A",
+              color: "#E8ECEF",
               margin: 0,
               marginBottom: subtitle ? `${spacing.xs}px` : 0,
             }}
@@ -106,7 +106,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
           <p
             style={{
               fontSize: "14px",
-              color: "#666",
+              color: "#7C8490",
               margin: 0,
             }}
           >
@@ -159,7 +159,7 @@ export const CardFooter: React.FC<CardFooterProps> = ({
       style={{
         marginTop: `${spacing.md}px`,
         paddingTop: `${spacing.md}px`,
-        borderTop: "1px solid rgba(0, 0, 0, 0.08)",
+        borderTop: "1px solid rgba(0, 206, 209, 0.1)",
         ...style,
       }}
       {...props}

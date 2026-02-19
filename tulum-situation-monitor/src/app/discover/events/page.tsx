@@ -11,7 +11,274 @@ import { useAuthOptional } from "@/contexts/AuthContext";
 import { CreateEventModal } from "@/components/events/CreateEventModal";
 import { EditEventModal } from "@/components/events/EditEventModal";
 import { ConfirmDialog } from "@/components/events/ConfirmDialog";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { formatChatTimestamp } from "@/lib/chat-helpers";
+
+function EventCard({
+  event,
+  isAdmin,
+  isAuthor,
+  onEdit,
+  onDelete,
+}: {
+  event: LocalEvent;
+  isAdmin: boolean;
+  isAuthor: boolean;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const hasImage = !!event.image_url;
+
+  return (
+    <div
+      style={{
+        borderRadius: "16px",
+        overflow: "hidden",
+        position: "relative",
+        minHeight: hasImage ? "220px" : "140px",
+        background: hasImage
+          ? "transparent"
+          : "linear-gradient(135deg, rgba(0, 206, 209, 0.08) 0%, rgba(20, 30, 45, 0.9) 100%)",
+        border: "1px solid rgba(0, 206, 209, 0.12)",
+      }}
+    >
+      {/* Background image */}
+      {hasImage && (
+        <img
+          src={event.image_url!}
+          alt="Event"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: "block",
+          }}
+        />
+      )}
+
+      {/* Dark gradient overlay */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: hasImage
+            ? "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%)"
+            : "none",
+        }}
+      />
+
+      {/* Admin menu */}
+      {isAdmin && isAuthor && (
+        <div style={{ position: "absolute", top: "12px", right: "12px", zIndex: 2 }}>
+          <button
+            type="button"
+            onClick={() => setMenuOpen(!menuOpen)}
+            style={{
+              background: "rgba(0, 0, 0, 0.5)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: "8px",
+              padding: "4px 10px",
+              cursor: "pointer",
+              color: "#E8ECEF",
+              fontSize: "16px",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            ⋯
+          </button>
+          {menuOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                right: 0,
+                marginTop: "4px",
+                background: "rgba(20, 30, 45, 0.95)",
+                backdropFilter: "blur(16px)",
+                borderRadius: "10px",
+                border: "1px solid rgba(0, 206, 209, 0.2)",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
+                minWidth: "140px",
+                zIndex: 100,
+                overflow: "hidden",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => { onEdit(); setMenuOpen(false); }}
+                style={{
+                  width: "100%",
+                  padding: "10px 14px",
+                  background: "transparent",
+                  border: "none",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  color: "#E8ECEF",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                ✏️ Edit
+              </button>
+              <button
+                type="button"
+                onClick={() => { onDelete(); setMenuOpen(false); }}
+                style={{
+                  width: "100%",
+                  padding: "10px 14px",
+                  background: "transparent",
+                  border: "none",
+                  borderTop: "1px solid rgba(255,255,255,0.06)",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  color: "#FF6B6B",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                🗑️ Delete
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Timestamp badge */}
+      <div
+        style={{
+          position: "absolute",
+          top: "12px",
+          left: "12px",
+          zIndex: 1,
+          padding: "4px 10px",
+          borderRadius: "6px",
+          background: "rgba(0, 206, 209, 0.9)",
+          fontSize: "10px",
+          fontWeight: "700",
+          color: "#FFF",
+          textTransform: "uppercase",
+          letterSpacing: "0.5px",
+        }}
+      >
+        {formatChatTimestamp(new Date(event.created_at).getTime())}
+      </div>
+
+      {/* Overlaid content */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-end",
+          minHeight: hasImage ? "220px" : "140px",
+          padding: "20px",
+        }}
+      >
+        {/* Author */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            marginBottom: "6px",
+          }}
+        >
+          <div
+            style={{
+              width: "28px",
+              height: "28px",
+              borderRadius: "50%",
+              background: event.author_avatar?.startsWith("http")
+                ? "transparent"
+                : "linear-gradient(135deg, #1A2332 0%, #0F1419 100%)",
+              border: "1.5px solid rgba(0, 206, 209, 0.3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "14px",
+              flexShrink: 0,
+              overflow: "hidden",
+            }}
+          >
+            {event.author_avatar?.startsWith("http") ? (
+              <img
+                src={event.author_avatar}
+                alt={event.author_name}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              event.author_avatar
+            )}
+          </div>
+          <span style={{ fontSize: "12px", fontWeight: "600", color: "rgba(255,255,255,0.7)" }}>
+            {event.author_name}
+          </span>
+        </div>
+
+        {/* Event content */}
+        <p
+          style={{
+            margin: 0,
+            fontSize: "16px",
+            fontWeight: "700",
+            lineHeight: 1.3,
+            color: "#FFFFFF",
+            marginBottom: "14px",
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {event.content}
+        </p>
+
+        {/* Actions row */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <button
+            type="button"
+            onClick={() => {
+              if (event.image_url) window.open(event.image_url, "_blank");
+            }}
+            style={{
+              padding: "7px 18px",
+              borderRadius: "9999px",
+              background: "rgba(0, 0, 0, 0.5)",
+              border: "1px solid rgba(255,255,255,0.2)",
+              color: "#FFFFFF",
+              fontSize: "10px",
+              fontWeight: "700",
+              letterSpacing: "1px",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            Details
+          </button>
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "12px" }}>
+            <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", display: "flex", alignItems: "center", gap: "4px" }}>
+              💬 {event.metadata?.replies_count ?? 0}
+            </span>
+            <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", display: "flex", alignItems: "center", gap: "4px" }}>
+              ♥️ {event.metadata?.likes_count ?? 0}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function EventsPage() {
   const searchParams = useSearchParams();
@@ -22,19 +289,7 @@ export default function EventsPage() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<LocalEvent | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [menuOpen, setMenuOpen] = useState<string | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Detect mobile viewport
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 768px)");
-    const handler = () => setIsMobile(mq.matches);
-    handler();
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
-
-  // Admin check (same pattern as PlacesModal.tsx line 592-593)
   const isAdmin =
     auth?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
     auth?.user?.user_metadata?.role === "admin";
@@ -44,63 +299,31 @@ export default function EventsPage() {
       await deleteEvent(eventId);
       toast.success("Event deleted successfully");
       setDeleteConfirm(null);
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete event");
     }
   };
 
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(0, 0, 0, 0.7)",
-          zIndex: 9998,
-        }}
-      />
-
-      {/* Modal Container */}
-      <div
-        style={{
-          position: "fixed",
-          ...(isMobile
-            ? {
-                bottom: 0,
-                left: 0,
-                right: 0,
-                top: 0,
-                borderRadius: "0",
-              }
-            : {
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "90%",
-                maxWidth: "700px",
-                maxHeight: "92vh",
-                borderRadius: "16px",
-              }),
-          background: "#FFFFFF",
-          boxShadow: "0 24px 64px rgba(0, 0, 0, 0.2)",
-          zIndex: 9999,
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }}
-      >
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "#0F1419",
+        display: "flex",
+        flexDirection: "column",
+        zIndex: 9999,
+      }}
+    >
       {/* Header */}
       <header
         style={{
           flexShrink: 0,
-          background: "#FFFFFF",
-          borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
-          padding: isMobile ? "16px" : "20px 24px",
-          paddingTop: isMobile ? "max(16px, env(safe-area-inset-top))" : "20px",
+          background: "rgba(15, 20, 25, 0.95)",
+          backdropFilter: "blur(24px)",
+          borderBottom: "1px solid rgba(0, 206, 209, 0.1)",
+          padding: "16px 20px",
+          paddingTop: "max(16px, env(safe-area-inset-top))",
           display: "flex",
           alignItems: "center",
           gap: "12px",
@@ -112,13 +335,13 @@ export default function EventsPage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: "40px",
-            height: "40px",
+            width: "36px",
+            height: "36px",
             borderRadius: "50%",
-            background: "rgba(0, 206, 209, 0.12)",
-            border: "2px solid rgba(0, 206, 209, 0.2)",
-            color: "var(--tulum-ocean)",
-            fontSize: "18px",
+            background: "rgba(0, 206, 209, 0.08)",
+            border: "1px solid rgba(0, 206, 209, 0.15)",
+            color: "#9BA3AF",
+            fontSize: "16px",
             textDecoration: "none",
             flexShrink: 0,
           }}
@@ -127,17 +350,18 @@ export default function EventsPage() {
         </Link>
         <h1
           style={{
-            fontSize: isMobile ? "18px" : "22px",
-            fontWeight: "800",
+            fontFamily: "'Playfair Display', serif",
+            fontStyle: "italic",
+            fontSize: "20px",
+            fontWeight: "700",
             margin: 0,
-            color: "var(--tulum-ocean)",
+            color: "#E8ECEF",
             flex: 1,
           }}
         >
-          📅 {t.localEvents ?? "Local Events"}
+          {t.localEvents ?? "Local Events"}
         </h1>
 
-        {/* Admin Create Button */}
         {isAdmin && (
           <button
             type="button"
@@ -146,332 +370,59 @@ export default function EventsPage() {
               display: "flex",
               alignItems: "center",
               gap: "6px",
-              padding: "10px 16px",
+              padding: "8px 14px",
               background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
               border: "none",
-              borderRadius: "20px",
+              borderRadius: "9999px",
               color: "#FFF",
-              fontSize: "14px",
+              fontSize: "13px",
               fontWeight: "700",
               cursor: "pointer",
               boxShadow: "0 4px 12px rgba(0, 206, 209, 0.3)",
             }}
           >
-            <span style={{ fontSize: "16px" }}>✍️</span>
-            Post
+            + Post
           </button>
         )}
       </header>
 
-      {/* Feed */}
+      {/* Event Feed */}
       <div
         style={{
           flex: 1,
           overflowY: "auto",
           WebkitOverflowScrolling: "touch",
+          padding: "16px",
+          paddingBottom: "96px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
         }}
       >
         {loading ? (
-          <div
-            style={{ padding: "40px", textAlign: "center", color: "#999" }}
-          >
+          <div style={{ padding: "40px", textAlign: "center", color: "#7C8490" }}>
             Loading events...
           </div>
         ) : events.length === 0 ? (
-          <div
-            style={{ padding: "40px", textAlign: "center", color: "#999" }}
-          >
+          <div style={{ padding: "40px", textAlign: "center", color: "#7C8490" }}>
             No events yet. {isAdmin && "Be the first to post!"}
           </div>
         ) : (
           events.map((event) => (
-            <article
+            <EventCard
               key={event.id}
-              style={{
-                padding: "16px",
-                borderBottom: "1px solid rgba(0, 206, 209, 0.15)",
-                display: "flex",
-                gap: "12px",
-                transition: "background 0.2s",
-                position: "relative",
-              }}
-              onClick={(e) => {
-                // Close menu if clicking outside menu area
-                const target = e.target as HTMLElement;
-                if (!target.closest("button")) {
-                  setMenuOpen(null);
-                }
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(255, 255, 255, 0.6)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "transparent";
-              }}
-            >
-              <div
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "50%",
-                  background: event.author_avatar?.startsWith("http")
-                    ? "#FFF"
-                    : "linear-gradient(135deg, #E0F7FA 0%, #FFF8E7 100%)",
-                  border: "2px solid rgba(0, 206, 209, 0.3)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "24px",
-                  flexShrink: 0,
-                  overflow: "hidden",
-                }}
-              >
-                {event.author_avatar?.startsWith("http") ? (
-                  <img
-                    src={event.author_avatar}
-                    alt={event.author_name}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                ) : (
-                  event.author_avatar
-                )}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "baseline",
-                    gap: "8px",
-                    flexWrap: "wrap",
-                    marginBottom: "4px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontWeight: "700",
-                      fontSize: "15px",
-                      color: "#333",
-                    }}
-                  >
-                    {event.author_name}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "14px",
-                      color: "#666",
-                    }}
-                  >
-                    {event.author_handle}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      color: "#999",
-                    }}
-                  >
-                    ·{" "}
-                    {formatChatTimestamp(
-                      new Date(event.created_at).getTime()
-                    )}
-                  </span>
-
-                  {/* Three-dot menu for event author */}
-                  {isAdmin && auth?.user?.id === event.author_id && (
-                    <div style={{ marginLeft: "auto", position: "relative" }}>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setMenuOpen(menuOpen === event.id ? null : event.id)
-                        }
-                        style={{
-                          background: "transparent",
-                          border: "none",
-                          cursor: "pointer",
-                          padding: "4px 8px",
-                          fontSize: "16px",
-                          color: "#999",
-                          borderRadius: "4px",
-                          transition: "background 0.2s",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background =
-                            "rgba(0, 206, 209, 0.1)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = "transparent";
-                        }}
-                      >
-                        ⋯
-                      </button>
-
-                      {/* Dropdown menu */}
-                      {menuOpen === event.id && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: "100%",
-                            right: 0,
-                            background: "#FFF",
-                            borderRadius: "8px",
-                            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
-                            border: "1px solid rgba(0, 206, 209, 0.2)",
-                            minWidth: "150px",
-                            zIndex: 100,
-                            overflow: "hidden",
-                          }}
-                        >
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setEditingEvent(event);
-                              setMenuOpen(null);
-                            }}
-                            style={{
-                              width: "100%",
-                              padding: "12px 16px",
-                              background: "transparent",
-                              border: "none",
-                              textAlign: "left",
-                              cursor: "pointer",
-                              fontSize: "14px",
-                              fontWeight: "600",
-                              color: "#333",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "8px",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background =
-                                "rgba(0, 206, 209, 0.08)";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = "transparent";
-                            }}
-                          >
-                            ✏️ Edit
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setDeleteConfirm(event.id);
-                              setMenuOpen(null);
-                            }}
-                            style={{
-                              width: "100%",
-                              padding: "12px 16px",
-                              background: "transparent",
-                              border: "none",
-                              borderTop: "1px solid rgba(0, 0, 0, 0.05)",
-                              textAlign: "left",
-                              cursor: "pointer",
-                              fontSize: "14px",
-                              fontWeight: "600",
-                              color: "#FF6B6B",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "8px",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.background =
-                                "rgba(255, 107, 107, 0.08)";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.background = "transparent";
-                            }}
-                          >
-                            🗑️ Delete
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: "15px",
-                    lineHeight: "1.5",
-                    color: "#333",
-                    whiteSpace: "pre-wrap",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {event.content}
-                </p>
-                {event.image_url && (
-                  <div
-                    style={{
-                      marginTop: "12px",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                      border: "1px solid rgba(0, 206, 209, 0.2)",
-                      cursor: "pointer",
-                      transition: "transform 0.2s",
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (event.image_url) window.open(event.image_url, "_blank");
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "scale(1.01)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "scale(1)";
-                    }}
-                  >
-                    <img
-                      src={event.image_url}
-                      alt="Event"
-                      style={{
-                        width: "100%",
-                        maxHeight: "400px",
-                        objectFit: "contain",
-                        display: "block",
-                        background: "rgba(0, 0, 0, 0.02)",
-                      }}
-                    />
-                  </div>
-                )}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "20px",
-                    marginTop: "12px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      color: "#999",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
-                  >
-                    💬 {event.metadata?.replies_count ?? 0}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      color: "#999",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
-                  >
-                    ♥️ {event.metadata?.likes_count ?? 0}
-                  </span>
-                </div>
-              </div>
-            </article>
+              event={event}
+              isAdmin={isAdmin}
+              isAuthor={auth?.user?.id === event.author_id}
+              onEdit={() => setEditingEvent(event)}
+              onDelete={() => setDeleteConfirm(event.id)}
+            />
           ))
         )}
       </div>
+
+      {/* Bottom Nav */}
+      <BottomNav lang={lang} fixed />
 
       {/* Create Modal */}
       {isAdmin && createModalOpen && (
@@ -499,7 +450,6 @@ export default function EventsPage() {
           danger
         />
       )}
-      </div>
-    </>
+    </div>
   );
 }

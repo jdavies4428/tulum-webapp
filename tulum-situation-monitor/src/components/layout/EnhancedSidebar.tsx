@@ -249,8 +249,8 @@ export function EnhancedSidebar({
               inset: 0,
               backgroundImage: "url(/images/tulum-header.jpg)",
               backgroundSize: "cover",
-              backgroundPosition: "center 30%",
-              opacity: 0.35,
+              backgroundPosition: "center 55%",
+              opacity: 0.55,
               pointerEvents: "none",
             }}
           />
