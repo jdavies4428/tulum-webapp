@@ -223,7 +223,7 @@ export default function DiscoverPage() {
   return (
     <div
       style={{
-        minHeight: "100dvh",
+        height: "100dvh",
         overflowY: "auto",
         overflowX: "hidden",
         WebkitOverflowScrolling: "touch",

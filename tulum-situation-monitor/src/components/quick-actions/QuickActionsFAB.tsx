@@ -32,6 +32,7 @@ const TulumRightNowModal = dynamic(
 );
 
 export const OPEN_MAP_LAYERS_EVENT = "open-map-layers";
+export const OPEN_QUICK_ACTIONS_EVENT = "open-quick-actions";
 
 const ACTIONS = [
   {
@@ -115,6 +116,13 @@ export function QuickActionsFAB() {
     const fn = () => setIsMobile(mq.matches);
     mq.addEventListener("change", fn);
     return () => mq.removeEventListener("change", fn);
+  }, []);
+
+  // Listen for external trigger (e.g. from EnhancedSidebar inline button)
+  useEffect(() => {
+    const open = () => setIsExpanded(true);
+    window.addEventListener(OPEN_QUICK_ACTIONS_EVENT, open);
+    return () => window.removeEventListener(OPEN_QUICK_ACTIONS_EVENT, open);
   }, []);
 
   const t = translations[lang] as Record<string, string>;
@@ -292,8 +300,8 @@ export function QuickActionsFAB() {
         </div>
       )}
 
-      {/* FAB trigger button */}
-      {!isExpanded && (
+      {/* FAB trigger button — hidden on mobile home (rendered inline in sidebar instead) */}
+      {!isExpanded && !(isMobile && isHomePage) && (
         <div
           style={{
             position: "fixed",
