@@ -65,6 +65,7 @@ function getHref(id: string, lang: Lang): string | undefined {
     case "photoMap": return base("/discover/photo-map");
     case "yogaClasses": return base("/discover/healing");
     case "events": return base("/discover/events");
+    case "communityBoard": return base("/discover/community-board");
     default: return undefined;
   }
 }
