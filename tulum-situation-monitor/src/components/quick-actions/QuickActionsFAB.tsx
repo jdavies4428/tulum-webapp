@@ -157,22 +157,22 @@ export function QuickActionsFAB() {
   const isIOS =
     typeof window !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-  const isMapPage = pathname === "/map";
+  const isHomePage = pathname === "/";
 
-  // Map + mobile: inline with user circle in top bar
-  // MapTopBar: padding 16px top, 44px user circle → center at 38px. FAB 48px → top = 38 - 24 = 14px
-  // Right: 24px (MapTopBar padding) + 44px (user circle) + 8px gap = 76px from right
-  const positionStyles =
-    isMobile && isMapPage
-      ? { top: 14, bottom: "auto", right: 76, left: "auto" }
-      : isMobile
-      ? { bottom: "calc(96px + env(safe-area-inset-bottom, 0px))", top: "auto", right: 20, left: "auto" }
-      : {
-          bottom: isIOS ? "calc(60px + env(safe-area-inset-bottom, 0px))" : 60,
-          top: "auto",
-          right: spacing.lg,
-          left: "auto",
-        };
+  // Mobile home: in-line with the flags + sign-in button row, sized to match flags
+  // Mobile other: top-right corner, well left of Sign in button
+  // Desktop: bottom-right corner, above the map Sign in button
+  const positionStyles = isMobile && isHomePage
+    ? { top: 107, bottom: "auto", right: 112, left: "auto", transform: "none" }
+    : isMobile
+    ? { top: 18, bottom: "auto", right: 145, left: "auto", transform: "none" }
+    : {
+        bottom: isIOS ? "calc(100px + env(safe-area-inset-bottom, 0px))" : 100,
+        top: "auto",
+        right: 28,
+        left: "auto",
+        transform: "none",
+      };
 
   return (
     <>
@@ -195,7 +195,7 @@ export function QuickActionsFAB() {
             background: "rgba(0, 0, 0, 0.7)",
             backdropFilter: "blur(16px)",
             WebkitBackdropFilter: "blur(16px)",
-            zIndex: isMobile && isMapPage ? 10001 : 998,
+            zIndex: isMobile ? 10001 : 998,
             animation: "fadeIn 0.2s ease-out",
             display: "flex",
             flexDirection: "column",
@@ -298,7 +298,7 @@ export function QuickActionsFAB() {
           style={{
             position: "fixed",
             ...positionStyles,
-            zIndex: isMobile && isMapPage ? 10002 : 999,
+            zIndex: isMobile ? 10002 : 999,
           }}
         >
           <button
@@ -307,14 +307,14 @@ export function QuickActionsFAB() {
             aria-label="Open quick actions"
             className="shadow-glow"
             style={{
-              width: isMobile && isMapPage ? 48 : isMobile ? 56 : 68,
-              height: isMobile && isMapPage ? 48 : isMobile ? 56 : 68,
+              width: isMobile ? 38 : 56,
+              height: isMobile ? 38 : 56,
               borderRadius: "50%",
               background: "linear-gradient(135deg, #00CED1F0 0%, #00BABACC 100%)",
               border: "2px solid rgba(0, 206, 209, 0.3)",
               boxShadow: "0 8px 32px rgba(0, 206, 209, 0.4), 0 3px 12px rgba(0, 0, 0, 0.2)",
               cursor: "pointer",
-              fontSize: isMobile && isMapPage ? 22 : isMobile ? 24 : 32,
+              fontSize: isMobile ? 18 : 26,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

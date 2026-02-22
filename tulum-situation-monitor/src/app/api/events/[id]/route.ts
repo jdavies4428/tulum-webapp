@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { isAdmin } from "@/lib/auth-helpers";
 
 export async function PATCH(
   request: NextRequest,
@@ -15,11 +16,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const isAdmin =
-      user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
-      user.user_metadata?.role === "admin";
-
-    if (!isAdmin) {
+    if (!isAdmin(user)) {
       return NextResponse.json(
         { error: "Forbidden - Admin only" },
         { status: 403 }
@@ -112,11 +109,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const isAdmin =
-      user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
-      user.user_metadata?.role === "admin";
-
-    if (!isAdmin) {
+    if (!isAdmin(user)) {
       return NextResponse.json(
         { error: "Forbidden - Admin only" },
         { status: 403 }

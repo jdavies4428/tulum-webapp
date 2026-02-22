@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-
-export const dynamic = "force-dynamic";
+import { isAdmin } from "@/lib/auth-helpers";
 
 /**
  * GET /api/events
  * Returns all local events, newest first
  * Public endpoint - no auth required
+ * Cached for 60s to reduce Supabase egress
  */
 export async function GET() {
   try {
@@ -20,7 +20,10 @@ export async function GET() {
 
     if (error) throw error;
 
-    return NextResponse.json({ events: data ?? [] });
+    return NextResponse.json(
+      { events: data ?? [] },
+      { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" } }
+    );
   } catch (error) {
     console.error("Error fetching local events:", error);
     return NextResponse.json(
@@ -47,12 +50,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Admin check (same pattern as insider-picks/route.ts)
-    const isAdmin =
-      user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
-      user.user_metadata?.role === "admin";
-
-    if (!isAdmin) {
+    if (!isAdmin(user)) {
       return NextResponse.json(
         { error: "Forbidden - Admin only" },
         { status: 403 }

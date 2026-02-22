@@ -1,11 +1,13 @@
 import { MetadataRoute } from "next";
+import { getAllPlaces } from "@/lib/place-slugs";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://tulum-webapp.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const currentDate = new Date();
+  const places = getAllPlaces();
 
-  return [
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
       lastModified: currentDate,
@@ -25,18 +27,42 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${BASE_URL}/favorites`,
+      url: `${BASE_URL}/places`,
       lastModified: currentDate,
       changeFrequency: "weekly",
-      priority: 0.7,
+      priority: 0.9,
     },
     {
-      url: `${BASE_URL}/itineraries`,
+      url: `${BASE_URL}/concierge`,
+      lastModified: currentDate,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/itinerary`,
+      lastModified: currentDate,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    // Discover pages
+    {
+      url: `${BASE_URL}/discover/beach-dashboard`,
+      lastModified: currentDate,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/discover/events`,
+      lastModified: currentDate,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/discover/excursions`,
       lastModified: currentDate,
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    // Discover pages
     {
       url: `${BASE_URL}/discover/transportation`,
       lastModified: currentDate,
@@ -48,24 +74,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: currentDate,
       changeFrequency: "monthly",
       priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/discover/events`,
-      lastModified: currentDate,
-      changeFrequency: "daily",
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/discover/beach-dashboard`,
-      lastModified: currentDate,
-      changeFrequency: "daily",
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/discover/translation`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.6,
     },
     {
       url: `${BASE_URL}/discover/shop-local`,
@@ -80,12 +88,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: `${BASE_URL}/discover/excursions`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
       url: `${BASE_URL}/discover/marketplace`,
       lastModified: currentDate,
       changeFrequency: "weekly",
@@ -95,7 +97,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${BASE_URL}/discover/photo-map`,
       lastModified: currentDate,
       changeFrequency: "daily",
-      priority: 0.8,
+      priority: 0.7,
+    },
+    {
+      url: `${BASE_URL}/discover/translation`,
+      lastModified: currentDate,
+      changeFrequency: "monthly",
+      priority: 0.6,
     },
   ];
+
+  // Individual place pages
+  const placePages: MetadataRoute.Sitemap = places.map((place) => ({
+    url: `${BASE_URL}/places/${place.slug}`,
+    lastModified: currentDate,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  return [...staticPages, ...placePages];
 }

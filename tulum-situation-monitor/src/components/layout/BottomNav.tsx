@@ -8,6 +8,7 @@ import { spacing, radius } from "@/lib/design-tokens";
 
 interface BottomNavProps {
   lang: Lang;
+  unreadMessages?: number;
 }
 
 type NavItem = {
@@ -72,19 +73,30 @@ function NavButton({
   label,
   active,
   href,
+  badge,
 }: {
   id: string;
   label: string;
   active: boolean;
   href: string;
+  badge?: number;
 }) {
+  const handleClick = () => {
+    // Haptic feedback on mobile
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      navigator.vibrate(10);
+    }
+  };
+
   return (
     <Link
       href={href}
+      onClick={handleClick}
       className={active ? "" : "interactive hover-scale"}
       style={{
         flex: 1,
         maxWidth: 80,
+        minHeight: 48,
         padding: spacing.sm,
         background: active ? "linear-gradient(135deg, rgba(0, 206, 209, 0.15) 0%, rgba(0, 206, 209, 0.05) 100%)" : "transparent",
         border: active ? "1px solid rgba(0, 206, 209, 0.2)" : "1px solid transparent",
@@ -101,12 +113,38 @@ function NavButton({
     >
       <div
         style={{
+          position: "relative",
           opacity: active ? 1 : 0.6,
           transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
           transform: active ? "scale(1.1)" : "scale(1)",
         }}
       >
         <NavIcon id={id} color={active ? "#00CED1" : "#7C8490"} />
+        {/* Unread badge */}
+        {badge !== undefined && badge > 0 && (
+          <span
+            style={{
+              position: "absolute",
+              top: -4,
+              right: -8,
+              minWidth: 16,
+              height: 16,
+              borderRadius: 8,
+              background: "#FF3B30",
+              color: "#fff",
+              fontSize: 10,
+              fontWeight: 700,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 4px",
+              boxShadow: "0 2px 6px rgba(255, 59, 48, 0.4)",
+              animation: "badgePulse 2s ease-in-out infinite",
+            }}
+          >
+            {badge > 9 ? "9+" : badge}
+          </span>
+        )}
       </div>
       <div
         style={{
@@ -136,11 +174,18 @@ function NavButton({
           }}
         />
       )}
+
+      <style>{`
+        @keyframes badgePulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+        }
+      `}</style>
     </Link>
   );
 }
 
-export function BottomNav({ lang, fixed = false }: BottomNavProps & { fixed?: boolean }) {
+export function BottomNav({ lang, fixed = false, unreadMessages = 0 }: BottomNavProps & { fixed?: boolean }) {
   const pathname = usePathname();
   const t = translations[lang] as Record<string, string>;
 
@@ -171,6 +216,7 @@ export function BottomNav({ lang, fixed = false }: BottomNavProps & { fixed?: bo
         const isHome = item.href === "/";
         const active = isMap ? pathname === "/map" : isHome ? pathname === "/" : pathname.startsWith(item.href);
         const displayLabel = (t as Record<string, string>)[item.labelKey] ?? (item.labelKey === "navHome" ? "Home" : item.labelKey === "navSaved" ? "Saved" : item.id);
+        const badge = item.id === "messages" ? unreadMessages : undefined;
         return (
           <NavButton
             key={item.id}
@@ -178,6 +224,7 @@ export function BottomNav({ lang, fixed = false }: BottomNavProps & { fixed?: bo
             label={displayLabel}
             active={active}
             href={item.href}
+            badge={badge}
           />
         );
       })}

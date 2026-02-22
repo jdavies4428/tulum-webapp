@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useLocalEvents, type LocalEvent } from "@/hooks/useLocalEvents";
 import { useAuthOptional } from "@/contexts/AuthContext";
+import { isAdmin as checkIsAdmin } from "@/lib/auth-helpers";
 import { CreateEventModal } from "@/components/events/CreateEventModal";
 import { EditEventModal } from "@/components/events/EditEventModal";
 import { ConfirmDialog } from "@/components/events/ConfirmDialog";
@@ -297,9 +298,7 @@ export function LocalEventsModal({ lang, isOpen, onClose }: LocalEventsModalProp
   const [isMobile, setIsMobile] = useState(false);
   const t = translations[lang] as Record<string, string>;
 
-  const isAdmin =
-    auth?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
-    auth?.user?.user_metadata?.role === "admin";
+  const isAdmin = checkIsAdmin(auth?.user);
 
   useState(() => {
     if (typeof window !== "undefined") {

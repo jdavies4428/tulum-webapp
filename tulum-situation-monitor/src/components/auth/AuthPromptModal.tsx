@@ -7,7 +7,7 @@ import type { Lang } from "@/lib/weather";
 
 const PENDING_FAVORITE_KEY = "tulum-pending-favorite";
 
-export type AuthPromptReason = "save" | "create_list" | "review" | "generic";
+export type AuthPromptReason = "save" | "create_list" | "review" | "generic" | "concierge" | "message" | "gate" | "itinerary";
 
 const REASON_CONFIG: Record<
   AuthPromptReason,
@@ -24,6 +24,22 @@ const REASON_CONFIG: Record<
   review: {
     titleKey: "authPromptReviewTitle",
     messageKey: "authPromptReviewMessage",
+  },
+  concierge: {
+    titleKey: "authPromptConciergeTitle",
+    messageKey: "authPromptConciergeMessage",
+  },
+  message: {
+    titleKey: "authPromptMessageTitle",
+    messageKey: "authPromptMessageMessage",
+  },
+  gate: {
+    titleKey: "authPromptGateTitle",
+    messageKey: "authPromptGateMessage",
+  },
+  itinerary: {
+    titleKey: "authPromptItineraryTitle",
+    messageKey: "authPromptItineraryMessage",
   },
   generic: {
     titleKey: "authPromptGenericTitle",
