@@ -22,28 +22,28 @@ export async function GET(
     data: { user: currentUser },
   } = await supabase.auth.getUser();
 
-  const followersRes = await supabase
-    .from("follows")
-    .select("id", { count: "exact", head: true })
-    .eq("following_id", userId);
-  const followersCount = followersRes.count ?? 0;
-
-  const followingRes = await supabase
-    .from("follows")
-    .select("id", { count: "exact", head: true })
-    .eq("follower_id", userId);
-  const followingCount = followingRes.count ?? 0;
-
-  let isFollowing = false;
-  if (currentUser && currentUser.id !== userId) {
-    const { data: follow } = await supabase
+  // Run all follow queries in parallel instead of sequentially (3 → 1 round-trip)
+  const [followersRes, followingRes, followCheck] = await Promise.all([
+    supabase
       .from("follows")
-      .select("id")
-      .eq("follower_id", currentUser.id)
-      .eq("following_id", userId)
-      .single();
-    isFollowing = !!follow;
-  }
+      .select("id", { count: "exact", head: true })
+      .eq("following_id", userId),
+    supabase
+      .from("follows")
+      .select("id", { count: "exact", head: true })
+      .eq("follower_id", userId),
+    currentUser && currentUser.id !== userId
+      ? supabase
+          .from("follows")
+          .select("id")
+          .eq("follower_id", currentUser.id)
+          .eq("following_id", userId)
+          .single()
+      : Promise.resolve({ data: null }),
+  ]);
+  const followersCount = followersRes.count ?? 0;
+  const followingCount = followingRes.count ?? 0;
+  const isFollowing = !!followCheck.data;
 
   return NextResponse.json({
     id: profile.id,

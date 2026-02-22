@@ -32,29 +32,32 @@ export async function GET(request: NextRequest) {
 
     if (sync && venues.length > 0) {
       const supabase = createAdminClient();
-      for (const v of venues) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (supabase as any).rpc("upsert_venue_from_google", {
-          p_place_id: v.place_id,
-          p_name: v.name,
-          p_category: v.category,
-          p_lat: v.location.lat,
-          p_lng: v.location.lng,
-          p_rating: v.rating,
-          p_price_level: v.price_level,
-          p_formatted_address: v.formatted_address,
-          p_phone: v.phone,
-          p_website: v.website,
-          p_description: v.description,
-          p_google_data: v.google_data,
-        });
-      }
+      // Run upserts in parallel instead of sequentially to reduce wall-clock time and connection overhead
+      await Promise.all(
+        venues.map((v) =>
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (supabase as any).rpc("upsert_venue_from_google", {
+            p_place_id: v.place_id,
+            p_name: v.name,
+            p_category: v.category,
+            p_lat: v.location.lat,
+            p_lng: v.location.lng,
+            p_rating: v.rating,
+            p_price_level: v.price_level,
+            p_formatted_address: v.formatted_address,
+            p_phone: v.phone,
+            p_website: v.website,
+            p_description: v.description,
+            p_google_data: v.google_data,
+          })
+        )
+      );
     }
 
-    return NextResponse.json({
-      venues,
-      next_page_token: next_page_token ?? null,
-    });
+    return NextResponse.json(
+      { venues, next_page_token: next_page_token ?? null },
+      { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } }
+    );
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Failed to fetch places";
     return NextResponse.json({ error: msg }, { status: 500 });

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 const FRANKFURTER = "https://api.frankfurter.app/latest";
@@ -17,7 +16,7 @@ export type CurrenciesRates = {
 async function fetchRate(from: string, to: string): Promise<number | null> {
   try {
     const res = await fetch(`${FRANKFURTER}?from=${from}&to=${to}`, {
-      next: { revalidate: 0 },
+      next: { revalidate: 3600 },
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return null;
@@ -46,5 +45,7 @@ export async function GET() {
   if (AUD != null) body.AUD = AUD;
   if (BRL != null) body.BRL = BRL;
 
-  return NextResponse.json(body);
+  return NextResponse.json(body, {
+    headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200" },
+  });
 }

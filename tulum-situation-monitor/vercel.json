@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/api/:path*",
       "headers": [
         {
           "key": "Cache-Control",
@@ -10,10 +10,42 @@
         {
           "key": "Pragma",
           "value": "no-cache"
-        },
+        }
+      ]
+    },
+    {
+      "source": "/(signin|settings|messages|favorites)(.*)",
+      "headers": [
         {
-          "key": "Expires",
-          "value": "0"
+          "key": "Cache-Control",
+          "value": "private, no-cache, no-store"
+        }
+      ]
+    },
+    {
+      "source": "/places/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=3600, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/(discover|map|concierge|itinerary)(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=60, stale-while-revalidate=300"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, s-maxage=60, stale-while-revalidate=300"
         }
       ]
     }

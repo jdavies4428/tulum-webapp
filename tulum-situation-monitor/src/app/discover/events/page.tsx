@@ -8,6 +8,7 @@ import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { useLocalEvents, type LocalEvent } from "@/hooks/useLocalEvents";
 import { useAuthOptional } from "@/contexts/AuthContext";
+import { isAdmin as checkIsAdmin } from "@/lib/auth-helpers";
 import { CreateEventModal } from "@/components/events/CreateEventModal";
 import { EditEventModal } from "@/components/events/EditEventModal";
 import { ConfirmDialog } from "@/components/events/ConfirmDialog";
@@ -290,9 +291,7 @@ export default function EventsPage() {
   const [editingEvent, setEditingEvent] = useState<LocalEvent | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  const isAdmin =
-    auth?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
-    auth?.user?.user_metadata?.role === "admin";
+  const isAdmin = checkIsAdmin(auth?.user);
 
   const handleDelete = async (eventId: string) => {
     try {

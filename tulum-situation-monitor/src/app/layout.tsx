@@ -48,10 +48,10 @@ export const metadata: Metadata = {
     siteName: "Discover Tulum",
     images: [
       {
-        url: `${BASE_URL}/images/tulum-header.jpg`,
+        url: `${BASE_URL}/data/webcam/latest.jpg`,
         width: 1280,
         height: 720,
-        alt: "Tulum Beach - Discover Tulum",
+        alt: "Live Tulum Beach - Discover Tulum",
       }
     ],
   },
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Discover Tulum - Real-Time Beach & Local Guide",
     description: "Real-time beach conditions, weather, and insider picks for Tulum, Mexico",
-    images: [`${BASE_URL}/images/tulum-header.jpg`],
+    images: [`${BASE_URL}/data/webcam/latest.jpg`],
     creator: "@discovertulum",
   },
   robots: {
@@ -71,6 +71,15 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: BASE_URL,
+    languages: {
+      "en": BASE_URL,
+      "es": `${BASE_URL}?lang=es`,
+      "fr": `${BASE_URL}?lang=fr`,
+      "x-default": BASE_URL,
     },
   },
   verification: {
@@ -92,8 +101,13 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#0F1419" />
+        <meta name="theme-color" content="#0F1419" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#00CED1" media="(prefers-color-scheme: light)" />
         <link rel="manifest" href="/manifest.json" />
+        {/* Preconnect to external origins for faster resource loading */}
+        <link rel="preconnect" href="https://maps.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://unpkg.com" />
         <link
           rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -148,6 +162,40 @@ export default function RootLayout({
                 "Wellness seeker",
                 "Adventure traveler"
               ]
+            })
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Discover Tulum",
+              "url": BASE_URL,
+              "logo": `${BASE_URL}/icons/icon-512x512.png`,
+              "sameAs": [
+                "https://twitter.com/discovertulum"
+              ]
+            })
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Discover Tulum",
+              "url": BASE_URL,
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": `${BASE_URL}/map?q={search_term_string}`
+                },
+                "query-input": "required name=search_term_string"
+              }
             })
           }}
         />

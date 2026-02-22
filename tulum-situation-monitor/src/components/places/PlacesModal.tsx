@@ -6,6 +6,7 @@ import { useVenues } from "@/hooks/useVenues";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useInsiderPicks } from "@/hooks/useInsiderPicks";
 import { useAuthOptional } from "@/contexts/AuthContext";
+import { isAdmin as checkIsAdmin } from "@/lib/auth-helpers";
 import { AuthPromptModal } from "@/components/auth/AuthPromptModal";
 import { useLists } from "@/hooks/useLists";
 import { AddToListModal } from "@/components/favorites/AddToListModal";
@@ -393,9 +394,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
   const auth = useAuthOptional();
   const isAuthenticated = auth?.isAuthenticated ?? false;
 
-  // Check if user is admin
-  const isAdmin = auth?.user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
-                  auth?.user?.user_metadata?.role === "admin";
+  const isAdmin = checkIsAdmin(auth?.user);
 
   const { isFavorite, toggleFavorite } = useFavorites(isAdmin);
   const { insiderPickIds } = useInsiderPicks();

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-
-export const dynamic = "force-dynamic";
+import { isAdmin } from "@/lib/auth-helpers";
 
 /**
  * GET /api/insider-picks
  * Returns array of place IDs that are insider picks
+ * Cached for 5 minutes — this data rarely changes
  */
 export async function GET() {
   try {
@@ -18,7 +18,10 @@ export async function GET() {
     if (error) throw error;
 
     const placeIds = data?.map((row) => row.place_id) ?? [];
-    return NextResponse.json({ placeIds });
+    return NextResponse.json(
+      { placeIds },
+      { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } }
+    );
   } catch (error) {
     console.error("Error fetching insider picks:", error);
     return NextResponse.json({ placeIds: [] });
@@ -40,12 +43,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if user is admin (you can customize this check)
-    // For now, checking user metadata or a specific email
-    const isAdmin = user.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
-                    user.user_metadata?.role === "admin";
-
-    if (!isAdmin) {
+    if (!isAdmin(user)) {
       return NextResponse.json({ error: "Forbidden - Admin only" }, { status: 403 });
     }
 

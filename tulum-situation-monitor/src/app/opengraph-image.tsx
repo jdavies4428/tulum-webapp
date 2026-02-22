@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
+import { readFileSync, existsSync } from "fs";
+import { join } from "path";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 export const alt = "Discover Tulum - Real-Time Beach Conditions & Local Guide";
 export const size = {
@@ -10,25 +12,55 @@ export const size = {
 
 export const contentType = "image/png";
 
+function getWebcamBase64(): string | null {
+  try {
+    const filePath = join(process.cwd(), "public", "data", "webcam", "latest.jpg");
+    if (!existsSync(filePath)) return null;
+    const buf = readFileSync(filePath);
+    return `data:image/jpeg;base64,${buf.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
 export default async function Image() {
+  const webcamSrc = getWebcamBase64();
+
   return new ImageResponse(
     (
       <div
         style={{
-          fontSize: 60,
-          background: "linear-gradient(135deg, #00CED1 0%, #0099CC 100%)",
           width: "100%",
           height: "100%",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          color: "white",
-          fontFamily: "system-ui, sans-serif",
           position: "relative",
+          background: webcamSrc
+            ? "#000"
+            : "linear-gradient(135deg, #00CED1 0%, #0099CC 100%)",
+          fontFamily: "system-ui, sans-serif",
+          color: "white",
         }}
       >
-        {/* Background Pattern */}
+        {/* Webcam background */}
+        {webcamSrc && (
+          <img
+            src={webcamSrc}
+            alt=""
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        )}
+
+        {/* Dark gradient overlay for text readability */}
         <div
           style={{
             position: "absolute",
@@ -36,74 +68,91 @@ export default async function Image() {
             left: 0,
             right: 0,
             bottom: 0,
-            opacity: 0.1,
-            background: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+            background: webcamSrc
+              ? "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.1) 100%)"
+              : "none",
           }}
         />
 
-        {/* Icon */}
+        {/* Content */}
         <div
           style={{
-            fontSize: 120,
-            marginBottom: 20,
-          }}
-        >
-          🏖️
-        </div>
-
-        {/* Title */}
-        <div
-          style={{
-            fontSize: 72,
-            fontWeight: "bold",
-            textAlign: "center",
-            marginBottom: 20,
-            textShadow: "0 4px 12px rgba(0,0,0,0.2)",
-          }}
-        >
-          Discover Tulum
-        </div>
-
-        {/* Subtitle */}
-        <div
-          style={{
-            fontSize: 32,
-            textAlign: "center",
-            opacity: 0.95,
-            maxWidth: 900,
-            lineHeight: 1.4,
-          }}
-        >
-          Real-Time Beach Conditions, Weather & Local Insider Picks
-        </div>
-
-        {/* Bottom Bar */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 80,
-            background: "rgba(0,0,0,0.3)",
+            position: "relative",
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center",
-            fontSize: 24,
-            gap: 40,
+            justifyContent: "flex-end",
+            width: "100%",
+            height: "100%",
+            padding: "40px 60px 50px",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span>☀️</span>
-            <span>Weather</span>
+          {/* Top badge */}
+          <div
+            style={{
+              position: "absolute",
+              top: 30,
+              left: 40,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "8px 16px",
+              background: "rgba(0, 206, 209, 0.9)",
+              borderRadius: 8,
+              fontSize: 18,
+              fontWeight: 700,
+            }}
+          >
+            {webcamSrc ? "LIVE FROM TULUM" : "DISCOVER TULUM"}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span>🌊</span>
-            <span>Beach Conditions</span>
+
+          {/* Title */}
+          <div
+            style={{
+              fontSize: 64,
+              fontWeight: "bold",
+              textAlign: "center",
+              textShadow: "0 4px 16px rgba(0,0,0,0.5)",
+              marginBottom: 12,
+            }}
+          >
+            Discover Tulum
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span>⭐</span>
-            <span>Insider Picks</span>
+
+          {/* Subtitle */}
+          <div
+            style={{
+              fontSize: 26,
+              textAlign: "center",
+              opacity: 0.95,
+              textShadow: "0 2px 8px rgba(0,0,0,0.5)",
+              marginBottom: 24,
+            }}
+          >
+            Real-Time Beach Conditions, Weather & Local Insider Picks
+          </div>
+
+          {/* Bottom feature pills */}
+          <div
+            style={{
+              display: "flex",
+              gap: 16,
+              fontSize: 18,
+              fontWeight: 600,
+            }}
+          >
+            {["Beach Conditions", "Weather", "Insider Picks", "AI Concierge"].map((label) => (
+              <div
+                key={label}
+                style={{
+                  padding: "8px 20px",
+                  background: "rgba(0, 206, 209, 0.85)",
+                  borderRadius: 20,
+                }}
+              >
+                {label}
+              </div>
+            ))}
           </div>
         </div>
       </div>
