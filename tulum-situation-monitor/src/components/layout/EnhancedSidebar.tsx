@@ -26,6 +26,7 @@ import type { TideState } from "@/hooks/useTides";
 import { useThrottle } from "@/hooks/useThrottle";
 import { useLocalEvents } from "@/hooks/useLocalEvents";
 import { formatChatTimestamp } from "@/lib/chat-helpers";
+import { OPEN_QUICK_ACTIONS_EVENT } from "@/components/quick-actions/QuickActionsFAB";
 
 export interface SharePayload {
   temp: string;
@@ -348,6 +349,33 @@ export function EnhancedSidebar({
                 }}
               >
                 📤
+              </button>
+            )}
+
+            {/* Quick Actions trigger — inline with other header buttons on mobile */}
+            {isMobile && (
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent(OPEN_QUICK_ACTIONS_EVENT))}
+                aria-label="Open quick actions"
+                className="glass-heavy hover-scale interactive"
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #00CED1F0 0%, #00BABACC 100%)",
+                  border: "2px solid rgba(0, 206, 209, 0.3)",
+                  boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
+                  cursor: "pointer",
+                  fontSize: 16,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 0,
+                  flexShrink: 0,
+                }}
+              >
+                ⚡
               </button>
             )}
 
