@@ -25,6 +25,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**.ipcamlive.com',
       },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
