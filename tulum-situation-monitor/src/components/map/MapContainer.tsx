@@ -5,6 +5,7 @@ import { TULUM_LAT, TULUM_LNG, DEFAULT_ZOOM, USER_NEAR_TULUM_KM, haversineKm } f
 import { useVenues } from "@/hooks/useVenues";
 import { useFavorites } from "@/hooks/useFavorites";
 import { getEnhancedMarkerHtml } from "@/lib/marker-config";
+import { proxyImageUrl } from "@/lib/image-proxy";
 import type { Lang } from "@/lib/weather";
 import { translations } from "@/lib/i18n";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
@@ -432,8 +433,8 @@ export function MapContainer({
         ? `https://maps.apple.com/?daddr=${lat},${lng}&q=${encodedName}`
         : `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 
-      // Build photo HTML
-      const photoSrc = photoUrl ?? (photoReference ? `/api/places/photo?photo_reference=${encodeURIComponent(photoReference)}&maxwidth=400` : null);
+      // Build photo HTML — proxy Supabase URLs through Vercel CDN to avoid egress
+      const photoSrc = proxyImageUrl(photoUrl, 400) ?? (photoReference ? `/api/places/photo?photo_reference=${encodeURIComponent(photoReference)}&maxwidth=400` : null);
       const photoHtml = photoSrc
         ? `<img src="${escapeHtml(photoSrc)}" alt="${safeName}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;" />`
         : "";

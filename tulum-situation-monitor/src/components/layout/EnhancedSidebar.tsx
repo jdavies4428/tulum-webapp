@@ -7,6 +7,7 @@ import { useAuthOptional } from "@/contexts/AuthContext";
 import { SignInButton } from "@/components/auth/SignInButton";
 import { SignedInMenu } from "@/components/auth/SignedInMenu";
 import { translations } from "@/lib/i18n";
+import { proxyImageUrl } from "@/lib/image-proxy";
 import { WeatherSection } from "@/components/weather/WeatherSection";
 import { CurrenciesPanel } from "@/components/currencies/CurrenciesPanel";
 import { AlertsPanel } from "@/components/weather/AlertsPanel";
@@ -582,7 +583,7 @@ export function EnhancedSidebar({
                   >
                     {event.image_url && (
                       <img
-                        src={event.image_url}
+                        src={proxyImageUrl(event.image_url, 384) ?? event.image_url}
                         alt=""
                         style={{
                           position: "absolute",

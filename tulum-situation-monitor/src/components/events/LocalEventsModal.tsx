@@ -9,6 +9,7 @@ import { CreateEventModal } from "@/components/events/CreateEventModal";
 import { EditEventModal } from "@/components/events/EditEventModal";
 import { ConfirmDialog } from "@/components/events/ConfirmDialog";
 import { formatChatTimestamp } from "@/lib/chat-helpers";
+import { proxyImageUrl } from "@/lib/image-proxy";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 
@@ -26,7 +27,8 @@ function EventCard({
   onDelete: () => void;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const hasImage = !!event.image_url;
+  const proxiedImage = proxyImageUrl(event.image_url, 640);
+  const hasImage = !!proxiedImage;
 
   return (
     <div
@@ -44,7 +46,7 @@ function EventCard({
       {/* Background image */}
       {hasImage && (
         <img
-          src={event.image_url!}
+          src={proxiedImage!}
           alt="Event"
           style={{
             position: "absolute",

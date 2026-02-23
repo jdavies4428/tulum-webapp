@@ -12,6 +12,7 @@ import { useLists } from "@/hooks/useLists";
 import { AddToListModal } from "@/components/favorites/AddToListModal";
 import { SkeletonList } from "@/components/ui/skeleton";
 import { TULUM_LAT, TULUM_LNG } from "@/data/constants";
+import { proxyImageUrl } from "@/lib/image-proxy";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 import type { BeachClub, Restaurant, CulturalPlace, CafePlace } from "@/types/place";
@@ -192,7 +193,7 @@ const CATEGORY_PLACEHOLDER: Record<string, { bg: string; emoji: string }> = {
 };
 
 function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggleFavorite, isLocked = false, onAddToList, addToListLabel = "Add to List" }: PlaceCardProps) {
-  const photoSrc = place.photo_url ?? (place.photo_reference ? `/api/places/photo?photo_reference=${encodeURIComponent(place.photo_reference)}&maxwidth=200` : null);
+  const photoSrc = proxyImageUrl(place.photo_url, 200) ?? (place.photo_reference ? `/api/places/photo?photo_reference=${encodeURIComponent(place.photo_reference)}&maxwidth=200` : null);
   const distanceStr =
     place.distance < 1
       ? `${(place.distance * 1000).toFixed(0)}m`

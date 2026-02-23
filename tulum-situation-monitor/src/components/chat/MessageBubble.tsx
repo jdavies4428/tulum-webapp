@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { formatMessageTime } from "@/lib/chat-helpers";
+import { proxyImageUrl } from "@/lib/image-proxy";
 import type { ChatMessage } from "@/hooks/useChatMessages";
 
 interface OtherUser {
@@ -56,7 +57,7 @@ export function MessageBubble({
             >
               {otherUser.avatar_url ? (
                 <img
-                  src={otherUser.avatar_url}
+                  src={proxyImageUrl(otherUser.avatar_url, 64) ?? otherUser.avatar_url}
                   alt={otherUser.display_name}
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
@@ -105,7 +106,7 @@ export function MessageBubble({
         {message.type === "image" && message.metadata?.imageUrl ? (
           <>
             <img
-              src={String(message.metadata.imageUrl)}
+              src={proxyImageUrl(String(message.metadata.imageUrl), 384) ?? String(message.metadata.imageUrl)}
               alt="Shared"
               onClick={() => setLightboxOpen(true)}
               style={{

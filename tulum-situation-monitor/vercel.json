@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/api/:path*",
+      "source": "/api/(chat|users|auth|translate|concierge|itinerary|places/sync|places/photo|pulse/recommend)(.*)",
       "headers": [
         {
           "key": "Cache-Control",
