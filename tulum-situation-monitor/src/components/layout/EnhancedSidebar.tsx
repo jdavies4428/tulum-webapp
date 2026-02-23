@@ -409,19 +409,40 @@ export function EnhancedSidebar({
               padding: "12px 16px",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <span style={{ fontSize: "24px" }}>🤖</span>
-              <div
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "24px" }}>🤖</span>
+                <div
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontStyle: "italic",
+                    fontSize: "16px",
+                    color: "#00CED1",
+                    fontWeight: "600",
+                  }}
+                >
+                  {tAny.conciergeTitle ?? "AI Concierge"}
+                </div>
+              </div>
+              <Link
+                href={`/pulse?lang=${lang}`}
                 style={{
-                  fontFamily: "var(--font-serif)",
-                  fontStyle: "italic",
-                  fontSize: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  padding: "4px 10px",
+                  borderRadius: "8px",
+                  background: "rgba(0, 206, 209, 0.1)",
+                  border: "1px solid rgba(0, 206, 209, 0.2)",
+                  textDecoration: "none",
+                  fontSize: "11px",
+                  fontWeight: 700,
                   color: "#00CED1",
-                  fontWeight: "600",
+                  letterSpacing: "0.3px",
                 }}
               >
-                {tAny.conciergeTitle ?? "AI Concierge"}
-              </div>
+                ⚡ Pulse
+              </Link>
             </div>
             <div
               style={{ display: "flex", gap: "8px", marginTop: "8px" }}

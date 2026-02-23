@@ -166,6 +166,7 @@ export function QuickActionsFAB() {
     typeof window !== "undefined" && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
   const isHomePage = pathname === "/";
+  const isPulsePage = pathname === "/pulse";
 
   // Mobile home: in-line with the flags + sign-in button row, sized to match flags
   // Mobile other: top-right corner, well left of Sign in button
@@ -300,8 +301,8 @@ export function QuickActionsFAB() {
         </div>
       )}
 
-      {/* FAB trigger button — hidden on mobile home (rendered inline in sidebar instead) */}
-      {!isExpanded && !(isMobile && isHomePage) && (
+      {/* FAB trigger button — hidden on mobile home (inline in sidebar) and pulse page (has own quick actions) */}
+      {!isExpanded && !(isMobile && isHomePage) && !isPulsePage && (
         <div
           style={{
             position: "fixed",

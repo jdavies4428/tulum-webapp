@@ -12,6 +12,15 @@ export interface ConciergeContext {
     budget?: 'low' | 'medium' | 'high';
     interests?: string[];
   };
+  // Pulse-specific context
+  sargassumLevel?: string;
+  beachScore?: number;
+  topBeachName?: string;
+  waterTemp?: number | null;
+  windSpeed?: number;
+  sunrise?: string | null;
+  sunset?: string | null;
+  crowdLevel?: string;
 }
 
 export function buildSystemPrompt(context: ConciergeContext): string {
@@ -83,6 +92,47 @@ SAFETY & PRACTICAL INFO:
 - Language: Spanish primary, English common in tourist areas
 
 Remember: Be helpful, specific, and context-aware. Make Tulum sound amazing while being realistic and practical!`;
+}
+
+export function buildPulsePrompt(context: ConciergeContext): string {
+  const { lang, currentWeather, timeOfDay, sargassumLevel, beachScore, topBeachName, waterTemp, windSpeed, sunrise, sunset, crowdLevel } = context;
+
+  const languageInstruction =
+    lang === 'es'
+      ? 'CRITICAL: You MUST respond in Spanish.'
+      : lang === 'fr'
+      ? 'CRITICAL: You MUST respond in French.'
+      : 'CRITICAL: You MUST respond in English.';
+
+  const conditions = [
+    currentWeather ? `Temperature: ${currentWeather.temperature}°C, ${currentWeather.condition}` : null,
+    currentWeather ? `UV Index: ${currentWeather.uvIndex}` : null,
+    waterTemp ? `Water temperature: ${waterTemp}°C` : null,
+    windSpeed ? `Wind: ${windSpeed} km/h` : null,
+    sargassumLevel ? `Sargassum level: ${sargassumLevel}` : null,
+    crowdLevel ? `Beach crowd level: ${crowdLevel}` : null,
+    topBeachName && beachScore ? `Best beach right now: ${topBeachName} (score: ${beachScore}/10)` : null,
+    sunrise ? `Sunrise: ${sunrise}` : null,
+    sunset ? `Sunset: ${sunset}` : null,
+    timeOfDay ? `Time of day: ${timeOfDay}` : null,
+  ].filter(Boolean).join('\n- ');
+
+  return `You are a hyper-local Tulum guide. Based on LIVE conditions right now, give a specific, actionable recommendation in 2-3 short sentences.
+
+${languageInstruction}
+
+LIVE CONDITIONS RIGHT NOW:
+- ${conditions}
+
+RULES:
+- Name a specific place or activity for RIGHT NOW
+- Factor in time of day (e.g. don't suggest beach at night, suggest sunset spots near sunset)
+- If UV is high (8+), mention sun protection or suggest cenotes/indoor activities
+- If sargassum is moderate+, suggest cenotes or pools instead of beach
+- Be warm, enthusiastic, and concise
+- Use 1-2 relevant emojis
+- Do NOT use bullet points or lists — write flowing sentences
+- Do NOT start with "Based on current conditions" — just dive into the recommendation`;
 }
 
 export function buildItineraryRequest(
