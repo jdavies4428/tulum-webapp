@@ -28,7 +28,7 @@ export async function GET() {
       ? await sharp(buffer).jpeg({ quality: 60 }).toBuffer()
       : buffer;
 
-    return new NextResponse(finalBuffer, {
+    return new NextResponse(new Uint8Array(finalBuffer), {
       headers: {
         "Content-Type": "image/jpeg",
         "Cache-Control": "public, max-age=300, s-maxage=300",
