@@ -40,17 +40,17 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "Discover Tulum - Real-Time Beach Conditions & Local Insider Picks",
-    description: "Real-time beach conditions, weather forecasts, and curated local recommendations for Tulum's best spots.",
+    title: "Discover Tulum - Beach Conditions & Local Picks",
+    description: "Real-time beach conditions, weather forecasts, sargassum tracking, and curated local recommendations for Tulum's best beaches, restaurants, and events.",
     type: "website",
     locale: "en_US",
     url: BASE_URL,
     siteName: "Discover Tulum",
     images: [
       {
-        url: `${BASE_URL}/data/webcam/latest.jpg`,
-        width: 1280,
-        height: 720,
+        url: `${BASE_URL}/api/og-image`,
+        width: 1200,
+        height: 630,
         alt: "Live Tulum Beach - Discover Tulum",
       }
     ],
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Discover Tulum - Real-Time Beach & Local Guide",
     description: "Real-time beach conditions, weather, and insider picks for Tulum, Mexico",
-    images: [`${BASE_URL}/data/webcam/latest.jpg`],
+    images: [`${BASE_URL}/api/og-image`],
     creator: "@discovertulum",
   },
   robots: {
