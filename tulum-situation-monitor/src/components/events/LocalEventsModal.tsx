@@ -48,7 +48,7 @@ function EventCard({
       {hasImage && (
         <img
           src={proxiedImage!}
-          alt="Event"
+          alt={`${event.author_name} event`}
           style={{
             position: "absolute",
             inset: 0,

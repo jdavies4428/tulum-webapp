@@ -333,7 +333,7 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
                     <>
                       <img
                         src={getPlacePhotoUrl(details.photos[selectedPhotoIndex].photo_reference, 800)}
-                        alt=""
+                        alt={`Photo ${selectedPhotoIndex + 1} of ${details.name ?? "venue"}`}
                         className="hover-scale"
                         style={{
                           width: "100%",
@@ -364,7 +364,7 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
                           >
                             <img
                               src={getPlacePhotoUrl(photo.photo_reference, 150)}
-                              alt=""
+                              alt={`Thumbnail ${i + 1} of ${details.name ?? "venue"}`}
                               style={{ width: "100%", height: "100%", objectFit: "cover" }}
                             />
                           </button>
@@ -397,7 +397,7 @@ export function PlaceDetailsModal({ placeId, placeName, lang, onClose }: PlaceDe
                             {review.profile_photo_url && (
                               <img
                                 src={review.profile_photo_url}
-                                alt=""
+                                alt={`${review.author_name ?? "Reviewer"} profile photo`}
                                 style={{ width: "36px", height: "36px", borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(0, 206, 209, 0.2)" }}
                               />
                             )}

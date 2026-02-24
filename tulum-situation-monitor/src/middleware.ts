@@ -69,12 +69,59 @@ function isValidOrigin(request: NextRequest): boolean {
   return false;
 }
 
+// Content Security Policy – whitelist only what we actually use
+const CSP_DIRECTIVES = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-eval' 'unsafe-inline' unpkg.com",
+  "style-src 'self' 'unsafe-inline' unpkg.com fonts.googleapis.com",
+  "font-src 'self' fonts.googleapis.com fonts.gstatic.com",
+  [
+    "img-src 'self' data: blob:",
+    "maps.googleapis.com",
+    "lh3.googleusercontent.com",
+    "optics.marine.usf.edu",
+    "*.ipcamlive.com",
+    "*.supabase.co",
+    "cdn.prod.website-files.com",
+    "images.squarespace-cdn.com",
+    "photos.hotelbeds.com",
+    "i2.wp.com",
+    "vagalume-tulum.mx",
+    "mezcaleriamamazul.com",
+    "*.basemaps.cartocdn.com",
+    "server.arcgisonline.com",
+    "tile.openstreetmap.org",
+    "tilecache.rainviewer.com",
+  ].join(" "),
+  [
+    "connect-src 'self'",
+    "maps.googleapis.com",
+    "translation.googleapis.com",
+    "generativelanguage.googleapis.com",
+    "api.open-meteo.com",
+    "marine-api.open-meteo.com",
+    "optics.marine.usf.edu",
+    "sargassummonitoring.com",
+    "api.frankfurter.app",
+    "*.supabase.co",
+  ].join(" "),
+  "frame-src 'self' g1.ipcamlive.com g3.ipcamlive.com",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Only apply to API routes
+  // Apply CSP headers to all responses
   if (!pathname.startsWith("/api/")) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set("Content-Security-Policy", CSP_DIRECTIVES);
+    response.headers.set("X-Content-Type-Options", "nosniff");
+    response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    response.headers.set("X-Frame-Options", "DENY");
+    return response;
   }
 
   // --- CSRF protection ---
@@ -131,5 +178,8 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/:path*"],
+  matcher: [
+    // Match all routes except static assets and Next.js internals
+    "/((?!_next/static|_next/image|favicon.ico|manifest.json|images/).*)",
+  ],
 };
