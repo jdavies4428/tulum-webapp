@@ -11,6 +11,7 @@ import { ConfirmDialog } from "@/components/events/ConfirmDialog";
 import { formatChatTimestamp } from "@/lib/chat-helpers";
 import { proxyImageUrl } from "@/lib/image-proxy";
 import { translations } from "@/lib/i18n";
+import { SAMPLE_EVENTS, formatEventDate } from "@/data/sample-events";
 import type { Lang } from "@/lib/weather";
 
 function EventCard({
@@ -112,7 +113,9 @@ function EventCard({
           letterSpacing: "0.5px",
         }}
       >
-        {formatChatTimestamp(new Date(event.created_at).getTime())}
+        {event.id.startsWith("sample-")
+          ? formatEventDate(event.created_at)
+          : formatChatTimestamp(new Date(event.created_at).getTime())}
       </div>
 
       {/* Overlaid content */}
@@ -464,21 +467,20 @@ export function LocalEventsModal({ lang, isOpen, onClose }: LocalEventsModalProp
             <div style={{ padding: "40px", textAlign: "center", color: "#7C8490" }}>
               Loading events...
             </div>
-          ) : events.length === 0 ? (
-            <div style={{ padding: "40px", textAlign: "center", color: "#7C8490" }}>
-              No events yet.
-            </div>
           ) : (
-            events.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                isAdmin={isAdmin}
-                isAuthor={auth?.user?.id === event.author_id}
-                onEdit={() => setEditingEvent(event)}
-                onDelete={() => setDeleteConfirm(event.id)}
-              />
-            ))
+            [...SAMPLE_EVENTS, ...events].map((event) => {
+              const isSample = event.id.startsWith("sample-");
+              return (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  isAdmin={isAdmin}
+                  isAuthor={!isSample && auth?.user?.id === event.author_id}
+                  onEdit={() => { if (!isSample) setEditingEvent(event); }}
+                  onDelete={() => { if (!isSample) setDeleteConfirm(event.id); }}
+                />
+              );
+            })
           )}
         </div>
       </div>
