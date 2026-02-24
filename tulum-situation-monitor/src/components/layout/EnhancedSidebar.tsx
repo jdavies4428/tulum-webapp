@@ -27,6 +27,7 @@ import type { TideState } from "@/hooks/useTides";
 import { useThrottle } from "@/hooks/useThrottle";
 import { useLocalEvents } from "@/hooks/useLocalEvents";
 import { formatChatTimestamp } from "@/lib/chat-helpers";
+import { SAMPLE_EVENTS, formatEventDate } from "@/data/sample-events";
 import { OPEN_QUICK_ACTIONS_EVENT } from "@/components/quick-actions/QuickActionsFAB";
 
 export interface SharePayload {
@@ -515,7 +516,7 @@ export function EnhancedSidebar({
         </div>
 
         {/* Local Events Section */}
-        {localEvents.length > 0 && (
+        {[...SAMPLE_EVENTS, ...localEvents].length > 0 && (
           <div style={{ padding: `4px ${spacing.lg}px 8px` }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
               <h2 style={{
@@ -559,7 +560,7 @@ export function EnhancedSidebar({
                   paddingBottom: "4px",
                 }}
               >
-                {localEvents.slice(0, 4).map((event) => (
+                {[...SAMPLE_EVENTS, ...localEvents].slice(0, 6).map((event) => (
                   <div
                     key={event.id}
                     role="button"
@@ -618,7 +619,9 @@ export function EnhancedSidebar({
                         letterSpacing: "0.5px",
                       }}
                     >
-                      {formatChatTimestamp(new Date(event.created_at).getTime())}
+                      {event.id.startsWith("sample-")
+                        ? formatEventDate(event.created_at)
+                        : formatChatTimestamp(new Date(event.created_at).getTime())}
                     </div>
                     <div
                       style={{
@@ -648,7 +651,7 @@ export function EnhancedSidebar({
                   </div>
                 ))}
               </div>
-              {localEvents.length > 1 && (
+              {[...SAMPLE_EVENTS, ...localEvents].length > 1 && (
                 <>
                   <button
                     type="button"
