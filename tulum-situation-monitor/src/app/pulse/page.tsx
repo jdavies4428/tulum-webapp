@@ -63,6 +63,10 @@ const SAMPLE_COMMUNITY = [
   { title: "Best tacos that aren't on the tourist strip?", category: "Recs", color: "#F368E0" },
 ];
 
+// ─── Unit helpers ────────────────────────────────────────────────
+function toF(c: number) { return Math.round(c * 9 / 5 + 32); }
+function toMph(kmh: number) { return Math.round(kmh * 0.621371); }
+
 const QUICK_ACTIONS = [
   { label: "Translate", emoji: "🌐", href: "/discover/translation" },
   { label: "Beaches", emoji: "🏖️", href: "/discover/beach-dashboard" },
@@ -161,11 +165,12 @@ export default function PulsePage() {
     aiRequested.current = true;
     setAiLoading(true);
 
+    const useF = lang === "en";
     const ctx: ConciergeContext = {
       lang,
       currentWeather: data.weather
         ? {
-            temperature: data.weather.temp,
+            temperature: useF ? toF(data.weather.temp) : data.weather.temp,
             condition: data.weather.label,
             uvIndex: data.weather.uvIndex,
           }
@@ -174,8 +179,8 @@ export default function PulsePage() {
       sargassumLevel: data.sargassumLevel,
       beachScore: data.topBeach?.score,
       topBeachName: data.topBeach?.name,
-      waterTemp: data.weather?.waterTemp,
-      windSpeed: data.weather?.windSpeed,
+      waterTemp: data.weather?.waterTemp ? (useF ? toF(data.weather.waterTemp) : data.weather.waterTemp) : null,
+      windSpeed: data.weather?.windSpeed ? (useF ? toMph(data.weather.windSpeed) : data.weather.windSpeed) : undefined,
       sunrise: data.sun?.sunrise,
       sunset: data.sun?.sunset,
       crowdLevel: data.topBeach?.crowd,
@@ -356,7 +361,7 @@ export default function PulsePage() {
             <>
               <div style={{ display: "flex", alignItems: "baseline", gap: "12px", marginBottom: "6px" }}>
                 <span style={{ fontSize: "48px", fontWeight: 300, color: "#E8ECEF", lineHeight: 1 }}>
-                  {data.weather.temp}°
+                  {lang === "en" ? toF(data.weather.temp) : data.weather.temp}°{lang === "en" ? "F" : ""}
                 </span>
                 <span style={{ fontSize: "20px" }}>{data.weather.emoji}</span>
                 <span style={{ fontSize: "15px", color: "#9BA3AF", fontWeight: 500 }}>
@@ -386,7 +391,7 @@ export default function PulsePage() {
                     fontWeight: 600,
                   }}
                 >
-                  💨 {data.weather.windSpeed} km/h
+                  💨 {lang === "en" ? toMph(data.weather.windSpeed) : data.weather.windSpeed} {lang === "en" ? "mph" : "km/h"}
                 </span>
                 {data.weather.waterTemp && (
                   <span
@@ -399,7 +404,7 @@ export default function PulsePage() {
                       fontWeight: 600,
                     }}
                   >
-                    🌊 {data.weather.waterTemp}°
+                    🌊 {lang === "en" ? toF(data.weather.waterTemp!) : data.weather.waterTemp}°{lang === "en" ? "F" : ""}
                   </span>
                 )}
                 {data.sun.sunset && (
