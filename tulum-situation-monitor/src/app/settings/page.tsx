@@ -220,7 +220,7 @@ export default function SettingsPage() {
               {avatarUrl ? (
                 <img
                   src={avatarUrl}
-                  alt="Profile"
+                  alt={`${displayName} profile photo`}
                   style={{
                     width: "100%",
                     height: "100%",

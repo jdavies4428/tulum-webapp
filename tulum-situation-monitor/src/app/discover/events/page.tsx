@@ -49,7 +49,7 @@ function EventCard({
       {hasImage && (
         <img
           src={event.image_url!}
-          alt="Event"
+          alt={`${event.author_name} event`}
           style={{
             position: "absolute",
             inset: 0,

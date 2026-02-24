@@ -107,7 +107,7 @@ export function MessageBubble({
           <>
             <img
               src={proxyImageUrl(String(message.metadata.imageUrl), 384) ?? String(message.metadata.imageUrl)}
-              alt="Shared"
+              alt="Shared image in chat"
               onClick={() => setLightboxOpen(true)}
               style={{
                 maxWidth: 260,
@@ -134,7 +134,7 @@ export function MessageBubble({
               >
                 <img
                   src={String(message.metadata.imageUrl)}
-                  alt="Shared"
+                  alt="Full-size shared image"
                   style={{ maxWidth: "90vw", maxHeight: "90vh", borderRadius: 8 }}
                   onClick={(e) => e.stopPropagation()}
                 />

@@ -122,7 +122,7 @@ export function Sargassum7DayImage({ lang }: Sargassum7DayImageProps) {
             <img
               ref={imgRef}
               src={imgSrc}
-              alt="7-Day Sargassum"
+              alt="7-day sargassum satellite composite"
               style={{
                 width: "100%",
                 maxWidth: "320px",

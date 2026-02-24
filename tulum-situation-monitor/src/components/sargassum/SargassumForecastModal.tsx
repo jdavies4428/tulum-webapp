@@ -132,7 +132,7 @@ export function SargassumForecastModal({ lang, isOpen, onClose }: SargassumForec
         <div className="flex-1 overflow-auto bg-white p-3">
           <img
             src={imgSrc}
-            alt="Sargassum Forecast"
+            alt="Sargassum density forecast map for the Caribbean region"
             className="mx-auto max-h-[400px] w-full object-contain"
           />
         </div>

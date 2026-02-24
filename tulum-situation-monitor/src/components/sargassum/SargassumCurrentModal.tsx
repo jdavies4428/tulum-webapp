@@ -83,7 +83,7 @@ export function SargassumCurrentModal({ lang, isOpen, onClose }: SargassumCurren
         <div className="flex-1 overflow-auto bg-[#111] p-3 text-center">
           <img
             src={imgSrc}
-            alt="Current Sargassum Satellite"
+            alt="Current satellite imagery of sargassum coverage near Tulum"
             className="mx-auto max-h-[450px] w-full max-w-full rounded object-contain"
           />
         </div>

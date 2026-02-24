@@ -76,7 +76,7 @@ export function Sargassum7DayModal({ lang, isOpen, onClose }: Sargassum7DayModal
         <div className="flex-1 overflow-auto bg-[#111] p-3 text-center scrollbar-hide">
           <img
             src={imgSrc}
-            alt="7-Day Sargassum Historical"
+            alt="7-day historical sargassum satellite composite near Tulum"
             className="mx-auto max-h-[450px] w-full max-w-full rounded object-contain"
           />
         </div>
