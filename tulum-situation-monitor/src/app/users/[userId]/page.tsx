@@ -6,6 +6,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useAuthOptional } from "@/contexts/AuthContext";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { translations } from "@/lib/i18n";
+import { BottomNav } from "@/components/layout/BottomNav";
 import type { Lang } from "@/lib/weather";
 
 interface ProfileData {
@@ -74,7 +75,7 @@ export default function UserProfilePage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0A0F14",
+          background: "#FFFFFF",
           padding: "24px",
         }}
       >
@@ -95,11 +96,11 @@ export default function UserProfilePage() {
           alignItems: "center",
           justifyContent: "center",
           gap: "24px",
-          background: "#0A0F14",
+          background: "#FFFFFF",
           padding: "24px",
         }}
       >
-        <p style={{ color: "rgba(232, 236, 239, 0.6)", fontSize: "18px" }}>
+        <p style={{ color: "#717171", fontSize: "18px" }}>
           {t.profileNotFound ?? "Profile not found"}
         </p>
         <Link
@@ -125,9 +126,10 @@ export default function UserProfilePage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0A0F14",
+        background: "#FFFFFF",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
+        paddingBottom: "100px",
       }}
     >
       <header
@@ -147,28 +149,28 @@ export default function UserProfilePage() {
             width: "44px",
             height: "44px",
             borderRadius: "12px",
-            background: "rgba(0, 206, 209, 0.1)",
-            border: "1px solid rgba(0, 206, 209, 0.2)",
-            color: "var(--tulum-ocean)",
+            background: "#F7F7F7",
+            border: "1px solid #EEEEEE",
+            color: "#222222",
             fontSize: "20px",
             textDecoration: "none",
           }}
         >
           ←
         </Link>
-        <h1 style={{ fontSize: "20px", fontWeight: 800, margin: 0, color: "#E8ECEF" }}>
+        <h1 style={{ fontSize: "20px", fontWeight: 800, margin: 0, color: "#222222" }}>
           {t.profile ?? "Profile"}
         </h1>
       </header>
 
       <div
         style={{
-          background: "rgba(20, 30, 45, 0.85)",
+          background: "#FFFFFF",
           borderRadius: "24px",
           padding: "100px 24px 24px",
           marginBottom: "24px",
-          border: "1px solid rgba(0, 206, 209, 0.15)",
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4)",
+          border: "1px solid #EEEEEE",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
           position: "relative",
         }}
       >
@@ -181,9 +183,9 @@ export default function UserProfilePage() {
             width: "120px",
             height: "120px",
             borderRadius: "50%",
-            border: "4px solid rgba(0, 206, 209, 0.3)",
+            border: "4px solid rgba(0, 206, 209, 0.2)",
             overflow: "hidden",
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.08)",
             background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
             display: "flex",
             alignItems: "center",
@@ -214,7 +216,7 @@ export default function UserProfilePage() {
               fontSize: "28px",
               fontWeight: 800,
               margin: "0 0 8px 0",
-              color: "#E8ECEF",
+              color: "#222222",
             }}
           >
             {displayName}
@@ -223,7 +225,7 @@ export default function UserProfilePage() {
             <p
               style={{
                 fontSize: "15px",
-                color: "rgba(232, 236, 239, 0.6)",
+                color: "#717171",
                 margin: "0 0 16px 0",
                 lineHeight: 1.5,
               }}
@@ -259,7 +261,7 @@ export default function UserProfilePage() {
             >
               —
             </div>
-            <div style={{ fontSize: "13px", fontWeight: 600, color: "rgba(232, 236, 239, 0.6)" }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: "#717171" }}>
               {t.favorites ?? "Favorites"}
             </div>
           </div>
@@ -281,7 +283,7 @@ export default function UserProfilePage() {
             >
               {profile.followers_count}
             </div>
-            <div style={{ fontSize: "13px", fontWeight: 600, color: "rgba(232, 236, 239, 0.6)" }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: "#717171" }}>
               {t.followers ?? "Followers"}
             </div>
           </div>
@@ -303,7 +305,7 @@ export default function UserProfilePage() {
             >
               {profile.following_count}
             </div>
-            <div style={{ fontSize: "13px", fontWeight: 600, color: "rgba(232, 236, 239, 0.6)" }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, color: "#717171" }}>
               {t.following ?? "Following"}
             </div>
           </div>
@@ -324,7 +326,7 @@ export default function UserProfilePage() {
               fontWeight: 700,
               textDecoration: "none",
               textAlign: "center",
-              boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
+              boxShadow: "0 4px 16px rgba(0, 206, 209, 0.12)",
             }}
           >
             💬 {t.message ?? "Message"}
@@ -341,15 +343,15 @@ export default function UserProfilePage() {
                 ? "transparent"
                 : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
               border: profile.is_following
-                ? "2px solid rgba(255, 255, 255, 0.15)"
+                ? "2px solid #EEEEEE"
                 : "none",
-              color: profile.is_following ? "#E8ECEF" : "#FFF",
+              color: profile.is_following ? "#222222" : "#FFF",
               fontSize: "15px",
               fontWeight: 700,
               cursor: followLoading ? "not-allowed" : "pointer",
               boxShadow: profile.is_following
                 ? "none"
-                : "0 4px 16px rgba(0, 206, 209, 0.3)",
+                : "0 4px 16px rgba(0, 206, 209, 0.12)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -386,6 +388,7 @@ export default function UserProfilePage() {
           </Link>
         )}
       </div>
+      <BottomNav lang={lang} />
     </div>
   );
 }

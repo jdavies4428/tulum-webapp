@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useAuthOptional } from "@/contexts/AuthContext";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { translations } from "@/lib/i18n";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 interface SavedItinerary {
   id: string;
@@ -44,7 +45,7 @@ export default function MyItinerariesPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0A0F14",
+          background: "#FFFFFF",
           padding: "24px",
         }}
       >
@@ -65,11 +66,11 @@ export default function MyItinerariesPage() {
           alignItems: "center",
           justifyContent: "center",
           gap: "24px",
-          background: "#0A0F14",
+          background: "#FFFFFF",
           padding: "24px",
         }}
       >
-        <p style={{ color: "rgba(232, 236, 239, 0.6)", fontSize: "18px", textAlign: "center" }}>
+        <p style={{ color: "#717171", fontSize: "18px", textAlign: "center" }}>
           {t.signInToViewItineraries ?? "Sign in to view your saved itineraries"}
         </p>
         <Link
@@ -93,9 +94,10 @@ export default function MyItinerariesPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0A0F14",
+        background: "#FFFFFF",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
+        paddingBottom: "100px",
       }}
     >
       <header
@@ -256,6 +258,7 @@ export default function MyItinerariesPage() {
           </Link>
         </div>
       )}
+      <BottomNav lang={lang} />
     </div>
   );
 }

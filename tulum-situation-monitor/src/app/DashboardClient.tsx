@@ -7,6 +7,7 @@ import type { MapLayersState } from "@/components/map/MapContainer";
 import { MapView } from "@/components/map/MapView";
 import { MapSearchBar, type SearchablePlace } from "@/components/map/MapSearchBar";
 import { EnhancedSidebar } from "@/components/layout/EnhancedSidebar";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { StatusBar } from "@/components/layout/StatusBar";
 import { LayerControls } from "@/components/layout/LayerControls";
 import { MapLegend } from "@/components/layout/MapLegend";
@@ -153,6 +154,7 @@ export function DashboardClient() {
         tide={tide}
         onWeatherRefresh={refetchWeather}
       />
+      {isMobile && <BottomNav lang={lang} variant="light" fixed />}
       {/* On mobile, map is on /map page to avoid black box from sliding layout; desktop keeps map here */}
       {!isMobile && (
         <div
@@ -183,6 +185,7 @@ export function DashboardClient() {
             lang={lang}
             onSelectPlace={setSelectedPlace}
             flyTo={mapApi?.flyTo}
+            fullWidth
           />
           <MapView
             lang={lang}

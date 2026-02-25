@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 const CATEGORIES = [
   { id: "all", label: "All", color: "#00CED1" },
@@ -136,8 +137,8 @@ export default function CommunityBoardPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0F1419",
-        color: "#E8ECEF",
+        background: "#FFFFFF",
+        color: "#222222",
         paddingTop: "max(24px, env(safe-area-inset-top))",
         paddingBottom: "100px",
       }}
@@ -146,7 +147,7 @@ export default function CommunityBoardPage() {
       <header
         style={{
           padding: "0 24px 20px",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          borderBottom: "1px solid #EEEEEE",
         }}
       >
         <div
@@ -166,9 +167,9 @@ export default function CommunityBoardPage() {
               width: "40px",
               height: "40px",
               borderRadius: "12px",
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.08)",
-              color: "#9BA3AF",
+              background: "#F7F7F7",
+              border: "1px solid #EEEEEE",
+              color: "#717171",
               fontSize: "18px",
               textDecoration: "none",
               flexShrink: 0,
@@ -183,7 +184,7 @@ export default function CommunityBoardPage() {
                 fontWeight: "700",
                 margin: 0,
                 letterSpacing: "-0.3px",
-                color: "#E8ECEF",
+                color: "#222222",
               }}
             >
               {t.communityBoard ?? "Community Board"}
@@ -206,8 +207,8 @@ export default function CommunityBoardPage() {
       <div style={{ padding: "16px 24px 0" }}>
         <div
           style={{
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.06)",
+            background: "#F7F7F7",
+            border: "1px solid #EEEEEE",
             borderRadius: "12px",
             padding: "10px 14px",
             fontSize: "12px",
@@ -216,7 +217,7 @@ export default function CommunityBoardPage() {
           }}
         >
           {"\u{1F6A7}"}{" "}
-          <strong style={{ color: "#9BA3AF" }}>Preview</strong> &mdash; Sample
+          <strong style={{ color: "#717171" }}>Preview</strong> &mdash; Sample
           posts shown to demonstrate this upcoming feature
         </div>
       </div>
@@ -243,7 +244,7 @@ export default function CommunityBoardPage() {
                 border: "1px solid",
                 borderColor: active
                   ? `${cat.color}66`
-                  : "rgba(255,255,255,0.06)",
+                  : "#EEEEEE",
                 background: active ? `${cat.color}18` : "transparent",
                 color: active ? cat.color : "#6B7280",
                 fontSize: "12px",
@@ -281,8 +282,8 @@ export default function CommunityBoardPage() {
               style={{
                 position: "relative",
                 background: post.pinned
-                  ? "rgba(255, 159, 67, 0.04)"
-                  : "rgba(255,255,255,0.02)",
+                  ? "rgba(255, 159, 67, 0.06)"
+                  : "rgba(0,0,0,0.02)",
                 borderLeft: `3px solid ${catColor}${post.pinned ? "CC" : "55"}`,
                 borderRadius: "0 14px 14px 0",
                 padding: "20px 22px",
@@ -291,13 +292,13 @@ export default function CommunityBoardPage() {
                 marginBottom: "0",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                e.currentTarget.style.background = "rgba(0,0,0,0.04)";
                 e.currentTarget.style.borderLeftColor = catColor;
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = post.pinned
-                  ? "rgba(255, 159, 67, 0.04)"
-                  : "rgba(255,255,255,0.02)";
+                  ? "rgba(255, 159, 67, 0.06)"
+                  : "rgba(0,0,0,0.02)";
                 e.currentTarget.style.borderLeftColor = `${catColor}${post.pinned ? "CC" : "55"}`;
               }}
             >
@@ -364,7 +365,7 @@ export default function CommunityBoardPage() {
                 style={{
                   fontSize: "16px",
                   fontWeight: 650,
-                  color: "#E8ECEF",
+                  color: "#222222",
                   margin: "0 0 6px",
                   lineHeight: 1.35,
                   letterSpacing: "-0.2px",
@@ -377,7 +378,7 @@ export default function CommunityBoardPage() {
               <p
                 style={{
                   fontSize: "14px",
-                  color: "#9BA3AF",
+                  color: "#717171",
                   margin: "0 0 12px",
                   lineHeight: 1.55,
                   fontWeight: 400,
@@ -416,9 +417,9 @@ export default function CommunityBoardPage() {
           style={{
             padding: "12px 28px",
             borderRadius: "24px",
-            border: "1px solid rgba(255,255,255,0.06)",
-            background: "rgba(255,255,255,0.06)",
-            color: "rgba(255,255,255,0.25)",
+            border: "1px solid #EEEEEE",
+            background: "#F7F7F7",
+            color: "#B0B0B0",
             fontSize: "14px",
             fontWeight: 600,
             cursor: "not-allowed",
@@ -431,6 +432,8 @@ export default function CommunityBoardPage() {
           + New Post
         </button>
       </div>
+
+      <BottomNav lang={lang} />
     </div>
   );
 }

@@ -5,24 +5,27 @@ import { usePathname } from "next/navigation";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 import { spacing, radius } from "@/lib/design-tokens";
+import { OPEN_QUICK_ACTIONS_EVENT } from "@/components/quick-actions/QuickActionsFAB";
 
 interface BottomNavProps {
   lang: Lang;
   unreadMessages?: number;
+  variant?: "light" | "dark";
 }
 
 type NavItem = {
   id: string;
   labelKey: string;
-  href: string;
+  href?: string;
+  action?: "quick-actions";
 };
 
 const NAV_ITEMS: NavItem[] = [
   { id: "home", labelKey: "navHome", href: "/" },
   { id: "discover", labelKey: "discover", href: "/discover" },
   { id: "map", labelKey: "map", href: "/map" },
-  { id: "messages", labelKey: "messages", href: "/messages" },
   { id: "saved", labelKey: "navSaved", href: "/favorites" },
+  { id: "quick", labelKey: "navQuick", action: "quick-actions" },
 ];
 
 function NavIcon({ id, color }: { id: string; color: string }) {
@@ -51,10 +54,18 @@ function NavIcon({ id, color }: { id: string; color: string }) {
           <line x1="16" y1="6" x2="16" y2="22" />
         </svg>
       );
-    case "messages":
+    case "quick":
       return (
         <svg {...props}>
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          <circle cx="12" cy="12" r="1" fill={color} stroke="none" />
+          <circle cx="12" cy="5" r="1" fill={color} stroke="none" />
+          <circle cx="12" cy="19" r="1" fill={color} stroke="none" />
+          <circle cx="5" cy="12" r="1" fill={color} stroke="none" />
+          <circle cx="19" cy="12" r="1" fill={color} stroke="none" />
+          <circle cx="7.05" cy="7.05" r="1" fill={color} stroke="none" />
+          <circle cx="16.95" cy="7.05" r="1" fill={color} stroke="none" />
+          <circle cx="7.05" cy="16.95" r="1" fill={color} stroke="none" />
+          <circle cx="16.95" cy="16.95" r="1" fill={color} stroke="none" />
         </svg>
       );
     case "saved":
@@ -73,44 +84,50 @@ function NavButton({
   label,
   active,
   href,
-  badge,
+  isLight,
+  onClick,
 }: {
   id: string;
   label: string;
   active: boolean;
-  href: string;
-  badge?: number;
+  href?: string;
+  isLight?: boolean;
+  onClick?: () => void;
 }) {
   const handleClick = () => {
-    // Haptic feedback on mobile
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate(10);
     }
+    onClick?.();
   };
 
-  return (
-    <Link
-      href={href}
-      onClick={handleClick}
-      className={active ? "" : "interactive hover-scale"}
-      style={{
-        flex: 1,
-        maxWidth: 80,
-        minHeight: 48,
-        padding: spacing.sm,
-        background: active ? "linear-gradient(135deg, rgba(0, 206, 209, 0.15) 0%, rgba(0, 206, 209, 0.05) 100%)" : "transparent",
-        border: active ? "1px solid rgba(0, 206, 209, 0.2)" : "1px solid transparent",
-        borderRadius: radius.md,
-        cursor: "pointer",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: spacing.xs,
-        transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-        textDecoration: "none",
-        position: "relative",
-      }}
-    >
+  const inactiveColor = isLight ? "#717171" : "#7C8490";
+  const activeColor = "#00CED1";
+
+  const style: React.CSSProperties = {
+    flex: 1,
+    maxWidth: 80,
+    minHeight: 48,
+    padding: spacing.sm,
+    background: active
+      ? isLight ? "rgba(0, 206, 209, 0.08)" : "linear-gradient(135deg, rgba(0, 206, 209, 0.15) 0%, rgba(0, 206, 209, 0.05) 100%)"
+      : "transparent",
+    border: active
+      ? isLight ? "1px solid transparent" : "1px solid rgba(0, 206, 209, 0.2)"
+      : "1px solid transparent",
+    borderRadius: radius.md,
+    cursor: "pointer",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: spacing.xs,
+    transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+    textDecoration: "none",
+    position: "relative",
+  };
+
+  const inner = (
+    <>
       <div
         style={{
           position: "relative",
@@ -119,38 +136,13 @@ function NavButton({
           transform: active ? "scale(1.1)" : "scale(1)",
         }}
       >
-        <NavIcon id={id} color={active ? "#00CED1" : "#7C8490"} />
-        {/* Unread badge */}
-        {badge !== undefined && badge > 0 && (
-          <span
-            style={{
-              position: "absolute",
-              top: -4,
-              right: -8,
-              minWidth: 16,
-              height: 16,
-              borderRadius: 8,
-              background: "#FF3B30",
-              color: "#fff",
-              fontSize: 10,
-              fontWeight: 700,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "0 4px",
-              boxShadow: "0 2px 6px rgba(255, 59, 48, 0.4)",
-              animation: "badgePulse 2s ease-in-out infinite",
-            }}
-          >
-            {badge > 9 ? "9+" : badge}
-          </span>
-        )}
+        <NavIcon id={id} color={active ? activeColor : inactiveColor} />
       </div>
       <div
         style={{
           fontSize: "10px",
           fontWeight: 700,
-          color: active ? "#00CED1" : "#7C8490",
+          color: active ? activeColor : inactiveColor,
           transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
           textTransform: "uppercase",
           letterSpacing: "0.3px",
@@ -160,7 +152,7 @@ function NavButton({
       </div>
       {active && (
         <div
-          className="shadow-glow"
+          className={isLight ? "" : "shadow-glow"}
           style={{
             position: "absolute",
             bottom: 0,
@@ -168,55 +160,72 @@ function NavButton({
             transform: "translateX(-50%)",
             width: "60%",
             height: 2,
-            background: "#00CED1",
+            background: activeColor,
             borderRadius: "2px 2px 0 0",
-            boxShadow: "0 0 8px rgba(0, 206, 209, 0.5)",
+            boxShadow: isLight ? "none" : "0 0 8px rgba(0, 206, 209, 0.5)",
           }}
         />
       )}
+    </>
+  );
 
-      <style>{`
-        @keyframes badgePulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.1); }
-        }
-      `}</style>
-    </Link>
+  if (href) {
+    return (
+      <Link
+        href={href}
+        onClick={handleClick}
+        className={active ? "" : "interactive hover-scale"}
+        style={style}
+      >
+        {inner}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      className={active ? "" : "interactive hover-scale"}
+      style={style}
+    >
+      {inner}
+    </button>
   );
 }
 
-export function BottomNav({ lang, fixed = false, unreadMessages = 0 }: BottomNavProps & { fixed?: boolean }) {
+export function BottomNav({ lang, fixed = false, variant = "light" }: BottomNavProps & { fixed?: boolean }) {
   const pathname = usePathname();
   const t = translations[lang] as Record<string, string>;
+  const isLight = variant === "light";
 
   return (
     <div
-      className="glass-heavy"
+      className={isLight ? "" : "glass-heavy"}
       style={{
         position: fixed ? "fixed" : "absolute",
         bottom: 0,
         left: 0,
         right: 0,
         height: 80,
-        background: "rgba(15, 20, 25, 0.95)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-        borderTop: "2px solid rgba(0, 206, 209, 0.15)",
+        background: isLight ? "#FFFFFF" : "rgba(15, 20, 25, 0.95)",
+        backdropFilter: isLight ? "none" : "blur(24px)",
+        WebkitBackdropFilter: isLight ? "none" : "blur(24px)",
+        borderTop: isLight ? "1px solid #EEEEEE" : "2px solid rgba(0, 206, 209, 0.15)",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-around",
         padding: `0 ${spacing.sm}px`,
         paddingBottom: "env(safe-area-inset-bottom, 0)",
         zIndex: 10001,
-        boxShadow: "0 -4px 24px rgba(0, 0, 0, 0.4)",
+        boxShadow: isLight ? "0 -1px 4px rgba(0,0,0,0.06)" : "0 -4px 24px rgba(0, 0, 0, 0.4)",
       }}
     >
       {NAV_ITEMS.map((item) => {
         const isMap = item.href === "/map";
         const isHome = item.href === "/";
-        const active = isMap ? pathname === "/map" : isHome ? pathname === "/" : pathname.startsWith(item.href);
-        const displayLabel = (t as Record<string, string>)[item.labelKey] ?? (item.labelKey === "navHome" ? "Home" : item.labelKey === "navSaved" ? "Saved" : item.id);
-        const badge = item.id === "messages" ? unreadMessages : undefined;
+        const active = item.href ? (isMap ? pathname === "/map" : isHome ? pathname === "/" : pathname.startsWith(item.href)) : false;
+        const displayLabel = t[item.labelKey] ?? (item.labelKey === "navHome" ? "Home" : item.labelKey === "navSaved" ? "Saved" : item.labelKey === "navQuick" ? "More" : item.id);
         return (
           <NavButton
             key={item.id}
@@ -224,7 +233,8 @@ export function BottomNav({ lang, fixed = false, unreadMessages = 0 }: BottomNav
             label={displayLabel}
             active={active}
             href={item.href}
-            badge={badge}
+            isLight={isLight}
+            onClick={item.action === "quick-actions" ? () => window.dispatchEvent(new CustomEvent(OPEN_QUICK_ACTIONS_EVENT)) : undefined}
           />
         );
       })}

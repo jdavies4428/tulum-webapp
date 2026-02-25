@@ -12,7 +12,7 @@ const DashboardClient = dynamic(() => import("./DashboardClient").then((m) => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#0a0404",
+        background: "#FFFFFF",
         color: "#00CED1",
         fontFamily: "sans-serif",
         fontSize: 18,

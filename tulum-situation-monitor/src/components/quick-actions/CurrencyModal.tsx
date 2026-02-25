@@ -7,15 +7,14 @@ import type { CurrenciesRates } from "@/app/api/currencies/route";
 import { spacing, radius } from "@/lib/design-tokens";
 import { Modal } from "@/components/ui/Modal";
 
-// Match sidebar CurrenciesPanel: all currencies with rates to MXN
 const CURRENCIES = [
-  { code: "USD", flag: "🇺🇸" },
-  { code: "CAD", flag: "🇨🇦" },
-  { code: "EUR", flag: "🇪🇺" },
-  { code: "ARS", flag: "🇦🇷" },
-  { code: "AUD", flag: "🇦🇺" },
-  { code: "BRL", flag: "🇧🇷" },
-  { code: "MXN", flag: "🇲🇽" },
+  { code: "USD", flag: "\u{1F1FA}\u{1F1F8}" },
+  { code: "CAD", flag: "\u{1F1E8}\u{1F1E6}" },
+  { code: "EUR", flag: "\u{1F1EA}\u{1F1FA}" },
+  { code: "ARS", flag: "\u{1F1E6}\u{1F1F7}" },
+  { code: "AUD", flag: "\u{1F1E6}\u{1F1FA}" },
+  { code: "BRL", flag: "\u{1F1E7}\u{1F1F7}" },
+  { code: "MXN", flag: "\u{1F1F2}\u{1F1FD}" },
 ];
 
 interface CurrencyModalProps {
@@ -38,7 +37,6 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
       .finally(() => setLoading(false));
   }, []);
 
-  // MXN rate: 1 USD = rates.USD MXN, so 1 MXN = 1/rates.USD USD
   const getRate = (code: string): number => {
     if (!rates) return 0;
     if (code === "MXN") return 1;
@@ -71,13 +69,13 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
             fontSize: "20px",
             fontWeight: 700,
             margin: `0 0 ${spacing.lg}px 0`,
-            color: "#FFF",
+            color: "#222222",
             display: "flex",
             alignItems: "center",
             gap: spacing.sm,
           }}
         >
-          💱 {title}
+          {title}
         </h2>
 
         {/* Amount Input */}
@@ -90,21 +88,21 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
           autoCorrect="off"
           autoCapitalize="off"
           spellCheck="false"
-            style={{
-              width: "100%",
-              padding: spacing.md,
-              fontSize: "24px",
-              fontWeight: 700,
-              borderRadius: radius.md,
-              border: "1px solid rgba(0, 206, 209, 0.2)",
-              background: "rgba(0, 0, 0, 0.3)",
-              color: "#E8ECEF",
-              WebkitTextFillColor: "#E8ECEF",
-              marginBottom: spacing.md,
-              textAlign: "center",
-              boxSizing: "border-box",
-              transition: "border-color 0.2s",
-            }}
+          style={{
+            width: "100%",
+            padding: spacing.md,
+            fontSize: "24px",
+            fontWeight: 700,
+            borderRadius: radius.md,
+            border: "1px solid #DDDDDD",
+            background: "#F7F7F7",
+            color: "#222222",
+            WebkitTextFillColor: "#222222",
+            marginBottom: spacing.md,
+            textAlign: "center",
+            boxSizing: "border-box",
+            transition: "border-color 0.2s",
+          }}
         />
 
         {/* Currency Selection */}
@@ -123,16 +121,16 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
             style={{
               padding: spacing.sm,
               borderRadius: radius.sm,
-              border: "1px solid rgba(0, 206, 209, 0.2)",
+              border: "1px solid #DDDDDD",
               fontSize: "15px",
               fontWeight: 600,
-              background: "rgba(0, 0, 0, 0.3)",
-              color: "#E8ECEF",
+              background: "#F7F7F7",
+              color: "#222222",
               cursor: "pointer",
             }}
           >
             {CURRENCIES.map((c) => (
-              <option key={c.code} value={c.code} style={{ background: "#1a1a2e", color: "#FFF" }}>
+              <option key={c.code} value={c.code} style={{ background: "#FFFFFF", color: "#222222" }}>
                 {c.flag} {c.code}
               </option>
             ))}
@@ -146,7 +144,7 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
               width: 44,
               height: 44,
               borderRadius: "50%",
-              background: "rgba(0, 206, 209, 0.2)",
+              background: "rgba(0, 206, 209, 0.1)",
               border: "2px solid #00CED1",
               fontSize: "20px",
               color: "#00CED1",
@@ -166,16 +164,16 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
             style={{
               padding: spacing.sm,
               borderRadius: radius.sm,
-              border: "1px solid rgba(0, 206, 209, 0.2)",
+              border: "1px solid #DDDDDD",
               fontSize: "15px",
               fontWeight: 600,
-              background: "rgba(0, 0, 0, 0.3)",
-              color: "#E8ECEF",
+              background: "#F7F7F7",
+              color: "#222222",
               cursor: "pointer",
             }}
           >
             {CURRENCIES.map((c) => (
-              <option key={c.code} value={c.code} style={{ background: "#1a1a2e", color: "#FFF" }}>
+              <option key={c.code} value={c.code} style={{ background: "#FFFFFF", color: "#222222" }}>
                 {c.flag} {c.code}
               </option>
             ))}
@@ -189,11 +187,11 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
             style={{
               textAlign: "center",
               padding: spacing.lg,
-              color: "rgba(255, 255, 255, 0.6)",
+              color: "#999999",
               fontSize: "14px",
             }}
           >
-            {t.loading ?? "Loading…"}
+            {t.loading ?? "Loading..."}
           </div>
         )}
 
@@ -229,9 +227,9 @@ export function CurrencyModal({ lang, onClose }: CurrencyModalProps) {
             width: "100%",
             padding: spacing.md,
             borderRadius: radius.md,
-            background: "rgba(255, 255, 255, 0.1)",
-            border: "1px solid rgba(255, 255, 255, 0.2)",
-            color: "#FFF",
+            background: "#F7F7F7",
+            border: "1px solid #EEEEEE",
+            color: "#222222",
             fontWeight: 600,
             fontSize: "14px",
             cursor: "pointer",

@@ -9,14 +9,11 @@ interface SignInButtonProps {
   lang?: Lang;
   /** Compact style for tight spaces (e.g. StatusBar) */
   compact?: boolean;
-  /** Frosted glass style for map/dark overlays (light bg, dark text) */
-  variant?: "default" | "frosted";
 }
 
-export function SignInButton({ lang = "en", compact = false, variant = "default" }: SignInButtonProps) {
+export function SignInButton({ lang = "en", compact = false }: SignInButtonProps) {
   const [showModal, setShowModal] = useState(false);
   const t = translations[lang] as Record<string, string>;
-  const frosted = variant === "frosted";
 
   return (
     <>
@@ -26,14 +23,13 @@ export function SignInButton({ lang = "en", compact = false, variant = "default"
         style={{
           padding: compact ? "8px 12px" : "10px 16px",
           borderRadius: compact ? "10px" : "12px",
-          background: frosted ? "rgba(20, 30, 45, 0.85)" : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
-          backdropFilter: frosted ? "blur(20px)" : undefined,
+          background: "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
           border: "none",
-          color: frosted ? "#E8ECEF" : "#FFF",
+          color: "#FFF",
           fontSize: compact ? "12px" : "14px",
           fontWeight: "700",
           cursor: "pointer",
-          boxShadow: frosted ? "0 4px 12px rgba(0, 0, 0, 0.15)" : "0 4px 12px rgba(0, 206, 209, 0.3)",
+          boxShadow: "0 4px 12px rgba(0, 206, 209, 0.3)",
           display: "flex",
           alignItems: "center",
           gap: "8px",
@@ -41,14 +37,14 @@ export function SignInButton({ lang = "en", compact = false, variant = "default"
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
-          e.currentTarget.style.boxShadow = frosted ? "0 6px 20px rgba(0, 0, 0, 0.2)" : "0 6px 20px rgba(0, 206, 209, 0.4)";
+          e.currentTarget.style.boxShadow = "0 6px 20px rgba(0, 206, 209, 0.4)";
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = "translateY(0)";
-          e.currentTarget.style.boxShadow = frosted ? "0 4px 12px rgba(0, 0, 0, 0.15)" : "0 4px 12px rgba(0, 206, 209, 0.3)";
+          e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 206, 209, 0.3)";
         }}
       >
-        <span>👤</span>
+        <span>{"\u{1F464}"}</span>
         <span>{t.signIn ?? "Sign In"}</span>
       </button>
       <AuthPromptModal

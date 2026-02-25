@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 type FlightDirection = "arrival" | "departure";
 
@@ -253,6 +254,7 @@ export default function TransportationPage() {
         color: "var(--text-primary)",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
+        paddingBottom: "100px",
       }}
     >
       <header
@@ -366,6 +368,8 @@ export default function TransportationPage() {
         flights={TULUM_FLIGHTS}
         tAny={tAny}
       />
+
+      <BottomNav lang={lang} />
     </div>
   );
 }
