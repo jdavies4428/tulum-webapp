@@ -51,11 +51,11 @@ export const colors = {
   warning: '#FFD700',
   error: '#EF4444',
 
-  // Backgrounds (glass effects — dark theme)
+  // Backgrounds (glass effects — light theme)
   glass: {
-    light: 'rgba(20, 30, 45, 0.85)',
-    medium: 'rgba(20, 30, 45, 0.65)',
-    dark: 'rgba(10, 15, 22, 0.7)',
+    light: 'rgba(255, 255, 255, 0.85)',
+    medium: 'rgba(255, 255, 255, 0.7)',
+    dark: 'rgba(245, 245, 245, 0.9)',
   },
 } as const;
 
@@ -115,27 +115,27 @@ export const spacing = {
 // ============================================================================
 export const shadows = {
   none: 'none',
-  sm: '0 2px 8px rgba(0, 0, 0, 0.3)',       // Subtle depth
-  md: '0 4px 16px rgba(0, 0, 0, 0.4)',      // Card elevation
-  lg: '0 8px 32px rgba(0, 0, 0, 0.5)',      // Modal, floating elements
-  glow: '0 0 24px rgba(0, 206, 209, 0.3)',  // Accent glow (use sparingly)
+  sm: '0 1px 3px rgba(0, 0, 0, 0.08)',       // Subtle depth
+  md: '0 2px 8px rgba(0, 0, 0, 0.1)',       // Card elevation
+  lg: '0 8px 24px rgba(0, 0, 0, 0.12)',      // Modal, floating elements
+  glow: '0 0 24px rgba(0, 206, 209, 0.15)',  // Accent glow (use sparingly)
 } as const;
 
 // ============================================================================
 // GLASSMORPHISM - Tulum's Signature Look
 // ============================================================================
 export const glass = {
-  // Primary glass (dark theme)
+  // Primary glass (light theme)
   light: {
-    background: 'rgba(20, 30, 45, 0.85)',
+    background: 'rgba(255, 255, 255, 0.85)',
     backdropFilter: 'blur(20px)',
-    border: '1px solid rgba(0, 206, 209, 0.12)',
+    border: '1px solid rgba(0, 0, 0, 0.06)',
   },
   // Deep glass (overlays, modals)
   dark: {
-    background: 'rgba(10, 15, 22, 0.7)',
+    background: 'rgba(245, 245, 245, 0.9)',
     backdropFilter: 'blur(20px)',
-    border: '1px solid rgba(0, 206, 209, 0.1)',
+    border: '1px solid rgba(0, 0, 0, 0.08)',
   },
 } as const;
 
@@ -221,7 +221,7 @@ export const buttonVariants = {
   },
   ghost: {
     background: 'transparent',
-    color: '#9BA3AF',
+    color: '#717171',
     border: 'none',
     boxShadow: shadows.none,
   },
@@ -234,8 +234,8 @@ export const buttonVariants = {
   glass: {
     background: glass.light.background,
     backdropFilter: glass.light.backdropFilter,
-    color: '#E8ECEF',
-    border: '1px solid rgba(0, 206, 209, 0.15)',
+    color: '#222222',
+    border: '1px solid rgba(0, 0, 0, 0.08)',
     boxShadow: shadows.sm,
   },
 } as const;
@@ -256,8 +256,8 @@ export const card = {
 
   // Solid: Alternative when glass doesn't work
   solid: {
-    background: '#1A2332',
-    border: '1px solid rgba(0, 206, 209, 0.1)',
+    background: '#FFFFFF',
+    border: '1px solid #EEEEEE',
     shadow: shadows.md,
     borderRadius: radius.md,
     padding: spacing.lg,
@@ -267,13 +267,13 @@ export const card = {
 // Backward compatibility: cardVariants (for existing components)
 export const cardVariants = {
   flat: {
-    background: '#1A2332',
-    border: '1px solid rgba(0, 206, 209, 0.1)',
+    background: '#FFFFFF',
+    border: '1px solid #EEEEEE',
     shadow: shadows.none,
     hoverShadow: shadows.sm,
   },
   elevated: {
-    background: '#1A2332',
+    background: '#FFFFFF',
     border: 'none',
     shadow: shadows.md,
     hoverShadow: shadows.lg,

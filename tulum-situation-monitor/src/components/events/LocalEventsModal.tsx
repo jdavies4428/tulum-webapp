@@ -40,8 +40,9 @@ function EventCard({
         minHeight: hasImage ? "260px" : "140px",
         background: hasImage
           ? "transparent"
-          : "linear-gradient(135deg, rgba(0, 206, 209, 0.08) 0%, rgba(20, 30, 45, 0.9) 100%)",
-        border: "1px solid rgba(0, 206, 209, 0.15)",
+          : "linear-gradient(135deg, #E0F7F7 0%, #F0FAFA 100%)",
+        border: "1px solid #EEEEEE",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
       }}
     >
       {/* Background image */}
@@ -233,11 +234,11 @@ function AdminMenu({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => v
         top: "100%",
         right: 0,
         marginTop: "4px",
-        background: "rgba(20, 30, 45, 0.95)",
+        background: "#FFFFFF",
         backdropFilter: "blur(16px)",
         borderRadius: "10px",
-        border: "1px solid rgba(0, 206, 209, 0.2)",
-        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
+        border: "1px solid #EEEEEE",
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.12)",
         minWidth: "140px",
         zIndex: 100,
         overflow: "hidden",
@@ -255,7 +256,7 @@ function AdminMenu({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => v
           cursor: "pointer",
           fontSize: "13px",
           fontWeight: "600",
-          color: "#E8ECEF",
+          color: "#222222",
           display: "flex",
           alignItems: "center",
           gap: "8px",
@@ -271,7 +272,7 @@ function AdminMenu({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => v
           padding: "10px 14px",
           background: "transparent",
           border: "none",
-          borderTop: "1px solid rgba(255,255,255,0.06)",
+          borderTop: "1px solid #EEEEEE",
           textAlign: "left",
           cursor: "pointer",
           fontSize: "13px",
@@ -362,9 +363,9 @@ export function LocalEventsModal({ lang, isOpen, onClose }: LocalEventsModalProp
                 height: "85vh",
                 borderRadius: "24px",
               }),
-          background: "rgba(15, 20, 25, 0.98)",
-          border: isMobile ? "none" : "1px solid rgba(0, 206, 209, 0.15)",
-          boxShadow: "0 24px 64px rgba(0, 0, 0, 0.4)",
+          background: "#FFFFFF",
+          border: isMobile ? "none" : "1px solid #EEEEEE",
+          boxShadow: isMobile ? "0 -4px 24px rgba(0,0,0,0.1)" : "0 24px 64px rgba(0, 0, 0, 0.15)",
           zIndex: 9999,
           display: "flex",
           flexDirection: "column",
@@ -378,7 +379,7 @@ export function LocalEventsModal({ lang, isOpen, onClose }: LocalEventsModalProp
         {/* Mobile drag handle */}
         {isMobile && (
           <div style={{ padding: "12px 0 8px", display: "flex", justifyContent: "center" }}>
-            <div style={{ width: "36px", height: "4px", borderRadius: "2px", background: "rgba(255, 255, 255, 0.2)" }} />
+            <div style={{ width: "36px", height: "4px", borderRadius: "2px", background: "rgba(0, 0, 0, 0.15)" }} />
           </div>
         )}
 
@@ -387,7 +388,7 @@ export function LocalEventsModal({ lang, isOpen, onClose }: LocalEventsModalProp
           style={{
             flexShrink: 0,
             padding: isMobile ? "12px 16px 16px" : "20px 24px",
-            borderBottom: "1px solid rgba(0, 206, 209, 0.1)",
+            borderBottom: "1px solid #EEEEEE",
             display: "flex",
             alignItems: "center",
             gap: "12px",
@@ -395,12 +396,10 @@ export function LocalEventsModal({ lang, isOpen, onClose }: LocalEventsModalProp
         >
           <h2
             style={{
-              fontFamily: "'Playfair Display', serif",
-              fontStyle: "italic",
               fontSize: "20px",
               fontWeight: "700",
               margin: 0,
-              color: "#E8ECEF",
+              color: "#222222",
               flex: 1,
             }}
           >
@@ -437,14 +436,14 @@ export function LocalEventsModal({ lang, isOpen, onClose }: LocalEventsModalProp
               width: "36px",
               height: "36px",
               borderRadius: "8px",
-              background: "rgba(0, 206, 209, 0.08)",
-              border: "none",
+              background: "#F7F7F7",
+              border: "1px solid #EEEEEE",
               fontSize: "20px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#9BA3AF",
+              color: "#222222",
             }}
           >
             ✕
@@ -464,7 +463,7 @@ export function LocalEventsModal({ lang, isOpen, onClose }: LocalEventsModalProp
           }}
         >
           {loading ? (
-            <div style={{ padding: "40px", textAlign: "center", color: "#7C8490" }}>
+            <div style={{ padding: "40px", textAlign: "center", color: "#999999" }}>
               Loading events...
             </div>
           ) : (

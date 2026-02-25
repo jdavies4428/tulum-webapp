@@ -1,15 +1,19 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { spacing, radius, shadows } from "@/lib/design-tokens";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 export default function SettingsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [lang] = usePersistedLang(searchParams.get("lang"));
   const { user, refreshUser } = useAuth();
   const supabase = createClient();
   const [uploading, setUploading] = useState(false);
@@ -111,9 +115,9 @@ export default function SettingsPage() {
       style={{
         minHeight: "100vh",
         height: "100%",
-        background: "#0A0F14",
+        background: "#FFFFFF",
         paddingTop: "max(24px, env(safe-area-inset-top))",
-        paddingBottom: "max(24px, env(safe-area-inset-bottom))",
+        paddingBottom: "max(120px, calc(100px + env(safe-area-inset-bottom)))",
         overflowY: "auto",
         WebkitOverflowScrolling: "touch",
       }}
@@ -124,10 +128,10 @@ export default function SettingsPage() {
           position: "sticky",
           top: 0,
           zIndex: 10,
-          background: "rgba(15, 20, 25, 0.9)",
+          background: "rgba(255, 255, 255, 0.95)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(0, 206, 209, 0.12)",
+          borderBottom: "1px solid #EEEEEE",
           padding: "16px 20px",
           display: "flex",
           alignItems: "center",
@@ -143,8 +147,8 @@ export default function SettingsPage() {
             width: "40px",
             height: "40px",
             borderRadius: "50%",
-            background: "rgba(0, 206, 209, 0.1)",
-            border: "1px solid rgba(0, 206, 209, 0.2)",
+            background: "#F7F7F7",
+            border: "1px solid #EEEEEE",
             color: "#00CED1",
             fontSize: "18px",
             textDecoration: "none",
@@ -158,7 +162,7 @@ export default function SettingsPage() {
             fontSize: "22px",
             fontWeight: "800",
             margin: 0,
-            color: "#E8ECEF",
+            color: "#222222",
             flex: 1,
           }}
         >
@@ -177,11 +181,11 @@ export default function SettingsPage() {
         {/* Profile Photo Section */}
         <div
           style={{
-            background: "rgba(20, 30, 45, 0.8)",
+            background: "#F7F7F7",
             borderRadius: radius.lg,
             padding: spacing.xl,
             boxShadow: shadows.md,
-            border: "1px solid rgba(0, 206, 209, 0.12)",
+            border: "1px solid #EEEEEE",
           }}
         >
           <h2
@@ -212,9 +216,9 @@ export default function SettingsPage() {
                 border: "3px solid rgba(0, 206, 209, 0.4)",
                 overflow: "hidden",
                 background: avatarUrl
-                  ? "rgba(20, 30, 45, 0.5)"
+                  ? "#F7F7F7"
                   : "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)",
-                boxShadow: "0 8px 32px rgba(0, 206, 209, 0.2)",
+                boxShadow: "0 8px 32px rgba(0, 206, 209, 0.15)",
               }}
             >
               {avatarUrl ? (
@@ -251,7 +255,7 @@ export default function SettingsPage() {
                 style={{
                   fontSize: "20px",
                   fontWeight: "700",
-                  color: "#E8ECEF",
+                  color: "#222222",
                   marginBottom: spacing.xs,
                 }}
               >
@@ -260,7 +264,7 @@ export default function SettingsPage() {
               <div
                 style={{
                   fontSize: "14px",
-                  color: "rgba(232, 236, 239, 0.5)",
+                  color: "#999999",
                 }}
               >
                 {user.email}
@@ -300,7 +304,7 @@ export default function SettingsPage() {
                   color: "#FFF",
                   cursor: uploading ? "not-allowed" : "pointer",
                   opacity: uploading ? 0.6 : 1,
-                  boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
+                  boxShadow: "0 4px 16px rgba(0, 206, 209, 0.2)",
                   display: "flex",
                   alignItems: "center",
                   gap: spacing.sm,
@@ -315,12 +319,12 @@ export default function SettingsPage() {
                   onClick={handleRemovePhoto}
                   style={{
                     padding: `${spacing.md}px ${spacing.lg}px`,
-                    background: "rgba(255, 255, 255, 0.06)",
-                    border: "1px solid rgba(255, 255, 255, 0.15)",
+                    background: "rgba(0, 0, 0, 0.04)",
+                    border: "1px solid rgba(0, 0, 0, 0.1)",
                     borderRadius: radius.md,
                     fontSize: "15px",
                     fontWeight: "600",
-                    color: "#E8ECEF",
+                    color: "#222222",
                     cursor: "pointer",
                   }}
                 >
@@ -333,7 +337,7 @@ export default function SettingsPage() {
             <p
               style={{
                 fontSize: "12px",
-                color: "rgba(232, 236, 239, 0.4)",
+                color: "#B0B0B0",
                 textAlign: "center",
                 margin: 0,
               }}
@@ -346,11 +350,11 @@ export default function SettingsPage() {
         {/* Account Info Section */}
         <div
           style={{
-            background: "rgba(20, 30, 45, 0.8)",
+            background: "#F7F7F7",
             borderRadius: radius.lg,
             padding: spacing.xl,
             boxShadow: shadows.md,
-            border: "1px solid rgba(0, 206, 209, 0.12)",
+            border: "1px solid #EEEEEE",
             marginTop: spacing.lg,
           }}
         >
@@ -372,7 +376,7 @@ export default function SettingsPage() {
                   display: "block",
                   fontSize: "12px",
                   fontWeight: "600",
-                  color: "rgba(232, 236, 239, 0.5)",
+                  color: "#999999",
                   marginBottom: spacing.xs,
                   textTransform: "uppercase",
                   letterSpacing: "0.5px",
@@ -383,7 +387,7 @@ export default function SettingsPage() {
               <div
                 style={{
                   fontSize: "15px",
-                  color: "#E8ECEF",
+                  color: "#222222",
                 }}
               >
                 {user.email}
@@ -396,7 +400,7 @@ export default function SettingsPage() {
                   display: "block",
                   fontSize: "12px",
                   fontWeight: "600",
-                  color: "rgba(232, 236, 239, 0.5)",
+                  color: "#999999",
                   marginBottom: spacing.xs,
                   textTransform: "uppercase",
                   letterSpacing: "0.5px",
@@ -408,7 +412,7 @@ export default function SettingsPage() {
                 style={{
                   fontSize: "12px",
                   fontFamily: "monospace",
-                  color: "rgba(232, 236, 239, 0.4)",
+                  color: "#B0B0B0",
                 }}
               >
                 {user.id}
@@ -417,6 +421,8 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      <BottomNav lang={lang} />
     </div>
   );
 }

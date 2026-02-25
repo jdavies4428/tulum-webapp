@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { useConciergeChat } from "@/hooks/useConciergeChat";
 import { VoiceInput } from "@/components/concierge/VoiceInput";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { translations } from "@/lib/i18n";
 import type { Lang } from "@/lib/weather";
 
@@ -258,7 +259,7 @@ export default function ConciergePage() {
         style={{
           flexShrink: 0,
           padding: "12px 20px",
-          paddingBottom: "max(12px, env(safe-area-inset-bottom))",
+          paddingBottom: "max(100px, calc(88px + env(safe-area-inset-bottom)))",
           background: "var(--card-bg)",
           borderTop: "1px solid var(--border-subtle)",
         }}
@@ -351,6 +352,8 @@ export default function ConciergePage() {
           </Link>
         </div>
       </div>
+
+      <BottomNav lang={lang} />
 
       <style>{`
         @keyframes fadeIn {

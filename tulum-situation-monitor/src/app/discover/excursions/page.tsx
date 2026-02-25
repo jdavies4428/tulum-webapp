@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 const SAMPLE_EXCURSIONS = [
   { name: "Cenote Hopping Tour", category: "Cenotes", emoji: "\u{1F4A7}", desc: "Visit 3 stunning cenotes with guide, snorkel gear included", price: "$65 USD", duration: "4 hours", difficulty: "Easy" as const },
@@ -50,6 +51,7 @@ export default function ExcursionsPage() {
         color: "var(--text-primary)",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
+        paddingBottom: "100px",
       }}
     >
       <header
@@ -236,6 +238,8 @@ export default function ExcursionsPage() {
           </div>
         ))}
       </div>
+
+      <BottomNav lang={lang} />
     </div>
   );
 }

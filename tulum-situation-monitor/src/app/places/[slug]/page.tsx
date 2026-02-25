@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAllPlaces, getPlaceBySlug, getPlacesByCategory } from "@/lib/place-slugs";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://tulum-webapp.vercel.app";
 
@@ -92,8 +93,8 @@ export default function PlacePage({ params }: { params: { slug: string } }) {
 
       <main style={{
         minHeight: "100vh",
-        background: "linear-gradient(180deg, #0F1419 0%, #1a2332 100%)",
-        color: "#E8ECEF",
+        background: "#FFFFFF",
+        color: "#222222",
         padding: "24px 16px 100px",
         maxWidth: 720,
         margin: "0 auto",
@@ -144,8 +145,8 @@ export default function PlacePage({ params }: { params: { slug: string } }) {
 
         {/* Location info */}
         <section style={{
-          background: "rgba(0, 206, 209, 0.08)",
-          border: "1px solid rgba(0, 206, 209, 0.15)",
+          background: "rgba(0, 206, 209, 0.05)",
+          border: "1px solid #EEEEEE",
           borderRadius: 12,
           padding: 20,
           marginBottom: 24,
@@ -168,7 +169,7 @@ export default function PlacePage({ params }: { params: { slug: string } }) {
                 gap: 6,
                 padding: "10px 20px",
                 background: "#00CED1",
-                color: "#0F1419",
+                color: "#FFFFFF",
                 borderRadius: 8,
                 fontWeight: 600,
                 fontSize: 14,
@@ -208,13 +209,13 @@ export default function PlacePage({ params }: { params: { slug: string } }) {
                   alignItems: "center",
                   gap: 6,
                   padding: "10px 20px",
-                  background: "rgba(255, 255, 255, 0.1)",
-                  color: "#E8ECEF",
+                  background: "#F7F7F7",
+                  color: "#222222",
                   borderRadius: 8,
                   fontWeight: 600,
                   fontSize: 14,
                   textDecoration: "none",
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  border: "1px solid #EEEEEE",
                 }}
               >
                 Website
@@ -246,8 +247,8 @@ export default function PlacePage({ params }: { params: { slug: string } }) {
             display: "block",
             textAlign: "center",
             padding: "14px 24px",
-            background: "rgba(0, 206, 209, 0.15)",
-            border: "1px solid rgba(0, 206, 209, 0.3)",
+            background: "rgba(0, 206, 209, 0.08)",
+            border: "1px solid rgba(0, 206, 209, 0.2)",
             borderRadius: 12,
             color: "#00CED1",
             fontWeight: 600,
@@ -273,11 +274,11 @@ export default function PlacePage({ params }: { params: { slug: string } }) {
                   style={{
                     display: "block",
                     padding: 16,
-                    background: "rgba(255, 255, 255, 0.05)",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    background: "#F7F7F7",
+                    border: "1px solid #EEEEEE",
                     borderRadius: 12,
                     textDecoration: "none",
-                    color: "#E8ECEF",
+                    color: "#222222",
                   }}
                 >
                   <strong style={{ fontSize: 16 }}>{r.name}</strong>
@@ -287,6 +288,7 @@ export default function PlacePage({ params }: { params: { slug: string } }) {
             </div>
           </section>
         )}
+        <BottomNav lang="en" />
       </main>
     </>
   );

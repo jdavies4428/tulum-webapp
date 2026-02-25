@@ -41,8 +41,8 @@ function EventCard({
         minHeight: hasImage ? "220px" : "140px",
         background: hasImage
           ? "transparent"
-          : "linear-gradient(135deg, rgba(0, 206, 209, 0.08) 0%, rgba(20, 30, 45, 0.9) 100%)",
-        border: "1px solid rgba(0, 206, 209, 0.12)",
+          : "linear-gradient(135deg, rgba(0, 206, 209, 0.06) 0%, #F7F7F7 100%)",
+        border: "1px solid #EEEEEE",
       }}
     >
       {/* Background image */}
@@ -84,7 +84,7 @@ function EventCard({
               borderRadius: "8px",
               padding: "4px 10px",
               cursor: "pointer",
-              color: "#E8ECEF",
+              color: "#FFFFFF",
               fontSize: "16px",
               backdropFilter: "blur(8px)",
             }}
@@ -98,11 +98,11 @@ function EventCard({
                 top: "100%",
                 right: 0,
                 marginTop: "4px",
-                background: "rgba(20, 30, 45, 0.95)",
+                background: "rgba(255, 255, 255, 0.98)",
                 backdropFilter: "blur(16px)",
                 borderRadius: "10px",
-                border: "1px solid rgba(0, 206, 209, 0.2)",
-                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
+                border: "1px solid #EEEEEE",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
                 minWidth: "140px",
                 zIndex: 100,
                 overflow: "hidden",
@@ -120,7 +120,7 @@ function EventCard({
                   cursor: "pointer",
                   fontSize: "13px",
                   fontWeight: "600",
-                  color: "#E8ECEF",
+                  color: "#222222",
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
@@ -136,7 +136,7 @@ function EventCard({
                   padding: "10px 14px",
                   background: "transparent",
                   border: "none",
-                  borderTop: "1px solid rgba(255,255,255,0.06)",
+                  borderTop: "1px solid #EEEEEE",
                   textAlign: "left",
                   cursor: "pointer",
                   fontSize: "13px",
@@ -204,8 +204,8 @@ function EventCard({
               borderRadius: "50%",
               background: event.author_avatar?.startsWith("http")
                 ? "transparent"
-                : "linear-gradient(135deg, #1A2332 0%, #0F1419 100%)",
-              border: "1.5px solid rgba(0, 206, 209, 0.3)",
+                : "linear-gradient(135deg, #F7F7F7 0%, #FFFFFF 100%)",
+              border: "1.5px solid #EEEEEE",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -224,7 +224,7 @@ function EventCard({
               event.author_avatar
             )}
           </div>
-          <span style={{ fontSize: "12px", fontWeight: "600", color: "rgba(255,255,255,0.7)" }}>
+          <span style={{ fontSize: "12px", fontWeight: "600", color: hasImage ? "rgba(255,255,255,0.7)" : "#717171" }}>
             {event.author_name}
           </span>
         </div>
@@ -236,7 +236,7 @@ function EventCard({
             fontSize: "16px",
             fontWeight: "700",
             lineHeight: 1.3,
-            color: "#FFFFFF",
+            color: hasImage ? "#FFFFFF" : "#222222",
             marginBottom: "14px",
             display: "-webkit-box",
             WebkitLineClamp: 3,
@@ -257,9 +257,9 @@ function EventCard({
             style={{
               padding: "7px 18px",
               borderRadius: "9999px",
-              background: "rgba(0, 0, 0, 0.5)",
-              border: "1px solid rgba(255,255,255,0.2)",
-              color: "#FFFFFF",
+              background: hasImage ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0.06)",
+              border: hasImage ? "1px solid rgba(255,255,255,0.2)" : "1px solid #EEEEEE",
+              color: hasImage ? "#FFFFFF" : "#222222",
               fontSize: "10px",
               fontWeight: "700",
               letterSpacing: "1px",
@@ -271,10 +271,10 @@ function EventCard({
             Details
           </button>
           <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "12px" }}>
-            <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", display: "flex", alignItems: "center", gap: "4px" }}>
+            <span style={{ fontSize: "12px", color: hasImage ? "rgba(255,255,255,0.5)" : "#999999", display: "flex", alignItems: "center", gap: "4px" }}>
               💬 {event.metadata?.replies_count ?? 0}
             </span>
-            <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)", display: "flex", alignItems: "center", gap: "4px" }}>
+            <span style={{ fontSize: "12px", color: hasImage ? "rgba(255,255,255,0.5)" : "#999999", display: "flex", alignItems: "center", gap: "4px" }}>
               ♥️ {event.metadata?.likes_count ?? 0}
             </span>
           </div>
@@ -311,7 +311,7 @@ export default function EventsPage() {
       style={{
         position: "fixed",
         inset: 0,
-        background: "#0F1419",
+        background: "#FFFFFF",
         display: "flex",
         flexDirection: "column",
         zIndex: 9999,
@@ -321,9 +321,9 @@ export default function EventsPage() {
       <header
         style={{
           flexShrink: 0,
-          background: "rgba(15, 20, 25, 0.95)",
+          background: "rgba(255, 255, 255, 0.95)",
           backdropFilter: "blur(24px)",
-          borderBottom: "1px solid rgba(0, 206, 209, 0.1)",
+          borderBottom: "1px solid #EEEEEE",
           padding: "16px 20px",
           paddingTop: "max(16px, env(safe-area-inset-top))",
           display: "flex",
@@ -340,9 +340,9 @@ export default function EventsPage() {
             width: "36px",
             height: "36px",
             borderRadius: "50%",
-            background: "rgba(0, 206, 209, 0.08)",
-            border: "1px solid rgba(0, 206, 209, 0.15)",
-            color: "#9BA3AF",
+            background: "#F7F7F7",
+            border: "1px solid #EEEEEE",
+            color: "#717171",
             fontSize: "16px",
             textDecoration: "none",
             flexShrink: 0,
@@ -357,7 +357,7 @@ export default function EventsPage() {
             fontSize: "20px",
             fontWeight: "700",
             margin: 0,
-            color: "#E8ECEF",
+            color: "#222222",
             flex: 1,
           }}
         >
@@ -402,7 +402,7 @@ export default function EventsPage() {
         }}
       >
         {loading ? (
-          <div style={{ padding: "40px", textAlign: "center", color: "#7C8490" }}>
+          <div style={{ padding: "40px", textAlign: "center", color: "#999999" }}>
             Loading events...
           </div>
         ) : (

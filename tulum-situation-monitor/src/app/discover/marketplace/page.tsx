@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 const SAMPLE_LISTINGS = [
   { title: "Beach Cruiser Bike", category: "For Sale", emoji: "\u{1F6B2}", desc: "Well-maintained beach cruiser, perfect for getting around town", price: "$150 USD", seller: "Maria T.", posted: "2 days ago" },
@@ -276,12 +277,14 @@ export default function MarketplacePage() {
             fontWeight: 700,
             cursor: "not-allowed",
             fontFamily: "inherit",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
           }}
         >
           + Post a Listing
         </button>
       </div>
+
+      <BottomNav lang={lang} />
     </div>
   );
 }

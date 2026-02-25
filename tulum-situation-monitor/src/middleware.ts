@@ -80,6 +80,7 @@ const CSP_DIRECTIVES = [
     "maps.googleapis.com",
     "lh3.googleusercontent.com",
     "optics.marine.usf.edu",
+    "sargassummonitoring.com",
     "*.ipcamlive.com",
     "*.supabase.co",
     "cdn.prod.website-files.com",

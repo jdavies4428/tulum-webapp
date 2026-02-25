@@ -46,15 +46,15 @@ function FilterButton({
       style={{
         gridColumn: wide ? "1 / -1" : "auto",
         padding: compact ? "10px 12px" : "12px 16px",
-        background: active ? gradient : "rgba(20, 30, 45, 0.8)",
-        border: active ? "2px solid transparent" : "2px solid rgba(0, 206, 209, 0.2)",
+        background: active ? gradient : "#F7F7F7",
+        border: active ? "2px solid transparent" : "2px solid #E8E8E8",
         borderRadius: compact ? "12px" : "16px",
         cursor: "pointer",
         transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         display: "flex",
         alignItems: "center",
         gap: compact ? "8px" : "10px",
-        boxShadow: active ? "0 8px 24px rgba(0, 206, 209, 0.2)" : "0 2px 8px rgba(0, 206, 209, 0.08)",
+        boxShadow: active ? "0 8px 24px rgba(0, 206, 209, 0.2)" : "0 1px 3px rgba(0,0,0,0.06)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -77,7 +77,7 @@ function FilterButton({
         style={{
           fontSize: compact ? "13px" : "15px",
           fontWeight: "700",
-          color: active ? "#FFF" : "#9BA3AF",
+          color: active ? "#FFF" : "#717171",
           letterSpacing: "0.2px",
           position: "relative",
           zIndex: 1,
@@ -223,11 +223,11 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
       onClick={() => place.sourcePlace && onSelect?.(place.sourcePlace)}
       onKeyDown={(e) => e.key === "Enter" && place.sourcePlace && onSelect?.(place.sourcePlace)}
       style={{
-        background: "rgba(20, 30, 45, 0.7)",
+        background: "#FFFFFF",
         borderRadius: "16px",
         padding: "14px",
-        boxShadow: "0 2px 12px rgba(0, 0, 0, 0.15)",
-        border: "1px solid rgba(0, 206, 209, 0.2)",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+        border: "1px solid #EEEEEE",
         cursor: "pointer",
         transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
         display: "flex",
@@ -270,7 +270,7 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
             fontSize: "15px",
             fontWeight: "700",
             margin: 0,
-            color: "#E8ECEF",
+            color: "#222222",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -284,7 +284,7 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
         <p
           style={{
             fontSize: "12px",
-            color: "#7C8490",
+            color: "#717171",
             margin: 0,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -314,7 +314,7 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
           <button
             type="button"
             onClick={onToggleFavorite}
-            style={{ ...actionBtnStyle, background: isFavorite ? "#FF5252" : "rgba(0, 206, 209, 0.08)" }}
+            style={{ ...actionBtnStyle, background: isFavorite ? "#FF5252" : "#F7F7F7" }}
             aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           >
             {isFavorite ? "❤️" : "🤍"}
@@ -326,7 +326,7 @@ function PlaceCard({ place, navigateLabel, onSelect, isFavorite = false, onToggl
                 const id = place.id ?? place.sourcePlace?.id ?? place.sourcePlace?.place_id;
                 if (id) onAddToList(id, place.name);
               }}
-              style={{ ...actionBtnStyle, width: "auto", padding: "0 10px", background: "rgba(0,206,209,0.1)", color: "#00CED1", fontSize: "12px", fontWeight: "700", gap: "4px" }}
+              style={{ ...actionBtnStyle, width: "auto", padding: "0 10px", background: "rgba(0,206,209,0.08)", color: "#00CED1", fontSize: "12px", fontWeight: "700", gap: "4px" }}
             >
               📋 {addToListLabel}
             </button>
@@ -572,11 +572,11 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                 height: "92vh",
                 borderRadius: "16px",
               }),
-          background: "rgba(15, 20, 25, 0.98)",
-          border: isMobile ? "none" : "1px solid rgba(0, 206, 209, 0.15)",
+          background: "#FFFFFF",
+          border: isMobile ? "none" : "1px solid #EEEEEE",
           boxShadow: isMobile
-            ? "0 -4px 24px rgba(0, 0, 0, 0.15)"
-            : "0 24px 64px rgba(0, 0, 0, 0.2)",
+            ? "0 -4px 24px rgba(0, 0, 0, 0.1)"
+            : "0 24px 64px rgba(0, 0, 0, 0.15)",
           zIndex: 9999,
           WebkitOverflowScrolling: "touch",
           display: "flex",
@@ -599,7 +599,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
               padding: "12px 0 8px",
               display: "flex",
               justifyContent: "center",
-              background: "rgba(15, 20, 25, 0.98)",
+              background: "#FFFFFF",
               borderRadius: "20px 20px 0 0",
             }}
           >
@@ -608,7 +608,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                 width: "36px",
                 height: "4px",
                 borderRadius: "2px",
-                background: "rgba(255, 255, 255, 0.2)",
+                background: "rgba(0, 0, 0, 0.15)",
               }}
             />
           </div>
@@ -618,73 +618,80 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
         <div
           style={{
             padding: isMobile ? "12px 16px 16px" : "20px 24px",
-            borderBottom: "1px solid rgba(0, 206, 209, 0.1)",
-            background: "rgba(15, 20, 25, 0.98)",
+            borderBottom: "1px solid #EEEEEE",
+            background: "#FFFFFF",
             flexShrink: 0,
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <h2 style={{ fontSize: isMobile ? "18px" : "20px", fontWeight: "700", margin: 0, color: "#E8ECEF", display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <button
+              ref={closeButtonRef}
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              style={{
+                width: "44px",
+                height: "44px",
+                minWidth: "44px",
+                borderRadius: "12px",
+                background: "rgba(255, 255, 255, 0.95)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                border: "1px solid rgba(0, 0, 0, 0.08)",
+                fontSize: "20px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#222222",
+                flexShrink: 0,
+                boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
+              }}
+            >
+              ←
+            </button>
+            <div style={{ flex: 1 }}>
+              <h2 style={{ fontSize: isMobile ? "18px" : "20px", fontWeight: "700", margin: 0, color: "#222222", display: "flex", alignItems: "center", gap: "8px" }}>
                 <span>📍</span>
                 {t.places ?? "Explore Places"}
               </h2>
-              <p style={{ fontSize: isMobile ? "13px" : "14px", color: "#9BA3AF", margin: "4px 0 0 0" }}>
+              <p style={{ fontSize: isMobile ? "13px" : "14px", color: "#717171", margin: "4px 0 0 0" }}>
                 {t.discoverBeaches ?? "Find beaches, restaurants & more"}
               </p>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <button
-                type="button"
-                onClick={() => handleTabChange(activeTab === "local" ? "all" : "local")}
-                style={{
-                  padding: isMobile ? "10px 16px" : "8px 16px",
-                  minHeight: isMobile ? "44px" : "auto",
-                  background: activeTab === "local" ? "#00CED1" : "transparent",
-                  border: activeTab === "local" ? "none" : "1px solid rgba(0, 206, 209, 0.2)",
-                  borderRadius: "8px",
-                  fontSize: isMobile ? "14px" : "13px",
-                  fontWeight: "600",
-                  color: activeTab === "local" ? "#FFF" : "#9BA3AF",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  transition: "all 0.2s",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                ⭐ {isMobile ? "" : (t.localPicks ?? "Insider Picks")}
-                {isMobile && (t.localPicks ?? "Insider")}
-              </button>
-              <button
-                ref={closeButtonRef}
-                type="button"
-                onClick={onClose}
-                style={{
-                  width: isMobile ? "44px" : "36px",
-                  height: isMobile ? "44px" : "36px",
-                  minWidth: isMobile ? "44px" : "auto",
-                  minHeight: isMobile ? "44px" : "auto",
-                  borderRadius: "8px",
-                  background: "rgba(0, 206, 209, 0.08)",
-                  border: "none",
-                  fontSize: "20px",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.2s",
-                }}
-              >
-                ✕
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => handleTabChange(activeTab === "local" ? "all" : "local")}
+              style={{
+                padding: isMobile ? "10px 18px" : "9px 18px",
+                minHeight: isMobile ? "44px" : "auto",
+                background: activeTab === "local"
+                  ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
+                  : "linear-gradient(135deg, #FFF8E1 0%, #FFF3CD 100%)",
+                border: activeTab === "local" ? "none" : "1px solid #FFD700",
+                borderRadius: "12px",
+                fontSize: isMobile ? "14px" : "13px",
+                fontWeight: "700",
+                color: activeTab === "local" ? "#FFF" : "#B8860B",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                transition: "all 0.2s",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+                boxShadow: activeTab === "local"
+                  ? "0 4px 12px rgba(0,206,209,0.3)"
+                  : "0 2px 8px rgba(255,215,0,0.2)",
+              }}
+            >
+              ⭐ {t.localPicks ?? "Insider Picks"}
+            </button>
           </div>
         </div>
 
         {/* Prominent search bar */}
-        <div style={{ padding: isMobile ? "12px 16px" : "16px 24px", borderBottom: "1px solid rgba(0, 206, 209, 0.1)" }}>
+        <div style={{ padding: isMobile ? "12px 16px" : "16px 24px", borderBottom: "1px solid #EEEEEE" }}>
           <div style={{ position: "relative" }}>
             <span style={{
               position: "absolute",
@@ -692,7 +699,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
               top: "50%",
               transform: "translateY(-50%)",
               fontSize: "18px",
-              color: "#7C8490",
+              color: "#999999",
             }}>
               🔍
             </span>
@@ -705,13 +712,13 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
               style={{
                 width: "100%",
                 padding: isMobile ? "10px 40px" : "12px 44px",
-                background: "rgba(20, 30, 45, 0.8)",
-                border: "2px solid transparent",
+                background: "#F7F7F7",
+                border: "1px solid #DDDDDD",
                 borderRadius: "12px",
                 fontSize: "15px",
                 outline: "none",
                 transition: "all 0.2s",
-                color: "#E8ECEF",
+                color: "#222222",
               }}
             />
             {searchInput && (
@@ -726,14 +733,14 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                   width: "24px",
                   height: "24px",
                   borderRadius: "50%",
-                  background: "rgba(255, 255, 255, 0.1)",
+                  background: "#EEEEEE",
                   border: "none",
                   fontSize: "14px",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#9BA3AF",
+                  color: "#717171",
                 }}
               >
                 ×
@@ -745,7 +752,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
         {/* Category tabs */}
         <div style={{
           padding: isMobile ? "0 16px" : "0 24px",
-          borderBottom: "1px solid rgba(0, 206, 209, 0.1)",
+          borderBottom: "1px solid #EEEEEE",
           overflowX: "auto",
           display: "flex",
           gap: "0",
@@ -772,7 +779,7 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                   borderBottom: isActive ? "2px solid #00CED1" : "2px solid transparent",
                   fontSize: "13px",
                   fontWeight: isActive ? "600" : "500",
-                  color: isActive ? "#00CED1" : "#9BA3AF",
+                  color: isActive ? "#00CED1" : "#717171",
                   cursor: "pointer",
                   transition: "all 0.2s",
                   whiteSpace: "nowrap",
@@ -787,8 +794,8 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                   fontWeight: "600",
                   padding: "1px 5px",
                   borderRadius: "8px",
-                  background: isActive ? "rgba(0,206,209,0.15)" : "rgba(0, 206, 209, 0.08)",
-                  color: isActive ? "#00CED1" : "#7C8490",
+                  background: isActive ? "rgba(0,206,209,0.12)" : "#F0F0F0",
+                  color: isActive ? "#00CED1" : "#999999",
                 }}>
                   {count}
                 </span>
@@ -801,8 +808,8 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
         {activeTab === "restaurants" && (
           <div
             style={{
-              borderBottom: "1px solid rgba(0, 206, 209, 0.1)",
-              background: "rgba(15, 20, 25, 0.98)",
+              borderBottom: "1px solid #EEEEEE",
+              background: "#FFFFFF",
               flexShrink: 0,
             }}
           >
@@ -820,11 +827,11 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          background: "rgba(15, 20, 25, 0.98)",
+          background: "#FFFFFF",
           flexShrink: 0,
-          borderBottom: "1px solid rgba(0, 206, 209, 0.08)",
+          borderBottom: "1px solid #EEEEEE",
         }}>
-          <div style={{ fontSize: "13px", color: "#7C8490", fontWeight: "500" }}>
+          <div style={{ fontSize: "13px", color: "#999999", fontWeight: "500" }}>
             {items.length} {items.length === 1 ? (t.place ?? "place") : (t.placePlural ?? "places")}
             {userLocation ? ` · 📍 ${t.nearYou ?? "near you"}` : ""}
           </div>
@@ -836,8 +843,8 @@ export function PlacesModal({ lang, isOpen, onClose, onPlaceSelect, dimmed = fal
                 onClick={() => setSortBy(s)}
                 style={{
                   padding: "5px 11px",
-                  background: sortBy === s ? "#00CED1" : "rgba(0, 206, 209, 0.08)",
-                  color: sortBy === s ? "#FFF" : "#9BA3AF",
+                  background: sortBy === s ? "#00CED1" : "#F0F0F0",
+                  color: sortBy === s ? "#FFF" : "#717171",
                   border: "none",
                   borderRadius: "8px",
                   fontSize: "12px",

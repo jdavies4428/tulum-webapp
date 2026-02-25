@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllPlaces, type PlaceCategory } from "@/lib/place-slugs";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://tulum-webapp.vercel.app";
 
@@ -65,8 +66,8 @@ export default function PlacesPage() {
 
       <main style={{
         minHeight: "100vh",
-        background: "linear-gradient(180deg, #0F1419 0%, #1a2332 100%)",
-        color: "#E8ECEF",
+        background: "#FFFFFF",
+        color: "#222222",
         padding: "24px 16px 100px",
         maxWidth: 720,
         margin: "0 auto",
@@ -101,11 +102,11 @@ export default function PlacesPage() {
                     style={{
                       display: "block",
                       padding: 16,
-                      background: "rgba(255, 255, 255, 0.05)",
-                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      background: "#F7F7F7",
+                      border: "1px solid #EEEEEE",
                       borderRadius: 12,
                       textDecoration: "none",
-                      color: "#E8ECEF",
+                      color: "#222222",
                       transition: "background 0.2s",
                     }}
                   >
@@ -126,8 +127,8 @@ export default function PlacesPage() {
             display: "block",
             textAlign: "center",
             padding: "14px 24px",
-            background: "rgba(0, 206, 209, 0.15)",
-            border: "1px solid rgba(0, 206, 209, 0.3)",
+            background: "rgba(0, 206, 209, 0.08)",
+            border: "1px solid rgba(0, 206, 209, 0.2)",
             borderRadius: 12,
             color: "#00CED1",
             fontWeight: 600,
@@ -138,6 +139,7 @@ export default function PlacesPage() {
         >
           Explore All Places on Map
         </Link>
+        <BottomNav lang="en" />
       </main>
     </>
   );

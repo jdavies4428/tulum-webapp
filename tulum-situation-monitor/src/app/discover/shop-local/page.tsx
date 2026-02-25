@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 const SAMPLE_SHOPS = [
   { name: "Luna Artesanal", category: "Handcrafts", emoji: "\u{1F3FA}", desc: "Handmade jewelry, textiles & ceramics by local Mayan artisans", price: "$$" },
@@ -45,6 +46,7 @@ export default function ShopLocalPage() {
         color: "var(--text-primary)",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
+        paddingBottom: "100px",
       }}
     >
       <header
@@ -222,6 +224,8 @@ export default function ShopLocalPage() {
           </div>
         ))}
       </div>
+
+      <BottomNav lang={lang} />
     </div>
   );
 }

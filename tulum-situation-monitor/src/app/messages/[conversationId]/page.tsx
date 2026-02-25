@@ -12,6 +12,7 @@ import { formatMessageTime } from "@/lib/chat-helpers";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { MessageBubble } from "@/components/chat/MessageBubble";
 import { SharePlaceModal } from "@/components/chat/SharePlaceModal";
+import { BottomNav } from "@/components/layout/BottomNav";
 import type { Lang } from "@/lib/weather";
 
 interface OtherUser {
@@ -116,7 +117,7 @@ export default function ChatPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0A0F14",
+          background: "#FFFFFF",
         }}
       >
         <Link
@@ -144,10 +145,10 @@ export default function ChatPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0A0F14",
+          background: "#FFFFFF",
         }}
       >
-        <div style={{ color: "rgba(232, 236, 239, 0.6)" }}>{t.loading ?? "Loading…"}</div>
+        <div style={{ color: "#717171" }}>{t.loading ?? "Loading…"}</div>
       </div>
     );
   }
@@ -158,15 +159,15 @@ export default function ChatPage() {
         display: "flex",
         flexDirection: "column",
         height: "100vh",
-        background: "#0A0F14",
+        background: "#FFFFFF",
       }}
     >
       <header
         style={{
           padding: 16,
-          background: "rgba(15, 20, 25, 0.9)",
+          background: "rgba(255, 255, 255, 0.95)",
           backdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(0, 206, 209, 0.12)",
+          borderBottom: "1px solid #EEEEEE",
           display: "flex",
           alignItems: "center",
           gap: 12,
@@ -186,7 +187,7 @@ export default function ChatPage() {
             alignItems: "center",
             justifyContent: "center",
             textDecoration: "none",
-            color: "#E8ECEF",
+            color: "#222222",
           }}
         >
           ←
@@ -223,10 +224,10 @@ export default function ChatPage() {
           href={`/users/${otherUser.id}?lang=${lang}`}
           style={{ flex: 1, textDecoration: "none", color: "inherit" }}
         >
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#E8ECEF" }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#222222" }}>
             {otherUser.display_name}
           </div>
-          <div style={{ fontSize: 13, color: "rgba(232, 236, 239, 0.5)" }}>
+          <div style={{ fontSize: 13, color: "#717171" }}>
             {t.viewProfile ?? "View profile"}
           </div>
         </Link>
@@ -243,7 +244,7 @@ export default function ChatPage() {
         }}
       >
         {loading ? (
-          <div style={{ textAlign: "center", padding: 40, color: "rgba(232, 236, 239, 0.6)" }}>
+          <div style={{ textAlign: "center", padding: 40, color: "#717171" }}>
             {t.loading ?? "Loading…"}
           </div>
         ) : (
@@ -281,6 +282,7 @@ export default function ChatPage() {
         onClose={() => setSharePlaceOpen(false)}
         onSelectPlace={handleSelectPlace}
       />
+      <BottomNav lang={lang} />
     </div>
   );
 }

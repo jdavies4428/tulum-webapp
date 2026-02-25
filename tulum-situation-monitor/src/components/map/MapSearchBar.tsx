@@ -20,18 +20,18 @@ export type MapSearchCategoryId = "beachClubs" | "restaurants" | "coffeeShops" |
 const CATEGORY_IDS: MapSearchCategoryId[] = ["beachClubs", "restaurants", "coffeeShops", "cultural"];
 
 const CATEGORY_CONFIG: Record<MapSearchCategoryId, { icon: string; color: string }> = {
-  beachClubs: { icon: "🏖️", color: "#FF9966" },
-  restaurants: { icon: "🍽️", color: "#50C878" },
-  coffeeShops: { icon: "☕", color: "#8B4513" },
-  cultural: { icon: "🏛️", color: "#9370DB" },
+  beachClubs: { icon: "\u{1F3D6}\u{FE0F}", color: "#FF9966" },
+  restaurants: { icon: "\u{1F37D}\u{FE0F}", color: "#50C878" },
+  coffeeShops: { icon: "\u2615", color: "#8B4513" },
+  cultural: { icon: "\u{1F3DB}\u{FE0F}", color: "#9370DB" },
 };
 
 const POPULAR_SEARCHES: { query: string; icon: string; category: MapSearchCategoryId }[] = [
-  { query: "beach clubs", icon: "🏖️", category: "beachClubs" },
-  { query: "cenotes", icon: "💧", category: "cultural" },
-  { query: "vegan restaurants", icon: "🌱", category: "restaurants" },
-  { query: "coffee shops", icon: "☕", category: "coffeeShops" },
-  { query: "ruins", icon: "🏛️", category: "cultural" },
+  { query: "beach clubs", icon: "\u{1F3D6}\u{FE0F}", category: "beachClubs" },
+  { query: "cenotes", icon: "\u{1F4A7}", category: "cultural" },
+  { query: "vegan restaurants", icon: "\u{1F331}", category: "restaurants" },
+  { query: "coffee shops", icon: "\u2615", category: "coffeeShops" },
+  { query: "ruins", icon: "\u{1F3DB}\u{FE0F}", category: "cultural" },
 ];
 
 interface MapSearchBarProps {
@@ -66,7 +66,7 @@ function SuggestionItem({
       style={{
         width: "100%",
         padding: "12px 16px",
-        background: isSelected ? "rgba(0, 206, 209, 0.08)" : "transparent",
+        background: isSelected ? "rgba(0, 206, 209, 0.06)" : "transparent",
         border: "none",
         borderLeft: isSelected ? "3px solid #00CED1" : "3px solid transparent",
         cursor: "pointer",
@@ -100,14 +100,14 @@ function SuggestionItem({
           flexShrink: 0,
         }}
       >
-        {place.icon || "📍"}
+        {place.icon || "\u{1F4CD}"}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
             fontSize: 15,
             fontWeight: 600,
-            color: "#E8ECEF",
+            color: "#222222",
             marginBottom: 2,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -119,7 +119,7 @@ function SuggestionItem({
         <div
           style={{
             fontSize: 13,
-            color: "rgba(232, 236, 239, 0.6)",
+            color: "#717171",
             display: "flex",
             alignItems: "center",
             gap: 8,
@@ -128,13 +128,13 @@ function SuggestionItem({
           <span>{categoryLabels[place.category] ?? place.category}</span>
           {place.rating != null && (
             <>
-              <span>•</span>
-              <span>⭐ {place.rating.toFixed(1)}</span>
+              <span>\u2022</span>
+              <span>\u2B50 {place.rating.toFixed(1)}</span>
             </>
           )}
         </div>
       </div>
-      <div style={{ fontSize: 16, color: "rgba(232, 236, 239, 0.5)" }}>→</div>
+      <div style={{ fontSize: 16, color: "#999999" }}>\u2192</div>
     </button>
   );
 }
@@ -183,7 +183,7 @@ function PopularSearchItem({
       >
         {item.icon}
       </div>
-      <div style={{ fontSize: 14, fontWeight: 500, color: "#E8ECEF" }}>{item.query}</div>
+      <div style={{ fontSize: 14, fontWeight: 500, color: "#222222" }}>{item.query}</div>
     </button>
   );
 }
@@ -327,11 +327,11 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
       <div
         style={{
           position: "relative",
-          background: "rgba(20, 30, 45, 0.85)",
+          background: "rgba(255, 255, 255, 0.95)",
           borderRadius: 16,
-          boxShadow: focused ? "0 8px 32px rgba(0, 206, 209, 0.3)" : "0 4px 16px rgba(0, 0, 0, 0.15)",
-          border: focused ? "2px solid #00CED1" : "2px solid transparent",
-          backdropFilter: "blur(20px)",
+          boxShadow: focused ? "0 8px 32px rgba(0, 206, 209, 0.2)" : "0 2px 12px rgba(0, 0, 0, 0.1)",
+          border: focused ? "2px solid #00CED1" : "1px solid rgba(0, 0, 0, 0.08)",
+          backdropFilter: "blur(12px)",
           transition: "all 0.3s",
         }}
       >
@@ -343,7 +343,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
             gap: 12,
           }}
         >
-          <span style={{ fontSize: 20 }}>🔍</span>
+          <span style={{ fontSize: 20 }}>{"\u{1F50D}"}</span>
           <input
             type="text"
             value={inputValue}
@@ -354,7 +354,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
             onFocus={() => { setShowSuggestions(true); setFocused(true); }}
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
-            placeholder={t.mapSearchPlaceholder ?? "Search beaches, restaurants, cenotes…"}
+            placeholder={t.mapSearchPlaceholder ?? "Search beaches, restaurants, cenotes\u2026"}
             style={{
               flex: 1,
               border: "none",
@@ -362,7 +362,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
               fontSize: 15,
               fontWeight: 500,
               background: "transparent",
-              color: "#E8ECEF",
+              color: "#222222",
             }}
             aria-label={t.mapSearchPlaceholder ?? "Search places"}
           />
@@ -378,24 +378,25 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
                 width: 28,
                 height: 28,
                 borderRadius: "50%",
-                background: "rgba(0, 0, 0, 0.1)",
+                background: "rgba(0, 0, 0, 0.06)",
                 border: "none",
                 fontSize: 16,
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                color: "#717171",
                 transition: "all 0.2s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(0, 0, 0, 0.15)";
+                e.currentTarget.style.background = "rgba(0, 0, 0, 0.1)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(0, 0, 0, 0.1)";
+                e.currentTarget.style.background = "rgba(0, 0, 0, 0.06)";
               }}
               aria-label="Clear search"
             >
-              ✕
+              \u2715
             </button>
           )}
         </div>
@@ -459,11 +460,11 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
         <div
           style={{
             marginTop: 8,
-            background: "rgba(20, 30, 45, 0.85)",
+            background: "rgba(255, 255, 255, 0.98)",
             borderRadius: 16,
-            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
-            border: "2px solid rgba(0, 206, 209, 0.2)",
-            backdropFilter: "blur(20px)",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12)",
+            border: "1px solid #EEEEEE",
+            backdropFilter: "blur(12px)",
             maxHeight: 400,
             overflowY: "auto",
           }}
@@ -474,7 +475,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
                 style={{
                   fontSize: 12,
                   fontWeight: 700,
-                  color: "rgba(232, 236, 239, 0.6)",
+                  color: "#999999",
                   textTransform: "uppercase",
                   letterSpacing: "0.5px",
                   padding: "8px 16px",
@@ -497,10 +498,10 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
               style={{
                 padding: "32px 16px",
                 textAlign: "center",
-                color: "rgba(232, 236, 239, 0.5)",
+                color: "#999999",
               }}
             >
-              <div style={{ fontSize: 32, marginBottom: 8 }}>🔍</div>
+              <div style={{ fontSize: 32, marginBottom: 8 }}>{"\u{1F50D}"}</div>
               <div style={{ fontSize: 14, fontWeight: 600 }}>{t.noResultsFound ?? "No results found"}</div>
               <div style={{ fontSize: 13, marginTop: 4 }}>{t.trySearchingHint ?? "Try searching for beaches, restaurants, or cenotes"}</div>
             </div>
@@ -510,7 +511,7 @@ export function MapSearchBar({ places, lang, onSelectPlace, onSearch, flyTo, top
                 style={{
                   fontSize: 12,
                   fontWeight: 700,
-                  color: "rgba(232, 236, 239, 0.6)",
+                  color: "#999999",
                   textTransform: "uppercase",
                   letterSpacing: "0.5px",
                   padding: "8px 16px",

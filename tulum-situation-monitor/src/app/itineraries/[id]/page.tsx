@@ -6,6 +6,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { useAuthOptional } from "@/contexts/AuthContext";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { translations } from "@/lib/i18n";
+import { BottomNav } from "@/components/layout/BottomNav";
 import type { Lang } from "@/lib/weather";
 
 type ItineraryDay = {
@@ -142,7 +143,7 @@ export default function SavedItineraryPage() {
         background: "var(--bg-primary)",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
-        paddingBottom: "max(24px, env(safe-area-inset-bottom))",
+        paddingBottom: "100px",
       }}
     >
       <header
@@ -231,9 +232,9 @@ export default function SavedItineraryPage() {
                   style={{
                     padding: "12px 20px",
                     borderRadius: "12px",
-                    background: selectedDay === i ? "var(--tulum-turquoise)" : "rgba(255,255,255,0.06)",
-                    border: "none",
-                    color: "#FFF",
+                    background: selectedDay === i ? "var(--tulum-turquoise)" : "#F7F7F7",
+                    border: selectedDay === i ? "none" : "1px solid #EEEEEE",
+                    color: selectedDay === i ? "#FFF" : "#222222",
                     fontSize: "15px",
                     fontWeight: "700",
                     cursor: "pointer",
@@ -256,9 +257,9 @@ export default function SavedItineraryPage() {
                       key={i}
                       style={{
                         padding: "18px",
-                        background: "rgba(255,255,255,0.03)",
+                        background: "#F7F7F7",
                         borderRadius: "14px",
-                        border: "1px solid var(--border-subtle)",
+                        border: "1px solid #EEEEEE",
                       }}
                     >
                       <div style={{ display: "flex", gap: "10px", marginBottom: "10px", flexWrap: "wrap" }}>
@@ -277,7 +278,7 @@ export default function SavedItineraryPage() {
                           </span>
                         )}
                         {act.duration && (
-                          <span style={{ padding: "6px 12px", borderRadius: "8px", background: "rgba(255,255,255,0.05)", fontSize: "13px", color: "var(--text-secondary)" }}>
+                          <span style={{ padding: "6px 12px", borderRadius: "8px", background: "rgba(0,0,0,0.04)", fontSize: "13px", color: "var(--text-secondary)" }}>
                             {act.duration}
                           </span>
                         )}
@@ -329,6 +330,7 @@ export default function SavedItineraryPage() {
           </div>
         )}
       </div>
+      <BottomNav lang={lang} />
     </div>
   );
 }

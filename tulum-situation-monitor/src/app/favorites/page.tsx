@@ -70,16 +70,16 @@ function ListCard({
       onKeyDown={(e) => e.key === "Enter" && onSelect()}
       style={{
         position: "relative",
-        background: "rgba(20, 30, 45, 0.6)",
+        background: "#F7F7F7",
         borderRadius: "16px",
         padding: "20px",
-        border: "1px solid rgba(0, 206, 209, 0.12)",
+        border: "1px solid #EEEEEE",
         cursor: "pointer",
         transition: "all 0.3s",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-4px)";
-        e.currentTarget.style.boxShadow = "0 12px 32px rgba(0, 0, 0, 0.3)";
+        e.currentTarget.style.boxShadow = "0 12px 32px rgba(0, 0, 0, 0.1)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "translateY(0)";
@@ -99,7 +99,7 @@ function ListCard({
           width: "32px",
           height: "32px",
           borderRadius: "50%",
-          background: "rgba(255, 255, 255, 0.06)",
+          background: "rgba(0, 0, 0, 0.05)",
           border: "none",
           fontSize: "18px",
           cursor: "pointer",
@@ -125,9 +125,9 @@ function ListCard({
               position: "absolute",
               top: "48px",
               right: "12px",
-              background: "rgba(20, 30, 45, 0.95)",
+              background: "#FFFFFF",
               borderRadius: "12px",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
+              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.12)",
               overflow: "hidden",
               zIndex: 10,
             }}
@@ -179,10 +179,10 @@ function ListCard({
           {list.icon}
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: "18px", fontWeight: 700, color: "#E8ECEF", marginBottom: "2px" }}>
+          <div style={{ fontSize: "18px", fontWeight: 700, color: "#222222", marginBottom: "2px" }}>
             {list.name}
           </div>
-          <div style={{ fontSize: "14px", color: "#7C8490" }}>
+          <div style={{ fontSize: "14px", color: "#999999" }}>
             {list.placeIds.length} places
           </div>
         </div>
@@ -191,7 +191,7 @@ function ListCard({
         <div
           style={{
             fontSize: "13px",
-            color: "#7C8490",
+            color: "#999999",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -262,10 +262,10 @@ export default function FavoritesPage() {
           alignItems: "center",
           justifyContent: "center",
           padding: "24px",
-          background: "#0F1419",
+          background: "#FFFFFF",
         }}
       >
-        <p style={{ fontSize: "18px", color: "#7C8490", marginBottom: "24px" }}>
+        <p style={{ fontSize: "18px", color: "#999999", marginBottom: "24px" }}>
           {t.signInToViewFavorites ?? "Sign in to view your saved places and lists."}
         </p>
         <Link
@@ -291,7 +291,7 @@ export default function FavoritesPage() {
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
         paddingBottom: "100px",
-        background: "#0F1419",
+        background: "#FFFFFF",
         minHeight: "100vh",
       }}
     >
@@ -313,8 +313,8 @@ export default function FavoritesPage() {
               width: "44px",
               height: "44px",
               borderRadius: "12px",
-              background: "rgba(0, 206, 209, 0.08)",
-              border: "1px solid rgba(0, 206, 209, 0.15)",
+              background: "#F7F7F7",
+              border: "1px solid #EEEEEE",
               color: "var(--tulum-ocean)",
               fontSize: "20px",
               textDecoration: "none",
@@ -350,7 +350,7 @@ export default function FavoritesPage() {
             fontSize: "24px",
             color: "#FFF",
             cursor: "pointer",
-            boxShadow: "0 4px 16px rgba(0, 206, 209, 0.3)",
+            boxShadow: "0 4px 16px rgba(0, 206, 209, 0.2)",
           }}
         >
           +
@@ -358,7 +358,7 @@ export default function FavoritesPage() {
       </header>
 
       <section style={{ marginBottom: "32px" }}>
-        <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "16px", color: "#E8ECEF" }}>
+        <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "16px", color: "#222222" }}>
           📋 {t.myLists ?? "My Lists"} ({lists.length})
         </h2>
         <div
@@ -381,11 +381,11 @@ export default function FavoritesPage() {
       </section>
 
       <section>
-        <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "16px", color: "#E8ECEF" }}>
+        <h2 style={{ fontSize: "18px", fontWeight: 700, marginBottom: "16px", color: "#222222" }}>
           📍 {t.allSavedPlaces ?? "All Saved Places"} ({favoritePlaces.length})
         </h2>
         {favoritePlaces.length === 0 ? (
-          <p style={{ color: "#7C8490", fontSize: "14px" }}>
+          <p style={{ color: "#999999", fontSize: "14px" }}>
             {t.noFavoritesYet ?? "No saved places yet. Save places from the map or Places list."}
           </p>
         ) : (
@@ -401,9 +401,9 @@ export default function FavoritesPage() {
                     alignItems: "center",
                     gap: "16px",
                     padding: "16px",
-                    background: "rgba(20, 30, 45, 0.6)",
+                    background: "#F7F7F7",
                     borderRadius: "16px",
-                    border: "1px solid rgba(0, 206, 209, 0.12)",
+                    border: "1px solid #EEEEEE",
                   }}
                 >
                   <div
@@ -421,10 +421,10 @@ export default function FavoritesPage() {
                     {place.categoryLabel === "Club" ? "🏖️" : place.categoryLabel === "Restaurant" ? "🍽️" : place.categoryLabel === "Coffee" ? "☕" : "🏛️"}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: "16px", fontWeight: 700, color: "#E8ECEF" }}>
+                    <div style={{ fontSize: "16px", fontWeight: 700, color: "#222222" }}>
                       {place.name}
                     </div>
-                    <div style={{ fontSize: "13px", color: "#7C8490" }}>
+                    <div style={{ fontSize: "13px", color: "#999999" }}>
                       {place.categoryLabel} • {dist < 1 ? `${(dist * 1000).toFixed(0)}m` : `${dist.toFixed(1)}km`}
                     </div>
                     {listNames.length > 0 && (
@@ -440,7 +440,7 @@ export default function FavoritesPage() {
                       padding: "8px 14px",
                       borderRadius: "10px",
                       background: "rgba(0, 206, 209, 0.1)",
-                      border: "2px solid rgba(0, 206, 209, 0.3)",
+                      border: "2px solid rgba(0, 0, 0, 0.12)",
                       fontSize: "13px",
                       fontWeight: 600,
                       color: "#00CED1",

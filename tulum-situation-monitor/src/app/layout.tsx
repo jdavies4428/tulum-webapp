@@ -101,8 +101,8 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#0F1419" media="(prefers-color-scheme: dark)" />
-        <meta name="theme-color" content="#00CED1" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
         <link rel="manifest" href="/manifest.json" />
         {/* Preconnect to external origins for faster resource loading */}
         <link rel="preconnect" href="https://maps.googleapis.com" />
@@ -203,7 +203,7 @@ export default function RootLayout({
       <body className="w-full h-full overflow-hidden min-w-0" style={{ margin: 0, padding: 0, background: "var(--bg-primary)" }} suppressHydrationWarning>
         <Providers>
           <ErrorBoundaryWrapper>{children}</ErrorBoundaryWrapper>
-          <QuickActionsFAB />
+          <QuickActionsFAB />  {/* Overlay only — trigger button removed, activated via BottomNav "More" */}
           <Toaster />
           <Analytics />
         </Providers>

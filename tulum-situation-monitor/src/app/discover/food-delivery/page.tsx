@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { BottomNav } from "@/components/layout/BottomNav";
 
 const TOMATO_MX = {
   scheme: "tomato://",
@@ -66,6 +67,7 @@ export default function FoodDeliveryPage() {
         color: "var(--text-primary)",
         padding: "24px",
         paddingTop: "max(24px, env(safe-area-inset-top))",
+        paddingBottom: "100px",
       }}
     >
       <header
@@ -137,6 +139,8 @@ export default function FoodDeliveryPage() {
           <span>Uber Eats</span>
         </button>
       </div>
+
+      <BottomNav lang={lang} />
     </div>
   );
 }

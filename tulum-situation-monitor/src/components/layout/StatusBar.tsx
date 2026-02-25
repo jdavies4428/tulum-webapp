@@ -6,7 +6,7 @@ import { useAuthOptional } from "@/contexts/AuthContext";
 import { SignInButton } from "@/components/auth/SignInButton";
 import { SignedInMenu } from "@/components/auth/SignedInMenu";
 import type { Lang } from "@/lib/weather";
-import { spacing, radius, shadows } from "@/lib/design-tokens";
+import { spacing, radius } from "@/lib/design-tokens";
 
 function formatCoords(lat: number, lng: number): string {
   const latDir = lat >= 0 ? "N" : "S";
@@ -31,7 +31,6 @@ export function StatusBar({ lang, userLocation, onReset, lastUpdated }: StatusBa
 
   return (
     <div
-      className="glass-heavy"
       style={{
         position: "absolute",
         bottom: 0,
@@ -42,13 +41,13 @@ export function StatusBar({ lang, userLocation, onReset, lastUpdated }: StatusBa
         alignItems: "center",
         justifyContent: "space-between",
         gap: spacing.sm,
-        borderTop: "2px solid rgba(0, 206, 209, 0.15)",
-        background: "rgba(20, 20, 30, 0.85)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
+        borderTop: "1px solid #EEEEEE",
+        background: "rgba(255, 255, 255, 0.92)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
         padding: `${spacing.sm}px ${spacing.md}px`,
         fontSize: "10px",
-        boxShadow: "0 -4px 24px rgba(0, 0, 0, 0.3)",
+        boxShadow: "0 -2px 12px rgba(0, 0, 0, 0.06)",
       }}
     >
       {/* Left: Status Indicators */}
@@ -58,17 +57,17 @@ export function StatusBar({ lang, userLocation, onReset, lastUpdated }: StatusBa
           <div
             className="quick-action-sos-pulse"
             style={{
-              width: 8,
-              height: 8,
+              width: 7,
+              height: 7,
               borderRadius: "50%",
-              background: "#50C878",
-              boxShadow: "0 0 8px rgba(80, 200, 120, 0.6)",
+              background: "#10B981",
+              boxShadow: "0 0 6px rgba(16, 185, 129, 0.5)",
             }}
           />
           <span
             style={{
               textTransform: "uppercase",
-              color: "rgba(255, 255, 255, 0.6)",
+              color: "#717171",
               fontWeight: 600,
               letterSpacing: "0.5px",
             }}
@@ -82,17 +81,17 @@ export function StatusBar({ lang, userLocation, onReset, lastUpdated }: StatusBa
           <div
             className={userLocation ? "quick-action-sos-pulse" : ""}
             style={{
-              width: 8,
-              height: 8,
+              width: 7,
+              height: 7,
               borderRadius: "50%",
-              background: userLocation ? "#00CED1" : "rgba(255, 255, 255, 0.3)",
-              boxShadow: userLocation ? "0 0 10px rgba(0, 206, 209, 0.7)" : "none",
+              background: userLocation ? "#00CED1" : "#DDDDDD",
+              boxShadow: userLocation ? "0 0 8px rgba(0, 206, 209, 0.5)" : "none",
             }}
           />
           <span
             style={{
               textTransform: "uppercase",
-              color: userLocation ? "#00CED1" : "rgba(255, 255, 255, 0.4)",
+              color: userLocation ? "#00CED1" : "#AAAAAA",
               fontWeight: 600,
               letterSpacing: "0.5px",
             }}
@@ -106,7 +105,7 @@ export function StatusBar({ lang, userLocation, onReset, lastUpdated }: StatusBa
       <span
         style={{
           fontFamily: "monospace",
-          color: "rgba(255, 255, 255, 0.6)",
+          color: "#717171",
           fontSize: "10px",
           fontWeight: 500,
         }}
@@ -117,25 +116,32 @@ export function StatusBar({ lang, userLocation, onReset, lastUpdated }: StatusBa
       {/* Right: Actions */}
       <div style={{ display: "flex", alignItems: "center", gap: spacing.sm }}>
         {lastUpdated && (
-          <span style={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "9px" }}>{lastUpdated}</span>
+          <span style={{ color: "#AAAAAA", fontSize: "9px" }}>{lastUpdated}</span>
         )}
         <button
           type="button"
           onClick={onReset}
-          className="interactive hover-lift"
           style={{
             borderRadius: radius.sm,
-            border: "1px solid rgba(0, 206, 209, 0.3)",
-            background: "linear-gradient(135deg, rgba(0, 206, 209, 0.15) 0%, rgba(0, 206, 209, 0.05) 100%)",
+            border: "1px solid #EEEEEE",
+            background: "#F7F7F7",
             padding: `${spacing.xs}px ${spacing.sm}px`,
             fontWeight: 600,
             color: "#00CED1",
             fontSize: "10px",
             cursor: "pointer",
-            transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            transition: "all 0.2s",
             display: "flex",
             alignItems: "center",
             gap: spacing.xs,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(0, 206, 209, 0.08)";
+            e.currentTarget.style.borderColor = "rgba(0, 206, 209, 0.3)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#F7F7F7";
+            e.currentTarget.style.borderColor = "#EEEEEE";
           }}
         >
           🎯 {tAny.resetView ?? "Reset"}

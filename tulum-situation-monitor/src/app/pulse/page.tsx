@@ -5,7 +5,9 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
+import { BottomNav } from "@/components/layout/BottomNav";
 import type { ConciergeContext } from "@/lib/concierge-prompts";
+import { SAMPLE_EVENTS, formatEventDate } from "@/data/sample-events";
 
 // ─── Types ───────────────────────────────────────────────────────
 
@@ -49,30 +51,16 @@ const SEGMENT_LABELS: Record<string, { label: string; emoji: string }> = {
   night: { label: "Tonight", emoji: "🌙" },
 };
 
-// ─── Sample Data (Events + Community) ────────────────────────────
-
-const SAMPLE_EVENTS = [
-  { title: "Full Moon Ceremony", venue: "Papaya Playa Project", time: "8:00 PM", emoji: "🌕" },
-  { title: "Live Jazz Night", venue: "Gitano", time: "9:00 PM", emoji: "🎵" },
-  { title: "Sunrise Yoga", venue: "Sanara Hotel", time: "6:30 AM", emoji: "🧘" },
-];
-
-const SAMPLE_COMMUNITY = [
-  { title: "Ride share to Cancún airport — Friday 6am", category: "Rides", color: "#0ABDE3" },
-  { title: "Free yoga mats — moving back to the States", category: "Free", color: "#10AC84" },
-  { title: "Best tacos that aren't on the tourist strip?", category: "Recs", color: "#F368E0" },
-];
+// ─── Sample Data removed — using shared SAMPLE_EVENTS from @/data/sample-events ───
 
 // ─── Unit helpers ────────────────────────────────────────────────
 function toF(c: number) { return Math.round(c * 9 / 5 + 32); }
 function toMph(kmh: number) { return Math.round(kmh * 0.621371); }
 
 const QUICK_ACTIONS = [
-  { label: "Translate", emoji: "🌐", href: "/discover/translation" },
   { label: "Beaches", emoji: "🏖️", href: "/discover/beach-dashboard" },
   { label: "Food", emoji: "🍽️", href: "/discover/food-delivery" },
   { label: "Events", emoji: "📅", href: "/discover/events" },
-  { label: "Rides", emoji: "🚗", href: "/discover/transportation" },
 ];
 
 // ─── Card wrapper ────────────────────────────────────────────────
@@ -93,8 +81,8 @@ function PulseCard({
   return (
     <div
       style={{
-        background: "rgba(0, 206, 209, 0.06)",
-        border: "1px solid rgba(0, 206, 209, 0.12)",
+        background: "#F7F7F7",
+        border: "1px solid #EEEEEE",
         borderRadius: "20px",
         padding: "20px",
         opacity: visible ? 1 : 0,
@@ -116,7 +104,7 @@ function Skeleton({ width, height }: { width: string; height: string }) {
         width,
         height,
         borderRadius: "8px",
-        background: "linear-gradient(90deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 100%)",
+        background: "linear-gradient(90deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.04) 100%)",
         backgroundSize: "200% 100%",
         animation: "shimmer 1.5s infinite",
       }}
@@ -234,8 +222,8 @@ export default function PulsePage() {
         overflowY: "auto",
         overflowX: "hidden",
         WebkitOverflowScrolling: "touch",
-        background: "#0F1419",
-        color: "#E8ECEF",
+        background: "#FFFFFF",
+        color: "#222222",
         paddingTop: "max(20px, env(safe-area-inset-top))",
         paddingBottom: "100px",
       }}
@@ -245,6 +233,9 @@ export default function PulsePage() {
         @keyframes shimmer {
           0% { background-position: 200% 0; }
           100% { background-position: -200% 0; }
+        }
+        @keyframes fadeSlideUp {
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
 
@@ -263,18 +254,21 @@ export default function PulsePage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: "36px",
-            height: "36px",
-            borderRadius: "10px",
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            color: "#9BA3AF",
-            fontSize: "16px",
+            width: "44px",
+            height: "44px",
+            borderRadius: "12px",
+            background: "rgba(255, 255, 255, 0.95)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            border: "1px solid rgba(0, 0, 0, 0.08)",
+            color: "#222222",
+            fontSize: "20px",
             textDecoration: "none",
             flexShrink: 0,
+            boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
           }}
         >
-          &larr;
+          ←
         </Link>
         <div style={{ flex: 1 }}>
           <h1
@@ -283,7 +277,7 @@ export default function PulsePage() {
               fontWeight: 700,
               margin: 0,
               letterSpacing: "-0.3px",
-              color: "#E8ECEF",
+              color: "#222222",
             }}
           >
             {t.pulse ?? "Tulum Pulse"}
@@ -321,8 +315,8 @@ export default function PulsePage() {
               gap: "6px",
               padding: "8px 14px",
               borderRadius: "20px",
-              background: "rgba(0, 206, 209, 0.06)",
-              border: "1px solid rgba(0, 206, 209, 0.12)",
+              background: "#F7F7F7",
+              border: "1px solid #EEEEEE",
               textDecoration: "none",
               whiteSpace: "nowrap",
               flexShrink: 0,
@@ -330,7 +324,7 @@ export default function PulsePage() {
             }}
           >
             <span style={{ fontSize: "15px" }}>{action.emoji}</span>
-            <span style={{ fontSize: "12px", color: "#9BA3AF", fontWeight: 600 }}>
+            <span style={{ fontSize: "12px", color: "#717171", fontWeight: 600 }}>
               {action.label}
             </span>
           </Link>
@@ -360,11 +354,11 @@ export default function PulsePage() {
           ) : (
             <>
               <div style={{ display: "flex", alignItems: "baseline", gap: "12px", marginBottom: "6px" }}>
-                <span style={{ fontSize: "48px", fontWeight: 300, color: "#E8ECEF", lineHeight: 1 }}>
+                <span style={{ fontSize: "48px", fontWeight: 300, color: "#222222", lineHeight: 1 }}>
                   {lang === "en" ? toF(data.weather.temp) : data.weather.temp}°{lang === "en" ? "F" : ""}
                 </span>
                 <span style={{ fontSize: "20px" }}>{data.weather.emoji}</span>
-                <span style={{ fontSize: "15px", color: "#9BA3AF", fontWeight: 500 }}>
+                <span style={{ fontSize: "15px", color: "#717171", fontWeight: 500 }}>
                   {data.weather.label}
                 </span>
               </div>
@@ -385,8 +379,8 @@ export default function PulsePage() {
                   style={{
                     padding: "4px 12px",
                     borderRadius: "8px",
-                    background: "rgba(255,255,255,0.05)",
-                    color: "#9BA3AF",
+                    background: "rgba(0,0,0,0.05)",
+                    color: "#717171",
                     fontSize: "12px",
                     fontWeight: 600,
                   }}
@@ -453,14 +447,14 @@ export default function PulsePage() {
                   {t.bestBeachNow ?? "Best Beach Right Now"}
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-                  <span style={{ fontSize: "20px", fontWeight: 700, color: "#E8ECEF" }}>
+                  <span style={{ fontSize: "20px", fontWeight: 700, color: "#222222" }}>
                     {data.topBeach.name}
                   </span>
                   <span
                     style={{
                       padding: "3px 10px",
                       borderRadius: "8px",
-                      background: "rgba(0, 206, 209, 0.15)",
+                      background: "rgba(0, 206, 209, 0.1)",
                       color: "#00CED1",
                       fontSize: "13px",
                       fontWeight: 700,
@@ -470,15 +464,15 @@ export default function PulsePage() {
                   </span>
                 </div>
                 <div style={{ display: "flex", gap: "8px" }}>
-                  <span style={{ fontSize: "12px", color: "#9BA3AF" }}>
+                  <span style={{ fontSize: "12px", color: "#717171" }}>
                     Sargassum: <strong style={{ color: data.sargassumLevel === "low" ? "#4CAF50" : "#FFC107" }}>{data.sargassumLevel}</strong>
                   </span>
                   <span style={{ fontSize: "12px", color: "#4B5563" }}>·</span>
-                  <span style={{ fontSize: "12px", color: "#9BA3AF" }}>
-                    Crowds: <strong style={{ color: "#9BA3AF" }}>{data.topBeach.crowd}</strong>
+                  <span style={{ fontSize: "12px", color: "#717171" }}>
+                    Crowds: <strong style={{ color: "#717171" }}>{data.topBeach.crowd}</strong>
                   </span>
                   <span style={{ fontSize: "12px", color: "#4B5563" }}>·</span>
-                  <span style={{ fontSize: "12px", color: "#9BA3AF" }}>
+                  <span style={{ fontSize: "12px", color: "#717171" }}>
                     {data.topBeach.rating}
                   </span>
                 </div>
@@ -512,7 +506,7 @@ export default function PulsePage() {
               style={{
                 fontSize: "16px",
                 lineHeight: 1.6,
-                color: "#D1D5DB",
+                color: "#555555",
                 margin: 0,
                 fontWeight: 400,
               }}
@@ -522,128 +516,67 @@ export default function PulsePage() {
           )}
         </PulseCard>
 
-        {/* ─── Events Card ─── */}
-        <PulseCard delay={300}>
+        {/* ─── Weekly Events ─── */}
+        <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-            <span
-              style={{
-                fontSize: "11px",
-                color: "#6B7280",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "0.8px",
-              }}
-            >
-              {t.tonightEvents ?? "Happening Soon"}
-            </span>
+            <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#222222", margin: 0 }}>
+              {t.happeningNow ?? "Weekly Events"}
+            </h2>
             <Link
               href={`/discover/events?lang=${lang}`}
-              style={{ fontSize: "11px", color: "#00CED1", fontWeight: 600, textDecoration: "none" }}
+              style={{ fontSize: "13px", color: "#00CED1", fontWeight: 600, textDecoration: "none" }}
             >
-              See all →
+              {t.exploreAll ?? "See All"} →
             </Link>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            {SAMPLE_EVENTS.map((ev) => (
-              <div
-                key={ev.title}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                }}
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            {SAMPLE_EVENTS.map((event, idx) => (
+              <Link
+                key={event.id}
+                href={`/discover/events?lang=${lang}`}
+                style={{ textDecoration: "none", display: "block" }}
               >
-                <span style={{ fontSize: "20px", width: "28px", textAlign: "center" }}>
-                  {ev.emoji}
-                </span>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: "14px", fontWeight: 600, color: "#E8ECEF" }}>
-                    {ev.title}
-                  </div>
-                  <div style={{ fontSize: "12px", color: "#6B7280" }}>
-                    {ev.venue} · {ev.time}
-                  </div>
-                </div>
-                <span
+                <div
                   style={{
-                    fontSize: "9px",
-                    padding: "2px 6px",
-                    borderRadius: "4px",
-                    background: "rgba(255,193,7,0.12)",
-                    color: "rgba(255,193,7,0.5)",
-                    fontWeight: 700,
-                    letterSpacing: "0.5px",
+                    borderRadius: "16px",
+                    overflow: "hidden",
+                    position: "relative",
+                    minHeight: "200px",
+                    border: "1px solid #EEEEEE",
+                    opacity: 0,
+                    transform: "translateY(12px)",
+                    animation: `fadeSlideUp 0.5s ease ${idx * 80}ms forwards`,
                   }}
                 >
-                  SAMPLE
-                </span>
-              </div>
-            ))}
-          </div>
-        </PulseCard>
-
-        {/* ─── Community Card ─── */}
-        <PulseCard delay={400}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-            <span
-              style={{
-                fontSize: "11px",
-                color: "#6B7280",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "0.8px",
-              }}
-            >
-              {t.communityBoard ?? "Community Board"}
-            </span>
-            <Link
-              href={`/discover/community-board?lang=${lang}`}
-              style={{ fontSize: "11px", color: "#00CED1", fontWeight: 600, textDecoration: "none" }}
-            >
-              See all →
-            </Link>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {SAMPLE_COMMUNITY.map((post) => (
-              <div
-                key={post.title}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  borderLeft: `2px solid ${post.color}55`,
-                  paddingLeft: "12px",
-                }}
-              >
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div
-                    style={{
-                      fontSize: "13px",
-                      color: "#D1D5DB",
-                      fontWeight: 500,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {post.title}
+                  {/* Background image */}
+                  <img
+                    src={event.image_url!}
+                    alt={event.author_name}
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                  {/* Dark gradient */}
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.05) 100%)" }} />
+                  {/* Date badge */}
+                  <div style={{ position: "absolute", top: "12px", left: "12px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", borderRadius: "8px", padding: "4px 10px", fontSize: "10px", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.5px" }}>
+                    {formatEventDate(event.created_at)}
+                  </div>
+                  {/* Content */}
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px" }}>
+                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)", fontWeight: 600, marginBottom: "4px" }}>
+                      {event.author_avatar} {event.author_name}
+                    </div>
+                    <div style={{ fontSize: "15px", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.3 }}>
+                      {event.content.split(" — ")[0]}
+                    </div>
                   </div>
                 </div>
-                <span
-                  style={{
-                    fontSize: "10px",
-                    color: post.color,
-                    fontWeight: 600,
-                    flexShrink: 0,
-                  }}
-                >
-                  {post.category}
-                </span>
-              </div>
+              </Link>
             ))}
           </div>
-        </PulseCard>
+        </div>
       </div>
+
+      <BottomNav lang={lang} />
     </div>
   );
 }

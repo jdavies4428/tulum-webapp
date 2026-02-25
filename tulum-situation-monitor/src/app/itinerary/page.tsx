@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { translations } from "@/lib/i18n";
 import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { useAuthOptional } from "@/contexts/AuthContext";
+import { BottomNav } from "@/components/layout/BottomNav";
 import type { Lang } from "@/lib/weather";
 
 const INTEREST_OPTIONS: { id: string; labelEn: string; icon: string }[] = [
@@ -174,7 +175,7 @@ export default function ItineraryPage() {
           overflowX: "hidden",
           WebkitOverflowScrolling: "touch",
           padding: "24px",
-          paddingBottom: "max(24px, env(safe-area-inset-bottom))",
+          paddingBottom: "100px",
         }}
       >
       {!itinerary ? (
@@ -212,16 +213,16 @@ export default function ItineraryPage() {
                     background:
                       formData.days === d
                         ? "linear-gradient(135deg, #00CED1 0%, #00BABA 100%)"
-                        : "rgba(20, 30, 45, 0.8)",
+                        : "#F7F7F7",
                     border:
                       formData.days === d
                         ? "2px solid #00CED1"
-                        : "1px solid rgba(0, 206, 209, 0.15)",
+                        : "1px solid #EEEEEE",
                     color: formData.days === d ? "#FFF" : "var(--text-secondary)",
                     fontSize: "16px",
                     fontWeight: "700",
                     cursor: "pointer",
-                    boxShadow: formData.days === d ? "0 4px 12px rgba(0, 206, 209, 0.3)" : "none",
+                    boxShadow: formData.days === d ? "0 4px 12px rgba(0, 206, 209, 0.12)" : "none",
                     transition: "all 0.2s ease",
                   }}
                 >
@@ -260,12 +261,12 @@ export default function ItineraryPage() {
                       padding: "12px",
                       borderRadius: "12px",
                       background: selected
-                        ? "rgba(0, 206, 209, 0.15)"
-                        : "rgba(20, 30, 45, 0.8)",
+                        ? "rgba(0, 206, 209, 0.1)"
+                        : "#F7F7F7",
                       border: selected
                         ? "2px solid #00CED1"
-                        : "1px solid rgba(0, 206, 209, 0.15)",
-                      color: selected ? "#E8ECEF" : "var(--text-secondary)",
+                        : "1px solid #EEEEEE",
+                      color: selected ? "#222222" : "var(--text-secondary)",
                       fontSize: "14px",
                       fontWeight: "600",
                       cursor: "pointer",
@@ -274,7 +275,7 @@ export default function ItineraryPage() {
                       alignItems: "center",
                       gap: "8px",
                       boxShadow: selected
-                        ? "0 4px 12px rgba(0, 206, 209, 0.2)"
+                        ? "0 4px 12px rgba(0, 206, 209, 0.1)"
                         : "none",
                       transition: "all 0.2s ease",
                     }}
@@ -314,17 +315,17 @@ export default function ItineraryPage() {
                       padding: "16px",
                       borderRadius: "12px",
                       background: active
-                        ? "rgba(255, 215, 0, 0.15)"
-                        : "rgba(20, 30, 45, 0.8)",
+                        ? "rgba(255, 215, 0, 0.1)"
+                        : "#F7F7F7",
                       border: active
                         ? "2px solid #FFD700"
-                        : "1px solid rgba(0, 206, 209, 0.15)",
+                        : "1px solid #EEEEEE",
                       color: active ? "#FFD700" : "var(--text-secondary)",
                       cursor: "pointer",
                       textAlign: "center",
                       fontSize: "14px",
                       fontWeight: "600",
-                      boxShadow: active ? "0 4px 12px rgba(255, 215, 0, 0.2)" : "none",
+                      boxShadow: active ? "0 4px 12px rgba(255, 215, 0, 0.1)" : "none",
                       transition: "all 0.2s ease",
                     }}
                   >
@@ -364,17 +365,17 @@ export default function ItineraryPage() {
                       padding: "14px",
                       borderRadius: "12px",
                       background: active
-                        ? "rgba(80, 200, 120, 0.15)"
-                        : "rgba(20, 30, 45, 0.8)",
+                        ? "rgba(80, 200, 120, 0.1)"
+                        : "#F7F7F7",
                       border: active
                         ? "2px solid #50C878"
-                        : "1px solid rgba(0, 206, 209, 0.15)",
-                      color: active ? "#E8ECEF" : "var(--text-secondary)",
+                        : "1px solid #EEEEEE",
+                      color: active ? "#222222" : "var(--text-secondary)",
                       fontSize: "14px",
                       fontWeight: "600",
                       cursor: "pointer",
                       textAlign: "center",
-                      boxShadow: active ? "0 4px 12px rgba(80, 200, 120, 0.2)" : "none",
+                      boxShadow: active ? "0 4px 12px rgba(80, 200, 120, 0.1)" : "none",
                       transition: "all 0.2s ease",
                     }}
                   >
@@ -445,6 +446,8 @@ export default function ItineraryPage() {
         />
       )}
       </main>
+
+      <BottomNav lang={lang} />
 
       <style>{`
         @keyframes spin {
@@ -562,8 +565,8 @@ function ItineraryDisplay({
               style={{
                 padding: "12px 20px",
                 borderRadius: "12px",
-                background: "rgba(255,255,255,0.08)",
-                border: "1px solid var(--border-subtle)",
+                background: "#F7F7F7",
+                border: "1px solid #EEEEEE",
                 color: "var(--text-primary)",
                 fontSize: "14px",
                 fontWeight: "600",
@@ -587,9 +590,9 @@ function ItineraryDisplay({
                 style={{
                   padding: "12px 20px",
                   borderRadius: "12px",
-                  background: selectedDay === i ? "var(--tulum-turquoise, #00D4D4)" : "rgba(255,255,255,0.06)",
-                  border: "none",
-                  color: "#FFF",
+                  background: selectedDay === i ? "var(--tulum-turquoise, #00D4D4)" : "#F7F7F7",
+                  border: selectedDay === i ? "none" : "1px solid #EEEEEE",
+                  color: selectedDay === i ? "#FFF" : "#222222",
                   fontSize: "15px",
                   fontWeight: "700",
                   cursor: "pointer",
@@ -612,9 +615,9 @@ function ItineraryDisplay({
                     key={i}
                     style={{
                       padding: "18px",
-                      background: "rgba(255,255,255,0.03)",
+                      background: "#F7F7F7",
                       borderRadius: "14px",
-                      border: "1px solid var(--border-subtle)",
+                      border: "1px solid #EEEEEE",
                     }}
                   >
                     <div style={{ display: "flex", gap: "10px", marginBottom: "10px", flexWrap: "wrap" }}>
@@ -637,7 +640,7 @@ function ItineraryDisplay({
                           style={{
                             padding: "6px 12px",
                             borderRadius: "8px",
-                            background: "rgba(255,255,255,0.05)",
+                            background: "rgba(0,0,0,0.04)",
                             fontSize: "13px",
                             color: "var(--text-secondary)",
                           }}
