@@ -8,6 +8,7 @@ import { usePersistedLang } from "@/hooks/usePersistedLang";
 import { BottomNav } from "@/components/layout/BottomNav";
 import type { ConciergeContext } from "@/lib/concierge-prompts";
 import { SAMPLE_EVENTS, formatEventDate } from "@/data/sample-events";
+import { ThemedEventCard } from "@/components/events/ThemedEventCard";
 
 // ─── Types ───────────────────────────────────────────────────────
 
@@ -533,43 +534,48 @@ export default function PulsePage() {
             {SAMPLE_EVENTS.map((event, idx) => (
               <Link
                 key={event.id}
-                href={`/discover/events?lang=${lang}`}
-                style={{ textDecoration: "none", display: "block" }}
+                href={`/discover/events?event=${event.id}&lang=${lang}`}
+                style={{
+                  textDecoration: "none",
+                  display: "block",
+                  opacity: 0,
+                  transform: "translateY(12px)",
+                  animation: `fadeSlideUp 0.5s ease ${idx * 80}ms forwards`,
+                }}
               >
-                <div
-                  style={{
-                    borderRadius: "16px",
-                    overflow: "hidden",
-                    position: "relative",
-                    minHeight: "200px",
-                    border: "1px solid #EEEEEE",
-                    opacity: 0,
-                    transform: "translateY(12px)",
-                    animation: `fadeSlideUp 0.5s ease ${idx * 80}ms forwards`,
-                  }}
-                >
-                  {/* Background image */}
-                  <img
-                    src={event.image_url!}
-                    alt={event.author_name}
-                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
-                  {/* Dark gradient */}
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.05) 100%)" }} />
-                  {/* Date badge */}
-                  <div style={{ position: "absolute", top: "12px", left: "12px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", borderRadius: "8px", padding: "4px 10px", fontSize: "10px", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.5px" }}>
-                    {formatEventDate(event.created_at)}
-                  </div>
-                  {/* Content */}
-                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px" }}>
-                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)", fontWeight: 600, marginBottom: "4px" }}>
-                      {event.author_avatar} {event.author_name}
+                {event.metadata?.card_style ? (
+                  <ThemedEventCard event={event} />
+                ) : (
+                  <div
+                    style={{
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                      position: "relative",
+                      minHeight: "200px",
+                      border: "1px solid #EEEEEE",
+                    }}
+                  >
+                    {event.image_url && (
+                      <img
+                        src={event.image_url}
+                        alt={event.author_name}
+                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                      />
+                    )}
+                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.05) 100%)" }} />
+                    <div style={{ position: "absolute", top: "12px", left: "12px", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", borderRadius: "8px", padding: "4px 10px", fontSize: "10px", fontWeight: 700, color: "#FFFFFF", letterSpacing: "0.5px" }}>
+                      {formatEventDate(event.created_at)}
                     </div>
-                    <div style={{ fontSize: "15px", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.3 }}>
-                      {event.content.split(" — ")[0]}
+                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px" }}>
+                      <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.7)", fontWeight: 600, marginBottom: "4px" }}>
+                        {event.author_avatar} {event.author_name}
+                      </div>
+                      <div style={{ fontSize: "15px", fontWeight: 700, color: "#FFFFFF", lineHeight: 1.3 }}>
+                        {event.content}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </Link>
             ))}
           </div>
