@@ -274,6 +274,34 @@ export function EnhancedSidebar({
                       }}
                     >{flag}</button>
                   ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const temp = sharePayload?.temp ?? "";
+                      const condition = sharePayload?.condition ?? "";
+                      const url = typeof window !== "undefined" ? window.location.href : "";
+                      const shareText = `🌴 Tulum right now: ${temp} ${condition}\n\nReal-time beach conditions, weather & local spots:`;
+                      if (typeof navigator !== "undefined" && navigator.share) {
+                        navigator.share({ title: "Discover Tulum", text: shareText, url }).catch(() => {});
+                      } else if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+                        navigator.clipboard.writeText(shareText + "\n" + url).then(() => alert("Link copied! 📋")).catch(() => {});
+                      }
+                    }}
+                    style={{
+                      background: "rgba(255, 255, 255, 0.95)",
+                      border: "1px solid rgba(0, 0, 0, 0.08)",
+                      width: "32px",
+                      height: "32px",
+                      borderRadius: "8px",
+                      fontSize: "15px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                    }}
+                    aria-label="Share"
+                  >📤</button>
                   <div style={{ marginLeft: "4px" }}>
                     {auth?.isAuthenticated && auth.user ? (
                       <SignedInMenu user={auth.user} lang={lang} />
@@ -581,6 +609,34 @@ export function EnhancedSidebar({
                         }}
                       >{flag}</button>
                     ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const temp = sharePayload?.temp ?? "";
+                        const condition = sharePayload?.condition ?? "";
+                        const url = typeof window !== "undefined" ? window.location.href : "";
+                        const shareText = `🌴 Tulum right now: ${temp} ${condition}\n\nReal-time beach conditions, weather & local spots:`;
+                        if (typeof navigator !== "undefined" && navigator.share) {
+                          navigator.share({ title: "Discover Tulum", text: shareText, url }).catch(() => {});
+                        } else if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+                          navigator.clipboard.writeText(shareText + "\n" + url).then(() => alert("Link copied! 📋")).catch(() => {});
+                        }
+                      }}
+                      style={{
+                        background: "rgba(255, 255, 255, 0.95)",
+                        border: "1px solid rgba(0, 0, 0, 0.08)",
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "8px",
+                        fontSize: "15px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                      }}
+                      aria-label="Share"
+                    >📤</button>
                     <div style={{ marginLeft: "4px" }}>
                       {auth?.isAuthenticated && auth.user ? (
                         <SignedInMenu user={auth.user} lang={lang} />
