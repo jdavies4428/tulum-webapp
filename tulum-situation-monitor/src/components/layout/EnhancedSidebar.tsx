@@ -11,7 +11,6 @@ import { WeatherSection } from "@/components/weather/WeatherSection";
 // CurrenciesPanel and AlertsPanel accessible via Quick Actions menu
 import { SargassumHubModal } from "@/components/sargassum/SargassumHubModal";
 import { TranslationModal } from "@/components/translation/TranslationModal";
-import { LocalEventsModal } from "@/components/events/LocalEventsModal";
 import { generateAlerts } from "@/lib/alerts";
 import { spacing, radius } from "@/lib/design-tokens";
 import type { Lang } from "@/lib/weather";
@@ -23,6 +22,7 @@ import { useLocalEvents } from "@/hooks/useLocalEvents";
 import { formatChatTimestamp } from "@/lib/chat-helpers";
 import { SAMPLE_EVENTS, formatEventDate } from "@/data/sample-events";
 import { OPEN_QUICK_ACTIONS_EVENT } from "@/components/quick-actions/QuickActionsFAB";
+import { getThemeThumbnail } from "@/components/events/ThemedEventCard";
 
 export interface SharePayload {
   temp: string;
@@ -70,7 +70,6 @@ export function EnhancedSidebar({
 }: EnhancedSidebarProps) {
   const [sargassumHubOpen, setSargassumHubOpen] = useState(false);
   const [translationOpen, setTranslationOpen] = useState(false);
-  const [localEventsOpen, setLocalEventsOpen] = useState(false);
   const [weatherDetailOpen, setWeatherDetailOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const { events: localEvents, loading: eventsLoading } = useLocalEvents();
@@ -447,7 +446,7 @@ export function EnhancedSidebar({
                     <h2 style={{ fontSize: "20px", fontWeight: 700, color: "#222222", margin: 0 }}>
                       {tAny.happeningNow ?? "Happening Now"}
                     </h2>
-                    <button type="button" onClick={() => setLocalEventsOpen(true)} style={{
+                    <button type="button" onClick={() => router.push("/discover/events")} style={{
                       fontSize: "14px", fontWeight: 600, color: "#00CED1",
                       background: "none", border: "none", cursor: "pointer", padding: 0,
                     }}>
@@ -460,8 +459,8 @@ export function EnhancedSidebar({
                         key={event.id}
                         role="button"
                         tabIndex={0}
-                        onClick={() => setLocalEventsOpen(true)}
-                        onKeyDown={(e) => e.key === "Enter" && setLocalEventsOpen(true)}
+                        onClick={() => router.push(`/discover/events?event=${event.id}`)}
+                        onKeyDown={(e) => e.key === "Enter" && router.push(`/discover/events?event=${event.id}`)}
                         style={{
                           display: "flex",
                           gap: "12px",
@@ -473,7 +472,19 @@ export function EnhancedSidebar({
                           cursor: "pointer",
                         }}
                       >
-                        {event.image_url ? (
+                        {event.metadata?.card_style ? (
+                          (() => {
+                            const { gradient, emoji } = getThemeThumbnail(event.metadata.card_style);
+                            return (
+                              <div style={{
+                                width: "100px", height: "88px", flexShrink: 0,
+                                background: gradient,
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                fontSize: "28px",
+                              }}>{emoji}</div>
+                            );
+                          })()
+                        ) : event.image_url ? (
                           <div style={{ width: "100px", height: "88px", flexShrink: 0, overflow: "hidden" }}>
                             <img
                               src={proxyImageUrl(event.image_url, 200) ?? event.image_url}
@@ -740,7 +751,7 @@ export function EnhancedSidebar({
                     <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#222222", margin: 0 }}>
                       {tAny.happeningNow ?? "Weekly Insider Picks"}
                     </h2>
-                    <button type="button" onClick={() => setLocalEventsOpen(true)} style={{
+                    <button type="button" onClick={() => router.push("/discover/events")} style={{
                       fontSize: "13px", fontWeight: 600, color: "#00CED1",
                       background: "none", border: "none", cursor: "pointer", padding: 0,
                     }}>
@@ -753,8 +764,8 @@ export function EnhancedSidebar({
                         key={event.id}
                         role="button"
                         tabIndex={0}
-                        onClick={() => setLocalEventsOpen(true)}
-                        onKeyDown={(e) => e.key === "Enter" && setLocalEventsOpen(true)}
+                        onClick={() => router.push(`/discover/events?event=${event.id}`)}
+                        onKeyDown={(e) => e.key === "Enter" && router.push(`/discover/events?event=${event.id}`)}
                         style={{
                           display: "flex",
                           gap: "12px",
@@ -766,7 +777,19 @@ export function EnhancedSidebar({
                           cursor: "pointer",
                         }}
                       >
-                        {event.image_url ? (
+                        {event.metadata?.card_style ? (
+                          (() => {
+                            const { gradient, emoji } = getThemeThumbnail(event.metadata.card_style);
+                            return (
+                              <div style={{
+                                width: "90px", height: "88px", flexShrink: 0,
+                                background: gradient,
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                fontSize: "24px",
+                              }}>{emoji}</div>
+                            );
+                          })()
+                        ) : event.image_url ? (
                           <div style={{ width: "90px", height: "88px", flexShrink: 0, overflow: "hidden" }}>
                             <img
                               src={proxyImageUrl(event.image_url, 200) ?? event.image_url}
@@ -811,61 +834,53 @@ export function EnhancedSidebar({
         onClose={() => setSargassumHubOpen(false)}
       />
       <TranslationModal lang={lang} isOpen={translationOpen} onClose={() => setTranslationOpen(false)} />
-      <LocalEventsModal lang={lang} isOpen={localEventsOpen} onClose={() => setLocalEventsOpen(false)} />
 
-      {/* Mobile Weather Detail Modal */}
+      {/* Mobile Weather Detail — Full Screen */}
       {weatherDetailOpen && (
         <div
           style={{
             position: "fixed",
             inset: 0,
             zIndex: 10002,
-            background: "rgba(0, 0, 0, 0.5)",
+            background: "#FFFFFF",
             display: "flex",
             flexDirection: "column",
           }}
-          onClick={() => setWeatherDetailOpen(false)}
         >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              maxHeight: "85vh",
-              background: "#FFFFFF",
-              borderRadius: "20px 20px 0 0",
-              overflowY: "auto",
-              padding: "8px 0 100px",
-              boxShadow: "0 -4px 24px rgba(0,0,0,0.12)",
-            }}
-          >
-            {/* Drag handle */}
-            <div style={{ display: "flex", justifyContent: "center", padding: "12px 0 4px" }}>
-              <div style={{ width: "36px", height: "4px", borderRadius: "2px", background: "rgba(0,0,0,0.15)" }} />
+          {/* Header */}
+          <div style={{
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "16px 16px 14px",
+            paddingTop: "max(16px, env(safe-area-inset-top))",
+            borderBottom: "1px solid #EEEEEE",
+            background: "rgba(255,255,255,0.95)",
+            backdropFilter: "blur(12px)",
+          }}>
+            <button
+              type="button"
+              onClick={() => setWeatherDetailOpen(false)}
+              style={{
+                width: 36, height: 36, borderRadius: "50%",
+                background: "#F7F7F7", border: "1px solid #EEEEEE",
+                color: "#717171", fontSize: "16px", cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              ←
+            </button>
+            <div>
+              <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#222222", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                ⛅ Weather
+              </h2>
+              <p style={{ fontSize: "13px", color: "#717171", margin: "2px 0 0" }}>Tulum, Quintana Roo</p>
             </div>
-            {/* Header */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 16px 14px", borderBottom: "1px solid #EEEEEE" }}>
-              <div>
-                <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#222222", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
-                  ⛅ Weather
-                </h2>
-                <p style={{ fontSize: "13px", color: "#717171", margin: "2px 0 0" }}>Tulum, Quintana Roo</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setWeatherDetailOpen(false)}
-                style={{
-                  width: 36, height: 36, borderRadius: "8px",
-                  background: "#F7F7F7", border: "1px solid #EEEEEE",
-                  color: "#222222", fontSize: "18px", cursor: "pointer",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}
-              >
-                ✕
-              </button>
-            </div>
+          </div>
+          {/* Scrollable content */}
+          <div style={{ flex: 1, overflowY: "auto", WebkitOverflowScrolling: "touch", paddingBottom: "100px" }}>
             <WeatherSection
               lang={lang}
               data={weatherData}
