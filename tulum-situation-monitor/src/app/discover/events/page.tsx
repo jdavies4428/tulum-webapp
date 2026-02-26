@@ -15,6 +15,7 @@ import { ConfirmDialog } from "@/components/events/ConfirmDialog";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { formatChatTimestamp } from "@/lib/chat-helpers";
 import { SAMPLE_EVENTS, formatEventDate } from "@/data/sample-events";
+import { ThemedEventCard } from "@/components/events/ThemedEventCard";
 
 function EventCard({
   event,
@@ -29,6 +30,11 @@ function EventCard({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  // Themed CSS card — skips photo entirely
+  if (event.metadata?.card_style) {
+    return <ThemedEventCard event={event} />;
+  }
+
   const [menuOpen, setMenuOpen] = useState(false);
   const hasImage = !!event.image_url;
 
@@ -295,6 +301,17 @@ export default function EventsPage() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   const isAdmin = checkIsAdmin(auth?.user);
+  const scrollTo = searchParams.get("event");
+
+  // Scroll to a specific event card when navigated from sidebar
+  useEffect(() => {
+    if (!scrollTo || loading) return;
+    const timer = setTimeout(() => {
+      const el = document.getElementById(scrollTo);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+    return () => clearTimeout(timer);
+  }, [scrollTo, loading]);
 
   const handleDelete = async (eventId: string) => {
     try {
@@ -410,7 +427,7 @@ export default function EventsPage() {
             {[...SAMPLE_EVENTS, ...events].map((event) => {
               const isSample = event.id.startsWith("sample-");
               return (
-                <div key={event.id} style={{ position: "relative" }}>
+                <div key={event.id} id={event.id} style={{ position: "relative" }}>
                   {isSample && (
                     <span
                       style={{

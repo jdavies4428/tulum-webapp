@@ -13,6 +13,8 @@ export interface LocalEvent {
   metadata: {
     likes_count?: number;
     replies_count?: number;
+    card_style?: string;
+    venues?: Array<{ name: string; time: string; desc: string }>;
   } | null;
   created_at: string;
   updated_at: string;

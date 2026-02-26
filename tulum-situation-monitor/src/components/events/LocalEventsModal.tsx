@@ -12,6 +12,7 @@ import { formatChatTimestamp } from "@/lib/chat-helpers";
 import { proxyImageUrl } from "@/lib/image-proxy";
 import { translations } from "@/lib/i18n";
 import { SAMPLE_EVENTS, formatEventDate } from "@/data/sample-events";
+import { ThemedEventCard } from "@/components/events/ThemedEventCard";
 import type { Lang } from "@/lib/weather";
 
 function EventCard({
@@ -27,6 +28,11 @@ function EventCard({
   onEdit: () => void;
   onDelete: () => void;
 }) {
+  // Themed CSS card — skips photo entirely
+  if (event.metadata?.card_style) {
+    return <ThemedEventCard event={event} />;
+  }
+
   const [menuOpen, setMenuOpen] = useState(false);
   const proxiedImage = proxyImageUrl(event.image_url, 640);
   const hasImage = !!proxiedImage;
