@@ -154,7 +154,7 @@ export function DashboardClient() {
         tide={tide}
         onWeatherRefresh={refetchWeather}
       />
-      {isMobile && <BottomNav lang={lang} variant="light" fixed />}
+      <BottomNav lang={lang} variant="light" fixed />
       {/* On mobile, map is on /map page to avoid black box from sliding layout; desktop keeps map here */}
       {!isMobile && (
         <div
